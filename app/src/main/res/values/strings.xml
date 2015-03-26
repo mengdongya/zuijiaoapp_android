@@ -1,6 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">ZuijiaoApp</string>
 
+    <string name="app_name">嘴角</string>
+    <string name="welcome_word">发现最美的味道</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="drawer_open">open</string>
+    <string name="drawer_close">close</string>
+    <string name="wizard_text1_head">最美的味道</string>
+    <string name="wizard_text1_note">这里只有最美味的食物</string>
+    <string name="wizard_text2_head">靠谱的推荐</string>
+    <string name="wizard_text2_note">这里全是真是的吃货推荐</string>
+    <string name="wizard_text3_head">一大波的吃货</string>
+    <string name="wizard_text3_note">与一帮出色的吃货分享味蕾的快乐</string>
+    <string name="wizard_btn_text">马上体验</string>
+    <string name="drawer_setting1">反馈</string>
+    <string name="drawer_setting2">关于</string>
+    <string name="drawer_setting3">退出</string>
+    <string name="login_text">发现最美的味道</string>
+    <string name="login_weichat">微信登录</string>
+    <string name="login_weibo">微博登录</string>
+    <string name="login_qq">QQ登录</string>
+    <string name="main_page">首页</string>
+    <string name="favor_page">我喜欢的</string>
+    <string name="msg_page">消息</string>
+    <string name="feed_back">反馈</string>
+    <string name="concerning">关于</string>
+    <string name="concerning_text1">发 现 最 美 的 味 道</string>
+    <string name="concerning_text2">嘴      角</string>
+    <string name="user_protocol">用户协议</string>
+    <string name="zuijiao_team">嘴角团队</string>
+    <string name="version_code">V1.0</string>
+    <string name="logout_confirm_title">是否退出登录 ？</string>
+    <string name="logout">退出</string>
+    <string name="logout_msg">已经退出登录</string>
+    <string name="none_favor">我一向是很有品位的\n暂时还没有喜欢的食物</string>
+    <string name="personal_tip">私房</string>
+    <string name="notify_net">网络不给力，请下拉刷新重试</string>
+    <string name="xlistview_header_hint_normal">下拉刷新</string>
+    <string name="xlistview_header_hint_ready">松开刷新数据</string>
+    <string name="xlistview_header_hint_loading">正在加载...</string>
+    <string name="xlistview_header_last_time">上次更新时间：</string>
+    <string name="xlistview_footer_hint_normal">查看更多</string>
+    <string name="xlistview_footer_hint_ready">松开载入更多</string>
+    <string name="msg_login_wait_dialog">正在登录</string>
+    <string name="email">电子邮箱</string>
+    <string name="honey_name">昵称</string>
+    <string name="password">密码</string>
+    <string name="password_confirm">密码确认</string>
+    <string name="notify_register">还没有嘴角账号，点击注册</string>
+    <string name="notify_register_part">还没有嘴角账号，点击注册</string>
+    <string name="third_party_login">第三方账号登录</string>
+    <string name="weibo">微博</string>
+    <string name="weixin">微信</string>
+    <string name="qq">QQ</string>
+    <string name="login">登录</string>
+    <string name="comfirm">确定</string>
+    <string name="loading">加载中...</string>
+    <string name="login_deny">取消授权</string>
+    <string name="login_cancel">取消登录</string>
+    <string name="login_error">登录失败</string>
+
 </resources>

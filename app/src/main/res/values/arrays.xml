@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="settings1">
+        <item>反馈</item>
+        <item>关于</item>
+        <item>退出</item>
+    </string-array>
+    <string-array name="test">
+        <item>评论</item>
+        <item>评论</item>
+        <item>评论</item>
+        <item>评论</item>
+        <item>评论</item>
+        <item>评论</item>
+        <item>关于</item>
+        <item>退出</item>
+    </string-array>
+    <string-array name="settings2">
+        <item>反馈</item>
+        <item>关于</item>
+    </string-array>
+    <string-array name="fragment_title">
+        <item>首页</item>
+        <item>我喜欢的</item>
+        <item>消息</item>
+    </string-array>
+
+</resources>

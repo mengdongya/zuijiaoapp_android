@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+       xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context="com.example.materaialdesign.UserInfoActivity" >
+
+    <item
+        android:id="@+id/action_edit"
+        android:icon="@drawable/abc_btn_radio_material"
+        android:orderInCategory="80"
+        android:title="edit"
+        app:showAsAction="always"/>
+
+</menu>

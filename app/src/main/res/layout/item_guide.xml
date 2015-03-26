@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingTop="45dip" >
+
+    <TextView
+        android:id="@+id/wizard_text1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:paddingBottom="20dip"
+        android:text="最美的味道"
+        android:textColor="@color/tv_deep_gray"
+        android:textSize="22sp" />
+
+    <TextView
+        android:id="@+id/wizard_text2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/wizard_text1"
+        android:gravity="center_horizontal"
+        android:paddingBottom="30dip"
+        android:text="这只有最美味的食物"
+        android:textColor="@color/tv_deep_gray"
+        android:textSize="18sp" />
+
+    <ImageView
+        android:id="@+id/iguide_img"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:scaleType="fitXY" />
+
+</RelativeLayout>

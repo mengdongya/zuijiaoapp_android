@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" >
+
+    <ImageView
+        android:id="@+id/msg_item_user_head"
+        android:layout_width="wrap_content"
+        android:layout_marginRight = "10dip"
+        android:layout_height="wrap_content"
+        android:src="@drawable/forward" />
+
+    <TextView
+        android:id="@+id/msg_item_user_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/msg_item_user_head"
+        android:layout_toRightOf="@+id/msg_item_user_head"
+        android:text="用户1" />
+
+    <TextView
+        android:id="@+id/msg_item_msg_content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/msg_item_user_name"
+        android:layout_toRightOf="@+id/msg_item_user_head"
+        android:ellipsize="end"
+        android:maxLength="20"
+        android:singleLine="true"
+        android:text="这里是评论的信息XXXXXXXXXXXXXXXXXXddddddddddddddddXX" />
+
+    <TextView
+        android:id="@+id/msg_item_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/msg_item_msg_content"
+        android:layout_toRightOf="@+id/msg_item_user_head"
+        android:text="用户1" />
+
+    <FrameLayout
+        android:id="@+id/msg_item_food"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true" >
+
+        <TextView
+            android:id="@+id/msg_item_food_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="食物名称" />
+
+        <ImageView
+            android:id="@+id/msg_item_user_image"
+            android:layout_width="40dip"
+            android:layout_height="40dip"
+            android:src="@drawable/welcome2"/>
+    </FrameLayout>
+
+</RelativeLayout>

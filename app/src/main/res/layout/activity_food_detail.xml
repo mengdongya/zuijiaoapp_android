@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/food_detail_parent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical" >
+
+    <FrameLayout
+        android:id="@+id/image_container"
+        android:layout_width="match_parent"
+        android:layout_height="150dip" >
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/food_detail_images"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:src="@drawable/empty_view_greeting" />
+
+        <LinearLayout
+            android:id="@+id/food_detail_image_dots"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" />
+    </FrameLayout>
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" >
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/food_detail_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/toolbar_height"
+            android:layout_gravity="top"
+            android:background="@color/transparent"
+            android:minHeight="?attr/actionBarSize" />
+
+
+        <com.zuijiao.view.MyScrollView
+            android:id="@+id/food_detail_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/food_detail_input"
+            android:layout_marginTop="150dip" >
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white" >
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical" >
+
+                    <include
+                        android:id="@+id/food_detail_layout"
+                        layout="@layout/food_detai_top" />
+
+                    <com.zuijiao.view.WordWrapView
+                        android:id="@+id/view_wordwrap"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true" />
+
+                    <TextView
+                        android:id="@+id/content_item_comment"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/white"
+                        android:padding="@dimen/main_content_item_margin_left"
+                        android:singleLine="false"
+                        android:text="淮扬狮子头名扬天下，人尽皆知，殊不知但还流传着用鱼肉做的狮子头，口感更滑嫩鲜爽，色泽雪白，味道非常的显现，但就是一个险种偷着鲜美，花肉中透着让人无法香香的味道"
+                        android:textColor="@color/tv_deep_gray" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dip"
+                        android:background="#999999" />
+
+                    <TextView
+                        android:id="@+id/food_detail_food_msg_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="left"
+                        android:padding="5dip"
+                        android:text="美食信息"
+                        android:textColor="#888888"
+                        android:textSize="15sp" />
+
+                    <TextView
+                        android:id="@+id/food_detail_food_msg_location"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="left"
+                        android:padding="5dip"
+                        android:text="古儒精舍私房菜（浦东店）"
+                        android:textColor="#555555"
+                        android:textSize="15sp" />
+
+                    <TextView
+                        android:id="@+id/food_detail_food_msg_price"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="left"
+                        android:padding="5dip"
+                        android:text="单价：８０￥"
+                        android:textColor="#555555"
+                        android:textSize="15sp" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dip"
+                        android:background="#999999" />
+
+                    <TextView
+                        android:id="@+id/food_detail_food_like_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="left"
+                        android:padding="5dip"
+                        android:text="喜欢  0"
+                        android:textColor="#888888"
+                        android:textSize="15sp" />
+
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" >
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:gravity="center"
+                            android:text="暂时还没有人喜欢" />
+                    </FrameLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dip"
+                        android:background="#999999" />
+
+                    <TextView
+                        android:id="@+id/food_detail_food_comment_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="left"
+                        android:padding="5dip"
+                        android:text="喜欢  0"
+                        android:textColor="#888888"
+                        android:textSize="15sp" />
+
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" >
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:gravity="center"
+                            android:text="暂时还没有人喜欢"
+                            android:visibility="gone" />
+
+                        <ListView
+                            android:id="@+id/lv_food_detail_comment"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" >
+                        </ListView>
+                    </FrameLayout>
+                </LinearLayout>
+
+                <include
+                    android:id="@+id/food_detail_layout_top"
+                    layout="@layout/food_detai_top" />
+            </FrameLayout>
+        </com.zuijiao.view.MyScrollView>
+
+        <EditText
+            android:id="@+id/food_detail_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:drawableRight="@drawable/food_edit"
+            android:hint="写下你的评论"
+            android:singleLine="true" />
+    </RelativeLayout>
+
+</FrameLayout>

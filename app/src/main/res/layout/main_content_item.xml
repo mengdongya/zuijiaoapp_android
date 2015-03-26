@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:imagecontrol="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="8dip"
+        android:background="@drawable/bg_white_round_corner"
+        android:elevation="3dip"
+        android:orientation="vertical" >
+
+        <ImageView
+            android:id="@+id/content_item_image"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/main_item_image_height"
+            android:background="#888888"
+            android:padding="10dip"
+            android:src="@drawable/empty_view_greeting" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/main_item_padding"
+            android:paddingBottom="5dip" >
+
+            <TextView
+                android:id="@+id/content_item_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="left|center_vertical"
+                android:singleLine="true"
+                android:text="金汤鱼肉狮子头"
+                android:textColor="@color/tv_deep_gray"
+                android:textSize="@dimen/main_item_food_name_size" />
+
+            <TextView
+                android:id="@+id/content_item_personal_tip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:gravity="left|center_vertical"
+                android:singleLine="true"
+                android:text="@string/personal_tip"
+                android:textColor="@color/tv_light_blue"
+                android:textSize="@dimen/main_item_content_text_size" />
+        </RelativeLayout>
+
+        <com.zuijiao.view.WordWrapView
+            android:id="@+id/view_wordwrap"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true" />
+
+        <TextView
+            android:id="@+id/content_item_comment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/transparent"
+            android:ellipsize="end"
+            android:lineSpacingExtra="5dip"
+            android:maxLines="4"
+            android:padding="@dimen/main_content_item_margin_left"
+            android:singleLine="false"
+            android:text="淮扬狮子头名扬天下，人尽皆知，殊不知但还流传着用鱼肉做的狮子头，口感更滑嫩鲜爽，色泽雪白，味道非常的显现，但就是一个险种偷着鲜美，花肉中透着让人无法香香的味道淮扬狮子头名扬天下，人尽皆知，殊不知但还流传着用鱼肉做的狮子头，口感更滑嫩鲜爽，色泽雪白，味道非常的显现，但就是一个险种偷着鲜美，花肉中透着让人无法香香的味道淮扬狮子头名扬天下，人尽皆知，殊不知但还流传着用鱼肉做的狮子头，口感更滑嫩鲜爽，色泽雪白，味道非常的显现，但就是一个险种偷着鲜美，花肉中透着让人无法香香的味道"
+            android:textColor="@color/tv_deep_gray"
+            android:textSize="@dimen/main_item_content_text_size" />
+
+        <RelativeLayout
+            android:id="@+id/content_item_user"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dip"
+            android:gravity="left|center_vertical"
+            android:paddingLeft="@dimen/main_content_item_margin_left" >
+
+            <com.zuijiao.view.RoundImageView
+                android:id="@+id/content_item_user_head"
+                android:layout_width="@dimen/main_item_user_head"
+                android:layout_height="@dimen/main_item_user_head"
+                android:src="@drawable/detail_show_1" />
+
+            <TextView
+                android:id="@+id/content_item_user_name"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignBottom="@+id/content_item_user_head"
+                android:layout_alignTop="@+id/content_item_user_head"
+                android:layout_marginLeft="@dimen/main_item_padding"
+                android:layout_toRightOf="@+id/content_item_user_head"
+                android:gravity="center_vertical"
+                android:text="丹丹"
+                android:textColor="@color/tv_deep_gray"
+                android:textSize="@dimen/main_item_content_text_size" />
+        </RelativeLayout>
+    </LinearLayout>
+
+</LinearLayout>

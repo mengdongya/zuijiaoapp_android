@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <include
+        android:id="@+id/register_toolbar"
+        layout="@layout/toolbar" />
+
+    <EditText
+        android:id="@+id/et_regist_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dip"
+        android:layout_marginTop="70dip"
+        android:drawableBottom="@drawable/single_line"
+        android:hint="@string/honey_name"
+        android:singleLine="true" />
+
+    <EditText
+        android:id="@+id/et_regist_email"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dip"
+        android:layout_marginTop="10dip"
+        android:drawableBottom="@drawable/single_line"
+        android:hint="@string/email"
+        android:inputType="textEmailAddress"
+        android:singleLine="true" />
+
+    <EditText
+        android:id="@+id/et_regist_password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dip"
+        android:layout_marginTop="10dip"
+        android:drawableBottom="@drawable/single_line"
+        android:hint="@string/password"
+        android:inputType="textPassword"
+        android:singleLine="true" />
+
+    <EditText
+        android:id="@+id/et_regist_password_comfirm"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dip"
+        android:layout_marginTop="10dip"
+        android:drawableBottom="@drawable/single_line"
+        android:hint="@string/password_confirm"
+        android:inputType="textPassword"
+        android:singleLine="true" />
+
+</LinearLayout>

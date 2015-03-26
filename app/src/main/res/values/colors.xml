@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ The MIT License (MIT)
+  ~
+  ~ Copyright (c) 2014 Robin Chutaux
+  ~
+  ~ Permission is hereby granted, free of charge, to any person obtaining a copy
+  ~ of this software and associated documentation files (the "Software"), to deal
+  ~ in the Software without restriction, including without limitation the rights
+  ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  ~ copies of the Software, and to permit persons to whom the Software is
+  ~ furnished to do so, subject to the following conditions:
+  ~
+  ~ The above copyright notice and this permission notice shall be included in
+  ~ all copies or substantial portions of the Software.
+  ~
+  ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+  ~ THE SOFTWARE.
+-->
+
+<resources>
+
+    <color name="rippelColor">#FFFFFF</color>
+    <color name="tv_deep_gray">#555555</color>
+    <color name="bg_gray_white">#66dddddd</color>
+    <color name="bg_light_gray">#888888</color>
+    <color name="white">#FFFFFF</color><color name="white1">#cccccc</color>
+    <color name="white_trans">#66ffffff</color>
+    <color name="toolbar">#ff7043</color>
+    <color name="systembar">#bb5538</color>
+     <color name="toolbar_text">#eeeeee</color>
+    <color name="black">#000000</color>
+    <color name="transparent">#00000000</color>
+    <color name="tv_light_blue">#aa4444ee</color> 
+    <color name="tv_orange_red">#eeee8800</color>
+    <color name="tv_red">#ffff2200</color>
+    <color name="main_app_name">#ffffff</color>
+    <color name="main_location">#959595</color>
+    <color name="main_food_name">#434343</color>
+    <color name="main_user_name">#959595</color>
+    <color name="main_content">#cc434343</color>
+    <color name="main_label">#f36c60</color>
+
+</resources>

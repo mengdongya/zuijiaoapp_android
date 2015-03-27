@@ -3,11 +3,12 @@ package com.zuijiao.android.zuijiao.network;
 import com.google.gson.GsonBuilder;
 import com.zuijiao.android.util.Optional;
 import com.zuijiao.android.zuijiao.model.user.TinyUser;
+
+import java.util.List;
+
 import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
 import retrofit.converter.GsonConverter;
-
-import java.util.List;
 
 /**
  * Created by Chen Hao on 3/16/15.
@@ -28,7 +29,7 @@ public enum Router {
     };
 
     RestAdapter restAdapter = new RestAdapter.Builder()
-            .setConverter(new GsonConverter(new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ssX").create()))
+            .setConverter(new GsonConverter(new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ssZ").create()))
             .setEndpoint(BaseURL)
             .setRequestInterceptor(requestInterceptor)
             .build();

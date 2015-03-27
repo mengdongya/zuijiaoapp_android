@@ -2,8 +2,11 @@ package com.zuijiao.android.zuijiao.model;
 
 import com.google.gson.GsonBuilder;
 import com.zuijiao.android.util.Optional;
+
 import org.junit.Before;
 import org.junit.Test;
+
+import java.util.Calendar;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -86,6 +89,15 @@ public class GourmetTest {
         assertThat(gourmet.getTags().size(), is(0));
         assertThat(gourmet.getAddress(), is(""));
         assertThat(gourmet.getPrice(), is("0"));
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(gourmet.getDate());
+        assertThat(calendar.get(Calendar.YEAR), is(2015));
+        assertThat(calendar.get(Calendar.MONTH), is(2));
+        assertThat(calendar.get(Calendar.DATE), is(18));
+        assertThat(calendar.get(Calendar.HOUR_OF_DAY), is(12));
+        assertThat(calendar.get(Calendar.MINUTE), is(42));
+        assertThat(calendar.get(Calendar.SECOND), is(46));
 
         // check user
         assertThat(gourmet.getUser().getIdentifier(), is(239));

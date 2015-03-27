@@ -1,31 +1,15 @@
 package net.zuijiao.android.zuijiao;
 
-import java.util.ArrayList;
-
-import com.lidroid.xutils.view.annotation.ContentView;
-import com.lidroid.xutils.view.annotation.ViewInject;
-import com.readystatesoftware.viewbadger.BadgeView;
-import com.zuijiao.android.zuijiao.network.Router;
-import com.zuijiao.android.zuijiao.network.RouterOAuth;
-import com.zuijiao.controller.ActivityTask;
-import com.zuijiao.controller.FileManager;
-import com.zuijiao.controller.ThirdPartySdkManager;
-
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.internal.widget.ViewUtils;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
 import android.view.Gravity;
@@ -35,22 +19,27 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.view.ViewGroup.LayoutParams;
-import android.widget.AbsListView;
-import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.GridView;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewSwitcher;
+
+import com.lidroid.xutils.view.annotation.ContentView;
+import com.lidroid.xutils.view.annotation.ViewInject;
+import com.readystatesoftware.viewbadger.BadgeView;
+import com.zuijiao.android.zuijiao.network.RouterOAuth;
+import com.zuijiao.controller.ActivityTask;
+import com.zuijiao.controller.FileManager;
+import com.zuijiao.controller.ThirdPartySdkManager;
+
+import java.util.ArrayList;
 
 @ContentView(R.layout.activity_main)
 public final class MainActivity extends BaseActivity {
@@ -100,7 +89,7 @@ public final class MainActivity extends BaseActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-//        RouterOAuth.INSTANCE.visitor(() -> System.err.println("succ"), null);
+        RouterOAuth.INSTANCE.visitor(() -> System.err.println("succ"), null);
 	}
 
 	@Override

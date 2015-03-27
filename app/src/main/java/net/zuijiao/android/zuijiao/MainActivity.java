@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import com.lidroid.xutils.view.annotation.ContentView;
 import com.lidroid.xutils.view.annotation.ViewInject;
 import com.readystatesoftware.viewbadger.BadgeView;
+import com.zuijiao.android.zuijiao.network.Router;
+import com.zuijiao.android.zuijiao.network.RouterOAuth;
 import com.zuijiao.controller.ActivityTask;
 import com.zuijiao.controller.FileManager;
 import com.zuijiao.controller.ThirdPartySdkManager;
@@ -97,6 +99,8 @@ public final class MainActivity extends BaseActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
+//        RouterOAuth.INSTANCE.visitor(() -> System.err.println("succ"), null);
 	}
 
 	@Override

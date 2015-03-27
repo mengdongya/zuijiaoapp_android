@@ -1,23 +1,20 @@
 package net.zuijiao.android.zuijiao;
 
-import java.util.ArrayList;
-
-import com.lidroid.xutils.view.annotation.ContentView;
-import com.lidroid.xutils.view.annotation.ViewInject;
-
-import android.os.Bundle;
 import android.os.Build.VERSION;
 import android.os.Build.VERSION_CODES;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.test.suitebuilder.annotation.LargeTest;
-import android.view.View;
 import android.view.WindowManager;
+
+import com.lidroid.xutils.view.annotation.ContentView;
+import com.lidroid.xutils.view.annotation.ViewInject;
+
+import java.util.ArrayList;
 
 @ContentView(R.layout.activity_wizard)
 public class WizardActivity extends FragmentActivity {

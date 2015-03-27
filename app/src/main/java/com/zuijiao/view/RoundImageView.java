@@ -1,6 +1,5 @@
 package com.zuijiao.view;
 
-import net.zuijiao.android.zuijiao.R;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
@@ -15,6 +14,8 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.NinePatchDrawable;
 import android.util.AttributeSet;
 import android.widget.ImageView;
+
+import net.zuijiao.android.zuijiao.R;
 
 public class RoundImageView extends ImageView {
 	private int mBorderThickness = 0;

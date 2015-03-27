@@ -1,11 +1,5 @@
 package net.zuijiao.android.zuijiao;
 
-import java.util.ArrayList;
-import java.util.Random;
-
-import com.zuijiao.view.RefreshAndInitListView;
-import com.zuijiao.view.RefreshAndInitListView.MyListViewListener;
-
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
@@ -13,8 +7,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ListView;
 import android.widget.TextView;
+
+import com.zuijiao.view.RefreshAndInitListView;
+import com.zuijiao.view.RefreshAndInitListView.MyListViewListener;
+
+import java.util.ArrayList;
+import java.util.Random;
 
 public class MessageFragment extends Fragment implements FragmentDataListener,
 		MyListViewListener {

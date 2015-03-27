@@ -1,11 +1,11 @@
 package com.zuijiao.controller;
 
-import com.sina.weibo.sdk.auth.Oauth2AccessToken;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+
+import com.sina.weibo.sdk.auth.Oauth2AccessToken;
 
 public class PreferenceManager {
 	private static final String LOGTAG = "PreferenceManager";

@@ -1,10 +1,5 @@
 package com.zuijiao.thirdopensdk;
 
-import android.os.Handler;
-
-import com.zuijiao.entity.ThirdPartyUserInfo;
-import com.zuijiao.entity.ZuiJiaoUser;
-
 public abstract class AbsSDK {
 	
 	public abstract void Login() ;

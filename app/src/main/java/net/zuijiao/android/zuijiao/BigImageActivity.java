@@ -1,15 +1,15 @@
 package net.zuijiao.android.zuijiao;
 
-import java.util.ArrayList;
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentStatePagerAdapter;
 
 import com.lidroid.xutils.view.annotation.ContentView;
 import com.lidroid.xutils.view.annotation.ViewInject;
 import com.zuijiao.view.MyViewPager;
 
-import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
+import java.util.ArrayList;
 
 @ContentView(R.layout.activity_big_image)
 public class BigImageActivity extends BaseActivity {

@@ -4,12 +4,8 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.View.MeasureSpec;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 
 public class LabelContainer extends ViewGroup {
 	private Context mContext = null;

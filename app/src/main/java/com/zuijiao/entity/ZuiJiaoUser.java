@@ -1,8 +1,8 @@
 package com.zuijiao.entity;
 
-import com.zuijiao.controller.ThirdPartySdkManager;
-
 import android.graphics.Bitmap;
+
+import com.zuijiao.controller.ThirdPartySdkManager;
 
 public class ZuiJiaoUser {
 	private static ZuiJiaoUser mUser = null;

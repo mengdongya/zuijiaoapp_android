@@ -1,10 +1,10 @@
 package net.zuijiao.android.zuijiao;
 
-import com.lidroid.xutils.view.annotation.ContentView;
-import com.lidroid.xutils.view.annotation.ViewInject;
-
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+
+import com.lidroid.xutils.view.annotation.ContentView;
+import com.lidroid.xutils.view.annotation.ViewInject;
 @ContentView(R.layout.activity_register)
 public class RegisterActivity extends BaseActivity {
 	@ViewInject(R.id.register_toolbar)

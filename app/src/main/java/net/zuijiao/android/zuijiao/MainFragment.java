@@ -1,10 +1,6 @@
 package net.zuijiao.android.zuijiao;
 
-import java.util.ArrayList;
-import java.util.Random;
-
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
@@ -17,10 +13,11 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.zuijiao.view.LabelContainer;
 import com.zuijiao.view.RefreshAndInitListView;
 import com.zuijiao.view.RefreshAndInitListView.MyListViewListener;
 import com.zuijiao.view.WordWrapView;
+
+import java.util.ArrayList;
 
 public class MainFragment extends Fragment implements FragmentDataListener,
 		MyListViewListener {

@@ -13,8 +13,8 @@ import com.zuijiao.controller.ActivityTask;
 import com.zuijiao.controller.FileManager;
 import com.zuijiao.controller.MessageDef;
 import com.zuijiao.controller.PreferenceManager;
-import com.zuijiao.controller.ThirdPartySdkManager;
 import com.zuijiao.controller.PreferenceManager.PreferenceInfo;
+import com.zuijiao.controller.ThirdPartySdkManager;
 import com.zuijiao.entity.ThirdPartyUserInfo;
 
 public abstract class BaseActivity extends ActionBarActivity {

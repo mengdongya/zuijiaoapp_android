@@ -1,17 +1,12 @@
 package com.zuijiao.thirdopensdk;
 
 import android.content.Context;
-import android.os.Handler;
 import android.widget.Toast;
 
-import com.sina.weibo.sdk.api.share.SendMessageToWeiboRequest;
 import com.tencent.mm.sdk.modelmsg.SendAuth;
-import com.tencent.mm.sdk.modelmsg.SendMessageToWX;
 import com.tencent.mm.sdk.modelmsg.SendMessageToWX.Req;
 import com.tencent.mm.sdk.openapi.IWXAPI;
 import com.tencent.mm.sdk.openapi.WXAPIFactory;
-import com.zuijiao.entity.ThirdPartyUserInfo;
-import com.zuijiao.entity.ZuiJiaoUser;
 
 public class WeixinApi extends AbsSDK {
 	protected final String WEIXIN_ID = "wx908961ddfd5cade9";

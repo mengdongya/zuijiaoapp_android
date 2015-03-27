@@ -1,10 +1,5 @@
 package com.zuijiao.controller;
 
-import java.util.LinkedList;
-import java.util.List;
-
-import com.zuijiao.utils.OSUtil;
-
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningAppProcessInfo;
@@ -12,6 +7,11 @@ import android.app.ActivityManager.RunningTaskInfo;
 import android.app.Application;
 import android.content.ComponentName;
 import android.content.Context;
+
+import com.zuijiao.utils.OSUtil;
+
+import java.util.LinkedList;
+import java.util.List;
 
 public class ActivityTask extends Application {
 	private static final String LOGTAG = "ActivityTask";

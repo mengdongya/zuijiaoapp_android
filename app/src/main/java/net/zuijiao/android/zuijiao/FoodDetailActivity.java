@@ -1,17 +1,12 @@
 package net.zuijiao.android.zuijiao;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import android.annotation.SuppressLint;
 import android.app.ActionBar.LayoutParams;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -31,9 +26,15 @@ import android.widget.Toast;
 
 import com.lidroid.xutils.view.annotation.ContentView;
 import com.lidroid.xutils.view.annotation.ViewInject;
+import com.zuijiao.android.zuijiao.model.Gourmet;
+import com.zuijiao.android.zuijiao.model.Gourmets;
+import com.zuijiao.android.zuijiao.network.RouterGourmet;
 import com.zuijiao.view.MyScrollView;
 import com.zuijiao.view.MyScrollView.OnScrollListener;
 import com.zuijiao.view.WordWrapView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @SuppressLint("ShowToast")
 @ContentView(R.layout.activity_food_detail)
@@ -62,6 +63,18 @@ public class FoodDetailActivity extends BaseActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        RouterGourmet.INSTANCE.fetchOurChoice(null
+                , null
+                , 20
+                , (Gourmets gourmets) -> {
+            for (Gourmet gourmet : gourmets.getGourmets()) {
+                System.out.println(gourmet.getName());
+            }
+        }
+                , (String errorString) -> {
+            System.out.println(errorString);
+        });
     }
 
     @Override

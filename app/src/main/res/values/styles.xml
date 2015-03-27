@@ -35,7 +35,7 @@
         <item name="android:editTextStyle">@style/Widget.AppCompat.EditText</item>
         <item name="editTextBackground">@drawable/abc_edit_text_material</item>
         <item name="editTextColor">?android:attr/textColorPrimary</item>
-       <item name="android:windowBackground">@color/white_trans</item>  
+       <item name="android:windowBackground">@color/white</item>
          <!-- <item name="android:selectableItemBackground">@drawable/bg_white_trans</item> -->
         <item name="android:colorBackground">@android:color/white</item>
  		<!-- <item name="drawerArrowStyle">@style/mydrawer</item>

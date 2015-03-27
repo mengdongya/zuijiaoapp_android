@@ -9,7 +9,7 @@
     <FrameLayout
         android:id="@+id/image_container"
         android:layout_width="match_parent"
-        android:layout_height="150dip" >
+        android:layout_height="224dip" >
 
         <android.support.v4.view.ViewPager
             android:id="@+id/food_detail_images"
@@ -34,7 +34,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/toolbar_height"
             android:layout_gravity="top"
-            android:background="@color/transparent"
+            android:background="@drawable/transparent_gradient"
             android:minHeight="?attr/actionBarSize" />
 
 
@@ -43,7 +43,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_above="@+id/food_detail_input"
-            android:layout_marginTop="150dip" >
+            android:layout_marginTop="224dip" >
 
             <FrameLayout
                 android:layout_width="match_parent"

@@ -248,7 +248,7 @@ public class RippleView extends RelativeLayout
         }
 
         childView.onTouchEvent(event);
-        return true;
+        return false;
     }
 
     @Override

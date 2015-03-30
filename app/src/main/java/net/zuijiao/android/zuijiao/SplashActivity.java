@@ -7,10 +7,11 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.view.WindowManager;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.lidroid.xutils.view.annotation.ContentView;
 import com.lidroid.xutils.view.annotation.ViewInject;
+import com.zuijiao.android.zuijiao.network.Cache;
+import com.zuijiao.android.zuijiao.network.Router;
 import com.zuijiao.controller.FileManager;
 import com.zuijiao.controller.PreferenceManager;
 import com.zuijiao.controller.PreferenceManager.PreferenceInfo;
@@ -39,6 +40,7 @@ public class SplashActivity extends BaseActivity {
 
 			@Override
 			public void run() {
+                networkSetup();
 				if (mPreferInfo.isAppFirstLaunch()) {
 					goToGuide();
 				} else {
@@ -67,6 +69,11 @@ public class SplashActivity extends BaseActivity {
 		mPreferInfo = mPreferMng.initPreferenceInfo() ;
 		FileManager.createRootFolder() ;
 	}
+
+    private void networkSetup() {
+        Router.getOAuthModule().visitor(() -> System.err.println("Visitor Success"), null);
+        Cache.INSTANCE.setup();
+    }
 
 	@Override
 	protected void findViews() {

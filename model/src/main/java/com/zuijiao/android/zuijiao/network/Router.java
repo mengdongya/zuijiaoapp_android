@@ -19,6 +19,7 @@ public enum Router {
     INSTANCE;
 
     public static final String BaseUrl = "http://xielingyu2.zuijiaodev.com";
+    public static final String PicBaseUrl = "http://pic.zuijiao.net";
 
     RequestInterceptor requestInterceptor = new RequestInterceptor() {
         @Override

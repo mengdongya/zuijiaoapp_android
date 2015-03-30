@@ -2,7 +2,9 @@ package com.zuijiao.android.zuijiao.model;
 
 import com.google.gson.annotations.SerializedName;
 import com.zuijiao.android.zuijiao.model.user.TinyUser;
+import com.zuijiao.android.zuijiao.network.Router;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -41,7 +43,14 @@ public class Gourmet {
     }
 
     public List<String> getImageURLs() {
-        return imageURLs;
+        List<String> result = new ArrayList<>();
+        for (String url: imageURLs) {
+            if (url.length() > 0 && url.startsWith("http://"))
+                result.add(url);
+            else
+                result.add(Router.PicBaseUrl + url);
+        }
+        return result;
     }
 
     public List<String> getTags() {

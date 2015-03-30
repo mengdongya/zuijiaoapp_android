@@ -85,7 +85,6 @@
             android:layout_height="45dip"
             android:layout_gravity="bottom|right"
             android:layout_marginRight="16dip"
-            android:background= "@drawable/bg_favor"
             android:elevation = "2dip"
             android:src="@drawable/faviro_unclick" />
     </FrameLayout>

@@ -1,17 +1,12 @@
 package net.zuijiao.android.zuijiao;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import android.annotation.SuppressLint;
 import android.app.ActionBar.LayoutParams;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -34,6 +29,9 @@ import com.lidroid.xutils.view.annotation.ViewInject;
 import com.zuijiao.view.MyScrollView;
 import com.zuijiao.view.MyScrollView.OnScrollListener;
 import com.zuijiao.view.WordWrapView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @SuppressLint("ShowToast")
 @ContentView(R.layout.activity_food_detail)
@@ -224,8 +222,6 @@ public class FoodDetailActivity extends BaseActivity implements
     public void onTopChange(int top) {
         if (top <= mToolbar.getHeight() + 20) {
             mToolbar.setBackgroundColor(getResources().getColor(R.color.bg_food_detai_top));
-        } else {
-            mToolbar.setBackgroundDrawable(getResources().getDrawable(R.drawable.transparent_gradient));
         }
     }
 

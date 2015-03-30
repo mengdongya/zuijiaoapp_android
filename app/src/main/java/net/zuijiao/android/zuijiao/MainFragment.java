@@ -58,6 +58,7 @@ public class MainFragment extends Fragment implements FragmentDataListener,
 //	private BaseAdapter mContentListAdapter = new BaseAdapter() {
 //
 //	};
+	//private String[] test_label = {"我每周必吃","真是一次难忘的回忆","主人萌萌哒","强力推荐","我"};
 	private class MainAdapter extends BaseAdapter {
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {

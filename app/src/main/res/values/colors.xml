@@ -31,8 +31,8 @@
     <color name="bg_light_gray">#888888</color>
     <color name="white">#FFFFFF</color><color name="white1">#dddddd</color>
     <color name="white_trans">#66ffffff</color>
-    <color name="toolbar">#434343</color>
-    <color name="systembar">#212121</color>
+    <color name="toolbar">#ff7043</color>
+    <color name="systembar">#bb5538</color>
      <color name="toolbar_text">#eeeeee</color>
     <color name="black">#000000</color>
     <color name="transparent">#00000000</color>
@@ -45,6 +45,6 @@
     <color name="main_user_name">#959595</color>
     <color name="main_content">#cc434343</color>
     <color name="main_label">#f36c60</color>
-    <color name="bg_food_detai_top">#434343</color>
-    <color name="diviver_line">#bbbbbb</color>
+    <color name="bg_food_detai_top">#212121</color>
+
 </resources>

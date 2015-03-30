@@ -18,7 +18,7 @@ import retrofit.converter.GsonConverter;
 public enum Router {
     INSTANCE;
 
-    public static final String BaseURL = "http://xielingyu2.zuijiaodev.com";
+    public static final String BaseUrl = "http://xielingyu2.zuijiaodev.com";
 
     RequestInterceptor requestInterceptor = new RequestInterceptor() {
         @Override
@@ -30,14 +30,14 @@ public enum Router {
 
     RestAdapter restAdapter = new RestAdapter.Builder()
             .setConverter(new GsonConverter(new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ssZ").create()))
-            .setEndpoint(BaseURL)
+            .setEndpoint(BaseUrl)
             .setRequestInterceptor(requestInterceptor)
             .build();
 
     Optional<String> accessToken = Optional.empty();
     Optional<TinyUser> currentUser = Optional.empty();
 
-    public static String convertJsonFromList(List l) {
+    static String convertJsonFromList(List l) {
         StringBuilder stringBuilder = new StringBuilder("[");
         if (l.size() > 0) {
             for (Object o : l) {
@@ -50,4 +50,22 @@ public enum Router {
         stringBuilder.append("]");
         return stringBuilder.toString();
     }
+
+    // Modules
+    public static RouterAccount getAccountModule() {
+        return RouterAccount.INSTANCE;
+    }
+
+    public static RouterGourmet getGourmetModule() {
+        return RouterGourmet.INSTANCE;
+    }
+
+    public static RouterOAuth getOAuthModule() {
+        return RouterOAuth.INSTANCE;
+    }
+
+    public static RouterCommon getCommonModule() {
+        return RouterCommon.INSTANCE;
+    }
+
 }

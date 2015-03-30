@@ -14,7 +14,7 @@
         <item name="android:windowIsFloating">true</item>
     </style>
 
-    <style name="AppBaseTheme" parent="Theme.AppCompat.Light" type="text/css">
+    <style name="AppBaseTheme" parent="Theme.AppCompat" type="text/css">
         <item name="windowActionBar">false</item>
         <item name="android:windowNoTitle">true</item>
         <!-- tool bar -->
@@ -35,11 +35,10 @@
         <item name="android:editTextStyle">@style/Widget.AppCompat.EditText</item>
         <item name="editTextBackground">@drawable/abc_edit_text_material</item>
         <item name="editTextColor">?android:attr/textColorPrimary</item>
-      <!-- <item name="android:windowBackground">@color/white</item>-->
+       <item name="android:windowBackground">@color/white</item>
          <!-- <item name="android:selectableItemBackground">@drawable/bg_white_trans</item> -->
-        <!--<item name="android:colorBackground">@android:color/white</item>-->
+        <item name="android:colorBackground">@android:color/white</item>
         <item name="android:textColor">@color/tv_deep_gray</item>
-        <item name="colorControlNormal">@color/white</item>
  		<!-- <item name="drawerArrowStyle">@style/mydrawer</item>
 		<item name="android:homeAsUpIndicator">@drawable/home_indicator</item>
         <item name="switchStyle">@style/Widget.AppCompat.CompoundButton.Switch</item>

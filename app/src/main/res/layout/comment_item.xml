@@ -3,16 +3,16 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:padding="5dip" >
+    android:padding="10dip" >
 
-    <ImageView
+    <com.zuijiao.view.RoundImageView
         android:id="@+id/comment_user_head"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="left|top"
-        android:src="@drawable/user_default_icon" />
-
+        android:layout_width="48dip"
+        android:layout_gravity="center_vertical"
+        android:layout_height="48dip"
+        android:src="@drawable/detail_show_1" />
     <RelativeLayout
+        android:layout_marginLeft="5dip"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" >
 

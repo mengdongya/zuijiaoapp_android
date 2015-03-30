@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="48dip"
+    android:layout_height="48dip">
+
+    <com.zuijiao.view.RoundImageView
+        android:layout_gravity="left|center_vertical"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:padding="10dip"
+        android:src="@drawable/detail_show_2"></com.zuijiao.view.RoundImageView>
+
+</LinearLayout>

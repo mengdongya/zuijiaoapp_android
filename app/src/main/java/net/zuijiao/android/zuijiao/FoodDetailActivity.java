@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.widget.BaseAdapter;
 import android.widget.FrameLayout;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
@@ -50,6 +51,9 @@ public class FoodDetailActivity extends BaseActivity implements
     private LinearLayout mTopFloatView;
     @ViewInject(R.id.lv_food_detail_comment)
     private ListView mCommentList = null;
+
+    @ViewInject(R.id.food_detail_favor_people)
+    private GridView mFavorPeople = null ;
     private LayoutInflater mInflater = null;
     @ViewInject(R.id.food_detail_parent)
     private View rootView = null;
@@ -97,29 +101,8 @@ public class FoodDetailActivity extends BaseActivity implements
         viewPagerHeight = mImageContainer.getMeasuredHeight();
         mToolbar.measure(width, toolbarHeight);
         toolbarHeight = mToolbar.getMeasuredHeight();
-        mCommentList.setAdapter(new BaseAdapter() {
-
-            @Override
-            public View getView(int position, View convertView, ViewGroup parent) {
-                return mInflater.inflate(R.layout.comment_item, null);
-            }
-
-            @Override
-            public long getItemId(int position) {
-                return position;
-            }
-
-            @Override
-            public Object getItem(int position) {
-                return position;
-            }
-
-            @Override
-            public int getCount() {
-                return 5;
-            }
-        });
-        String[] test_label = getResources().getStringArray(R.array.test_label) ;
+        mCommentList.setAdapter(mCommentAdapter);
+        String[] test_label = getResources().getStringArray(R.array.test_label);
         for (int i = 0; i < test_label.length; i++) {
             TextView textview = new TextView(this);
             textview.setBackgroundResource(R.drawable.bg_label);
@@ -127,7 +110,7 @@ public class FoodDetailActivity extends BaseActivity implements
             textview.setTextColor(getResources().getColor(R.color.main_label));
             textview.setTextSize(18);
             textview.setText(test_label[i]);
-            mLabelContainer .addView(textview);
+            mLabelContainer.addView(textview);
         }
         setListViewHeightBasedOnChildren(mCommentList);
         mScrollView.setOnScrollListener(this);
@@ -165,6 +148,7 @@ public class FoodDetailActivity extends BaseActivity implements
                 Toast.makeText(FoodDetailActivity.this, "!!!", Toast.LENGTH_SHORT).show();
             }
         });
+        mFavorPeople.setAdapter(mGdAdapter);
         new Handler().postDelayed(new Runnable() {
 
             @Override
@@ -184,13 +168,35 @@ public class FoodDetailActivity extends BaseActivity implements
 
     }
 
+    private BaseAdapter mCommentAdapter = new BaseAdapter() {
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            return mInflater.inflate(R.layout.comment_item, null);
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return position;
+        }
+
+        @Override
+        public int getCount() {
+            return 5;
+        }
+    };
+
     public void setListViewHeightBasedOnChildren(ListView listView) {
         ListAdapter listAdapter = listView.getAdapter();
         if (listAdapter == null) {
             return;
         }
         int totalHeight = listView.getHeight();
-        for (int i = 0; i < listAdapter.getCount(); i++) {
+        for (int i = 0; i <= listAdapter.getCount(); i++) {
             View listItem = listAdapter.getView(i, null, listView);
             listItem.measure(0, 0);
             totalHeight += listItem.getMeasuredHeight();
@@ -251,6 +257,27 @@ public class FoodDetailActivity extends BaseActivity implements
                 break;
 
         }
-        return super.onOptionsItemSelected(item) ;
+        return super.onOptionsItemSelected(item);
     }
+    private BaseAdapter mGdAdapter = new BaseAdapter() {
+        @Override
+        public int getCount() {
+            return 5;
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return position;
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            return mInflater.inflate(R.layout.favor_people_item, null);
+        }
+    } ;
 }

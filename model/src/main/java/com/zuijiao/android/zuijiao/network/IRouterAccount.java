@@ -1,6 +1,7 @@
 package com.zuijiao.android.zuijiao.network;
 
 import com.squareup.okhttp.Response;
+
 import retrofit.Callback;
 import retrofit.http.Field;
 import retrofit.http.FormUrlEncoded;
@@ -24,18 +25,4 @@ public interface IRouterAccount {
             , Callback<Response> callback
     );
 
-/*
-
-            case .Settings:
-    method = .GET
-            url = "/ios/settings"
-
-    case .SettingsUpdate(let item, let value):
-    url = "/ios/setting/update"
-    parameters = ["name": "push.\(item)", "value": value]
-
-            case .Info:
-    method = .GET
-            url = "/info"
-            */
 }

@@ -1,7 +1,5 @@
 package com.zuijiao.android.zuijiao.model.common;
 
-import com.google.gson.annotations.SerializedName;
-
 import java.util.List;
 
 /**
@@ -11,13 +9,9 @@ public class Restaurants {
 
     private List<Restaurant> restaurants;
 
+    public List<Restaurant> getRestaurants() {
+        return restaurants;
+    }
 }
 
-class Restaurant {
-    @SerializedName("ID")
-    private Integer identifier;
-    @SerializedName("title")
-    private String title;
-    @SerializedName("address")
-    private String address;
-}
+

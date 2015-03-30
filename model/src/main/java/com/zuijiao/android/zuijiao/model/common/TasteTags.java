@@ -10,17 +10,16 @@ import java.util.List;
 public class TasteTags {
 
     @SerializedName("items")
-    private List<TasteTags> tags;
+    private List<TasteTag> tags;
     @SerializedName("itemCount")
     private Integer count;
 
+    public List<TasteTag> getTags() {
+        return tags;
+    }
+
+    public Integer getCount() {
+        return count;
+    }
 }
 
-class TasteTag {
-
-    @SerializedName("title")
-    private String name;
-    @SerializedName("imageUrl")
-    private String imageURL;
-
-}

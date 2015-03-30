@@ -13,9 +13,14 @@ android {
         versionName "1.0"
     }
     buildTypes {
+        debug {
+            buildConfigField "String", "BASE_URL", "\"http://xielingyu2.zuijiaodev.com\""
+        }
+
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            buildConfigField "String", "BASE_URL", "\"http://api.zuijiao.net\""
         }
     }
     compileOptions {

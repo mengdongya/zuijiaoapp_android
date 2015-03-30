@@ -6,11 +6,10 @@ import com.zuijiao.android.zuijiao.model.Gourmets;
 import com.zuijiao.android.zuijiao.network.RouterGourmet;
 import com.zuijiao.android.zuijiao.network.RouterOAuth;
 
-import javax.xml.bind.DatatypeConverter;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+
+import javax.xml.bind.DatatypeConverter;
 
 /**
  * Created by Chen Hao on 3/16/15.
@@ -77,12 +76,7 @@ public class TestClass {
     }
 
     public static void main(String[] args) throws NoSuchAlgorithmException {
-        Date d = new Date();
-        d.setDate(12);
-        d.setYear(10);
-        d.setMonth(0);
 
-        System.out.println("date: " + (new SimpleDateFormat("yyyy-MM-dd").format(d)));
     }
 
 }

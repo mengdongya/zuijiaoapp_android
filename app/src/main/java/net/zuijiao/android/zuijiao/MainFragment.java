@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -168,7 +169,7 @@ public class MainFragment extends Fragment implements FragmentDataListener,
                 } else {
                     mTextView.setVisibility(View.VISIBLE);
                 }
-                fetchData();
+                fetchData(true);
 
             }
         }, 2000);
@@ -177,16 +178,31 @@ public class MainFragment extends Fragment implements FragmentDataListener,
     @Override
     public void onLoadMore() {
         // TODO Auto-generated method stub
-
+        Log.i("load more", " ^ - _ - ^");
     }
 
-    private void fetchData() {
-        Router.getGourmetModule().fetchOurChoice(null
+    private void fetchData(Boolean isRefresh) {
+
+        List<Gourmet> tmpGourmets = mAdapter.gourmets.orElse(new ArrayList<>());
+        Integer theLastOneIdentifier = null;
+
+        if (!isRefresh) { // fetch more
+            Gourmet theLatestOne = tmpGourmets.get(tmpGourmets.size() - 1);
+            theLastOneIdentifier = theLatestOne.getIdentifier();
+        }
+
+        Router.getGourmetModule().fetchOurChoice(theLastOneIdentifier
                 , null
                 , 20
                 , gourmets ->
         {
-            mAdapter.gourmets = Optional.of(gourmets.getGourmets());
+            if (isRefresh) {
+                tmpGourmets.addAll(gourmets.getGourmets());
+                mAdapter.gourmets = Optional.of(tmpGourmets);
+            }
+            else {
+                mAdapter.gourmets = Optional.of(gourmets.getGourmets());
+            }
             mAdapter.notifyDataSetChanged();
             mListView.stopRefresh();
         }

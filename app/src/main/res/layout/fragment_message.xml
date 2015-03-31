@@ -6,6 +6,7 @@
     <com.zuijiao.view.RefreshAndInitListView
         android:id="@+id/lv_msg"
         android:layout_width="match_parent"
+        android:divider="@null"
         android:layout_height="match_parent" >
     </com.zuijiao.view.RefreshAndInitListView>
 

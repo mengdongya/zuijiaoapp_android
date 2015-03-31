@@ -2,65 +2,104 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical">
 
 
     <include
         android:id="@+id/concerning_toolbar"
         layout="@layout/toolbar" />
 
-    <TextView
-        android:id="@+id/concerning_tv_find"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="40dip"
-        android:gravity="center_horizontal"
-        android:text="@string/concerning_text1"
-        android:textSize="12sp" />
-
-    <TextView
-        android:id="@+id/concerning_tv_log"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dip"
-        android:gravity="center_horizontal"
-        android:text="@string/concerning_text2"
-        android:textColor="@color/black"
-        android:textSize="45sp" />
-
-    <TextView
-        android:id="@+id/concerning_tv_version_code"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dip"
-        android:gravity="center_horizontal"
-        android:text="@string/version_code"
-        android:textColor="@color/black"
-        android:textSize="15sp" />
-
     <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/main_label"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/concerning_tv_log"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dip"
+            android:gravity="center_horizontal"
+            android:text="@string/concerning_text2"
+            android:textColor="@color/white"
+            android:textSize="45sp" />
+
+        <TextView
+            android:id="@+id/concerning_tv_find"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dip"
+            android:gravity="center_horizontal"
+            android:text="@string/concerning_text1"
+            android:textColor="#ddeeeeee"
+            android:textSize="12sp" />
+
+
+        <TextView
+            android:id="@+id/concerning_tv_version_code"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dip"
+            android:gravity="center_horizontal"
+            android:text="@string/version_code"
+            android:textColor="#ddeeeeee"
+            android:textSize="15sp" />
+    </LinearLayout>
+
+
+    <!--<LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="8dip"
         android:layout_marginTop="20dip"
         android:background="@drawable/bg_concerning_white"
         android:orientation="vertical"
-        android:padding="10dip" >
+        android:padding="10dip">-->
+    <View
+        android:layout_marginTop="10dip"
+        android:layout_width="match_parent"
+        android:layout_height="1dip"
+        android:background="#999999" />
 
-        <TextView
-            android:id="@+id/user_protocol"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/user_protocol"
-            android:textSize="18sp" />
+    <TextView
+        android:id="@+id/user_protocol"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="15dip"
+        android:text="@string/user_protocol"
+        android:textSize="20sp" />
 
-        <TextView
-            android:id="@+id/zuijiao_team"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dip"
-            android:text="@string/zuijiao_team"
-            android:textSize="18sp" />
-    </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dip"
+        android:background="#aaaaaa" />
+
+    <TextView
+        android:id="@+id/zuijiao_team"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="15dip"
+        android:text="@string/zuijiao_team"
+        android:textSize="20sp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dip"
+        android:background="#aaaaaa" />
+
+    <TextView
+        android:id="@+id/zuijiao_welcome"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="15dip"
+        android:text="@string/wizard_page"
+        android:textSize="20sp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dip"
+        android:background="#aaaaaa" />
+    <!--</LinearLayout>-->
 
 </LinearLayout>

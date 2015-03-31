@@ -3,9 +3,5 @@
 
     <size android:height="3dip" />
 
-    <gradient
-        android:endColor="#999999"
-        android:type="sweep"
-        android:startColor="#555555" />
-
+    <solid android:color="@color/bg_food_detai_top"/>
 </shape>

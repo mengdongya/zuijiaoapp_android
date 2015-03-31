@@ -10,7 +10,7 @@
     <solid android:color="@color/bg_gray_white" />
 
     <stroke
-        android:width="3dip"
+        android:width="1dip"
         android:color="@color/bg_light_gray" />
 
 </shape>

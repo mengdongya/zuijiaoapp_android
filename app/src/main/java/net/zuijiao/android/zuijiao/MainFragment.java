@@ -1,13 +1,10 @@
 package net.zuijiao.android.zuijiao;
 
-import java.util.ArrayList;
-import java.util.Random;
-
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,10 +14,11 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.zuijiao.view.LabelContainer;
 import com.zuijiao.view.RefreshAndInitListView;
 import com.zuijiao.view.RefreshAndInitListView.MyListViewListener;
 import com.zuijiao.view.WordWrapView;
+
+import java.util.ArrayList;
 
 public class MainFragment extends Fragment implements FragmentDataListener,
 		MyListViewListener {
@@ -42,6 +40,7 @@ public class MainFragment extends Fragment implements FragmentDataListener,
 		mAdapter = new MainAdapter() ;
 		mListView.setAdapter(mAdapter);
 		mListView.setOnItemClickListener(mItemClickListener);
+        mListView.setPullLoadEnable(true) ;
 		mListView.setListViewListener(this);
 		return mContentView;
 	}
@@ -58,7 +57,6 @@ public class MainFragment extends Fragment implements FragmentDataListener,
 //	private BaseAdapter mContentListAdapter = new BaseAdapter() {
 //
 //	};
-	//private String[] test_label = {"我每周必吃","真是一次难忘的回忆","主人萌萌哒","强力推荐","我"};
 	private class MainAdapter extends BaseAdapter {
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
@@ -95,8 +93,8 @@ public class MainFragment extends Fragment implements FragmentDataListener,
 			} else {
 				holder = (ViewHolder) convertView.getTag();
 			}
-
-			return convertView;
+            Log.i("postion",position+"") ;
+            return convertView;
 		}
 
 		@Override
@@ -161,7 +159,13 @@ public class MainFragment extends Fragment implements FragmentDataListener,
 
 	@Override
 	public void onLoadMore() {
-		// TODO Auto-generated method stub
+        new Handler().postDelayed(new Runnable() {
 
+            @Override
+            public void run() {
+                mAdapter.notifyDataSetChanged();
+                mListView.stopLoadMore();
+            }
+        }, 2000);
 	}
 }

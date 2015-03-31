@@ -1,61 +1,91 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content" >
+    android:layout_height="wrap_content">
 
-    <ImageView
+    <com.zuijiao.view.RoundImageView
         android:id="@+id/msg_item_user_head"
-        android:layout_width="wrap_content"
-        android:layout_marginRight = "10dip"
-        android:layout_height="wrap_content"
-        android:src="@drawable/forward" />
+        android:layout_width="50dip"
+        android:layout_height="50dip"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="16dip"
+        android:layout_marginRight="10dip"
+        android:layout_marginTop="16dip"
+        android:src="@drawable/detail_show_2" />
 
-    <TextView
-        android:id="@+id/msg_item_user_name"
+    <LinearLayout
+        android:id="@+id/msg_content_container"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/msg_item_user_head"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="10dip"
+        android:layout_toLeftOf="@+id/msg_item_food"
         android:layout_toRightOf="@+id/msg_item_user_head"
-        android:text="用户1" />
+        android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/msg_item_msg_content"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/msg_item_user_name"
-        android:layout_toRightOf="@+id/msg_item_user_head"
-        android:ellipsize="end"
-        android:maxLength="20"
-        android:singleLine="true"
-        android:text="这里是评论的信息XXXXXXXXXXXXXXXXXXddddddddddddddddXX" />
+        <TextView
+            android:id="@+id/msg_item_user_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="用户1"
+            android:textColor="#999999"
+            android:textSize="12sp" />
 
-    <TextView
-        android:id="@+id/msg_item_date"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/msg_item_msg_content"
-        android:layout_toRightOf="@+id/msg_item_user_head"
-        android:text="用户1" />
+        <TextView
+            android:id="@+id/msg_item_msg_content"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLength="20"
+            android:singleLine="true"
+            android:text="这里是评论的信息XXXXXXXXXXXXXXXXXXddddddddddddddddXX"
+            android:textColor="#323232"
+            android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/msg_item_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="一天前"
+            android:textColor="#999999"
+            android:textSize="12sp" />
+
+    </LinearLayout>
+
 
     <FrameLayout
         android:id="@+id/msg_item_food"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="50dip"
+        android:layout_height="50dip"
         android:layout_alignParentRight="true"
-        android:layout_centerVertical="true" >
+        android:layout_centerVertical="true"
+        android:layout_marginRight="16dip"
+        android:background="@drawable/msg_item_image_bg">
 
         <TextView
             android:id="@+id/msg_item_food_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:layout_gravity="center"
-            android:text="食物名称" />
+            android:singleLine="false"
+            android:text="食物名称"
+            android:textColor="@color/white"
+            android:textSize="12sp" />
 
         <ImageView
             android:id="@+id/msg_item_user_image"
-            android:layout_width="40dip"
-            android:layout_height="40dip"
-            android:src="@drawable/welcome2"/>
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="10dip"
+            android:src="@drawable/welcome2"
+            android:visibility="gone" />
     </FrameLayout>
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dip"
+        android:layout_alignLeft="@id/msg_content_container"
+        android:layout_below="@id/msg_content_container"
+        android:layout_marginTop="20dip"
+        android:background="#cccccc" />
 </RelativeLayout>

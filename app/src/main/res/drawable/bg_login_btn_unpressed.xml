@@ -7,9 +7,8 @@
         android:top="5dip" />
 
     <solid android:color="@color/bg_light_gray" />
-
     <stroke
-        android:width="3dip"
+        android:width="1dip"
         android:color="@color/bg_light_gray" />
 
 </shape>

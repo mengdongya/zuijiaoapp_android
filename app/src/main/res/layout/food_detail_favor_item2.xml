@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/favor_people_count"
+        android:layout_width="48dip"
+        android:layout_height="48dip"
+        android:text="10"
+        android:gravity="center"
+        android:textColor="@color/main_label"
+        android:background="@drawable/bg_favor_people_item" />
+</LinearLayout>

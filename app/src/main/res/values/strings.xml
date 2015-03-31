@@ -30,6 +30,7 @@
     <string name="concerning_text2">嘴      角</string>
     <string name="user_protocol">用户协议</string>
     <string name="zuijiao_team">嘴角团队</string>
+    <string name="wizard_page">欢迎页</string>
     <string name="version_code">V1.0</string>
     <string name="logout_confirm_title">是否退出登录 ？</string>
     <string name="logout">退出</string>
@@ -60,5 +61,11 @@
     <string name="login_deny">取消授权</string>
     <string name="login_cancel">取消登录</string>
     <string name="login_error">登录失败</string>
-    <string name="like_with_num">喜欢(%s)</string><string name="comment_with_num">评论(%s)</string>
+    <string name="like_with_num">喜欢(%s)</string>
+    <string name="comment_with_num">评论(%s)</string>
+    <string name="notify_unlogin">还没有登录，不可以乱戳哦！</string>
+    <string name="goto_login">火速去登录</string>
+    <string name="favor_feedback">谢谢，喜欢 ！</string>
+    <string name="favor_label">%s人喜欢</string>
+    <string name="comment_hint">你眼中的这道美食...</string>
 </resources>

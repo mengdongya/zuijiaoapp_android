@@ -32,5 +32,15 @@
         <item>主人萌萌萌的</item>
         <item>我一定会回去的</item>
     </string-array>
+    <string-array name="welcome_text1">
+        <item>最美的味道</item>
+        <item>靠谱的推荐</item>
+        <item>一大波的吃货</item>
+    </string-array>
+    <string-array name="welcome_text2">
+        <item>「这里只有最美味的食物」</item>
+        <item>「这里离全是真正的吃货的推荐」</item>
+        <item>「与一帮出色的吃货分享味蕾的快乐」</item>
+    </string-array>
 
 </resources>

@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical">
 
     <include
         android:id="@+id/register_toolbar"
@@ -16,7 +16,8 @@
         android:layout_marginTop="70dip"
         android:drawableBottom="@drawable/single_line"
         android:hint="@string/honey_name"
-        android:singleLine="true" />
+        android:singleLine="true"
+        android:textColor="@color/black" />
 
     <EditText
         android:id="@+id/et_regist_email"
@@ -27,7 +28,8 @@
         android:drawableBottom="@drawable/single_line"
         android:hint="@string/email"
         android:inputType="textEmailAddress"
-        android:singleLine="true" />
+        android:singleLine="true"
+        android:textColor="@color/black" />
 
     <EditText
         android:id="@+id/et_regist_password"
@@ -38,7 +40,8 @@
         android:drawableBottom="@drawable/single_line"
         android:hint="@string/password"
         android:inputType="textPassword"
-        android:singleLine="true" />
+        android:singleLine="true"
+        android:textColor="@color/black" />
 
     <EditText
         android:id="@+id/et_regist_password_comfirm"
@@ -49,6 +52,7 @@
         android:drawableBottom="@drawable/single_line"
         android:hint="@string/password_confirm"
         android:inputType="textPassword"
-        android:singleLine="true" />
+        android:singleLine="true"
+        android:textColor="@color/black" />
 
 </LinearLayout>

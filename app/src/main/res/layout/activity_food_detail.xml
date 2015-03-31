@@ -4,12 +4,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
-    android:orientation="vertical" >
+    android:orientation="vertical">
 
     <FrameLayout
         android:id="@+id/image_container"
         android:layout_width="match_parent"
-        android:layout_height="224dip" >
+        android:layout_height="224dip">
 
         <android.support.v4.view.ViewPager
             android:id="@+id/food_detail_images"
@@ -27,7 +27,7 @@
 
     <RelativeLayout
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent" >
+        android:layout_height="fill_parent">
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/food_detail_toolbar"
@@ -43,17 +43,17 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_above="@+id/food_detail_input"
-            android:layout_marginTop="224dip" >
+            android:layout_marginTop="224dip">
 
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/white" >
+                android:background="@color/white">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical" >
+                    android:orientation="vertical">
 
                     <include
                         android:id="@+id/food_detail_layout"
@@ -70,15 +70,17 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@color/white"
+                        android:lineSpacingExtra="5dip"
                         android:padding="@dimen/main_content_item_margin_left"
                         android:singleLine="false"
                         android:text="淮扬狮子头名扬天下，人尽皆知，殊不知但还流传着用鱼肉做的狮子头，口感更滑嫩鲜爽，色泽雪白，味道非常的显现，但就是一个险种偷着鲜美，花肉中透着让人无法香香的味道"
-                        android:textColor="@color/tv_deep_gray" />
+                        android:textColor="@color/tv_deep_gray"
+                        android:textSize="15sp" />
 
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1dip"
-                        android:background="#999999" />
+                        android:background="#cccccc" />
 
                     <TextView
                         android:id="@+id/food_detail_food_msg_title"
@@ -88,7 +90,8 @@
                         android:padding="5dip"
                         android:text="美食信息"
                         android:textColor="#888888"
-                        android:textSize="15sp" />
+                        android:textSize="15sp"
+                        android:visibility="gone" />
 
                     <TextView
                         android:id="@+id/food_detail_food_msg_location"
@@ -98,7 +101,8 @@
                         android:padding="5dip"
                         android:text="古儒精舍私房菜（浦东店）"
                         android:textColor="#555555"
-                        android:textSize="15sp" />
+                        android:textSize="15sp"
+                        android:visibility="gone" />
 
                     <TextView
                         android:id="@+id/food_detail_food_msg_price"
@@ -108,26 +112,29 @@
                         android:padding="5dip"
                         android:text="单价：８０￥"
                         android:textColor="#555555"
-                        android:textSize="15sp" />
+                        android:textSize="15sp"
+                        android:visibility="gone" />
 
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1dip"
-                        android:background="#999999" />
+                        android:background="#cccccc"
+                        android:visibility="gone" />
 
                     <TextView
                         android:id="@+id/food_detail_food_like_title"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:gravity="left"
-                        android:padding="5dip"
+                        android:gravity="left|center_vertical"
+                        android:padding="@dimen/main_content_item_margin_left"
                         android:text="喜欢  0"
                         android:textColor="#888888"
                         android:textSize="15sp" />
 
                     <FrameLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" >
+                        android:layout_height="wrap_content"
+                        android:padding="10dip">
 
                         <TextView
                             android:layout_width="match_parent"
@@ -135,26 +142,34 @@
                             android:layout_gravity="center"
                             android:gravity="center"
                             android:text="暂时还没有人喜欢" />
+
+                        <GridView
+                            android:id="@+id/gv_favor_people"
+                            android:layout_width="match_parent"
+                            android:layout_height="50dip"
+                            android:background="@color/white"
+                            android:numColumns="5" />
                     </FrameLayout>
 
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1dip"
-                        android:background="#999999" />
+                        android:background="#cccccc" />
 
                     <TextView
                         android:id="@+id/food_detail_food_comment_title"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:gravity="left"
-                        android:padding="5dip"
+                        android:gravity="left|center_vertical"
+                        android:padding="@dimen/main_content_item_margin_left"
                         android:text="喜欢  0"
                         android:textColor="#888888"
                         android:textSize="15sp" />
 
                     <FrameLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" >
+                        android:layout_height="wrap_content"
+                        android:padding="@dimen/main_content_item_margin_left">
 
                         <TextView
                             android:layout_width="match_parent"
@@ -167,8 +182,7 @@
                         <ListView
                             android:id="@+id/lv_food_detail_comment"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" >
-                        </ListView>
+                            android:layout_height="wrap_content"></ListView>
                     </FrameLayout>
                 </LinearLayout>
 
@@ -177,15 +191,40 @@
                     layout="@layout/food_detai_top" />
             </FrameLayout>
         </com.zuijiao.view.MyScrollView>
-
-        <EditText
+        <RelativeLayout
             android:id="@+id/food_detail_input"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:drawableRight="@drawable/food_edit"
-            android:hint="写下你的评论"
-            android:singleLine="true" />
+            android:background="@color/white"
+            android:gravity="center_vertical">
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="10dip"
+                android:id= "@+id/input_diviver"
+                android:background="@drawable/bg_input_diviver"/>
+            <EditText
+                android:id="@+id/et_comment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:layout_below="@id/input_diviver"
+                android:layout_toLeftOf="@+id/comment_commit"
+                android:hint="@string/comment_hint"
+                android:singleLine="true" />
+
+            <ImageButton
+                android:id="@+id/comment_commit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_margin="10dip"
+                android:background="@color/transparent"
+                android:src="@drawable/comment_commit" />
+        </RelativeLayout>
+
+
     </RelativeLayout>
 
 </FrameLayout>

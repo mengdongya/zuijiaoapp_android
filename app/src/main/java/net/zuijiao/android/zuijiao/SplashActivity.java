@@ -5,9 +5,9 @@ import android.os.Build.VERSION;
 import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.lidroid.xutils.view.annotation.ContentView;
 import com.lidroid.xutils.view.annotation.ViewInject;
@@ -17,65 +17,71 @@ import com.zuijiao.controller.PreferenceManager.PreferenceInfo;
 
 @ContentView(R.layout.activity_splash)
 public class SplashActivity extends BaseActivity {
-	@ViewInject(R.id.splash_text1)
-	private TextView text1 = null;
-	@ViewInject(R.id.splash_text2)
-	private TextView text2 = null;
-	private PreferenceManager mPreferMng = null;
-	private PreferenceInfo mPreferInfo = null;
+    @ViewInject(R.id.splash_text1)
+    private TextView text1 = null;
+    @ViewInject(R.id.splash_text2)
+    private TextView text2 = null;
+    private PreferenceManager mPreferMng = null;
+    private PreferenceInfo mPreferInfo = null;
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		if (VERSION.SDK_INT >= VERSION_CODES.KITKAT) {
-			getWindow().addFlags(
-					WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-			getWindow().addFlags(
-					WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
-		}
-		initPreferenceInfo();
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (VERSION.SDK_INT == VERSION_CODES.KITKAT) {
+            getWindow().addFlags(
+                    WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            getWindow().addFlags(
+                    WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+        }
+        int currentapiVersion = android.os.Build.VERSION.SDK_INT;
+        if (currentapiVersion >= 14) {
+            getWindow().getDecorView().setSystemUiVisibility(
+                    View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
+        }
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        initPreferenceInfo();
 
-		new Handler().postDelayed(new Runnable() {
+        new Handler().postDelayed(new Runnable() {
 
-			@Override
-			public void run() {
-				if (mPreferInfo.isAppFirstLaunch()) {
+            @Override
+            public void run() {
+                if (mPreferInfo.isAppFirstLaunch()) {
 					goToGuide();
-				} else {
+                } else {
 					goToMain();
-				}
+                }
 				finish() ;
-			}
-		}, 800);
+            }
+        }, 800);
 
-	}
+    }
 
-	private void goToMain() {
-		Intent mainIntent = new Intent(getApplicationContext(),
-				MainActivity.class);
-		startActivity(mainIntent);
-	}
+    private void goToMain() {
+        Intent mainIntent = new Intent(getApplicationContext(),
+                MainActivity.class);
+        startActivity(mainIntent);
+    }
 
-	private void goToGuide() {
-		Intent mainIntent = new Intent(getApplicationContext(),
-				GuideActivity.class);
-		startActivity(mainIntent);
-	}
+    private void goToGuide() {
+        Intent mainIntent = new Intent(getApplicationContext(),
+                GuideActivity.class);
+        startActivity(mainIntent);
+    }
 
-	private void initPreferenceInfo() {
-		mPreferMng = PreferenceManager.getInstance(getApplicationContext());
-		mPreferInfo = mPreferMng.initPreferenceInfo() ;
-		FileManager.createRootFolder() ;
-	}
+    private void initPreferenceInfo() {
+        mPreferMng = PreferenceManager.getInstance(getApplicationContext());
+        mPreferInfo = mPreferMng.initPreferenceInfo();
+        FileManager.createRootFolder();
+    }
 
-	@Override
-	protected void findViews() {
+    @Override
+    protected void findViews() {
 
-	}
+    }
 
-	@Override
-	protected void registeViews() {
+    @Override
+    protected void registeViews() {
 
-	}
+    }
 
 }

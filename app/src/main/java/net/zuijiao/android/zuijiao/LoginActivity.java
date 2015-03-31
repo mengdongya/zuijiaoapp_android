@@ -8,14 +8,13 @@ import android.support.v7.widget.Toolbar;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,11 +27,11 @@ import com.zuijiao.controller.ThirdPartySdkManager;
 @ContentView(R.layout.activity_login)
 public class LoginActivity extends BaseActivity implements OnClickListener {
 	@ViewInject(R.id.iv_weixin)
-	private ImageView mBtnWechat = null;
+	private ImageButton mBtnWechat = null;
 	@ViewInject(R.id.iv_weibo)
-	private ImageView mBtnWebo = null;
+	private ImageButton mBtnWebo = null;
 	@ViewInject(R.id.iv_qq)
-	private ImageView mBtnQQ = null;
+	private ImageButton mBtnQQ = null;
 	private boolean mBClicked = false;
 	private ThirdPartySdkManager mCloudMng = null;
 	private int mLoginType = ThirdPartySdkManager.CLOUD_TYPE_NONE;
@@ -97,7 +96,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 		if (item.getItemId() == R.id.login) {
 			Toast.makeText(getApplicationContext(), "sure", 1000).show();
 		}
-		return true;
+		return super.onOptionsItemSelected(item);
 	}
 
 	@Override
@@ -120,7 +119,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 			Intent intent = new Intent(LoginActivity.this,
 					RegisterActivity.class);
 			startActivity(intent);
-			break;
+			return ;
 		default:
 			break;
 		}
@@ -139,7 +138,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 	private void handleIntent(Intent intent) {
 		SendAuth.Resp resp = new SendAuth.Resp(intent.getExtras());
 		if (resp.errCode == BaseResp.ErrCode.ERR_OK) {
-			Toast.makeText(getApplicationContext(), "��¼�ɹ�", 1000).show();
+			Toast.makeText(getApplicationContext(), " ", 1000).show();
 		}
 	}
 

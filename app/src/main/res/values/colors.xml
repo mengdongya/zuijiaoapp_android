@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ The MIT License (MIT)
   ~
   ~ Copyright (c) 2014 Robin Chutaux
@@ -29,14 +28,15 @@
     <color name="tv_deep_gray">#555555</color>
     <color name="bg_gray_white">#66dddddd</color>
     <color name="bg_light_gray">#888888</color>
-    <color name="white">#FFFFFF</color><color name="white1">#dddddd</color>
+    <color name="white">#FFFFFF</color>
+    <color name="white1">#dddddd</color>
     <color name="white_trans">#66ffffff</color>
-    <color name="toolbar">#ff7043</color>
-    <color name="systembar">#bb5538</color>
-     <color name="toolbar_text">#eeeeee</color>
+    <color name="toolbar">#373737</color>
+    <color name="systembar">#272727</color>
+    <color name="toolbar_text">#eeeeee</color>
     <color name="black">#000000</color>
     <color name="transparent">#00000000</color>
-    <color name="tv_light_blue">#aa4444ee</color> 
+    <color name="tv_light_blue">#aa4444ee</color>
     <color name="tv_orange_red">#eeee8800</color>
     <color name="tv_red">#ffff2200</color>
     <color name="main_app_name">#ffffff</color>
@@ -45,6 +45,8 @@
     <color name="main_user_name">#959595</color>
     <color name="main_content">#cc434343</color>
     <color name="main_label">#f36c60</color>
-    <color name="bg_food_detai_top">#212121</color>
+    <color name="main_label_sel">#e06f67</color>
+    <color name="bg_food_detai_top">#545454</color>
+    <color name="gray">#999999</color>
 
 </resources>

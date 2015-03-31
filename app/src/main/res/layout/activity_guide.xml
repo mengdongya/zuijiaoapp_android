@@ -16,8 +16,10 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="30dp"
+        android:padding="10dip"
         android:gravity="center_horizontal"
-        android:orientation="horizontal" />
+        android:orientation="horizontal" >
+        </LinearLayout>
 
     <Button
         android:id="@+id/guide_btn"
@@ -27,6 +29,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="30dp"
         android:text="@string/wizard_btn_text"
+        android:background="@drawable/bg_login_btn"
         android:visibility="gone" />
 
 </RelativeLayout>

@@ -1,20 +1,21 @@
 package net.zuijiao.android.zuijiao;
 
-import java.util.ArrayList;
-import java.util.Random;
-
-import com.zuijiao.view.RefreshAndInitListView;
-import com.zuijiao.view.RefreshAndInitListView.MyListViewListener;
-
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
-import android.widget.ListView;
 import android.widget.TextView;
+
+import com.zuijiao.view.RefreshAndInitListView;
+import com.zuijiao.view.RefreshAndInitListView.MyListViewListener;
+
+import java.util.ArrayList;
+import java.util.Random;
 
 public class MessageFragment extends Fragment implements FragmentDataListener,
 		MyListViewListener {
@@ -35,9 +36,16 @@ public class MessageFragment extends Fragment implements FragmentDataListener,
 		mAdapter = new MesssageAdapter();
 		mListView.setAdapter(mAdapter);
 		mListView.setListViewListener(this);
+        mListView.setOnItemClickListener(mItemClickListener);
 		return mContentView;
 	}
-
+    private AdapterView.OnItemClickListener mItemClickListener = new AdapterView.OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            Intent intent = new Intent(getActivity() , FoodDetailActivity.class) ;
+            getActivity().startActivity(intent);
+        }
+    } ;
 	private class MesssageAdapter extends BaseAdapter {
 
 		@Override

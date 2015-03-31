@@ -6,6 +6,10 @@
         <item name="android:windowContentOverlay">@null</item>
     </style>
 
+    <style name="GuideTheme" parent="AppBaseTheme">
+        <item name="android:windowContentOverlay">@null</item>
+    </style>
+
     <style name="LoginTheme" parent="AppBaseTheme">
         <item name="android:windowFullscreen">false</item>
     </style>
@@ -14,7 +18,7 @@
         <item name="android:windowIsFloating">true</item>
     </style>
 
-    <style name="AppBaseTheme" parent="Theme.AppCompat" type="text/css">
+    <style name="AppBaseTheme" parent="Theme.AppCompat.Light" type="text/css">
         <item name="windowActionBar">false</item>
         <item name="android:windowNoTitle">true</item>
         <!-- tool bar -->
@@ -29,39 +33,42 @@
         <!-- navigation text color -->
         <item name="android:textColorPrimary">@color/toolbar_text</item>
         <item name="android:actionMenuTextAppearance">@style/MenuTextStyle</item>
-         <item name="toolbarStyle">@style/Widget.AppCompat.Toolbar</item>
-        <item name="toolbarNavigationButtonStyle">@style/Widget.AppCompat.Toolbar.Button.Navigation</item>
+        <item name="toolbarStyle">@style/Widget.AppCompat.Toolbar</item>
+        <item name="toolbarNavigationButtonStyle">
+            @style/Widget.AppCompat.Toolbar.Button.Navigation
+        </item>
 
         <item name="android:editTextStyle">@style/Widget.AppCompat.EditText</item>
         <item name="editTextBackground">@drawable/abc_edit_text_material</item>
         <item name="editTextColor">?android:attr/textColorPrimary</item>
-       <item name="android:windowBackground">@color/white</item>
-         <!-- <item name="android:selectableItemBackground">@drawable/bg_white_trans</item> -->
-        <item name="android:colorBackground">@android:color/white</item>
+        <item name="colorControlNormal">@color/white</item>
+        <!--<item name="android:windowBackground">@color/white</item>
+         <item name="android:selectableItemBackground">@drawable/bg_white_trans</item>
+         <item name="android:colorBackground">@android:color/white</item>-->
         <item name="android:textColor">@color/tv_deep_gray</item>
- 		<!-- <item name="drawerArrowStyle">@style/mydrawer</item>
-		<item name="android:homeAsUpIndicator">@drawable/home_indicator</item>
-        <item name="switchStyle">@style/Widget.AppCompat.CompoundButton.Switch</item>
-         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"  
-   		 app:theme="@style/ThemeOverlay.AppCompat.ActionBar" -->
-       <!--   <item name="colorPrimaryDark">@color/primary_dark_material_dark</item>
-        <item name="colorPrimary">@color/primary_material_dark</item>
-        <item name="colorAccent">@color/accent_material_dark</item> -->
-<!-- 
-        <item name="colorControlNormal">?android:attr/textColorSecondary</item>
-        <item name="colorControlActivated">?attr/colorAccent</item>
-        <item name="colorControlHighlight">@color/ripple_material_dark</item>
-        <item name="colorSwitchThumbNormal">@color/switch_thumb_normal_material_dark</item>
+        <!-- <item name="drawerArrowStyle">@style/mydrawer</item>
+       <item name="android:homeAsUpIndicator">@drawable/home_indicator</item>
+       <item name="switchStyle">@style/Widget.AppCompat.CompoundButton.Switch</item>
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+           app:theme="@style/ThemeOverlay.AppCompat.ActionBar" -->
+        <!--   <item name="colorPrimaryDark">@color/primary_dark_material_dark</item>
+         <item name="colorPrimary">@color/primary_material_dark</item>
+         <item name="colorAccent">@color/accent_material_dark</item> -->
+        <!--
+                <item name="colorControlNormal">?android:attr/textColorSecondary</item>
+                <item name="colorControlActivated">?attr/colorAccent</item>
+                <item name="colorControlHighlight">@color/ripple_material_dark</item>
+                <item name="colorSwitchThumbNormal">@color/switch_thumb_normal_material_dark</item>
 
-        <item name="switchStyle">@style/Widget.AppCompat.CompoundButton.Switch</item -->>
-     <!--  <item name="actionBarTabStyle">@style/Widget.AppCompat.ActionBar.TabView</item>
-        <item name="actionBarTabBarStyle">@style/Widget.AppCompat.ActionBar.TabBar</item>
-        <item name="actionBarTabTextStyle">@style/Widget.AppCompat.ActionBar.TabText</item>
-        <item name="actionButtonStyle">@style/Widget.AppCompat.ActionButton</item>
-        <item name="actionOverflowButtonStyle">@style/Widget.AppCompat.ActionButton.Overflow</item>
-        <item name="actionOverflowMenuStyle">@style/Widget.AppCompat.PopupMenu.Overflow</item>
-        <item name="actionBarStyle">@style/Widget.AppCompat.ActionBar.Solid</item> -->
-		<!-- <item name="android:colorForeground">#ff000000</item>
+                <item name="switchStyle">@style/Widget.AppCompat.CompoundButton.Switch</item -->>
+        <!--  <item name="actionBarTabStyle">@style/Widget.AppCompat.ActionBar.TabView</item>
+           <item name="actionBarTabBarStyle">@style/Widget.AppCompat.ActionBar.TabBar</item>
+           <item name="actionBarTabTextStyle">@style/Widget.AppCompat.ActionBar.TabText</item>
+           <item name="actionButtonStyle">@style/Widget.AppCompat.ActionButton</item>
+           <item name="actionOverflowButtonStyle">@style/Widget.AppCompat.ActionButton.Overflow</item>
+           <item name="actionOverflowMenuStyle">@style/Widget.AppCompat.PopupMenu.Overflow</item>
+           <item name="actionBarStyle">@style/Widget.AppCompat.ActionBar.Solid</item> -->
+        <!-- <item name="android:colorForeground">#ff000000</item>
         <item name="android:colorForegroundInverse">@color/bright_foreground_material_dark</item>
         <item name="android:colorBackground">@color/background_material_light</item>
         <item name="android:colorBackgroundCacheHint">@color/abc_background_cache_hint_selector_material_light</item>
@@ -69,18 +76,23 @@
         <item name="android:backgroundDimAmount">0.6</item>
         <item name="android:windowBackground">@color/background_material_light</item> -->
     </style>
-    <style name = "mydrawer" parent = "Widget.AppCompat.DrawerArrowToggle">
+
+    <style name="mydrawer" parent="Widget.AppCompat.DrawerArrowToggle">
         <item name="android:textColorSecondary">@android:color/white</item>
         <item name="android:colorControlNormal">@android:color/white</item>
     </style>
-	<style name= "toolbarStyle" >
-	     <item name="toolbarStyle">@style/Widget.AppCompat.Toolbar</item>
-        <item name="toolbarNavigationButtonStyle">@style/Widget.AppCompat.Toolbar.Button.Navigation</item>
+
+    <style name="toolbarStyle">
+        <item name="toolbarStyle">@style/Widget.AppCompat.Toolbar</item>
+        <item name="toolbarNavigationButtonStyle">
+            @style/Widget.AppCompat.Toolbar.Button.Navigation
+        </item>
 
         <item name="android:editTextStyle">@style/Widget.AppCompat.EditText</item>
         <item name="editTextBackground">@drawable/abc_edit_text_material</item>
         <item name="editTextColor">?android:attr/textColorPrimary</item>
-	</style>
+    </style>
+
     <style name="MenuTextStyle">
         <item name="android:textColor">@android:color/white</item>
         <item name="android:textSize">18sp</item>

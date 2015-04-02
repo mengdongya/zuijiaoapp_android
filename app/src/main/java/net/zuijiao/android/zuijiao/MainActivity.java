@@ -34,8 +34,6 @@ import android.widget.ViewSwitcher;
 import com.lidroid.xutils.view.annotation.ContentView;
 import com.lidroid.xutils.view.annotation.ViewInject;
 import com.readystatesoftware.viewbadger.BadgeView;
-import com.zuijiao.android.util.Optional;
-import com.zuijiao.android.zuijiao.network.RouterOAuth;
 import com.zuijiao.controller.ActivityTask;
 import com.zuijiao.controller.FileManager;
 import com.zuijiao.controller.ThirdPartySdkManager;
@@ -88,7 +86,8 @@ public final class MainActivity extends BaseActivity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
+
+        super.onCreate(savedInstanceState);
 	}
 
 	@Override

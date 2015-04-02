@@ -3,13 +3,14 @@ package com.zuijiao.android.zuijiao.network;
 import com.zuijiao.android.util.Optional;
 import com.zuijiao.android.util.functional.LambdaExpression;
 import com.zuijiao.android.zuijiao.model.common.OAuthModel;
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 /**
  * Created by Chen Hao on 3/16/15.
@@ -39,6 +40,11 @@ public enum RouterOAuth {
             , LambdaExpression failureCallback
     ) {
         service.visitor(OAuthParam, fillOAuthToken(successCallback, failureCallback));
+    }
+
+    public void visitor() {
+        OAuthModel model = service.visitor(OAuthParam);
+        fillOAuthToken(model);
     }
 
     /**
@@ -72,6 +78,24 @@ public enum RouterOAuth {
                 , fillOAuthToken(successCallback, failureCallback));
     }
 
+    public void registerEmailRoutine(String name
+            , String avatarURL
+            , String email
+            , String password
+            , Optional<String> deviceToken
+            , Optional<String> openIDOAuthToken
+    ) {
+        OAuthModel model = service.registerEmailRoutine(name
+                , avatarURL
+                , email
+                , password
+                , deviceToken.orElse(null)
+                , openIDOAuthToken.orElse(null)
+                , OAuthParam
+                );
+        fillOAuthToken(model);
+    }
+
     /**
      * 用户注册
      *
@@ -103,6 +127,23 @@ public enum RouterOAuth {
                 , fillOAuthToken(successCallback, failureCallback));
     }
 
+    public void register(String name
+            , String avatarURL
+            , String openID
+            , String platform
+            , Optional<String> deviceToken
+            , Optional<String> openIDOAuthToken
+    ) {
+        OAuthModel model = service.register(name
+                , avatarURL
+                , openID
+                , platform
+                , deviceToken.orElse(null)
+                , openIDOAuthToken.orElse(null)
+                , OAuthParam);
+        fillOAuthToken(model);
+    }
+
     /**
      * 用户登录, 社交软件方式
      *
@@ -132,6 +173,23 @@ public enum RouterOAuth {
         );
     }
 
+    public void login(String openID
+            , String platform
+            , Optional<String> deviceToken
+            , Optional<String> openIDOAuthToken
+    ) {
+        assert (deviceToken != null);
+        assert (openIDOAuthToken != null);
+
+        OAuthModel model = service.login(openID
+                , platform
+                , deviceToken.orElse(null)
+                , openIDOAuthToken.orElse(null)
+                , OAuthParam
+        );
+        fillOAuthToken(model);
+    }
+
     /**
      * 用户登录, 邮箱方式
      *
@@ -159,6 +217,23 @@ public enum RouterOAuth {
                 , OAuthParam
                 , fillOAuthToken(successCallback, failureCallback)
         );
+    }
+
+    public void loginEmailRoutine(String email
+            , String password
+            , Optional<String> deviceToken
+            , Optional<String> openIDOAuthToken
+    ) {
+        assert (deviceToken != null);
+        assert (openIDOAuthToken != null);
+
+        OAuthModel model = service.loginEmailRoutine(email
+                , password
+                , deviceToken.orElse(null)
+                , openIDOAuthToken.orElse(null)
+                , OAuthParam
+        );
+        fillOAuthToken(model);
     }
 
     /**
@@ -195,6 +270,11 @@ public enum RouterOAuth {
                     finalFailureCallback.get().action();
             }
         };
+    }
+
+    private void fillOAuthToken(OAuthModel oAuthModel) {
+        Router.INSTANCE.accessToken = Optional.ofNullable(oAuthModel.getAccessToken());
+        Router.INSTANCE.currentUser = oAuthModel.getUser();
     }
 
 

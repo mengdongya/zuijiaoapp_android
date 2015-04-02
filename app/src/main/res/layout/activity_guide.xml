@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingBottom="45dip"
-    tools:context=".GuideActivity" >
+    tools:context=".GuideActivity">
 
     <android.support.v4.view.ViewPager
         android:id="@+id/guide_viewpager"
@@ -16,10 +16,31 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="30dp"
-        android:padding="10dip"
         android:gravity="center_horizontal"
-        android:orientation="horizontal" >
-        </LinearLayout>
+        android:orientation="horizontal"
+        android:padding="10dip">
+
+        <View
+            android:layout_width="5dip"
+            android:layout_height="5dip"
+            android:layout_marginLeft="5dip"
+            android:layout_marginRight="5dip"
+            android:background="@drawable/wizard_index_selected" />
+
+        <View
+            android:layout_width="5dip"
+            android:layout_height="5dip"
+            android:layout_marginLeft="5dip"
+            android:layout_marginRight="5dip"
+            android:background="@drawable/wizard_index_unselected" />
+
+        <View
+            android:layout_width="5dip"
+            android:layout_height="5dip"
+            android:layout_marginLeft="5dip"
+            android:layout_marginRight="5dip"
+            android:background="@drawable/wizard_index_unselected" />
+    </LinearLayout>
 
     <Button
         android:id="@+id/guide_btn"
@@ -27,9 +48,16 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/guide_dots"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="30dp"
-        android:text="@string/wizard_btn_text"
         android:background="@drawable/bg_login_btn"
+        android:text="@string/wizard_btn_text"
+        android:textColor="@color/white"
         android:visibility="gone" />
 
+    <ProgressBar
+        android:id="@+id/guide_progressbar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/guide_dots"
+        android:layout_centerHorizontal="true"
+        android:visibility="gone" />
 </RelativeLayout>

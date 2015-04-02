@@ -22,7 +22,10 @@
             android:id="@+id/food_detail_image_dots"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal" />
+            android:layout_gravity="bottom"
+            android:layout_marginBottom="5dip"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal"></LinearLayout>
     </FrameLayout>
 
     <RelativeLayout
@@ -86,39 +89,35 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="left"
-                        android:padding="5dip"
+                        android:padding="10dip"
                         android:text="美食信息"
                         android:textColor="#888888"
-                        android:textSize="15sp"
-                        android:visibility="gone" />
+                        android:textSize="15sp" />
 
                     <TextView
                         android:id="@+id/food_detail_food_msg_location"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="left"
-                        android:padding="5dip"
+                        android:padding="10dip"
                         android:text="古儒精舍私房菜（浦东店）"
                         android:textColor="#555555"
-                        android:textSize="15sp"
-                        android:visibility="gone" />
+                        android:textSize="15sp" />
 
                     <TextView
                         android:id="@+id/food_detail_food_msg_price"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="left"
-                        android:padding="5dip"
+                        android:padding="10dip"
                         android:text="单价：８０￥"
                         android:textColor="#555555"
-                        android:textSize="15sp"
-                        android:visibility="gone" />
+                        android:textSize="15sp" />
 
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1dip"
-                        android:background="#cccccc"
-                        android:visibility="gone" />
+                        android:background="#cccccc" />
 
                     <TextView
                         android:id="@+id/food_detail_food_like_title"
@@ -190,6 +189,7 @@
                     layout="@layout/food_detai_top" />
             </FrameLayout>
         </com.zuijiao.view.MyScrollView>
+
         <RelativeLayout
             android:id="@+id/food_detail_input"
             android:layout_width="match_parent"
@@ -197,20 +197,22 @@
             android:layout_alignParentBottom="true"
             android:background="@color/white"
             android:gravity="center_vertical">
+
             <View
+                android:id="@+id/input_diviver"
                 android:layout_width="match_parent"
                 android:layout_height="10dip"
-                android:id= "@+id/input_diviver"
-                android:background="@drawable/bg_input_diviver"/>
+                android:background="@drawable/bg_input_diviver" />
+
             <EditText
                 android:id="@+id/et_comment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/black"
                 android:layout_below="@id/input_diviver"
                 android:layout_toLeftOf="@+id/comment_commit"
                 android:hint="@string/comment_hint"
-                android:singleLine="true" />
+                android:singleLine="true"
+                android:textColor="@color/black" />
 
             <ImageButton
                 android:id="@+id/comment_commit"

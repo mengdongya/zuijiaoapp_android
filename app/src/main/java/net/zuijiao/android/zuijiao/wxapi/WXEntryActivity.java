@@ -1,23 +1,5 @@
 package net.zuijiao.android.zuijiao.wxapi;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-
-import net.zuijiao.android.zuijiao.R;
-
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.util.EntityUtils;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -34,6 +16,24 @@ import com.tencent.mm.sdk.openapi.IWXAPIEventHandler;
 import com.tencent.mm.sdk.openapi.WXAPIFactory;
 import com.zuijiao.controller.FileManager;
 import com.zuijiao.controller.MessageDef;
+
+import net.zuijiao.android.zuijiao.R;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
 	protected final String WEIXIN_ID = "wx908961ddfd5cade9";
@@ -84,7 +84,7 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
 			code = sp.code;
 			if (openId == null) {
 				// // 获取token
-				url = String.format("https://api.weixin.qq.com/sns/oauth2/access_token?appid=%s&secret=%s&code=%s&grant_type=authorization_code",new String[] { WEIXIN_ID, WEIXIN_PWD, code });
+				//url = String.format("https://api.weixin.qq.com/sns/oauth2/access_token?appid=%s&secret=%s&code=%s&grant_type=authorization_code",new String[] { WEIXIN_ID, WEIXIN_PWD, code });
 				final HttpClient client = new DefaultHttpClient();
 				final HttpGet httpget = new HttpGet(url);
 				new Thread(new Runnable() {

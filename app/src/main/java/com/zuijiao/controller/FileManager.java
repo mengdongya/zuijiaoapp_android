@@ -1,15 +1,15 @@
 package com.zuijiao.controller;
 
+import android.content.Context;
+import android.os.Environment;
+
+import com.zuijiao.android.zuijiao.model.Gourmet;
+
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.os.Environment;
-import android.util.Log;
+import java.util.List;
 
 public class FileManager {
 	private Context mContext = null;
@@ -18,6 +18,10 @@ public class FileManager {
 	public static String APP_FOLDER_PATH = "";
 	public final static String THIRD_PARTY_HEAD = "third_party_head.jpg";
 	private static final int COPY_BLOCK_SIZE = 4096;
+    //main fragment data
+    public static List<Gourmet> tmpGourmets = null;
+    //my favor fragment data
+    public static List<Gourmet> tmpFavorGourmets= null ;
 
 	private FileManager(Context context) {
 		this.mContext = context;

@@ -74,6 +74,7 @@ public class MainFragment extends Fragment implements FragmentDataListener,
         public void onItemClick(AdapterView<?> parent, View view, int position,
                                 long id) {
             Intent intent = new Intent(getActivity(), FoodDetailActivity.class);
+            Toast.makeText(getActivity().getApplicationContext() , position +"" ,1000).show();
             startActivity(intent);
         }
     };

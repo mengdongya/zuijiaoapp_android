@@ -27,7 +27,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -368,13 +367,14 @@ public class FoodDetailActivity extends BaseActivity implements
     };
 
     private void initDots(int count) {
-        RelativeLayout.LayoutParams Lp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        Lp.leftMargin = 10;
+        LinearLayout.LayoutParams Lp = new LinearLayout.LayoutParams(8, 8);
+        Lp.rightMargin = 5;
+        Lp.leftMargin = 5 ;
         for (int j = 0; j < count; j++) {
-            mImageIndex.addView(initDot(), new ViewGroup.LayoutParams(10, 10));
+            mImageIndex.addView(initDot(), Lp);
         }
 //        mImageIndex.getChildAt(0).setSelected(true);
-//        mImageIndex.getChildAt(0).setBackgroundResource(R.drawable.wizard_index_selected);
+        mImageIndex.getChildAt(0).setBackgroundResource(R.drawable.wizard_index_selected);
 //        mImageIndex.getChildAt(1).setBackgroundResource(R.drawable.wizard_index_unselected);
 //        mImageIndex.getChildAt(2).setBackgroundResource(R.drawable.wizard_index_unselected);
     }

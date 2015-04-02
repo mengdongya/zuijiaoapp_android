@@ -13,6 +13,9 @@ public class TinyUser {
     private String nickName;
     @SerializedName("imageUrl")
     private String avatarURL;
+
+
+
     @SerializedName("ID")
     private Integer identifier;
 

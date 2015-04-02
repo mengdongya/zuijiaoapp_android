@@ -27,6 +27,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -68,6 +69,8 @@ public class FoodDetailActivity extends BaseActivity implements
     private View mLayoutTop = null;
     @ViewInject(R.id.food_detail_layout)
     private View mLayoutTopFloat = null;
+    @ViewInject(R.id.food_detail_image_dots)
+    private LinearLayout mImageIndex = null;
     private ImageView mFavorBtn1 = null;
     private ImageView mFavorBtn2 = null;
 
@@ -106,9 +109,8 @@ public class FoodDetailActivity extends BaseActivity implements
         for (int i = 0; i < test_label.length; i++) {
             TextView textview = new TextView(this);
             textview.setBackgroundResource(R.drawable.bg_label);
-            textview.setTextSize(16);
             textview.setTextColor(getResources().getColor(R.color.main_label));
-            textview.setTextSize(18);
+            textview.setTextSize(14);
             textview.setText(test_label[i]);
             mLabelContainer.addView(textview);
         }
@@ -130,11 +132,14 @@ public class FoodDetailActivity extends BaseActivity implements
                     }
                 });
         ArrayList<View> data = new ArrayList<View>();
-        for (int i = 0; i < 3; i++) {
+
+        //5:image number
+        for (int i = 0; i < 5; i++) {
             ImageView image = new ImageView(this);
             image.setBackgroundResource(R.drawable.empty_view_greeting);
             image.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
                     LayoutParams.MATCH_PARENT));
+            image.setScaleType(ImageView.ScaleType.CENTER_CROP);
             image.setOnClickListener(new OnClickListener() {
 
                 @Override
@@ -145,7 +150,10 @@ public class FoodDetailActivity extends BaseActivity implements
             });
             data.add(image);
         }
+        //5:image number
+        initDots(5);
         mImagePager.setAdapter(new ViewPagerAdapter(data));
+        mImagePager.setOnPageChangeListener(mPageListener);
         mFavorBtn1 = (ImageView) mLayoutTop.findViewById(R.id.favor_btn);
         mFavorBtn2 = (ImageView) mLayoutTopFloat.findViewById(R.id.favor_btn);
         mFavorBtn1.setOnClickListener(favorListener);
@@ -168,6 +176,7 @@ public class FoodDetailActivity extends BaseActivity implements
         mGdView.setOnItemClickListener(mGvListener);
         mCommentList.setOnItemClickListener(mCommentListListener);
     }
+
     private AdapterView.OnItemClickListener mCommentListListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -175,11 +184,11 @@ public class FoodDetailActivity extends BaseActivity implements
             mEtComment.setFocusableInTouchMode(true);
             mEtComment.requestFocus();
             InputMethodManager inputManager =
-                    (InputMethodManager)mEtComment.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    (InputMethodManager) mEtComment.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
             inputManager.showSoftInput(mEtComment, 0);
-            openEdit = true ;
+            openEdit = true;
         }
-    } ;
+    };
     private BaseAdapter mCommentAdapter = new BaseAdapter() {
 
         @Override
@@ -333,4 +342,47 @@ public class FoodDetailActivity extends BaseActivity implements
             }
         }
     };
+    private ViewPager.OnPageChangeListener mPageListener = new ViewPager.OnPageChangeListener() {
+        @Override
+        public void onPageSelected(int arg0) {
+            for (int i = 0; i < mImageIndex.getChildCount(); i++) {
+                if (i == arg0) {
+                    mImageIndex.getChildAt(i).setBackgroundResource(
+                            R.drawable.wizard_index_selected);
+                } else {
+                    mImageIndex.getChildAt(i).setBackgroundResource(
+                            R.drawable.wizard_index_unselected);
+                }
+            }
+        }
+
+        @Override
+        public void onPageScrolled(int arg0, float arg1, int arg2) {
+
+        }
+
+        @Override
+        public void onPageScrollStateChanged(int arg0) {
+
+        }
+    };
+
+    private void initDots(int count) {
+        RelativeLayout.LayoutParams Lp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        Lp.leftMargin = 10;
+        for (int j = 0; j < count; j++) {
+            mImageIndex.addView(initDot(), new ViewGroup.LayoutParams(10, 10));
+        }
+//        mImageIndex.getChildAt(0).setSelected(true);
+//        mImageIndex.getChildAt(0).setBackgroundResource(R.drawable.wizard_index_selected);
+//        mImageIndex.getChildAt(1).setBackgroundResource(R.drawable.wizard_index_unselected);
+//        mImageIndex.getChildAt(2).setBackgroundResource(R.drawable.wizard_index_unselected);
+    }
+
+    private View initDot() {
+        View dot = new View(getApplicationContext());
+        dot.setPadding(5, 5, 5, 5);
+        dot.setBackgroundResource(R.drawable.wizard_index_unselected);
+        return dot;
+    }
 }

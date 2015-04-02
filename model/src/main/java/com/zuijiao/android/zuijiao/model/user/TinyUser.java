@@ -12,6 +12,9 @@ public class TinyUser {
     private String nickName;
     @SerializedName("imageUrl")
     private String avatarURL;
+
+
+
     @SerializedName("ID")
     private Integer identifier;
 
@@ -26,4 +29,18 @@ public class TinyUser {
     public Integer getIdentifier() {
         return identifier;
     }
+
+    //20150401 qbxia add begin
+    public void setNickName(String nickName) {
+        this.nickName = nickName;
+    }
+
+    public void setIdentifier(Integer identifier) {
+        this.identifier = identifier;
+    }
+
+    public void setAvatarURL(String avatarURL) {
+        this.avatarURL = avatarURL;
+    }
+    //20150401 qbxia add end
 }

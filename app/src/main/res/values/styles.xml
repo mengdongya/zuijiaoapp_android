@@ -4,6 +4,7 @@
 
     <style name="SplashTheme" parent="AppBaseTheme">
         <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowFullscreen">true</item>
     </style>
 
     <style name="GuideTheme" parent="AppBaseTheme">

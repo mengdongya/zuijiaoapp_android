@@ -13,14 +13,16 @@ import com.zuijiao.controller.ActivityTask;
 import com.zuijiao.controller.FileManager;
 import com.zuijiao.controller.MessageDef;
 import com.zuijiao.controller.PreferenceManager;
-import com.zuijiao.controller.ThirdPartySdkManager;
 import com.zuijiao.controller.PreferenceManager.PreferenceInfo;
+import com.zuijiao.controller.ThirdPartySdkManager;
+import com.zuijiao.db.DBOpenHelper;
 import com.zuijiao.entity.ThirdPartyUserInfo;
 
 public abstract class BaseActivity extends ActionBarActivity {
 	protected PreferenceManager mPreferMng = null;
 	protected PreferenceInfo mPreferenceInfo = null;
 	protected FileManager mFileMng = null ;
+    protected DBOpenHelper dbMng= null ;
 	protected BroadcastReceiver mReceiver = new BroadcastReceiver() {
 		
 		@Override
@@ -53,6 +55,7 @@ public abstract class BaseActivity extends ActionBarActivity {
 		}
 		mPreferenceInfo = mPreferMng.getPreferInfo();
 		mFileMng = FileManager.getInstance(getApplicationContext());
+        dbMng = DBOpenHelper.getmInstance(getApplicationContext());
 		ActivityTask.getInstance().addActivity(this);
 	}
 	protected void onLoginFinish(){

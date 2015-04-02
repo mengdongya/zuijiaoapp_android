@@ -68,4 +68,5 @@
     <string name="favor_feedback">谢谢，喜欢 ！</string>
     <string name="favor_label">%s人喜欢</string>
     <string name="comment_hint">你眼中的这道美食...</string>
+    <string name="notify_net2">请检查你的网络亲...</string>
 </resources>

@@ -9,29 +9,33 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.lidroid.xutils.view.annotation.ContentView;
 import com.lidroid.xutils.view.annotation.ViewInject;
+import com.zuijiao.android.util.Optional;
+import com.zuijiao.android.zuijiao.network.RouterOAuth;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @ContentView(R.layout.activity_guide)
-public class GuideActivity extends BaseActivity implements OnClickListener {
+public class GuideActivity extends BaseActivity {
     @ViewInject(R.id.guide_viewpager)
     private ViewPager mPager;
     @ViewInject(R.id.guide_dots)
     private LinearLayout mDotsLayout;
     @ViewInject(R.id.guide_btn)
     private Button mBtn;
-
+    @ViewInject(R.id.guide_progressbar)
+    private ProgressBar mPb = null ;
     private List<View> viewList;
     private int[] indexIcon = {R.drawable.welcome1,
             R.drawable.wizard_index1, R.drawable.wizard_index2,
@@ -58,12 +62,12 @@ public class GuideActivity extends BaseActivity implements OnClickListener {
         for (int i = 0; i < images.length; i++) {
             viewList.add(initView(images[i], textHead[i], textNotes[i]));
         }
-        initDots(images.length);
+        //initDots(images.length);
     }
 
     private void initDots(int count) {
         for (int j = 0; j < count; j++) {
-            mDotsLayout.addView(initDot());
+            mDotsLayout.addView(initDot(),new ViewGroup.LayoutParams(10 ,10));
         }
         mDotsLayout.getChildAt(0).setSelected(true);
         mDotsLayout.getChildAt(0).setBackgroundResource(R.drawable.wizard_index_selected);
@@ -90,11 +94,6 @@ public class GuideActivity extends BaseActivity implements OnClickListener {
         return view;
     }
 
-    private void openHome() {
-        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-        startActivity(intent);
-        finish();
-    }
 
     class ViewPagerAdapter extends PagerAdapter {
 
@@ -139,7 +138,14 @@ public class GuideActivity extends BaseActivity implements OnClickListener {
         mPager.setAdapter(new ViewPagerAdapter(viewList));
         mPager.setOnPageChangeListener(mPageListener);
 
-        mBtn.setOnClickListener(this);
+        mBtn.setOnClickListener(l ->{
+            mPb.setVisibility(View.VISIBLE);
+            mBtn.setVisibility(View.GONE);
+//                openHome();
+            mPreferenceInfo.setAppFirstLaunch(false);
+            mPreferMng.saveFirstLaunch();
+            networkSetup();
+        });
     }
 
     private OnPageChangeListener mPageListener = new OnPageChangeListener() {
@@ -172,16 +178,56 @@ public class GuideActivity extends BaseActivity implements OnClickListener {
         }
     };
 
+    private void networkSetup() {
+        RouterOAuth.INSTANCE.loginEmailRoutine("2@2.2",
+                "c81e728d9d4c2f636f067f89cc14862c",
+                Optional.empty(),
+                Optional.empty(),
+                () -> {
+                    goToMain();
+//                    RouterGourmet.INSTANCE.fetchOurChoice(null
+//                            , null
+//                            , 20
+//                            , (Gourmets gourmets) -> {
+//                        for (Gourmet gourmet : gourmets.getGourmets()) {
+//                            System.out.println(gourmet.getName());
+//                        }
+//                    }
+//                            , (String errorString) -> {
+//                        System.out.println(errorString);
+//                    });
+                },
+                () -> {
+                    System.out.println("failure");
+                    Toast.makeText(GuideActivity.this, getResources().getString(R.string.notify_net2), Toast.LENGTH_LONG).show();
+                    goToMain();
+                }
+        );
+//        Router.getOAuthModule().visitor(() -> System.err.println("Visitor Success"), null);
+//        Cache.INSTANCE.setup();
+    }
+    private void goToMain() {
+        Intent mainIntent = new Intent(getApplicationContext(),
+                MainActivity.class);
+//        mainIntent.putExtra("login_result" , loadResult) ;
+        startActivity(mainIntent);
+        finish();
+
+    }
+private boolean bKilled =false ;
     @Override
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.guide_btn:
-                openHome();
-                mPreferenceInfo.setAppFirstLaunch(false);
-                mPreferMng.saveFirstLaunch();
-                break;
-            default:
+    protected void onResume() {
+        super.onResume();
+        if(bKilled ){
+            finish() ;
         }
     }
+    //    @Override
+//    public void onClick(View view) {
+//        switch (view.getId()) {
+//            case R.id.guide_btn:
+//            default:
+//        }
+//    }
 
 }

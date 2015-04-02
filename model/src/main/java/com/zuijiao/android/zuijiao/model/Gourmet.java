@@ -89,4 +89,49 @@ public class Gourmet {
         return isPrivate;
     }
 
+    //20150401 qbxia add begin
+    public void setIsPrivate(Boolean isPrivate) {
+        this.isPrivate = isPrivate;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setImageURLs(List<String> imageURLs) {
+        this.imageURLs = imageURLs;
+    }
+
+    public void setTags(List<String> tags) {
+        this.tags = tags;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setUser(TinyUser user) {
+        this.user = user;
+    }
+
+    public void setIdentifier(Integer identifier) {
+        this.identifier = identifier;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public void setPrice(String price) {
+        this.price = price;
+    }
+
+    public void setWasMarked(Boolean wasMarked) {
+        this.wasMarked = wasMarked;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
+    //20150401 qbxia add end
 }

@@ -1,10 +1,13 @@
 package net.zuijiao.android.zuijiao;
 
+import java.util.ArrayList;
+import java.util.Random;
+
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,11 +17,16 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+import com.zuijiao.android.util.Optional;
+import com.zuijiao.android.zuijiao.model.Gourmet;
+import com.zuijiao.android.zuijiao.network.Router;
 import com.zuijiao.view.RefreshAndInitListView;
 import com.zuijiao.view.RefreshAndInitListView.MyListViewListener;
 import com.zuijiao.view.WordWrapView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class MainFragment extends Fragment implements FragmentDataListener,
 		MyListViewListener {
@@ -57,6 +65,7 @@ public class MainFragment extends Fragment implements FragmentDataListener,
 //	private BaseAdapter mContentListAdapter = new BaseAdapter() {
 //
 //	};
+	//private String[] test_label = {"我每周必吃","真是一次难忘的回忆","主人萌萌哒","强力推荐","我"};
 	private class MainAdapter extends BaseAdapter {
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
@@ -93,8 +102,8 @@ public class MainFragment extends Fragment implements FragmentDataListener,
 			} else {
 				holder = (ViewHolder) convertView.getTag();
 			}
-            Log.i("postion",position+"") ;
-            return convertView;
+
+			return convertView;
 		}
 
 		@Override
@@ -157,15 +166,68 @@ public class MainFragment extends Fragment implements FragmentDataListener,
 		}, 2000);
 	}
 
-	@Override
-	public void onLoadMore() {
+    @Override
+    public ArrayList<Object> getContentFromNetWork(String Url) {
+        return null;
+    }
+
+    @Override
+    public void NotifyData() {
+
+    }
+
+    @Override
+    public void onRefresh() {
         new Handler().postDelayed(new Runnable() {
 
             @Override
             public void run() {
-                mAdapter.notifyDataSetChanged();
-                mListView.stopLoadMore();
+                if (test_count != 0) {
+                    mTextView.setVisibility(View.GONE);
+                } else {
+                    mTextView.setVisibility(View.VISIBLE);
+                }
+                fetchData(true);
+
             }
         }, 2000);
-	}
+    }
+
+    @Override
+    public void onLoadMore() {
+        // TODO Auto-generated method stub
+        Log.i("load more", " ^ - _ - ^");
+    }
+
+    private void fetchData(Boolean isRefresh) {
+
+        List<Gourmet> tmpGourmets = mAdapter.gourmets.orElse(new ArrayList<>());
+        Integer theLastOneIdentifier = null;
+
+        if (!isRefresh) { // fetch more
+            Gourmet theLatestOne = tmpGourmets.get(tmpGourmets.size() - 1);
+            theLastOneIdentifier = theLatestOne.getIdentifier();
+        }
+
+        Router.getGourmetModule().fetchOurChoice(theLastOneIdentifier
+                , null
+                , 20
+                , gourmets ->
+        {
+            if (isRefresh) {
+                tmpGourmets.addAll(gourmets.getGourmets());
+                mAdapter.gourmets = Optional.of(tmpGourmets);
+            }
+            else {
+                mAdapter.gourmets = Optional.of(gourmets.getGourmets());
+            }
+            mAdapter.notifyDataSetChanged();
+            mListView.stopRefresh();
+        }
+                , errorMessage ->
+        {
+            mListView.stopRefresh();
+        });
+    }
+
 }

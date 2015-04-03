@@ -74,4 +74,8 @@ public enum Router {
         return RouterCommon.INSTANCE;
     }
 
+    public static RouterMessage getMessageModule() {
+        return RouterMessage.INSTANCE;
+    }
+
 }

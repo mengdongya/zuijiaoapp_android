@@ -76,6 +76,7 @@ public class SplashActivity extends BaseActivity {
                 Optional.empty(),
                 Optional.empty(),
                 () -> {
+                  //  TinyUser user = Optional.of()Router.INSTANCE.getCurrentUser() ;
                     goToMain();
 //                    RouterGourmet.INSTANCE.fetchOurChoice(null
 //                            , null

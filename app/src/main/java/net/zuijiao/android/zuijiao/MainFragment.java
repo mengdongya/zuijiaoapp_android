@@ -30,9 +30,9 @@ import java.util.List;
 
 public class MainFragment extends Fragment implements FragmentDataListener,
         MyListViewListener {
-    public static final int UNDEFINE_PAGE = 0 ;
-    public static final int MAIN_PAGE = 1 ;
-    public static final int FAVOR_PAGE = 2 ;
+    public static final int UNDEFINE_PAGE = 0;
+    public static final int MAIN_PAGE = 1;
+    public static final int FAVOR_PAGE = 2;
     private View mContentView = null;
     private RefreshAndInitListView mListView = null;
     private int test_count = 2;
@@ -42,15 +42,17 @@ public class MainFragment extends Fragment implements FragmentDataListener,
     //load url
 //    private String url = null;
     //personal favor or general main
-    private int type = UNDEFINE_PAGE ;
+    private int type = UNDEFINE_PAGE;
 
-    public MainFragment (){
+    public MainFragment() {
         super();
     }
-    public MainFragment(int Type ){
+
+    public MainFragment(int Type) {
         super();
-        this.type = Type ;
+        this.type = Type;
     }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -65,7 +67,7 @@ public class MainFragment extends Fragment implements FragmentDataListener,
         mListView.setPullLoadEnable(true);
         mListView.setListViewListener(this);
         //mListView.getmHeaderView().setState(RefreshAndInitListView.XListViewHeader.STATE_REFRESHING);
-        firstInit() ;
+        firstInit();
         return mContentView;
     }
 
@@ -75,9 +77,9 @@ public class MainFragment extends Fragment implements FragmentDataListener,
         public void onItemClick(AdapterView<?> parent, View view, int position,
                                 long id) {
             Intent intent = new Intent(getActivity(), FoodDetailActivity.class);
-            intent.putExtra("click_item_index" ,position  -1) ;
-            intent.putExtra("b_favor" ,type == FAVOR_PAGE) ;
-            Toast.makeText(getActivity().getApplicationContext() , position +"" ,Toast.LENGTH_LONG).show();
+            intent.putExtra("click_item_index", position - 1);
+            intent.putExtra("b_favor", type == FAVOR_PAGE);
+            Toast.makeText(getActivity().getApplicationContext(), position + "", Toast.LENGTH_LONG).show();
             startActivity(intent);
         }
     };
@@ -87,6 +89,7 @@ public class MainFragment extends Fragment implements FragmentDataListener,
 //	};
     private class MainAdapter extends BaseAdapter {
         Optional<List<Gourmet>> gourmets = FileManager.mainGourmet;
+
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             ViewHolder holder = null;
@@ -118,20 +121,22 @@ public class MainFragment extends Fragment implements FragmentDataListener,
                 holder.text4_user_name.setText(gourmet.getUser().getNickName());
                 holder.text_intro.setText(gourmet.getDescription());
                 //holder.text2_personal.setText(gourmet.getIsPrivate() ? "私房" : "");
-                holder.text2_personal.setVisibility(gourmet.getIsPrivate() ? View.VISIBLE :View.GONE);
+                holder.text2_personal.setVisibility(gourmet.getIsPrivate() ? View.VISIBLE : View.GONE);
                 if (gourmet.getImageURLs().size() > 0) {
                     holder.image_food.setVisibility(View.VISIBLE);
                     Picasso.with(parent.getContext())
                             .load(gourmet.getImageURLs().get(0) + "!Thumbnails")
                             .placeholder(R.drawable.empty_view_greeting)
                             .into(holder.image_food);
-                   // Picasso.with(parent.getContext()).load(gourmet.getImageURLs().get(0)).into(holder.image_food);
-                }
-                else if(gourmet.getImageURLs().size()==0){
+                    // Picasso.with(parent.getContext()).load(gourmet.getImageURLs().get(0)).into(holder.image_food);
+                } else if (gourmet.getImageURLs().size() == 0) {
                     holder.image_food.setVisibility(View.GONE);
                 }
-                if (gourmet.getUser().getAvatarURL().isPresent() && gourmet.getUser().getAvatarURL().get().length() > 5){
-                    Picasso.with(parent.getContext()).load(gourmet.getUser().getAvatarURL().get()).into(holder.image_user_head);
+                if (gourmet.getUser().getAvatarURL().isPresent() && gourmet.getUser().getAvatarURL().get().length() > 5) {
+                    Picasso.with(parent.getContext())
+                            .load(gourmet.getUser().getAvatarURL().get())
+                            .placeholder(R.drawable.default_user_head)
+                            .into(holder.image_user_head);
                 }
 
                 holder.label.removeAllViews();
@@ -219,15 +224,17 @@ public class MainFragment extends Fragment implements FragmentDataListener,
     public void NotifyData() {
 
     }
-    private void firstInit(){
+
+    private void firstInit() {
         mListView.autoResetHeadView();
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                fetchData(true) ;
+                fetchData(true);
             }
-        } , 2000) ;
+        }, 2000);
     }
+
     @Override
     public void onRefresh() {
         fetchData(true);
@@ -237,12 +244,14 @@ public class MainFragment extends Fragment implements FragmentDataListener,
     public void onLoadMore() {
         // TODO Auto-generated method stub
     }
+
     //login result ;
-    private boolean canFetch = true ;
+    private boolean canFetch = true;
+
     private void fetchData(Boolean isRefresh) {
 
         //boolean :is login status now
-        if(Router.INSTANCE.getCurrentUser().equals(Optional.empty())){
+        if (Router.INSTANCE.getCurrentUser().equals(Optional.empty())) {
             RouterOAuth.INSTANCE.loginEmailRoutine("2@2.2",
                     "c81e728d9d4c2f636f067f89cc14862c",
                     Optional.empty(),
@@ -252,14 +261,14 @@ public class MainFragment extends Fragment implements FragmentDataListener,
                     },
                     () -> {
                         System.out.println("failure");
-                        canFetch = false ;
+                        canFetch = false;
                     }
             );
         }
-        if(!canFetch){
+        if (!canFetch) {
             Toast.makeText(getActivity(), getResources().getString(R.string.notify_net2), Toast.LENGTH_LONG).show();
             mListView.stopRefresh();
-            return ;
+            return;
         }
         List<Gourmet> tmpGourmets = mAdapter.gourmets.orElse(new ArrayList<>());
         Integer theLastOneIdentifier = null;
@@ -279,14 +288,15 @@ public class MainFragment extends Fragment implements FragmentDataListener,
                 tmpGourmets.addAll(gourmets.getGourmets());
                 mAdapter.gourmets = Optional.of(tmpGourmets);
             }
-            FileManager.setGourmets(type , mAdapter.gourmets) ;
+            FileManager.setGourmets(type, mAdapter.gourmets);
             mAdapter.notifyDataSetChanged();
             DBOpenHelper.getmInstance(getActivity().getApplicationContext()).insertGourmets(gourmets);
             mListView.stopRefresh();
         }
                 //
                 , errorMessage ->
-        { Toast.makeText(getActivity(), getResources().getString(R.string.notify_net2), Toast.LENGTH_LONG).show();
+        {
+            Toast.makeText(getActivity(), getResources().getString(R.string.notify_net2), Toast.LENGTH_LONG).show();
             mListView.stopRefresh();
         });
     }

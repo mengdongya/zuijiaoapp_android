@@ -72,11 +72,21 @@
     <string name="today">今天</string>
     <string name="yesterday">昨天</string>
     <string name="beforeyesterday">前天</string>
-    <string name="format_create_time">推荐于%s</string>
     <string name="format_location">地址：%s</string>
     <string name="format_price">单价：￥%s</string>
     <string name="format_favor_person">喜欢 (%s人)</string>
     <string name="format_comment">评论 (%s条)</string>
     <string name="none_person_like">暂时还没有人喜欢</string>
     <string name="none_comment">暂时还没有人评论</string>
+    <string name="reply_to">回复%s</string>
+    <string name="reply_success">回复成功</string>
+    <string name="reply_failed">回复失败</string>
+    <string name="comment_success">评论成功</string>
+    <string name="comment_failed">评论失败</string>
+    <string name="notify_empty_comment">写点什么吧!</string>
+    <string name="on_loading">正在加载...</string>
+    <string name="reply_content">回复%s</string>
+    <string name="remove_favor">取消喜欢</string>
+    <string name="format_time">%s天前</string>
+    <string name="format_create_time">推荐于%s</string>
 </resources>

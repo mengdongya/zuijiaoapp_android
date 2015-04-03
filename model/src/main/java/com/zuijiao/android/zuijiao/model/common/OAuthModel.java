@@ -16,7 +16,7 @@ public class OAuthModel {
     @SerializedName("isNew")
     private Boolean isNew;
     @SerializedName("user")
-    private Optional<TinyUser> user;
+    private TinyUser user;
 
     @Override
     public String toString() {
@@ -40,9 +40,6 @@ public class OAuthModel {
     }
 
     public Optional<TinyUser> getUser() {
-        if (user == null) {
-            return Optional.empty();
-        }
-        return user;
+        return Optional.ofNullable(user);
     }
 }

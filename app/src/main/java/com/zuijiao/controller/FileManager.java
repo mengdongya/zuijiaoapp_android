@@ -5,6 +5,7 @@ import android.os.Environment;
 
 import com.zuijiao.android.util.Optional;
 import com.zuijiao.android.zuijiao.model.Gourmet;
+import com.zuijiao.android.zuijiao.model.user.WouldLikeToEatUsers;
 
 import net.zuijiao.android.zuijiao.MainFragment;
 
@@ -25,6 +26,8 @@ public class FileManager {
     public static Optional<List<Gourmet>> mainGourmet = Optional.empty();
     //my favor fragment data
     public static Optional<List<Gourmet>> favorGourmets = Optional.empty();
+
+    public static Optional<WouldLikeToEatUsers> tmpWouldLikeList = Optional.empty() ;
 
     private FileManager(Context context) {
         this.mContext = context;

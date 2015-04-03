@@ -124,9 +124,9 @@ public final class MainActivity extends BaseActivity {
 		mSettingList2.setOnItemClickListener(mSetting2Listener);
 		mUserInfo.setOnClickListener(mUserInfoDetail);
 		mFragmentList = new ArrayList<Fragment>();
-		mMainFragment = new MainFragment();
+		mMainFragment = new MainFragment(MainFragment.MAIN_PAGE );
 		mFragmentList.add(mMainFragment);
-		mFavorFragment = new MainFragment();
+		mFavorFragment = new MainFragment(MainFragment.FAVOR_PAGE);
 		mFragmentList.add(mFavorFragment);
 		mMsgFragment = new MessageFragment();
 		mFragmentList.add(mMsgFragment);

@@ -8,7 +8,6 @@ import android.os.Handler;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.lidroid.xutils.view.annotation.ContentView;
@@ -21,10 +20,10 @@ import com.zuijiao.controller.PreferenceManager.PreferenceInfo;
 
 @ContentView(R.layout.activity_splash)
 public class SplashActivity extends BaseActivity {
-    @ViewInject(R.id.splash_text1)
-    private TextView text1 = null;
-    @ViewInject(R.id.splash_text2)
-    private TextView text2 = null;
+//    @ViewInject(R.id.splash_text1)
+//    private TextView text1 = null;
+//    @ViewInject(R.id.splash_text2)
+//    private TextView text2 = null;
     @ViewInject(R.id.splash_progressbar)
     private ProgressBar pb = null ;
     private PreferenceManager mPreferMng = null;
@@ -33,23 +32,8 @@ public class SplashActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (VERSION.SDK_INT >= VERSION_CODES.KITKAT) {
-            getWindow().addFlags(
-                    WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            getWindow().addFlags(
-                    WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
-        }
-        int currentapiVersion = android.os.Build.VERSION.SDK_INT;
-        if (currentapiVersion >= 14) {
-            getWindow().getDecorView().setSystemUiVisibility(
-                    View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
-        }
-        //this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        initPreferenceInfo();
-        FileManager.tmpGourmets = dbMng.initGourmets() ;
-        if(mPreferInfo.isAppFirstLaunch()){
-            pb.setVisibility(View.GONE);
-        }
+
+        FileManager.mainGourmet = Optional.of(dbMng.initGourmets()) ;
         new Handler().postDelayed(new Runnable() {
 
             @Override
@@ -59,9 +43,7 @@ public class SplashActivity extends BaseActivity {
                     goToGuide();
                 } else {
                     networkSetup();
-                    //goToMain();
                 }
-                //finish() ;
             }
         }, 800);
 
@@ -98,8 +80,8 @@ public class SplashActivity extends BaseActivity {
 //                    RouterGourmet.INSTANCE.fetchOurChoice(null
 //                            , null
 //                            , 20
-//                            , (Gourmets gourmets) -> {
-//                        for (Gourmet gourmet : gourmets.getGourmets()) {
+//                            , (Gourmets mainGourmet) -> {
+//                        for (Gourmet gourmet : mainGourmet.getGourmets()) {
 //                            System.out.println(gourmet.getName());
 //                        }
 //                    }
@@ -124,7 +106,22 @@ public class SplashActivity extends BaseActivity {
 
     @Override
     protected void registeViews() {
-
+        if (VERSION.SDK_INT >= VERSION_CODES.KITKAT) {
+            getWindow().addFlags(
+                    WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            getWindow().addFlags(
+                    WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+        }
+        int currentapiVersion = android.os.Build.VERSION.SDK_INT;
+        if (currentapiVersion >= 14) {
+            getWindow().getDecorView().setSystemUiVisibility(
+                    View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
+        }
+        //this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        initPreferenceInfo();
+        if(mPreferInfo.isAppFirstLaunch()){
+            pb.setVisibility(View.GONE);
+        }
     }
 
 }

@@ -20,5 +20,6 @@
     <dimen name="main_item_content_text_size">14sp</dimen>
     <dimen name="main_item_user_head">40dip</dimen>
     <dimen name="refresh_list_head_heght">60dip</dimen>
+    <dimen name="food_detail_image_index_height">10dip</dimen>
 
 </resources>

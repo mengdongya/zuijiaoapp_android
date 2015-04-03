@@ -91,13 +91,12 @@
             <TextView
                 android:id="@+id/content_item_user_name"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_alignBottom="@+id/content_item_user_head"
-                android:layout_alignTop="@+id/content_item_user_head"
+                android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/main_item_padding"
                 android:layout_toRightOf="@+id/content_item_user_head"
                 android:gravity="center_vertical"
                 android:text="丹丹"
+                android:layout_centerVertical="true"
                 android:textColor="@color/tv_deep_gray"
                 android:textSize="@dimen/main_item_content_text_size" />
         </RelativeLayout>

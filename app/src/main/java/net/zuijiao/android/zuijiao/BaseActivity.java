@@ -23,6 +23,7 @@ public abstract class BaseActivity extends ActionBarActivity {
 	protected PreferenceInfo mPreferenceInfo = null;
 	protected FileManager mFileMng = null ;
     protected DBOpenHelper dbMng= null ;
+    protected Intent mTendIntent = null;
 	protected BroadcastReceiver mReceiver = new BroadcastReceiver() {
 		
 		@Override
@@ -44,18 +45,21 @@ public abstract class BaseActivity extends ActionBarActivity {
 		super.onCreate(savedInstanceState);
 		findViews();
 		com.lidroid.xutils.ViewUtils.inject(this);
-		registeViews();
-		IntentFilter filter = new IntentFilter() ;
-		filter.addAction(MessageDef.ACTION_LOGIN_FINISH) ;
-		filter.addAction(MessageDef.ACTION_GET_THIRD_PARTY_USER);
-		registerReceiver(mReceiver, filter) ;
-		mPreferMng = PreferenceManager.getInstance(getApplicationContext());
-		if (mPreferMng.getPreferInfo() == null) {
-			mPreferMng.initPreferenceInfo();
-		}
-		mPreferenceInfo = mPreferMng.getPreferInfo();
-		mFileMng = FileManager.getInstance(getApplicationContext());
+        mPreferMng = PreferenceManager.getInstance(getApplicationContext());
+        if (mPreferMng.getPreferInfo() == null) {
+            mPreferMng.initPreferenceInfo();
+        }
+        mPreferenceInfo = mPreferMng.getPreferInfo();
+        mFileMng = FileManager.getInstance(getApplicationContext());
         dbMng = DBOpenHelper.getmInstance(getApplicationContext());
+        if(savedInstanceState ==null){
+            mTendIntent = getIntent() ;
+        }
+		registeViews();
+        IntentFilter filter = new IntentFilter() ;
+        filter.addAction(MessageDef.ACTION_LOGIN_FINISH) ;
+        filter.addAction(MessageDef.ACTION_GET_THIRD_PARTY_USER);
+        registerReceiver(mReceiver, filter) ;
 		ActivityTask.getInstance().addActivity(this);
 	}
 	protected void onLoginFinish(){

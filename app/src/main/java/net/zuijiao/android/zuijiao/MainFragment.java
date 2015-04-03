@@ -39,16 +39,17 @@ public class MainFragment extends Fragment implements FragmentDataListener,
     private TextView mTextView = null;
     private LayoutInflater mInflater = null;
     private MainAdapter mAdapter = null;
-    private String url = null;
-    private int type = 0 ;
+    //load url
+//    private String url = null;
+    //personal favor or general main
+    private int type = UNDEFINE_PAGE ;
 
     public MainFragment (){
         super();
     }
-    public MainFragment(int Type , String url){
+    public MainFragment(int Type ){
         super();
         this.type = Type ;
-        this.url = url ;
     }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -74,7 +75,9 @@ public class MainFragment extends Fragment implements FragmentDataListener,
         public void onItemClick(AdapterView<?> parent, View view, int position,
                                 long id) {
             Intent intent = new Intent(getActivity(), FoodDetailActivity.class);
-            Toast.makeText(getActivity().getApplicationContext() , position +"" ,1000).show();
+            intent.putExtra("click_item_index" ,position  -1) ;
+            intent.putExtra("b_favor" ,type == FAVOR_PAGE) ;
+            Toast.makeText(getActivity().getApplicationContext() , position +"" ,Toast.LENGTH_LONG).show();
             startActivity(intent);
         }
     };
@@ -83,10 +86,7 @@ public class MainFragment extends Fragment implements FragmentDataListener,
 //
 //	};
     private class MainAdapter extends BaseAdapter {
-        Optional<List<Gourmet>> gourmets = FileManager.tmpGourmets == null ? Optional.empty() : Optional.of(
-                FileManager.tmpGourmets
-        );
-
+        Optional<List<Gourmet>> gourmets = FileManager.mainGourmet;
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             ViewHolder holder = null;
@@ -231,18 +231,6 @@ public class MainFragment extends Fragment implements FragmentDataListener,
     @Override
     public void onRefresh() {
         fetchData(true);
-//        new Handler().postDelayed(new Runnable() {
-//
-//            @Override
-//            public void run() {
-//                if (test_count != 0) {
-//                    mTextView.setVisibility(View.GONE);
-//                } else {
-//                    mTextView.setVisibility(View.VISIBLE);
-//                }
-//
-//            }
-//        }, 2000);
     }
 
     @Override
@@ -254,7 +242,7 @@ public class MainFragment extends Fragment implements FragmentDataListener,
     private void fetchData(Boolean isRefresh) {
 
         //boolean :is login status now
-        if(false){
+        if(Router.INSTANCE.getCurrentUser().equals(Optional.empty())){
             RouterOAuth.INSTANCE.loginEmailRoutine("2@2.2",
                     "c81e728d9d4c2f636f067f89cc14862c",
                     Optional.empty(),
@@ -270,6 +258,7 @@ public class MainFragment extends Fragment implements FragmentDataListener,
         }
         if(!canFetch){
             Toast.makeText(getActivity(), getResources().getString(R.string.notify_net2), Toast.LENGTH_LONG).show();
+            mListView.stopRefresh();
             return ;
         }
         List<Gourmet> tmpGourmets = mAdapter.gourmets.orElse(new ArrayList<>());
@@ -290,10 +279,12 @@ public class MainFragment extends Fragment implements FragmentDataListener,
                 tmpGourmets.addAll(gourmets.getGourmets());
                 mAdapter.gourmets = Optional.of(tmpGourmets);
             }
+            FileManager.setGourmets(type , mAdapter.gourmets) ;
             mAdapter.notifyDataSetChanged();
             DBOpenHelper.getmInstance(getActivity().getApplicationContext()).insertGourmets(gourmets);
             mListView.stopRefresh();
         }
+                //
                 , errorMessage ->
         { Toast.makeText(getActivity(), getResources().getString(R.string.notify_net2), Toast.LENGTH_LONG).show();
             mListView.stopRefresh();

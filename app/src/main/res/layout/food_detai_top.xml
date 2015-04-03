@@ -17,6 +17,7 @@
         tools:ignore="UselessParent" >
 
         <TextView
+            android:id="@+id/food_detai_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
@@ -25,6 +26,7 @@
             android:textSize="18sp" />
 
         <TextView
+            android:id="@+id/food_detai_isprivate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
@@ -51,6 +53,7 @@
                 android:orientation="horizontal" >
 
                 <com.zuijiao.view.RoundImageView
+                    android:id= "@+id/food_detail_head"
                     android:layout_width="50dip"
                     android:layout_height="50dip"
                     android:layout_gravity="center_vertical"
@@ -59,6 +62,7 @@
                 <TextView
                     android:layout_marginLeft="16dip"
                     android:layout_width="wrap_content"
+                    android:id="@+id/food_detail_user_name"
                     android:layout_height="wrap_content"
                     android:textColor="@color/white"
                     android:layout_gravity="center_vertical"

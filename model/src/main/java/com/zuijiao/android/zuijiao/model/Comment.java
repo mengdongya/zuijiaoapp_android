@@ -15,6 +15,15 @@ public class Comment {
     private TinyUser user;
     @SerializedName("createdAt")
     private Date postDate;
+
+    public Comment(TinyUser user, Date postDate, String detail, TinyUser replyTo, Integer identifier) {
+        this.user = user;
+        this.postDate = postDate;
+        this.detail = detail;
+        this.replyTo = replyTo;
+        this.identifier = identifier;
+    }
+
     @SerializedName("text")
     private String detail;
     @SerializedName("ID")

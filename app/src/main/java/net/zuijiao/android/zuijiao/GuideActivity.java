@@ -188,8 +188,8 @@ public class GuideActivity extends BaseActivity {
 //                    RouterGourmet.INSTANCE.fetchOurChoice(null
 //                            , null
 //                            , 20
-//                            , (Gourmets gourmets) -> {
-//                        for (Gourmet gourmet : gourmets.getGourmets()) {
+//                            , (Gourmets mainGourmet) -> {
+//                        for (Gourmet gourmet : mainGourmet.getGourmets()) {
 //                            System.out.println(gourmet.getName());
 //                        }
 //                    }

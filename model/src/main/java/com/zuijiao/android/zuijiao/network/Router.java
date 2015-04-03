@@ -36,6 +36,11 @@ public enum Router {
             .build();
 
     Optional<String> accessToken = Optional.empty();
+
+    public Optional<TinyUser> getCurrentUser() {
+        return currentUser;
+    }
+
     Optional<TinyUser> currentUser = Optional.empty();
 
     static String convertJsonFromList(List l) {

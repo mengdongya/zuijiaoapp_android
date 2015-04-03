@@ -10,14 +10,13 @@ import com.zuijiao.android.zuijiao.network.Router;
 public class TinyUser {
 
     @SerializedName("nickname")
-    private String nickName;
+    private String nickName = "test";
     @SerializedName("imageUrl")
-    private String avatarURL;
-
+    private String avatarURL  ="testurl";
 
 
     @SerializedName("ID")
-    private Integer identifier;
+    private Integer identifier = 1;
 
     public String getNickName() {
         return nickName;

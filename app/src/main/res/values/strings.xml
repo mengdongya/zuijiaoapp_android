@@ -69,4 +69,14 @@
     <string name="favor_label">%s人喜欢</string>
     <string name="comment_hint">你眼中的这道美食...</string>
     <string name="notify_net2">请检查你的网络亲...</string>
+    <string name="today">今天</string>
+    <string name="yesterday">昨天</string>
+    <string name="beforeyesterday">前天</string>
+    <string name="format_create_time">推荐于%s</string>
+    <string name="format_location">地址：%s</string>
+    <string name="format_price">单价：￥%s</string>
+    <string name="format_favor_person">喜欢 (%s人)</string>
+    <string name="format_comment">评论 (%s条)</string>
+    <string name="none_person_like">暂时还没有人喜欢</string>
+    <string name="none_comment">暂时还没有人评论</string>
 </resources>

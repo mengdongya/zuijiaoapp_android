@@ -20,9 +20,9 @@
 
         <LinearLayout
             android:id="@+id/food_detail_image_dots"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
+            android:layout_gravity="bottom|center_horizontal"
             android:layout_marginBottom="5dip"
             android:gravity="center_horizontal"
             android:orientation="horizontal"></LinearLayout>
@@ -135,13 +135,16 @@
                         android:padding="10dip">
 
                         <TextView
+                            android:id="@+id/none_person_like"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:gravity="center"
-                            android:text="暂时还没有人喜欢" />
+                            android:visibility="visible"
+                            android:text="@string/none_person_like" />
 
                         <GridView
+                            android:visibility="gone"
                             android:id="@+id/gv_favor_people"
                             android:layout_width="match_parent"
                             android:layout_height="50dip"
@@ -160,7 +163,6 @@
                         android:layout_height="wrap_content"
                         android:gravity="left|center_vertical"
                         android:padding="@dimen/main_content_item_margin_left"
-                        android:text="喜欢  0"
                         android:textColor="#888888"
                         android:textSize="15sp" />
 
@@ -170,16 +172,18 @@
                         android:padding="@dimen/main_content_item_margin_left">
 
                         <TextView
+                            android:id="@+id/none_comment_text"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:gravity="center"
-                            android:text="暂时还没有人喜欢"
-                            android:visibility="gone" />
+                            android:text="@string/none_comment"
+                            android:visibility="visible" />
 
                         <ListView
                             android:id="@+id/lv_food_detail_comment"
                             android:layout_width="wrap_content"
+                            android:visibility="gone"
                             android:layout_height="wrap_content"></ListView>
                     </FrameLayout>
                 </LinearLayout>

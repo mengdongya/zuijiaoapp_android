@@ -47,15 +47,20 @@ public class BigImageActivity extends BaseActivity {
             contentFragment.add(new PictureFragment(mImageUrls.get(i)));
         }
         ViewPagerAdapter adapter = new ViewPagerAdapter(
-                getSupportFragmentManager());
+                getSupportFragmentManager(),mImageUrls.size());
         mViewPager.setAdapter(adapter);
         mViewPager.setCurrentItem(0);
     }
 
     private class ViewPagerAdapter extends FragmentStatePagerAdapter {
-
+        private int mCount = 0 ;
         public ViewPagerAdapter(FragmentManager fm) {
             super(fm);
+        }
+
+        public ViewPagerAdapter(FragmentManager fm, int count) {
+            super(fm);
+            this.mCount = count ;
         }
 
         @Override
@@ -65,7 +70,7 @@ public class BigImageActivity extends BaseActivity {
 
         @Override
         public int getCount() {
-            return 3;
+            return mCount;
         }
 
     }

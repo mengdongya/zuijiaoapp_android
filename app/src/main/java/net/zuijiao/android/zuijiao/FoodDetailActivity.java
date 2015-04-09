@@ -359,12 +359,12 @@ public class FoodDetailActivity extends BaseActivity implements
         topHolder.mFavorBtn2.setOnClickListener(favorListener);
         floatHolder.mCreateTime1.setText(gourmet.getDate().toLocaleString());
         topHolder.mCreateTime1.setText(gourmet.getDate().toLocaleString());
-//        if (gourmet.getWasMarked()) {
-//            topHolder.mFavorBtn2.setBackground(mResource.getDrawable(R.drawable.bg_favor_marked));
-//            topHolder.mFavorBtn2.setImageResource(R.drawable.faviro_clicked);
-//            floatHolder.mFavorBtn2.setBackground(mResource.getDrawable(R.drawable.bg_favor_marked));
-//            floatHolder.mFavorBtn2.setImageResource(R.drawable.faviro_clicked);
-//        }
+        if (gourmet.getWasMarked()) {
+            topHolder.mFavorBtn2.setBackground(mResource.getDrawable(R.drawable.bg_favor_marked));
+            topHolder.mFavorBtn2.setImageResource(R.drawable.faviro_clicked);
+            floatHolder.mFavorBtn2.setBackground(mResource.getDrawable(R.drawable.bg_favor_marked));
+            floatHolder.mFavorBtn2.setImageResource(R.drawable.faviro_clicked);
+        }
         floatHolder.mFoodName1.setText(gourmet.getName());
         floatHolder.mPrivateText1.setVisibility(gourmet.getIsPrivate() ? View.VISIBLE : View.GONE);
         Picasso.with(getApplicationContext())

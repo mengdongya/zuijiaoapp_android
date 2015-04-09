@@ -55,6 +55,9 @@ class CallbackFactory<T> {
 
             @Override
             public void failure(RetrofitError error) {
+                assert(error != null);
+                assert(finalFailureCallback != null);
+                assert(finalFailureCallback.get() != null);
                 if (finalFailureCallback.isPresent()) finalFailureCallback.get().action(error.toString());
             }
         };

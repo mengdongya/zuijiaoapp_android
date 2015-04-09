@@ -78,7 +78,7 @@ public class Gourmet {
     }
 
     public Boolean getWasMarked() {
-        return wasMarked;
+        return wasMarked == null ? false : wasMarked;
     }
 
     public Date getDate() {

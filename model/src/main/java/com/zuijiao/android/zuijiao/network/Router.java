@@ -18,7 +18,8 @@ import retrofit.converter.GsonConverter;
 public enum Router {
     INSTANCE;
 
-    public static final String BaseUrl = "http://api.zuijiao.net";
+//    public static final String BaseUrl = "http://api.zuijiao.net";
+    public static final String BaseUrl = "http://xielingyu2.zuijiaodev.com";
     public static final String PicBaseUrl = "http://pic.zuijiao.net";
 
     RequestInterceptor requestInterceptor = new RequestInterceptor() {
@@ -34,6 +35,10 @@ public enum Router {
             .setEndpoint(BaseUrl)
             .setRequestInterceptor(requestInterceptor)
             .build();
+
+    public Optional<String> getAccessToken() {
+        return accessToken;
+    }
 
     Optional<String> accessToken = Optional.empty();
 

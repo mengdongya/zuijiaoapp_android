@@ -15,6 +15,7 @@ import com.lidroid.xutils.view.annotation.ViewInject;
 import com.squareup.picasso.Picasso;
 import com.zuijiao.android.zuijiao.model.user.WouldLikeToEatUser;
 import com.zuijiao.controller.FileManager;
+import com.zuijiao.db.DBOpenHelper;
 
 /**
  * Created by xiaqibo on 2015/3/30.
@@ -71,7 +72,8 @@ public class FavorPersonListActivity extends BaseActivity {
                     .load(user.getAvatarURL().get())
                     .placeholder(R.drawable.default_user_head)
                     .into(holder.head);
-            holder.location.setText(user.getCityID() + "");
+            String location = DBOpenHelper.getmInstance(getApplicationContext()).getLocationByIds(user.getProvinceID(),user.getCityID()) ;
+            holder.location.setText(location);
             holder.userName.setText(user.getNickName());
             holder.time.setText(user.getDate().toLocaleString());
             return convertView ;

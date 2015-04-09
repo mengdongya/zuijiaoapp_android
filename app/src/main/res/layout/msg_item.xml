@@ -73,10 +73,10 @@
             android:textSize="12sp" />
 
         <ImageView
-            android:id="@+id/msg_item_user_image"
+            android:id="@+id/msg_item_food_image"
             android:layout_width="match_parent"
+            android:scaleType="centerCrop"
             android:layout_height="match_parent"
-            android:padding="10dip"
             android:src="@drawable/welcome2"
             android:visibility="gone" />
     </FrameLayout>

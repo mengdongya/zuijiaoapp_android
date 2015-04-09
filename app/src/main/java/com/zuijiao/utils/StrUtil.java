@@ -1,6 +1,7 @@
 package com.zuijiao.utils;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -31,8 +32,11 @@ public class StrUtil {
 
     public static String formatTime(Date date,String res){
         Date currentDate = new Date() ;
+        Calendar calendar = Calendar.getInstance();
         if(currentDate.getYear() > date.getYear() + 1){
-            return String.format(res , )
+            return String.format(res , date.toString()) ;
+        }else if(currentDate.getYear() == date.getYear() + 1){
+
         }
         return null ;
     }

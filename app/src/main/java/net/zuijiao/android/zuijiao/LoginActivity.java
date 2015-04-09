@@ -22,7 +22,14 @@ import com.lidroid.xutils.view.annotation.ContentView;
 import com.lidroid.xutils.view.annotation.ViewInject;
 import com.tencent.mm.sdk.modelbase.BaseResp;
 import com.tencent.mm.sdk.modelmsg.SendAuth;
-import com.zuijiao.controller.ThirdPartySdkManager;
+import com.zuijiao.android.util.Optional;
+import com.zuijiao.android.zuijiao.model.user.TinyUser;
+import com.zuijiao.android.zuijiao.network.Router;
+import com.zuijiao.controller.MessageDef;
+import com.zuijiao.controller.ThirdPartySDKManager;
+import com.zuijiao.entity.AuthorInfo;
+
+import java.util.NoSuchElementException;
 
 @ContentView(R.layout.activity_login)
 public class LoginActivity extends BaseActivity implements OnClickListener {
@@ -33,8 +40,8 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 	@ViewInject(R.id.iv_qq)
 	private ImageButton mBtnQQ = null;
 	private boolean mBClicked = false;
-	private ThirdPartySdkManager mCloudMng = null;
-	private int mLoginType = ThirdPartySdkManager.CLOUD_TYPE_NONE;
+	private ThirdPartySDKManager mCloudMng = null;
+	private int mLoginType = ThirdPartySDKManager.CLOUD_TYPE_NONE;
 	private ProgressDialog mDialog = null;
 	@ViewInject(R.id.login_toolbar)
 	private Toolbar mToolbar = null;
@@ -46,13 +53,15 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 	private TextView mRegisterText = null;
 	@ViewInject(R.id.button1)
 	private Button testBtn = null ;
+    private String mEmail = null ;
+    private String mPassword = null ;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
 		setSupportActionBar(mToolbar);
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-		mCloudMng = ThirdPartySdkManager.getInstance(LoginActivity.this);
+		mCloudMng = ThirdPartySDKManager.getInstance(LoginActivity.this);
 	}
 
 	@Override
@@ -66,13 +75,6 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 		mBtnWebo.setOnClickListener(this);
 		mBtnWechat.setOnClickListener(this);
 		mRegisterText.setOnClickListener(this);
-		testBtn.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				mCloudMng.logout() ;
-			}
-		});
 		initRegisterTextview();
 	}
 
@@ -94,7 +96,43 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		if (item.getItemId() == R.id.login) {
-			Toast.makeText(getApplicationContext(), "sure", 1000).show();
+            mEmail = mEmailEdit.getText().toString().trim() ;
+            if(mEmail == null || mEmail.equals("")){
+                Toast.makeText(getApplicationContext(),getResources().getString(R.string.notify_empty_email),Toast.LENGTH_SHORT) ;
+                mEmail = "2@2.2" ;
+//                return super.onOptionsItemSelected(item) ;
+            }
+            mPassword = mPwdEdit.getText().toString().trim() ;
+            if(mPassword == null || mPassword.equals("")){
+                Toast.makeText(getApplicationContext(),getResources().getString(R.string.notify_empty_password),Toast.LENGTH_SHORT) ;
+//                return super.onOptionsItemSelected(item) ;
+                mPassword = "c81e728d9d4c2f636f067f89cc14862c" ;
+            }
+            mDialog = ProgressDialog.show(LoginActivity.this,null,getResources().getString(R.string.on_loading)) ;
+            Router.getOAuthModule().loginEmailRoutine(mEmail, mPassword, Optional.<String>empty(),Optional.<String>empty(),()->{
+                TinyUser user = Router.INSTANCE.getCurrentUser().get() ;
+                AuthorInfo auth = new AuthorInfo() ;
+                auth.setEmail(mEmail);
+                auth.setPlatform("");
+                try{
+                    auth.setHeadPath(user.getAvatarURL().get());
+                }catch (NoSuchElementException e){
+                    e.printStackTrace();
+                    auth.setHeadPath("");
+                }
+                auth.setPassword(mPassword);
+                auth.setUserName(user.getNickName());
+                mPreferMng.saveThirdPartyLoginMsg(auth);
+                Intent intent = new Intent() ;
+                intent.setAction(MessageDef.ACTION_GET_THIRD_PARTY_USER);
+                sendBroadcast(intent);
+                if(mDialog != null){
+                    mDialog.dismiss();
+                    mDialog = null ;
+                }
+            },()->{
+                Toast.makeText(getApplicationContext(),getString(R.string.notify_net2),Toast.LENGTH_LONG).show();
+            });
 		}
 		return super.onOptionsItemSelected(item);
 	}
@@ -107,13 +145,13 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 		mBClicked = true;
 		switch (v.getId()) {
 		case R.id.iv_weixin:
-			mLoginType = ThirdPartySdkManager.CLOUD_TYPE_WEIXIN;
+			mLoginType = ThirdPartySDKManager.CLOUD_TYPE_WEIXIN;
 			break;
 		case R.id.iv_weibo:
-			mLoginType = ThirdPartySdkManager.CLOUD_TYPE_WEIBO;
+			mLoginType = ThirdPartySDKManager.CLOUD_TYPE_WEIBO;
 			break;
 		case R.id.iv_qq:
-			mLoginType = ThirdPartySdkManager.CLOUD_TYPE_QQ;
+			mLoginType = ThirdPartySDKManager.CLOUD_TYPE_QQ;
 			break;
 		case R.id.tv_login_register:
 			Intent intent = new Intent(LoginActivity.this,
@@ -123,8 +161,8 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 		default:
 			break;
 		}
-		if (mLoginType != ThirdPartySdkManager.CLOUD_TYPE_NONE) {
-			mCloudMng = ThirdPartySdkManager.getInstance(LoginActivity.this);
+		if (mLoginType != ThirdPartySDKManager.CLOUD_TYPE_NONE) {
+			mCloudMng = ThirdPartySDKManager.getInstance(LoginActivity.this);
 			mCloudMng.login(mLoginType);
 		}
 	}
@@ -138,7 +176,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 	private void handleIntent(Intent intent) {
 		SendAuth.Resp resp = new SendAuth.Resp(intent.getExtras());
 		if (resp.errCode == BaseResp.ErrCode.ERR_OK) {
-			Toast.makeText(getApplicationContext(), " ", 1000).show();
+			Toast.makeText(getApplicationContext(), " ", Toast.LENGTH_SHORT).show();
 		}
 	}
 
@@ -154,25 +192,26 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 	}
 	@Override
 	protected void onResume() {
-		super.onResume();
-		mBClicked = false;
-	}
-
+        super.onResume();
+        mBClicked = false;
+    }
 	@Override
-	protected void onThirdPartyUserInfoGot() {
-		super.onThirdPartyUserInfoGot();
-		finish();
+	protected void onUserInfoGot(boolean bSuccess){
+		super.onUserInfoGot(bSuccess);
+        if(mDialog != null){
+            mDialog.dismiss();
+            mDialog= null ;
+        }
+        if(bSuccess){
+            finish();
+        }
 	}
 
 	protected void onLoginFinish() {
 		super.onLoginFinish();
-		new Thread(new Runnable() {
-			
-			@Override
-			public void run() {
-				mCloudMng.refreshThirdPartyUserInfo();
-			}
-		}).start(); 
+        if(mLoginType!= ThirdPartySDKManager.CLOUD_TYPE_WEIXIN){
+            mDialog = ProgressDialog.show(LoginActivity.this,null,getResources().getString(R.string.on_loading)) ;
+        }
 	}
 
 	private void initRegisterTextview() {

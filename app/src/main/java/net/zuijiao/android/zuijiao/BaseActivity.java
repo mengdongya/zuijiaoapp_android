@@ -14,9 +14,7 @@ import com.zuijiao.controller.FileManager;
 import com.zuijiao.controller.MessageDef;
 import com.zuijiao.controller.PreferenceManager;
 import com.zuijiao.controller.PreferenceManager.PreferenceInfo;
-import com.zuijiao.controller.ThirdPartySdkManager;
 import com.zuijiao.db.DBOpenHelper;
-import com.zuijiao.entity.ThirdPartyUserInfo;
 
 public abstract class BaseActivity extends ActionBarActivity {
 	protected PreferenceManager mPreferMng = null;
@@ -31,12 +29,14 @@ public abstract class BaseActivity extends ActionBarActivity {
 			if(intent.getAction().equals(MessageDef.ACTION_LOGIN_FINISH)){
 				onLoginFinish() ;
 			}else if(intent.getAction().equals(MessageDef.ACTION_GET_THIRD_PARTY_USER)){
-				Bundle data = intent.getBundleExtra("userinfo") ;
-				String name = data.getString("name") ;
-				ThirdPartyUserInfo userInfo = new ThirdPartyUserInfo() ;
-				userInfo.setUserName(name); 
-				ThirdPartySdkManager.getInstance(getApplicationContext()).setThirdPartyUser(userInfo);
-				onThirdPartyUserInfoGot() ;
+//				Bundle data = intent.getBundleExtra("userinfo") ;
+//				String name = data.getString("name") ;
+//                String headUrl = data.getString("head_url") ;
+//				AuthorInfo userInfo = new AuthorInfo() ;
+//				userInfo.setUserName(name);
+//                userInfo.setHeadPath(headUrl);
+//				ThirdPartySDKManager.getInstance(getApplicationContext()).setThirdPartyUser(userInfo);
+				onUserInfoGot(true) ;
 			}
 		}
 	} ;
@@ -65,7 +65,7 @@ public abstract class BaseActivity extends ActionBarActivity {
 	protected void onLoginFinish(){
 		
 	}
-	protected void onThirdPartyUserInfoGot(){
+	protected void onUserInfoGot(boolean bSuccess){
 		
 	}
 	@Override

@@ -6,6 +6,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.os.Environment;
 import android.util.Log;
 
 import com.zuijiao.android.zuijiao.model.Gourmet;
@@ -13,6 +14,11 @@ import com.zuijiao.android.zuijiao.model.Gourmets;
 import com.zuijiao.android.zuijiao.model.user.TinyUser;
 import com.zuijiao.utils.StrUtil;
 
+import net.zuijiao.android.zuijiao.R;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -27,7 +33,7 @@ public class DBOpenHelper extends SQLiteOpenHelper {
 
     private static DBOpenHelper mInstance = null;
     private static int dbVersion = 1;
-
+    private static Context mContext;
     private static final String TAG = "DBOpenHelper";
 
     public static DBOpenHelper getmInstance(Context context) {
@@ -35,6 +41,7 @@ public class DBOpenHelper extends SQLiteOpenHelper {
             mInstance = new DBOpenHelper(context);
             db = mInstance.getWritableDatabase();
         }
+        mContext = context;
         return mInstance;
     }
 
@@ -95,6 +102,74 @@ public class DBOpenHelper extends SQLiteOpenHelper {
         }
     }
 
+    static String DB_PATH = null;
+
+    public static boolean copyLocationDb(Context context) {
+        DB_PATH = "/data"
+                + Environment.getDataDirectory().getAbsolutePath() + File.separator + context.getPackageName() + File.separator + "location.db";
+        try {
+            if (!(new File(DB_PATH).exists())) {
+                InputStream is = context.getResources().openRawResource(
+                        R.raw.location);
+                FileOutputStream fos = new FileOutputStream(DB_PATH);
+                byte[] buffer = new byte[400000];
+                int count = 0;
+                while ((count = is.read(buffer)) > 0) {
+                    fos.write(buffer, 0, count);
+                }
+                fos.close();
+                is.close();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
+    public SQLiteDatabase getLocationDb() {
+        DB_PATH = "/data"
+                + Environment.getDataDirectory().getAbsolutePath() + File.separator + mContext.getPackageName() + File.separator + "location.db";
+        SQLiteDatabase db = SQLiteDatabase.openOrCreateDatabase(DB_PATH,
+                null);
+        return db;
+    }
+
+    public String getLocationByIds(int provinceId, int cityId) {
+        SQLiteDatabase db = getLocationDb();
+        String province = "";
+        String city = "";
+        synchronized (db) {
+            try {
+
+
+                Cursor cursor = db.query("location", null, "id = ? and type =?", new String[]{provinceId + "", 1 + ""}, null, null, null);
+                if (cursor != null && cursor.getCount() != 0) {
+                    cursor.moveToFirst();
+                    while (!cursor.isAfterLast()) {
+                        province = cursor.getString(cursor.getColumnIndex("name"));
+                        break;
+                    }
+                    cursor.close();
+                    cursor = null;
+                }
+                cursor = db.query("location", null, "id = ? and type =? or type = ? ", new String[]{cityId + "", 2 + "", 3 + ""}, null, null, null);
+                if (cursor != null && cursor.getCount() != 0) {
+                    cursor.moveToFirst();
+                    while (!cursor.isAfterLast()) {
+                        city = cursor.getString(cursor.getColumnIndex("name"));
+                        break;
+                    }
+                    cursor.close();
+                }
+            }catch(Throwable t){
+                t.printStackTrace();
+                return "" ;
+            }
+        }
+        return province + city;
+    }
+
     @Override
     protected void finalize() throws Throwable {
         try {
@@ -122,7 +197,6 @@ public class DBOpenHelper extends SQLiteOpenHelper {
             try {
                 db.insert(DBConstans.TABLE_GOURMET, null, values);
             } catch (Exception e) {
-                e.printStackTrace();
                 return false;
             }
         }

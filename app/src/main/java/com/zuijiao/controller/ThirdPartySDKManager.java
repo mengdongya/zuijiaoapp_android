@@ -7,7 +7,7 @@ import android.widget.Toast;
 
 import com.zuijiao.android.util.Optional;
 import com.zuijiao.android.zuijiao.network.Router;
-import com.zuijiao.entity.ThirdPartyUserInfo;
+import com.zuijiao.entity.AuthorInfo;
 import com.zuijiao.thirdopensdk.AbsSDK;
 import com.zuijiao.thirdopensdk.QQApi;
 import com.zuijiao.thirdopensdk.WeiboApi;
@@ -21,20 +21,24 @@ public class ThirdPartySDKManager implements AbsSDK.LoginListener{
 	public static final int CLOUD_TYPE_WEIXIN = 2;
 	public static final int CLOUD_TYPE_WEIBO = 3;
 
-	private Context mContext = null;
+	private static Context mContext = null;
 	private static ThirdPartySDKManager mCloudMng = null;
 	private AbsSDK mCurrentApi = null;
-	private AbsSDK mLoginApi = null;
-	private ThirdPartyUserInfo mThirdPartyUser;
 
-	private ThirdPartySDKManager(Context context) {
-		this.mContext = context;
+    public AbsSDK getmLoginApi() {
+        return mLoginApi;
+    }
+
+    private AbsSDK mLoginApi = null;
+	private AuthorInfo mThirdPartyUser;
+	private ThirdPartySDKManager() {
 	}
 
 	public static ThirdPartySDKManager getInstance(Context context) {
 		if (mCloudMng == null) {
-			mCloudMng = new ThirdPartySDKManager(context);
+			mCloudMng = new ThirdPartySDKManager();
 		}
+        mContext = context ;
 		return mCloudMng;
 	}
 
@@ -62,10 +66,22 @@ public class ThirdPartySDKManager implements AbsSDK.LoginListener{
 		}
 	}
 	
-	public void logout(){
-		if (mLoginApi != null) {
-			mLoginApi.logout();
+	public void logout(Context context){
+		if (mLoginApi  == null) {
+           String platform =  PreferenceManager.getInstance(context).getThirdPartyLoginMsg().getPlatform() ;
+            if(!isThirdParty(platform)){
+                return ;
+            }else {
+                if(platform.equals(AbsSDK.QQ)){
+                    mLoginApi = new QQApi(context) ;
+                }else if(platform.equals(AbsSDK.WEIBO)){
+                    mLoginApi = new WeiboApi(context) ;
+                }else if(platform.equals(AbsSDK.WECHAT)){
+                    mLoginApi = new WeixinApi(context) ;
+                }
+            }
 		}
+        mLoginApi.logout();
 	}
 
 	// public void onLoginResult(int requestCode, int resultCode, Intent data) {
@@ -74,14 +90,17 @@ public class ThirdPartySDKManager implements AbsSDK.LoginListener{
 	// }
 	// }
 
-	public ThirdPartyUserInfo getThirdPartyUser() {
+	public AuthorInfo getThirdPartyUser() {
 		return mThirdPartyUser;
 	}
 
-	public void setThirdPartyUser(ThirdPartyUserInfo ThirdPartyUser) {
+	public void setThirdPartyUser(AuthorInfo ThirdPartyUser) {
 		this.mThirdPartyUser = ThirdPartyUser;
 	}
-    public void onLoginFinish(ThirdPartyUserInfo user){
+    public void onLoginFinish(AuthorInfo user){
+        Intent in = new Intent() ;
+        in.setAction(MessageDef.ACTION_LOGIN_FINISH) ;
+        mContext.sendBroadcast(in);
         String userName = user.getUserName() ;
         String openid = user.getUid() ;
         String imageurl = user.getHeadPath() ;
@@ -93,11 +112,17 @@ public class ThirdPartySDKManager implements AbsSDK.LoginListener{
                         Intent intent = new Intent(
                                 MessageDef.ACTION_GET_THIRD_PARTY_USER);
                         Bundle bundle = new Bundle();
+                        bundle.putBoolean("result" ,true);
                         bundle.putString("name", userName);
                         bundle.putString("head_url", imageurl);
                         intent.putExtra("userinfo", bundle);
                         mContext.sendBroadcast(intent);
                     }, () -> {
+                        Intent intent = new Intent(
+                                MessageDef.ACTION_GET_THIRD_PARTY_USER);
+                        Bundle bundle = new Bundle();
+                        bundle.putBoolean("result" ,false);
+                        mContext.sendBroadcast(intent);
                         Toast.makeText(mContext, mContext.getResources().getString(R.string.notify_net2), Toast.LENGTH_SHORT).show();
                     });
                 }
@@ -112,4 +137,11 @@ public class ThirdPartySDKManager implements AbsSDK.LoginListener{
     public void onLoginFailed() {
 
     };
+
+    public boolean isThirdParty(String platform){
+        if(platform==null){
+            return false ;
+        }
+        return platform.equals(AbsSDK.QQ) || platform.equals(AbsSDK.WECHAT) || platform.equals(AbsSDK.WEIBO) ;
+    }
 }

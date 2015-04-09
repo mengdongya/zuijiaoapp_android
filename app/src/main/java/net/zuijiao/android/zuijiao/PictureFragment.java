@@ -1,15 +1,7 @@
 package net.zuijiao.android.zuijiao;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-
 import android.annotation.SuppressLint;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,19 +10,21 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 
+import com.squareup.picasso.Picasso;
+
 @SuppressLint("ValidFragment")
 public class PictureFragment extends Fragment {
 	private final String TAG= "PictrueFragment" ;
-	private int resId;
+	private String mImageUrl;
 	private boolean isLoaded = false;
 	private String mFilePath = null;
 	private String url = null;
 	private int count = 1;
 
 	@SuppressLint("ValidFragment")
-	public PictureFragment(int resId) {
+	public PictureFragment(String imageUrl) {
 
-		this.resId = resId;
+		this.mImageUrl = imageUrl;
 	}
 
 	@Override
@@ -41,6 +35,7 @@ public class PictureFragment extends Fragment {
 				R.layout.fragment_picture, null);
 		final ImageView imageView = (ImageView) view
 				.findViewById(R.id.scale_pic_item);
+
 		final ProgressBar progressbar = (ProgressBar) view
 				.findViewById(R.id.big_image_progressbar);
 //		try {
@@ -63,7 +58,11 @@ public class PictureFragment extends Fragment {
 //				}
 //			}, 2000);
 //		else{
-			imageView.setImageResource(resId);
+			//imageView.setImageResource(resId);
+        Picasso.with(getActivity().getApplicationContext())
+                .load(mImageUrl)
+                .placeholder(R.drawable.empty_view_greeting)
+                .into(imageView);
 			progressbar.setVisibility(View.GONE);
 //		}
 		// imageView.setImageResource(resId);

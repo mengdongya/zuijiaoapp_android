@@ -20,7 +20,7 @@
         android:name="com.zuijiao.controller.ActivityTask"
         android:allowBackup="true"
         android:icon="@drawable/icon"
-        android:label="OnePiece"
+        android:label="@string/app_name"
         android:theme="@style/AppTheme">
         <activity
             android:name="net.zuijiao.android.zuijiao.MainActivity"
@@ -63,6 +63,7 @@
             android:theme="@style/LoginTheme">
             <intent-filter>
                 <action android:name="com.sina.weibo.sdk.action.ACTION_SDK_REQ_ACTIVITY" />
+                <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
         <activity

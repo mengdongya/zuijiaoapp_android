@@ -4,7 +4,14 @@ apply plugin: 'me.tatarka.retrolambda'
 android {
     compileSdkVersion 21
     buildToolsVersion '21.1.2'
-
+    signingConfigs {
+        release {
+            storeFile file("zuijiao_key3")
+            storePassword "zuijiao123"
+            keyAlias "zuijiao"
+            keyPassword "zuijiao123"
+        }
+    }
     defaultConfig {
         applicationId "net.zuijiao.android.zuijiao"
         minSdkVersion 15
@@ -15,12 +22,14 @@ android {
     buildTypes {
         debug {
             buildConfigField "String", "BASE_URL", "\"http://xielingyu2.zuijiaodev.com\""
+            signingConfig signingConfigs.release
         }
 
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             buildConfigField "String", "BASE_URL", "\"http://api.zuijiao.net\""
+            signingConfig signingConfigs.release
         }
     }
     compileOptions {
@@ -30,6 +39,8 @@ android {
     packagingOptions {
         exclude 'LICENSE.txt'
     }
+
+
 }
 
 dependencies {

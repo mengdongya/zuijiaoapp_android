@@ -2,7 +2,7 @@ package com.zuijiao.android.zuijiao.network;
 
 import com.zuijiao.android.util.functional.LambdaExpression;
 import com.zuijiao.android.util.functional.OneParameterExpression;
-import com.zuijiao.android.zuijiao.model.message.Message;
+import com.zuijiao.android.zuijiao.model.message.Messages;
 import com.zuijiao.android.zuijiao.model.message.News;
 import com.zuijiao.android.zuijiao.model.message.NewsList;
 
@@ -41,7 +41,7 @@ public enum RouterMessage {
             , Integer sinceID
             , Integer toID
             , Integer count
-            , OneParameterExpression<Message> successCallback
+            , OneParameterExpression<Messages> successCallback
             , OneParameterExpression<String> failureCallback
     ) {
         service.message(type.index(), sinceID, toID, count, CallbackFactory.getInstance().callback(successCallback, failureCallback));

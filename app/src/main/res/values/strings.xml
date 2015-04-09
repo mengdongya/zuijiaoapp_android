@@ -29,9 +29,13 @@
     <string name="concerning_text1">发 现 最 美 的 味 道</string>
     <string name="concerning_text2">嘴      角</string>
     <string name="user_protocol">用户协议</string>
+    <string name="protocol_url">http://mobile.views.zuijiao.net/zuijiao/agreement</string>
+    <string name="team_url">http://mobile.views.zuijiao.net/zuijiao/team</string>
+    <string name="feed_back_url">http://mobile.views.zuijiao.net/zuijiao/feedback?device=%1$s&amp;token=%2$s</string>
+    <string name="share_url">http://mobile.views.zuijiao.net/zuijiao/share/cuisine</string>
     <string name="zuijiao_team">嘴角团队</string>
     <string name="wizard_page">欢迎页</string>
-    <string name="version_code">V1.0</string>
+    <string name="version_code">V%s</string>
     <string name="logout_confirm_title">是否退出登录 ？</string>
     <string name="logout">退出</string>
     <string name="logout_msg">已经退出登录</string>
@@ -89,4 +93,13 @@
     <string name="remove_favor">取消喜欢</string>
     <string name="format_time">%s天前</string>
     <string name="format_create_time">推荐于%s</string>
+    <string name="notify_empty_email">邮箱地址不能为空哦！</string>
+    <string name="notify_empty_password">密码不能为空哦！</string>
+    <string name="none_msg">暂时还没有消息 ！</string>
+    <string name="register_error_email">邮箱地址不能为空 ！</string>
+    <string name="register_error_email_format">%s不是一个有效的邮箱地址！</string>
+    <string name="register_error_name">用户名不能为空 ！</string>
+    <string name="register_error_pwd">用户密码不能为空 ！</string>
+    <string name="register_error_pwd_imsame">两次输入的密码不一样，请再确认一下 ！</string>
+    <string name="register_error_pwd_type">密码格式不对，请重新输入！</string>
 </resources>

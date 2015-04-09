@@ -21,7 +21,13 @@ import android.widget.Toast;
 import com.lidroid.xutils.view.annotation.ContentView;
 import com.lidroid.xutils.view.annotation.ViewInject;
 import com.zuijiao.android.util.Optional;
+import com.zuijiao.android.zuijiao.network.Cache;
+import com.zuijiao.android.zuijiao.network.Router;
 import com.zuijiao.android.zuijiao.network.RouterOAuth;
+import com.zuijiao.controller.PreferenceManager;
+import com.zuijiao.controller.ThirdPartySDKManager;
+import com.zuijiao.db.DBOpenHelper;
+import com.zuijiao.entity.AuthorInfo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,11 +41,12 @@ public class GuideActivity extends BaseActivity {
     @ViewInject(R.id.guide_btn)
     private Button mBtn;
     @ViewInject(R.id.guide_progressbar)
-    private ProgressBar mPb = null ;
+    private ProgressBar mPb = null;
     private List<View> viewList;
     private int[] indexIcon = {R.drawable.welcome1,
             R.drawable.wizard_index1, R.drawable.wizard_index2,
             R.drawable.wizard_index3};
+    private boolean mBCallByUser = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,15 +57,17 @@ public class GuideActivity extends BaseActivity {
             getWindow().addFlags(
                     WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
         }
-
+        if (mTendIntent != null) {
+            mBCallByUser = mTendIntent.getBooleanExtra("guide_user_call", false);
+        }
     }
 
     private void initPager() {
         viewList = new ArrayList<View>();
         int[] images = new int[]{R.drawable.welcome1, R.drawable.welcome2,
                 R.drawable.welcome3};
-        String[] textHead = getResources().getStringArray(R.array.welcome_text1) ;
-        String[] textNotes = getResources().getStringArray(R.array.welcome_text2) ;
+        String[] textHead = getResources().getStringArray(R.array.welcome_text1);
+        String[] textNotes = getResources().getStringArray(R.array.welcome_text2);
         for (int i = 0; i < images.length; i++) {
             viewList.add(initView(images[i], textHead[i], textNotes[i]));
         }
@@ -67,7 +76,7 @@ public class GuideActivity extends BaseActivity {
 
     private void initDots(int count) {
         for (int j = 0; j < count; j++) {
-            mDotsLayout.addView(initDot(),new ViewGroup.LayoutParams(10 ,10));
+            mDotsLayout.addView(initDot(), new ViewGroup.LayoutParams(10, 10));
         }
         mDotsLayout.getChildAt(0).setSelected(true);
         mDotsLayout.getChildAt(0).setBackgroundResource(R.drawable.wizard_index_selected);
@@ -138,13 +147,17 @@ public class GuideActivity extends BaseActivity {
         mPager.setAdapter(new ViewPagerAdapter(viewList));
         mPager.setOnPageChangeListener(mPageListener);
 
-        mBtn.setOnClickListener(l ->{
+        mBtn.setOnClickListener(l -> {
             mPb.setVisibility(View.VISIBLE);
             mBtn.setVisibility(View.GONE);
 //                openHome();
             mPreferenceInfo.setAppFirstLaunch(false);
             mPreferMng.saveFirstLaunch();
-            networkSetup();
+            if (!mBCallByUser) {
+                DBOpenHelper.copyLocationDb(GuideActivity.this.getApplicationContext()) ;
+                AuthorInfo auth = PreferenceManager.getInstance(getApplicationContext()).getThirdPartyLoginMsg();
+                networkSetup(auth);
+            }
         });
     }
 
@@ -178,34 +191,48 @@ public class GuideActivity extends BaseActivity {
         }
     };
 
-    private void networkSetup() {
-        RouterOAuth.INSTANCE.loginEmailRoutine("2@2.2",
-                "c81e728d9d4c2f636f067f89cc14862c",
-                Optional.empty(),
-                Optional.empty(),
-                () -> {
-                    goToMain();
-//                    RouterGourmet.INSTANCE.fetchOurChoice(null
-//                            , null
-//                            , 20
-//                            , (Gourmets mainGourmet) -> {
-//                        for (Gourmet gourmet : mainGourmet.getGourmets()) {
-//                            System.out.println(gourmet.getName());
-//                        }
-//                    }
-//                            , (String errorString) -> {
-//                        System.out.println(errorString);
-//                    });
-                },
-                () -> {
-                    System.out.println("failure");
-                    Toast.makeText(GuideActivity.this, getResources().getString(R.string.notify_net2), Toast.LENGTH_LONG).show();
-                    goToMain();
-                }
-        );
-//        Router.getOAuthModule().visitor(() -> System.err.println("Visitor Success"), null);
-//        Cache.INSTANCE.setup();
+    private void networkSetup(AuthorInfo auth) {
+
+        if (ThirdPartySDKManager.getInstance(getApplicationContext()).isThirdParty(auth.getPlatform())) {
+            Router.getOAuthModule().login(auth.getUid(), auth.getPlatform(), Optional.<String>empty(), Optional.of(auth.getToken()), () -> {
+                        //  TinyUser user = Optional.of()Router.INSTANCE.getCurrentUser() ;
+                        goToMain();
+                    },
+                    () -> {
+                        System.out.println("failure");
+                        Toast.makeText(GuideActivity.this, getResources().getString(R.string.notify_net2), Toast.LENGTH_LONG).show();
+                        goToMain();
+                    });
+        } else if ((auth.getEmail() != null) && (!auth.getEmail().equals(""))) {
+            //2@2.2
+            //c81e728d9d4c2f636f067f89cc14862c
+            RouterOAuth.INSTANCE.loginEmailRoutine(auth.getEmail(),
+                    auth.getPassword(),
+                    Optional.empty(),
+                    Optional.empty(),
+                    () -> {
+                        goToMain();
+                    },
+                    () -> {
+                        System.out.println("failure");
+                        Toast.makeText(GuideActivity.this, getResources().getString(R.string.notify_net2), Toast.LENGTH_LONG).show();
+                        goToMain();
+                    }
+            );
+
+        } else {
+            Router.getOAuthModule().visitor(() -> {
+                        goToMain();
+                    },
+                    () -> {
+                        System.out.println("failure");
+                        Toast.makeText(GuideActivity.this, getResources().getString(R.string.notify_net2), Toast.LENGTH_LONG).show();
+                        goToMain();
+                    });
+        }
+        Cache.INSTANCE.setup();
     }
+
     private void goToMain() {
         Intent mainIntent = new Intent(getApplicationContext(),
                 MainActivity.class);
@@ -214,12 +241,14 @@ public class GuideActivity extends BaseActivity {
         finish();
 
     }
-private boolean bKilled =false ;
+
+    private boolean bKilled = false;
+
     @Override
     protected void onResume() {
         super.onResume();
-        if(bKilled ){
-            finish() ;
+        if (bKilled) {
+            finish();
         }
     }
     //    @Override

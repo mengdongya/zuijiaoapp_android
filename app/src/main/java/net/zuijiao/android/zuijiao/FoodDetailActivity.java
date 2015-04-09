@@ -198,7 +198,15 @@ public class FoodDetailActivity extends BaseActivity implements
 
                 @Override
                 public void onClick(View v) {
+                    if(gourmet.getImageURLs().isEmpty()){
+                        return ;
+                    }
                     Intent intent = new Intent(FoodDetailActivity.this, BigImageActivity.class);
+                    ArrayList<String> imageUrls = new ArrayList<String>() ;
+                    for(String url :gourmet.getImageURLs()){
+                        imageUrls.add(url);
+                    }
+                    intent.putStringArrayListExtra("image_url" ,imageUrls);
                     startActivity(intent);
                 }
             });
@@ -351,12 +359,12 @@ public class FoodDetailActivity extends BaseActivity implements
         topHolder.mFavorBtn2.setOnClickListener(favorListener);
         floatHolder.mCreateTime1.setText(gourmet.getDate().toLocaleString());
         topHolder.mCreateTime1.setText(gourmet.getDate().toLocaleString());
-        if (gourmet.getWasMarked()) {
-            topHolder.mFavorBtn2.setBackground(mResource.getDrawable(R.drawable.bg_favor_marked));
-            topHolder.mFavorBtn2.setImageResource(R.drawable.faviro_clicked);
-            floatHolder.mFavorBtn2.setBackground(mResource.getDrawable(R.drawable.bg_favor_marked));
-            floatHolder.mFavorBtn2.setImageResource(R.drawable.faviro_clicked);
-        }
+//        if (gourmet.getWasMarked()) {
+//            topHolder.mFavorBtn2.setBackground(mResource.getDrawable(R.drawable.bg_favor_marked));
+//            topHolder.mFavorBtn2.setImageResource(R.drawable.faviro_clicked);
+//            floatHolder.mFavorBtn2.setBackground(mResource.getDrawable(R.drawable.bg_favor_marked));
+//            floatHolder.mFavorBtn2.setImageResource(R.drawable.faviro_clicked);
+//        }
         floatHolder.mFoodName1.setText(gourmet.getName());
         floatHolder.mPrivateText1.setVisibility(gourmet.getIsPrivate() ? View.VISIBLE : View.GONE);
         Picasso.with(getApplicationContext())
@@ -443,7 +451,7 @@ public class FoodDetailActivity extends BaseActivity implements
 
         @Override
         public int getCount() {
-            return mComments.count();
+            return mComments.getCommentList().size();
         }
 
         @Override

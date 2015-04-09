@@ -1,5 +1,6 @@
 package net.zuijiao.android.zuijiao;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -17,15 +18,20 @@ import android.widget.Toast;
 import com.squareup.picasso.Picasso;
 import com.zuijiao.android.util.Optional;
 import com.zuijiao.android.zuijiao.model.Gourmet;
+import com.zuijiao.android.zuijiao.network.Cache;
 import com.zuijiao.android.zuijiao.network.Router;
 import com.zuijiao.android.zuijiao.network.RouterOAuth;
 import com.zuijiao.controller.FileManager;
+import com.zuijiao.controller.PreferenceManager;
+import com.zuijiao.controller.ThirdPartySDKManager;
 import com.zuijiao.db.DBOpenHelper;
+import com.zuijiao.entity.AuthorInfo;
 import com.zuijiao.view.RefreshAndInitListView;
 import com.zuijiao.view.RefreshAndInitListView.MyListViewListener;
 import com.zuijiao.view.WordWrapView;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class MainFragment extends Fragment implements FragmentDataListener,
@@ -39,6 +45,7 @@ public class MainFragment extends Fragment implements FragmentDataListener,
     private TextView mTextView = null;
     private LayoutInflater mInflater = null;
     private MainAdapter mAdapter = null;
+    private Context mContext= null ;
     //load url
 //    private String url = null;
     //personal favor or general main
@@ -48,9 +55,10 @@ public class MainFragment extends Fragment implements FragmentDataListener,
         super();
     }
 
-    public MainFragment(int Type) {
+    public MainFragment(int Type,Context context) {
         super();
         this.type = Type;
+        this.mContext = context ;
     }
 
     @Override
@@ -79,7 +87,7 @@ public class MainFragment extends Fragment implements FragmentDataListener,
             Intent intent = new Intent(getActivity(), FoodDetailActivity.class);
             intent.putExtra("click_item_index", position - 1);
             intent.putExtra("b_favor", type == FAVOR_PAGE);
-            Toast.makeText(getActivity().getApplicationContext(), position + "", Toast.LENGTH_LONG).show();
+            Toast.makeText(mContext, position + "", Toast.LENGTH_LONG).show();
             startActivity(intent);
         }
     };
@@ -244,31 +252,14 @@ public class MainFragment extends Fragment implements FragmentDataListener,
     public void onLoadMore() {
         // TODO Auto-generated method stub
     }
-
-    //login result ;
-    private boolean canFetch = true;
+    private boolean bLogin = false ;
 
     private void fetchData(Boolean isRefresh) {
 
         //boolean :is login status now
-        if (Router.INSTANCE.getCurrentUser().equals(Optional.empty())) {
-            RouterOAuth.INSTANCE.loginEmailRoutine("2@2.2",
-                    "c81e728d9d4c2f636f067f89cc14862c",
-                    Optional.empty(),
-                    Optional.empty(),
-                    () -> {
-                        //login success !
-                    },
-                    () -> {
-                        System.out.println("failure");
-                        canFetch = false;
-                    }
-            );
-        }
-        if (!canFetch) {
-            Toast.makeText(getActivity(), getResources().getString(R.string.notify_net2), Toast.LENGTH_LONG).show();
-            mListView.stopRefresh();
-            return;
+        if (Router.INSTANCE.getCurrentUser().equals(Optional.empty()) && !bLogin) {
+            tryLoginFirst() ;
+            return ;
         }
         List<Gourmet> tmpGourmets = mAdapter.gourmets.orElse(new ArrayList<>());
         Integer theLastOneIdentifier = null;
@@ -276,6 +267,11 @@ public class MainFragment extends Fragment implements FragmentDataListener,
         if (!isRefresh) { // fetch more
             Gourmet theLatestOne = tmpGourmets.get(tmpGourmets.size() - 1);
             theLastOneIdentifier = theLatestOne.getIdentifier();
+        }
+        if(type == MAIN_PAGE){
+            mListView.setRefreshTime(new Date(PreferenceManager.getInstance(getActivity()).getMainLastRefreshTime()).toLocaleString());
+        }else if(type == FAVOR_PAGE){
+            mListView.setRefreshTime(new Date(PreferenceManager.getInstance(getActivity()).getFavorLastRefreshTime()).toLocaleString());
         }
         Router.getGourmetModule().fetchOurChoice(theLastOneIdentifier
                 , null
@@ -290,7 +286,12 @@ public class MainFragment extends Fragment implements FragmentDataListener,
             }
             FileManager.setGourmets(type, mAdapter.gourmets);
             mAdapter.notifyDataSetChanged();
-            DBOpenHelper.getmInstance(getActivity().getApplicationContext()).insertGourmets(gourmets);
+            DBOpenHelper.getmInstance(mContext).insertGourmets(gourmets);
+            if(type == MAIN_PAGE){
+                PreferenceManager.getInstance(mContext).saveMainLastRefreshTime(new Date().getTime());
+            }else if(type == FAVOR_PAGE){
+                PreferenceManager.getInstance(mContext).saveFavorLastRefreshTime(new Date().getTime());
+            }
             mListView.stopRefresh();
         }
                 //
@@ -299,6 +300,44 @@ public class MainFragment extends Fragment implements FragmentDataListener,
             Toast.makeText(getActivity(), getResources().getString(R.string.notify_net2), Toast.LENGTH_LONG).show();
             mListView.stopRefresh();
         });
+    }
+    private void tryLoginFirst(){
+        AuthorInfo auth = PreferenceManager.getInstance(mContext).getThirdPartyLoginMsg();
+        if (ThirdPartySDKManager.getInstance(mContext).isThirdParty(auth.getPlatform())) {
+            Router.getOAuthModule().login(auth.getUid(), auth.getPlatform(), Optional.<String>empty(), Optional.of(auth.getToken()), () -> {
+                        fetchData(true);
+                    },
+                    () -> {
+                        System.out.println("failure");
+                        Toast.makeText(getActivity(), getResources().getString(R.string.notify_net2), Toast.LENGTH_LONG).show();
+                    });
+        } else if ((auth.getEmail() != null) && (!auth.getEmail().equals(""))) {
+            //2@2.2
+            //c81e728d9d4c2f636f067f89cc14862c
+            RouterOAuth.INSTANCE.loginEmailRoutine(auth.getEmail(),
+                    auth.getPassword(),
+                    Optional.empty(),
+                    Optional.empty(),
+                    () -> {
+                        fetchData(true);
+                    },
+                    () -> {
+                        System.out.println("failure");
+                        Toast.makeText(getActivity(), getResources().getString(R.string.notify_net2), Toast.LENGTH_LONG).show();
+                    }
+            );
+
+        } else {
+            Router.getOAuthModule().visitor(() -> {
+                        bLogin  = true ;
+                        fetchData(true);
+                    },
+                    () -> {
+                        System.out.println("failure");
+                        Toast.makeText(getActivity(), getResources().getString(R.string.notify_net2), Toast.LENGTH_LONG).show();
+                    });
+        }
+        Cache.INSTANCE.setup();
     }
 
 }

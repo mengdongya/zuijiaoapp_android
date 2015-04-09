@@ -22,8 +22,8 @@ public abstract interface IRouterOAuth {
     @POST(RootURL + "/login")
     void login(@Field("openId") String openID
             , @Field("platform") String platform
-            , @Field("openToken") String openToken
             , @Field("deviceToken") String deviceToken
+            , @Field("openToken") String openToken
             , @FieldMap Map<String, String> oauthParam
             , Callback<OAuthModel> callback);
 
@@ -38,18 +38,18 @@ public abstract interface IRouterOAuth {
 
     @FormUrlEncoded
     @POST(RootURL + "/ios/register")
-    void register(@Field("name") String name
+    void register(@Field("nickname") String name
             , @Field("imageUrl") String avatarURL
             , @Field("openId") String openID
             , @Field("platform") String platform
-            , @Field("openToken") String openToken
             , @Field("deviceToken") String deviceToken
+            , @Field("openToken") String openToken
             , @FieldMap Map<String, String> oauthParam
             , Callback<OAuthModel> callback);
 
     @FormUrlEncoded
     @POST(RootURL + "/ios/register")
-    OAuthModel register(@Field("name") String name
+    OAuthModel register(@Field("nickname") String name
             , @Field("imageUrl") String avatarURL
             , @Field("openId") String openID
             , @Field("platform") String platform

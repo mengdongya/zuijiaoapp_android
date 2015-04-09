@@ -141,12 +141,17 @@ public class FoodDetailActivity extends BaseActivity implements
         try {
             int index = mTendIntent.getIntExtra("click_item_index", -1);
             boolean fromFavor = mTendIntent.getBooleanExtra("b_favor", false);
-            gourmet = mFileMng.getItem(fromFavor, index);
+            if(index == -1 && fromFavor ==false ){
+                gourmet = FileManager.tmpMessageGourmet ;
+            }else{
+                gourmet = mFileMng.getItem(fromFavor, index);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
         if (gourmet == null) {
             this.finish();
+            return ;
         }
         mResource = getResources();
         setSupportActionBar(mToolbar);
@@ -359,12 +364,12 @@ public class FoodDetailActivity extends BaseActivity implements
         topHolder.mFavorBtn2.setOnClickListener(favorListener);
         floatHolder.mCreateTime1.setText(gourmet.getDate().toLocaleString());
         topHolder.mCreateTime1.setText(gourmet.getDate().toLocaleString());
-//        if (gourmet.getWasMarked()) {
-//            topHolder.mFavorBtn2.setBackground(mResource.getDrawable(R.drawable.bg_favor_marked));
-//            topHolder.mFavorBtn2.setImageResource(R.drawable.faviro_clicked);
-//            floatHolder.mFavorBtn2.setBackground(mResource.getDrawable(R.drawable.bg_favor_marked));
-//            floatHolder.mFavorBtn2.setImageResource(R.drawable.faviro_clicked);
-//        }
+        if (gourmet.getWasMarked()) {
+            topHolder.mFavorBtn2.setBackground(mResource.getDrawable(R.drawable.bg_favor_marked));
+            topHolder.mFavorBtn2.setImageResource(R.drawable.faviro_clicked);
+            floatHolder.mFavorBtn2.setBackground(mResource.getDrawable(R.drawable.bg_favor_marked));
+            floatHolder.mFavorBtn2.setImageResource(R.drawable.faviro_clicked);
+        }
         floatHolder.mFoodName1.setText(gourmet.getName());
         floatHolder.mPrivateText1.setVisibility(gourmet.getIsPrivate() ? View.VISIBLE : View.GONE);
         Picasso.with(getApplicationContext())

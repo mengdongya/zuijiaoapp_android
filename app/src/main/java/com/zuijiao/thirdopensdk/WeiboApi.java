@@ -21,7 +21,7 @@ import com.zuijiao.controller.MessageDef;
 import com.zuijiao.entity.AuthorInfo;
 
 public class WeiboApi extends AbsSDK {
-	protected final String WEIBO_PWD = "";
+	protected final String WEIBO_PWD = "07bb6cb0e7a3db40fbb98ac8d2cf43d5";
 	private AuthInfo mAuthInfo = null;
 	private SsoHandler mSsoHandler;
 	private Context mContext = null;
@@ -45,7 +45,7 @@ public class WeiboApi extends AbsSDK {
 					SCOPE);
 		}
 		mSsoHandler = new SsoHandler((Activity) mContext, mAuthInfo);
-		mSsoHandler.authorizeClientSso(new WeiboAuthListener() {
+		mSsoHandler.authorize(new WeiboAuthListener() {
 
             @Override
             public void onCancel() {

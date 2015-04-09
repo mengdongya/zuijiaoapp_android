@@ -54,6 +54,7 @@ public class SplashActivity extends BaseActivity {
                     DBOpenHelper.copyLocationDb(SplashActivity.this.getApplicationContext()) ;
                     AuthorInfo auth = PreferenceManager.getInstance(getApplicationContext()).getThirdPartyLoginMsg();
                     networkSetup(auth);
+
                 }
             }
         }, 800);

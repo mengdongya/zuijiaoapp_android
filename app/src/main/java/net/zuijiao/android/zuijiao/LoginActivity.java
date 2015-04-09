@@ -186,12 +186,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 		// mCloudMng.onLoginResult(requestCode, resultCode, data);
 	}
 	@Override
-	protected void onPause() {
-		// TODO Auto-generated method stub
-		super.onPause();
-	}
-	@Override
-	protected void onResume() {
+	public void onResume() {
         super.onResume();
         mBClicked = false;
     }

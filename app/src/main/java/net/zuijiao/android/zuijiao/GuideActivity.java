@@ -245,7 +245,7 @@ public class GuideActivity extends BaseActivity {
     private boolean bKilled = false;
 
     @Override
-    protected void onResume() {
+    public void onResume() {
         super.onResume();
         if (bKilled) {
             finish();

@@ -102,4 +102,8 @@
     <string name="register_error_pwd">用户密码不能为空 ！</string>
     <string name="register_error_pwd_imsame">两次输入的密码不一样，请再确认一下 ！</string>
     <string name="register_error_pwd_type">密码格式不对，请重新输入！</string>
+    <string name="no_more">没有更多了！</string>
+    <string name="update_hint">新的版本来了！</string>
+    <string name="update_ok">更新</string>
+    <string name="dialog_no">放弃</string>
 </resources>

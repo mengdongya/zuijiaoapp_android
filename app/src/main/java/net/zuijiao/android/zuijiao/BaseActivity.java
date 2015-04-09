@@ -17,34 +17,28 @@ import com.zuijiao.controller.PreferenceManager.PreferenceInfo;
 import com.zuijiao.db.DBOpenHelper;
 
 public abstract class BaseActivity extends ActionBarActivity {
-	protected PreferenceManager mPreferMng = null;
-	protected PreferenceInfo mPreferenceInfo = null;
-	protected FileManager mFileMng = null ;
-    protected DBOpenHelper dbMng= null ;
+    protected PreferenceManager mPreferMng = null;
+    protected PreferenceInfo mPreferenceInfo = null;
+    protected FileManager mFileMng = null;
+    protected DBOpenHelper dbMng = null;
     protected Intent mTendIntent = null;
-	protected BroadcastReceiver mReceiver = new BroadcastReceiver() {
-		
-		@Override
-		public void onReceive(Context context, Intent intent) {
-			if(intent.getAction().equals(MessageDef.ACTION_LOGIN_FINISH)){
-				onLoginFinish() ;
-			}else if(intent.getAction().equals(MessageDef.ACTION_GET_THIRD_PARTY_USER)){
-//				Bundle data = intent.getBundleExtra("userinfo") ;
-//				String name = data.getString("name") ;
-//                String headUrl = data.getString("head_url") ;
-//				AuthorInfo userInfo = new AuthorInfo() ;
-//				userInfo.setUserName(name);
-//                userInfo.setHeadPath(headUrl);
-//				ThirdPartySDKManager.getInstance(getApplicationContext()).setThirdPartyUser(userInfo);
-				onUserInfoGot(true) ;
-			}
-		}
-	} ;
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		findViews();
-		com.lidroid.xutils.ViewUtils.inject(this);
+    protected BroadcastReceiver mReceiver = new BroadcastReceiver() {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals(MessageDef.ACTION_LOGIN_FINISH)) {
+                onLoginFinish();
+            } else if (intent.getAction().equals(MessageDef.ACTION_GET_THIRD_PARTY_USER)) {
+                onUserInfoGot(true);
+            }
+        }
+    };
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        findViews();
+        com.lidroid.xutils.ViewUtils.inject(this);
         mPreferMng = PreferenceManager.getInstance(getApplicationContext());
         if (mPreferMng.getPreferInfo() == null) {
             mPreferMng.initPreferenceInfo();
@@ -52,59 +46,73 @@ public abstract class BaseActivity extends ActionBarActivity {
         mPreferenceInfo = mPreferMng.getPreferInfo();
         mFileMng = FileManager.getInstance(getApplicationContext());
         dbMng = DBOpenHelper.getmInstance(getApplicationContext());
-        if(savedInstanceState ==null){
-            mTendIntent = getIntent() ;
+        if (savedInstanceState == null) {
+            mTendIntent = getIntent();
         }
-		registeViews();
-        IntentFilter filter = new IntentFilter() ;
-        filter.addAction(MessageDef.ACTION_LOGIN_FINISH) ;
+        registeViews();
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(MessageDef.ACTION_LOGIN_FINISH);
         filter.addAction(MessageDef.ACTION_GET_THIRD_PARTY_USER);
-        registerReceiver(mReceiver, filter) ;
-		ActivityTask.getInstance().addActivity(this);
-	}
-	protected void onLoginFinish(){
-		
-	}
-	protected void onUserInfoGot(boolean bSuccess){
-		
-	}
-	@Override
-	protected void onDestroy() {
-		super.onDestroy();
-		unregisterReceiver(mReceiver);
-		ActivityTask.getInstance().removeActivity(this);
-	}
-	@Override
-	protected void onStop() {
-		super.onStop();
-	}
-	
-	@Override
-	protected void onSaveInstanceState(Bundle outState) {
-		super.onSaveInstanceState(outState);
-	}
+        registerReceiver(mReceiver, filter);
+        ActivityTask.getInstance().addActivity(this);
+    }
 
-	@Override
-	public void onConfigurationChanged(Configuration newConfig) {
-		super.onConfigurationChanged(newConfig);
-	}
+    public void onResume() {
+        super.onResume();
+      //  MobclickAgent.onResume(this);
+    }
 
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		if (item.getItemId() == android.R.id.home) {
-			finish();
-			return true;
-		}
-		return super.onOptionsItemSelected(item);
-	}
+    public void onPause() {
+        super.onPause();
+       // MobclickAgent.onPause(this);
+    }
 
-	@Override
-	public void onBackPressed() {
-		super.onBackPressed();
-	}
+    protected void onLoginFinish() {
 
-	@Deprecated
-	protected abstract void findViews();
+    }
 
-	protected abstract void registeViews();
+    protected void onUserInfoGot(boolean bSuccess) {
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(mReceiver);
+        ActivityTask.getInstance().removeActivity(this);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+    }
+
+    @Deprecated
+    protected abstract void findViews();
+
+    protected abstract void registeViews();
 }

@@ -67,8 +67,7 @@ public class DBOpenHelper extends SQLiteOpenHelper {
                     + DBConstans.COLUMN_GOURMET_TAG + " TEXT,"
                     + DBConstans.COLUMN_GOURMET_USER_ID + " INTEGER);");
             db.execSQL("CREATE TABLE " + DBConstans.TABLE_GOURMET_IMAGE + " ("
-                    + DBConstans.COLUMN_USER_ID + " INTEGER,"
-                    + DBConstans.COLUMN_GOURMET_IMAGE_LOCAL_PATH + " TEXT,"
+                    + DBConstans.COLUMN_GOURMET_ID + " INTEGER,"
                     + DBConstans.COLUMN_GOURMET_IMAGE_SERVER_PATH + " TEXT);");
             db.execSQL("CREATE TABLE " + DBConstans.TABLE_USER + " ("
                     + DBConstans.COLUMN_USER_ID + " INTEGER,"
@@ -127,7 +126,7 @@ public class DBOpenHelper extends SQLiteOpenHelper {
         return true;
     }
 
-    public SQLiteDatabase getLocationDb() {
+    private SQLiteDatabase getLocationDb() {
         DB_PATH = "/data"
                 + Environment.getDataDirectory().getAbsolutePath() + File.separator + mContext.getPackageName() + File.separator + "location.db";
         SQLiteDatabase db = SQLiteDatabase.openOrCreateDatabase(DB_PATH,
@@ -210,16 +209,30 @@ public class DBOpenHelper extends SQLiteOpenHelper {
                 return false;
             } else {
                 insertUserInfo(gourmet.getUser());
+                insertImageUrl(gourmet.getIdentifier(), gourmet.getImageURLs()) ;
                 continue;
             }
         }
         return true;
     }
 
-
+    private void insertImageUrl(int id ,List<String> urls){
+        try{
+            synchronized (db){
+                db.delete(DBConstans.TABLE_GOURMET_IMAGE,DBConstans.COLUMN_GOURMET_ID + "= ?" ,new String[]{id+""}) ;
+                for(String url : urls){
+                    ContentValues values = new ContentValues() ;
+                    values.put(DBConstans.COLUMN_GOURMET_ID ,id);
+                    values.put(DBConstans.COLUMN_GOURMET_IMAGE_SERVER_PATH , url);
+                    db.insert(DBConstans.TABLE_GOURMET_IMAGE,null,values);
+                }
+            }
+        }catch (Throwable t){
+            t.printStackTrace();
+        }
+    }
     public boolean initGourmet(String identify) {
         try {
-
             synchronized (db) {
                 Cursor cursor = db.query(DBConstans.TABLE_GOURMET, null, DBConstans.COLUMN_GOURMET_ID + "=?", new String[]{identify}, null, null, null);
                 if (cursor == null || cursor.getCount() <= 0) {
@@ -237,8 +250,6 @@ public class DBOpenHelper extends SQLiteOpenHelper {
                     String price = cursor.getString(cursor.getColumnIndex(DBConstans.COLUMN_GOURMET_PRICE));
                     List<String> tags = StrUtil.retriveTags(cursor.getString(cursor.getColumnIndex(DBConstans.COLUMN_GOURMET_TAG)));
                     String userId = cursor.getString(cursor.getColumnIndex(DBConstans.COLUMN_GOURMET_USER_ID));
-
-
                 }
             }
         } catch (Exception e) {
@@ -252,7 +263,7 @@ public class DBOpenHelper extends SQLiteOpenHelper {
         try {
 
             synchronized (db) {
-                Cursor cursor = db.query(DBConstans.TABLE_GOURMET, null, null, null, null, null, null);
+                Cursor cursor = db.query(DBConstans.TABLE_GOURMET, null, null, null, null, null,  DBConstans.COLUMN_GOURMET_ID);
                 if (cursor != null && cursor.getCount() > 0) {
                     List<Gourmet> tmpGourmets = new ArrayList<Gourmet>();
                     cursor.moveToFirst();
@@ -291,8 +302,19 @@ public class DBOpenHelper extends SQLiteOpenHelper {
     }
 
     private List<String> getImageUrls(int gourmetId) {
-        //todo
-        return new ArrayList<String>();
+        List<String >imageUrl = new ArrayList<String>() ;
+        Cursor c = db.query(DBConstans.TABLE_GOURMET_IMAGE,new String[]{DBConstans.COLUMN_GOURMET_IMAGE_SERVER_PATH},DBConstans.COLUMN_GOURMET_ID + "= ?" , new String[]{gourmetId+""} ,null ,null, null) ;
+        if(c != null && c.getCount() >0){
+            c.moveToFirst() ;
+            while(!c.isAfterLast()){
+                String url = c.getString(c.getColumnIndex(DBConstans.COLUMN_GOURMET_IMAGE_SERVER_PATH)) ;
+                if(url!=null){
+                    imageUrl.add(url);
+                }
+                c.moveToNext() ;
+            }
+        }
+        return imageUrl;
     }
 
 

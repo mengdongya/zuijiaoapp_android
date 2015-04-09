@@ -71,7 +71,7 @@
                     android:layout_gravity="center"
                     android:layout_marginTop="15dip"
                     android:text="Jordan"
-                    android:textColor="@color/tv_deep_gray"
+                    android:textColor="@color/white"
                     android:textSize="18sp" />
             </LinearLayout>
         </ViewSwitcher>

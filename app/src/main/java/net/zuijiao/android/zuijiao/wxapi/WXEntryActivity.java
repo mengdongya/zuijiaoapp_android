@@ -13,6 +13,7 @@ import com.tencent.mm.sdk.modelbase.BaseResp;
 import com.tencent.mm.sdk.modelmsg.SendAuth.Resp;
 import com.tencent.mm.sdk.openapi.IWXAPI;
 import com.tencent.mm.sdk.openapi.IWXAPIEventHandler;
+import com.umeng.analytics.MobclickAgent;
 import com.zuijiao.android.util.Optional;
 import com.zuijiao.android.zuijiao.network.Router;
 import com.zuijiao.controller.MessageDef;
@@ -87,6 +88,7 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
                     url = String.format("https://api.weixin.qq.com/sns/oauth2/access_token?appid=%s&secret=%s&code=%s&grant_type=authorization_code", new String[]{WEIXIN_ID, WEIXIN_PWD, code});
                     final HttpClient client = new DefaultHttpClient();
                     final HttpGet httpget = new HttpGet(url);
+                    httpget.setHeader("encoding","UTF-8");
                     new Thread(new Runnable() {
 
                         @Override
@@ -95,6 +97,7 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
                             try {
                                 HttpResponse response = client.execute(httpget);
                                 HttpEntity entity = response.getEntity();
+                                org.apache.http.Header head =entity.getContentEncoding() ;
                                 String strResult1 = EntityUtils.toString(response
                                         .getEntity());
                                 JSONObject jsonObject1 = null;
@@ -112,9 +115,9 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
                                 HttpGet httpget1 = new HttpGet(url);
                                 response = client.execute(httpget1);
                                 strResult1 = EntityUtils.toString(response
-                                        .getEntity());
+                                        .getEntity(),"UTF-8");
                                 jsonObject1 = getJSON(strResult1);
-                                String nickname = jsonObject1.getString("nickname");
+                                String nickname = new String(jsonObject1.getString("nickname").getBytes() ,"utf-8");
                                 String headimgurl = jsonObject1
                                         .getString("headimgurl");
                                 Router.getOAuthModule().register(nickname, headimgurl, openid, "wechat", Optional.<String>empty(), Optional.of(mRereshToken), () -> {
@@ -198,4 +201,14 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
         setIntent(intent);
         mApi.handleIntent(intent, this);
     }
+    public void onResume() {
+        super.onResume();
+        MobclickAgent.onResume(this);
+    }
+
+    public void onPause() {
+        super.onPause();
+        MobclickAgent.onPause(this);
+    }
+
 }

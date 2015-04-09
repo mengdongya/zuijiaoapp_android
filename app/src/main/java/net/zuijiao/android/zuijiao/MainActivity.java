@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -35,6 +36,9 @@ import com.lidroid.xutils.view.annotation.ContentView;
 import com.lidroid.xutils.view.annotation.ViewInject;
 import com.readystatesoftware.viewbadger.BadgeView;
 import com.squareup.picasso.Picasso;
+import com.umeng.update.UmengUpdateAgent;
+import com.umeng.update.UmengUpdateListener;
+import com.umeng.update.UpdateResponse;
 import com.zuijiao.android.util.Optional;
 import com.zuijiao.android.zuijiao.model.user.TinyUser;
 import com.zuijiao.android.zuijiao.network.Router;
@@ -119,18 +123,18 @@ public final class MainActivity extends BaseActivity {
         if (user.isPresent()) {
             mViewSwitcher.showNext();
             mThirdPartyUserName.setText(user.get().getNickName());
-            try{
+            try {
 
                 Picasso.with(getApplicationContext())
                         .load(user.get().getAvatarURL().get())
                         .placeholder(R.drawable.default_user_head)
                         .into(mThirdPartyUserHead);
-            }catch (Exception e){
+            } catch (Exception e) {
                 mThirdPartyUserHead.setImageResource(R.drawable.default_user_head);
             }
             settingStr = getResources()
-                        .getStringArray(
-                                R.array.settings1);
+                    .getStringArray(
+                            R.array.settings1);
             mSettingList2
                     .setAdapter(new ArrayAdapter<String>(
                             MainActivity.this,
@@ -155,11 +159,11 @@ public final class MainActivity extends BaseActivity {
         mSettingList.setOnItemClickListener(mSetting1Listener);
         mUserInfo.setOnClickListener(mUserInfoDetail);
         mFragmentList = new ArrayList<Fragment>();
-        mMainFragment = new MainFragment(MainFragment.MAIN_PAGE,MainActivity.this);
+        mMainFragment = new MainFragment(MainFragment.MAIN_PAGE, MainActivity.this);
         mFragmentList.add(mMainFragment);
-        mFavorFragment = new MainFragment(MainFragment.FAVOR_PAGE,MainActivity.this);
+        mFavorFragment = new MainFragment(MainFragment.FAVOR_PAGE, MainActivity.this);
         mFragmentList.add(mFavorFragment);
-        mMsgFragment = new MessageFragment();
+        mMsgFragment = new MessageFragment(MainActivity.this);
         mFragmentList.add(mMsgFragment);
         mFragmentMng = getSupportFragmentManager();
         mFragmentTransaction = mFragmentMng.beginTransaction();
@@ -167,6 +171,7 @@ public final class MainActivity extends BaseActivity {
                 mFragmentList.get(0));
         mFragmentTransaction.commit();
         mToolBar.setTitle(titles[0]);
+        checkVersion();
     }
 
     private OnClickListener mLocationListener = new OnClickListener() {
@@ -429,5 +434,48 @@ public final class MainActivity extends BaseActivity {
                             android.R.layout.simple_list_item_1,
                             settingStr));
         }
+    }
+
+    private void checkVersion() {
+        UmengUpdateAgent.setUpdateOnlyWifi(true);
+        UmengUpdateAgent.setUpdateAutoPopup(false);
+        UmengUpdateAgent.setUpdateListener(new UmengUpdateListener() {
+
+            @Override
+            public void onUpdateReturned(int updateStatus,
+                                         UpdateResponse updateInfo) {
+                if (updateStatus == 0 && updateInfo != null) {
+                    showUpdateDialog(updateInfo.path, updateInfo.updateLog);
+                }
+                // case 0: // has update
+                // case 1: // has no update
+                // case 2: // none wifi
+                // case 3: // time out
+            }
+        });
+
+        UmengUpdateAgent.update(this);
+    }
+
+    private void showUpdateDialog(final String downloadUrl, final String message) {
+        AlertDialog.Builder updateAlertDialog = new AlertDialog.Builder(this);
+        updateAlertDialog.setIcon(R.drawable.icon);
+        updateAlertDialog.setTitle(R.string.app_name);
+        updateAlertDialog.setMessage(getString(R.string.update_hint, message));
+        updateAlertDialog.setNegativeButton(R.string.update_ok,
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        try {
+                            startActivity(new Intent(Intent.ACTION_VIEW, Uri
+                                    .parse(downloadUrl)));
+                        } catch (Exception ex) {
+
+                        }
+                    }
+                }).setPositiveButton(R.string.dialog_no, null);
+        if (!isFinishing())
+            updateAlertDialog.show();
     }
 }

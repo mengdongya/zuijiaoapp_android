@@ -18,6 +18,7 @@ import android.widget.Toast;
 import com.squareup.picasso.Picasso;
 import com.zuijiao.android.util.Optional;
 import com.zuijiao.android.zuijiao.model.Gourmet;
+import com.zuijiao.android.zuijiao.model.user.TinyUser;
 import com.zuijiao.android.zuijiao.network.Cache;
 import com.zuijiao.android.zuijiao.network.Router;
 import com.zuijiao.android.zuijiao.network.RouterOAuth;
@@ -45,7 +46,7 @@ public class MainFragment extends Fragment implements FragmentDataListener,
     private TextView mTextView = null;
     private LayoutInflater mInflater = null;
     private MainAdapter mAdapter = null;
-    private Context mContext= null ;
+    private Context mContext = null;
     //load url
 //    private String url = null;
     //personal favor or general main
@@ -55,10 +56,10 @@ public class MainFragment extends Fragment implements FragmentDataListener,
         super();
     }
 
-    public MainFragment(int Type,Context context) {
+    public MainFragment(int Type, Context context) {
         super();
         this.type = Type;
-        this.mContext = context ;
+        this.mContext = context;
     }
 
     @Override
@@ -195,33 +196,6 @@ public class MainFragment extends Fragment implements FragmentDataListener,
     public ArrayList<Object> initCache(int type) {
         return null;
     }
-//
-//	@Override
-//	public ArrayList<Object> getContentFromNetWork(String Url) {
-//		return null;
-//	}
-
-//	@Override
-//	public void NotifyData() {
-//
-//	}
-
-//	@Override
-//	public void onRefresh() {
-//		new Handler().postDelayed(new Runnable() {
-//
-//			@Override
-//			public void run() {
-//				if (test_count != 0) {
-//					mTextView.setVisibility(View.GONE);
-//				} else {
-//					mTextView.setVisibility(View.VISIBLE);
-//				}
-//				mAdapter.notifyDataSetChanged();
-//				mListView.stopRefresh();
-//			}
-//		}, 2000);
-//	}
 
     @Override
     public ArrayList<Object> getContentFromNetWork(String Url) {
@@ -238,28 +212,104 @@ public class MainFragment extends Fragment implements FragmentDataListener,
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                fetchData(true);
+
+                if (type == MAIN_PAGE) {
+                    fetchCommmonData(true);
+                } else if (type == FAVOR_PAGE) {
+                    fetchFavorData(true);
+                }
             }
-        }, 2000);
+        },450);
     }
 
     @Override
     public void onRefresh() {
-        fetchData(true);
+        if (type == MAIN_PAGE) {
+            fetchCommmonData(true);
+        } else if (type == FAVOR_PAGE) {
+            fetchFavorData(true);
+        }
     }
 
     @Override
     public void onLoadMore() {
-        // TODO Auto-generated method stub
+        if (type == MAIN_PAGE) {
+            fetchCommmonData(false);
+        } else if (type == FAVOR_PAGE) {
+            fetchFavorData(false);
+        }
     }
-    private boolean bLogin = false ;
 
-    private void fetchData(Boolean isRefresh) {
+    private boolean bLogin = false;
+
+    private void fetchFavorData(Boolean isRefresh) {
+        if (Router.INSTANCE.getCurrentUser().equals(Optional.empty())) {
+            mAdapter.gourmets.get().clear();
+            mAdapter.notifyDataSetChanged();
+            if (isRefresh) {
+                mListView.stopRefresh();
+            } else {
+                mListView.stopLoadMore();
+            }
+            Toast.makeText(mContext, getString(R.string.notify_unlogin), Toast.LENGTH_LONG).show();
+            return;
+        }
+        TinyUser user = Router.INSTANCE.getCurrentUser().get();
+        List<Gourmet> tmpGourmets = mAdapter.gourmets.orElse(new ArrayList<>());
+        Integer theLastOneIdentifier = null;
+
+        if (!isRefresh) { // fetch more
+            Gourmet theLatestOne = tmpGourmets.get(tmpGourmets.size() - 1);
+            theLastOneIdentifier = theLatestOne.getIdentifier();
+        }
+        if (type == MAIN_PAGE) {
+            mListView.setRefreshTime(new Date(PreferenceManager.getInstance(getActivity()).getMainLastRefreshTime()).toLocaleString());
+        } else if (type == FAVOR_PAGE) {
+            mListView.setRefreshTime(new Date(PreferenceManager.getInstance(getActivity()).getFavorLastRefreshTime()).toLocaleString());
+        }
+        Router.getGourmetModule().fetchFavoritesByUserId(user.getIdentifier(), theLastOneIdentifier, null, 20
+                , gourmets ->
+        {
+            if (isRefresh) {
+                tmpGourmets.clear();
+                //mAdapter.gourmets = Optional.of(gourmets.getGourmets());
+            } else {
+                //mAdapter.gourmets = Optional.of(tmpGourmets);
+            }
+            tmpGourmets.addAll(gourmets.getGourmets());
+            FileManager.setGourmets(type, Optional.of(tmpGourmets));
+            mAdapter.gourmets = Optional.of(tmpGourmets);
+            mAdapter.notifyDataSetChanged();
+            DBOpenHelper.getmInstance(mContext).insertGourmets(gourmets);
+            if (type == MAIN_PAGE) {
+                PreferenceManager.getInstance(mContext).saveMainLastRefreshTime(new Date().getTime());
+            } else if (type == FAVOR_PAGE) {
+                PreferenceManager.getInstance(mContext).saveFavorLastRefreshTime(new Date().getTime());
+            }
+            if (isRefresh) {
+                mListView.stopRefresh();
+            } else {
+                mListView.stopLoadMore();
+            }
+        }
+                //
+                , errorMessage ->
+        {
+            Toast.makeText(getActivity(), getResources().getString(R.string.notify_net2), Toast.LENGTH_LONG).show();
+            if (isRefresh) {
+                mListView.stopRefresh();
+            } else {
+                mListView.stopLoadMore();
+            }
+        });
+    }
+
+    private void fetchCommmonData(Boolean isRefresh) {
 
         //boolean :is login status now
         if (Router.INSTANCE.getCurrentUser().equals(Optional.empty()) && !bLogin) {
-            tryLoginFirst() ;
-            return ;
+            tryLoginFirst();
+            return;
         }
         List<Gourmet> tmpGourmets = mAdapter.gourmets.orElse(new ArrayList<>());
         Integer theLastOneIdentifier = null;
@@ -268,9 +318,9 @@ public class MainFragment extends Fragment implements FragmentDataListener,
             Gourmet theLatestOne = tmpGourmets.get(tmpGourmets.size() - 1);
             theLastOneIdentifier = theLatestOne.getIdentifier();
         }
-        if(type == MAIN_PAGE){
+        if (type == MAIN_PAGE) {
             mListView.setRefreshTime(new Date(PreferenceManager.getInstance(getActivity()).getMainLastRefreshTime()).toLocaleString());
-        }else if(type == FAVOR_PAGE){
+        } else if (type == FAVOR_PAGE) {
             mListView.setRefreshTime(new Date(PreferenceManager.getInstance(getActivity()).getFavorLastRefreshTime()).toLocaleString());
         }
         Router.getGourmetModule().fetchOurChoice(theLastOneIdentifier
@@ -279,33 +329,47 @@ public class MainFragment extends Fragment implements FragmentDataListener,
                 , gourmets ->
         {
             if (isRefresh) {
-                mAdapter.gourmets = Optional.of(gourmets.getGourmets());
+                tmpGourmets.clear();
+                //mAdapter.gourmets = Optional.of(gourmets.getGourmets());
             } else {
-                tmpGourmets.addAll(gourmets.getGourmets());
-                mAdapter.gourmets = Optional.of(tmpGourmets);
+                if (gourmets.getGourmets().size() == 0) {
+                    Toast.makeText(mContext, getString(R.string.no_more), Toast.LENGTH_SHORT).show();
+                }
+                //  mAdapter.gourmets = Optional.of(tmpGourmets);
             }
-            FileManager.setGourmets(type, mAdapter.gourmets);
+            tmpGourmets.addAll(gourmets.getGourmets());
+            mAdapter.gourmets = Optional.of(tmpGourmets);
+            FileManager.setGourmets(type, Optional.of(tmpGourmets));
             mAdapter.notifyDataSetChanged();
             DBOpenHelper.getmInstance(mContext).insertGourmets(gourmets);
-            if(type == MAIN_PAGE){
+            if (type == MAIN_PAGE) {
                 PreferenceManager.getInstance(mContext).saveMainLastRefreshTime(new Date().getTime());
-            }else if(type == FAVOR_PAGE){
+            } else if (type == FAVOR_PAGE) {
                 PreferenceManager.getInstance(mContext).saveFavorLastRefreshTime(new Date().getTime());
             }
-            mListView.stopRefresh();
+            if (isRefresh) {
+                mListView.stopRefresh();
+            } else {
+                mListView.stopLoadMore();
+            }
         }
                 //
                 , errorMessage ->
         {
             Toast.makeText(getActivity(), getResources().getString(R.string.notify_net2), Toast.LENGTH_LONG).show();
-            mListView.stopRefresh();
+            if (isRefresh) {
+                mListView.stopRefresh();
+            } else {
+                mListView.stopLoadMore();
+            }
         });
     }
-    private void tryLoginFirst(){
+
+    private void tryLoginFirst() {
         AuthorInfo auth = PreferenceManager.getInstance(mContext).getThirdPartyLoginMsg();
         if (ThirdPartySDKManager.getInstance(mContext).isThirdParty(auth.getPlatform())) {
             Router.getOAuthModule().login(auth.getUid(), auth.getPlatform(), Optional.<String>empty(), Optional.of(auth.getToken()), () -> {
-                        fetchData(true);
+                        fetchCommmonData(true);
                     },
                     () -> {
                         System.out.println("failure");
@@ -319,7 +383,7 @@ public class MainFragment extends Fragment implements FragmentDataListener,
                     Optional.empty(),
                     Optional.empty(),
                     () -> {
-                        fetchData(true);
+                        fetchCommmonData(true);
                     },
                     () -> {
                         System.out.println("failure");
@@ -329,8 +393,8 @@ public class MainFragment extends Fragment implements FragmentDataListener,
 
         } else {
             Router.getOAuthModule().visitor(() -> {
-                        bLogin  = true ;
-                        fetchData(true);
+                        bLogin = true;
+                        fetchCommmonData(true);
                     },
                     () -> {
                         System.out.println("failure");

@@ -13,7 +13,7 @@ import retrofit.http.Query;
  * Created by Chen Hao on 3/30/15.
  */
 public interface IRouterCommon {
-    final String RootURL = "/oauth/v1";
+    final String RootURL = "/public";
 
     @GET(RootURL + "/taste_tags")
     void tasteTags(Callback<TasteTags> tasteTagsCallback);

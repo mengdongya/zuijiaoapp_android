@@ -98,16 +98,21 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 		if (item.getItemId() == R.id.login) {
             mEmail = mEmailEdit.getText().toString().trim() ;
             if(mEmail == null || mEmail.equals("")){
-                Toast.makeText(getApplicationContext(),getResources().getString(R.string.notify_empty_email),Toast.LENGTH_SHORT) ;
-                mEmail = "2@2.2" ;
-//                return super.onOptionsItemSelected(item) ;
+                Toast.makeText(getApplicationContext(), getString(R.string.notify_empty_email),Toast.LENGTH_SHORT).show() ;
+//                mEmail = "2@2.2" ;
+                return super.onOptionsItemSelected(item) ;
             }
             mPassword = mPwdEdit.getText().toString().trim() ;
             if(mPassword == null || mPassword.equals("")){
-                Toast.makeText(getApplicationContext(),getResources().getString(R.string.notify_empty_password),Toast.LENGTH_SHORT) ;
-//                return super.onOptionsItemSelected(item) ;
-                mPassword = "c81e728d9d4c2f636f067f89cc14862c" ;
+                Toast.makeText(getApplicationContext(), getString(R.string.notify_empty_password),Toast.LENGTH_SHORT).show(); ;
+                return super.onOptionsItemSelected(item) ;
+//                mPassword = "c81e728d9d4c2f636f067f89cc14862c" ;
             }
+//            try{
+//                mPassword = MD5.crypt(mPassword) ;
+//            }catch (NoSuchAlgorithmException e){
+//                e.printStackTrace();
+//            }
             mDialog = ProgressDialog.show(LoginActivity.this,null,getResources().getString(R.string.on_loading)) ;
             Router.getOAuthModule().loginEmailRoutine(mEmail, mPassword, Optional.<String>empty(),Optional.<String>empty(),()->{
                 TinyUser user = Router.INSTANCE.getCurrentUser().get() ;
@@ -132,6 +137,10 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
                 }
             }, errorMessage ->{
                 Toast.makeText(getApplicationContext(),getString(R.string.notify_net2),Toast.LENGTH_LONG).show();
+                if(mDialog != null){
+                    mDialog.dismiss();
+                    mDialog = null ;
+                }
             });
 		}
 		return super.onOptionsItemSelected(item);

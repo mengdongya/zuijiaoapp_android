@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
+    <string name="tb_munion_tip_download_prefix">正在下载:</string>
     <string name="app_name">嘴角</string>
     <string name="welcome_word">发现最美的味道</string>
     <string name="hello_world">Hello world!</string>
@@ -107,4 +107,6 @@
     <string name="update_ok">更新</string>
     <string name="dialog_no">放弃</string>
     <string name="unknown_location">未知</string>
+    <string name="umeng_common_icon">icon</string>
+    <string name="UMUpdateCheck">2.6.0.1.20150312</string>
 </resources>

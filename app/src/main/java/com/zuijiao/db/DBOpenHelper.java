@@ -140,8 +140,6 @@ public class DBOpenHelper extends SQLiteOpenHelper {
         String city = "";
         synchronized (db) {
             try {
-
-
                 Cursor cursor = db.query("location", null, "id = ? and type =?", new String[]{provinceId + "", 1 + ""}, null, null, null);
                 if (cursor != null && cursor.getCount() != 0) {
                     cursor.moveToFirst();
@@ -152,7 +150,7 @@ public class DBOpenHelper extends SQLiteOpenHelper {
                     cursor.close();
                     cursor = null;
                 }
-                cursor = db.query("location", null, "id = ? and type =? or type = ? ", new String[]{cityId + "", 2 + "", 3 + ""}, null, null, null);
+                cursor = db.query("location", null, "id = ? and (type =? or ?) ", new String[]{cityId + "", 2 + "", 3 + ""}, null, null, null);
                 if (cursor != null && cursor.getCount() != 0) {
                     cursor.moveToFirst();
                     while (!cursor.isAfterLast()) {
@@ -165,6 +163,15 @@ public class DBOpenHelper extends SQLiteOpenHelper {
                 t.printStackTrace();
                 return "" ;
             }
+        }
+        if(province == null){
+            province ="" ;
+        }
+        if(city == null){
+            city = "" ;
+        }
+        if(province.equals(city)){
+            return city ;
         }
         return province + city;
     }

@@ -12,9 +12,7 @@ public class TinyUser {
     @SerializedName("nickname")
     private String nickName = "test";
     @SerializedName("imageUrl")
-    private String avatarURL  ="testurl";
-
-
+    private String avatarURL = "testurl";
     @SerializedName("ID")
     private Integer identifier = 1;
 
@@ -25,7 +23,7 @@ public class TinyUser {
     public Optional<String> getAvatarURL() {
         if (avatarURL != null) {
             if (avatarURL.length() > 0 && avatarURL.startsWith("http://"))
-                return Optional.of(avatarURL);
+                return Optional.ofNullable(avatarURL);
             else {
                 return Optional.of(Router.PicBaseUrl + avatarURL);
             }

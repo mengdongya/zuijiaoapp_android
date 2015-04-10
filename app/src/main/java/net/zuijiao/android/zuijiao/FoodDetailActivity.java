@@ -643,10 +643,15 @@ public class FoodDetailActivity extends BaseActivity implements
             WouldLikeToEatUser user = FileManager.tmpWouldLikeList.get().getUsers().get(position) ;
             if (position <= 3) {
                 contentView = mInflater.inflate(R.layout.food_detail_favor_item, null);
-                Picasso.with(parent.getContext())
-                        .load(user.getAvatarURL().get())
-                        .placeholder(R.drawable.default_user_head)
-                        .into((ImageView) contentView.findViewById(R.id.would_like_eat_head));
+                if (user.getAvatarURL().isPresent()) {
+                    Picasso.with(parent.getContext())
+                            .load(user.getAvatarURL().get())
+                            .placeholder(R.drawable.default_user_head)
+                            .into((ImageView) contentView.findViewById(R.id.would_like_eat_head));
+                } else {
+                    ImageView avatarView = (ImageView) contentView.findViewById(R.id.would_like_eat_head);
+                    avatarView.setImageResource(R.drawable.default_user_head);
+                }
             }
             if (position == 4) {
                 contentView = mInflater.inflate(R.layout.food_detail_favor_item2, null);

@@ -2,6 +2,7 @@ package net.zuijiao.android.zuijiao;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
@@ -103,6 +104,8 @@ public class MainFragment extends Fragment implements FragmentDataListener,
         public View getView(int position, View convertView, ViewGroup parent) {
             ViewHolder holder = null;
             if (convertView == null) {
+                Typeface boldFont = Typeface.createFromAsset(mContext.getAssets(), "fonts/NotoSansHans-Regular.otf");
+
                 convertView = mInflater.inflate(R.layout.main_content_item, null);
                 holder = new ViewHolder();
                 holder.image_food = (ImageView) convertView
@@ -113,6 +116,7 @@ public class MainFragment extends Fragment implements FragmentDataListener,
                         .findViewById(R.id.view_wordwrap);
                 holder.text1_food_name = (TextView) convertView
                         .findViewById(R.id.content_item_title);
+//                holder.text1_food_name.setTypeface(boldFont);
                 holder.text2_personal = (TextView) convertView
                         .findViewById(R.id.content_item_personal_tip);
                 holder.text4_user_name = (TextView) convertView

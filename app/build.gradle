@@ -21,14 +21,18 @@ android {
     }
     buildTypes {
         debug {
-            buildConfigField "String", "BASE_URL", "\"http://xielingyu2.zuijiaodev.com\""
+            buildConfigField "String", "Base_Url", "\"http://xielingyu2.zuijiaodev.com\""
+            buildConfigField "String", "Avatar_Base_Url", "\"/debug/Avatar\""
+            buildConfigField "String", "Gourmet_Base_Url", "\"/debug/Gourmet\""
             signingConfig signingConfigs.release
         }
 
         release {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            buildConfigField "String", "BASE_URL", "\"http://api.zuijiao.net\""
+            buildConfigField "String", "Base_Url", "\"http://api.zuijiao.net\""
+            buildConfigField "String", "Avatar_Base_Url", "\"/Avatar\""
+            buildConfigField "String", "Gourmet_Base_Url", "\"/Gourmet\""
             signingConfig signingConfigs.release
         }
     }
@@ -40,6 +44,7 @@ android {
 
     packagingOptions {
         exclude 'LICENSE.txt'
+        exclude 'AndroidManifest.xml'
     }
 
 
@@ -51,4 +56,10 @@ dependencies {
     compile 'com.squareup.picasso:picasso:2.5.2'
     compile project(':model')
     compile files('libs/umeng-analytics-v5.4.2.jar')
+
+//  <- used by upyun sdk start ->
+    compile 'com.loopj.android:android-async-http:1.4.6'
+    compile 'org.json:json:20141113'
+    compile 'commons-codec:commons-codec:1.6'
+//  <- used by upyun sdk end ->
 }

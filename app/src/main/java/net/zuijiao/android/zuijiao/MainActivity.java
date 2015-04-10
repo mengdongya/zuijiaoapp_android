@@ -254,7 +254,7 @@ public final class MainActivity extends BaseActivity {
                                                 mDialog.dismiss();
                                                 mDialog = null;
                                             }
-                                        }, () -> {
+                                        }, errorMessage -> {
                                             if (mDialog != null) {
                                                 mDialog.dismiss();
                                                 mDialog = null;

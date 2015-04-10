@@ -20,6 +20,7 @@ import com.zuijiao.entity.AuthorInfo;
 
 @ContentView(R.layout.activity_register)
 public class RegisterActivity extends BaseActivity {
+    private final static String EMAIL_REGEX = "^[\\w-_\\.+]*[\\w-_\\.]\\@([\\w]+\\.)+[\\w]+[\\w]$";
     @ViewInject(R.id.register_toolbar)
     private Toolbar mToolbar = null;
     @ViewInject(R.id.et_regist_name)
@@ -35,7 +36,7 @@ public class RegisterActivity extends BaseActivity {
     private String mPwd = null;
     private String mPwdConfirm = null;
     private String mErrorCode = null;
-    private final static String EMAIL_REGEX = "^[\\w-_\\.+]*[\\w-_\\.]\\@([\\w]+\\.)+[\\w]+[\\w]$";
+    private ProgressDialog mDialog = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,8 +50,6 @@ public class RegisterActivity extends BaseActivity {
 
     }
 
-    private ProgressDialog mDialog = null;
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -63,31 +62,31 @@ public class RegisterActivity extends BaseActivity {
 
                             //Login success !
                             TinyUser user = Router.INSTANCE.getCurrentUser().get();
-                            AuthorInfo authorInfo = new AuthorInfo() ;
+                            AuthorInfo authorInfo = new AuthorInfo();
                             authorInfo.setUserName(user.getNickName());
                             authorInfo.setPassword(mPwd);
                             authorInfo.setPlatform("");
                             authorInfo.setEmail(mEmail);
                             PreferenceManager.getInstance(getApplicationContext()).saveThirdPartyLoginMsg(authorInfo);
                             Intent intent = new Intent();
-                            intent.setAction(MessageDef.ACTION_GET_THIRD_PARTY_USER) ;
+                            intent.setAction(MessageDef.ACTION_GET_THIRD_PARTY_USER);
                             sendBroadcast(intent);
                             intent.setClass(RegisterActivity.this, MainActivity.class);
                             startActivity(intent);
                             finallizeDialog();
-                        }, () -> {
+                        }, errorMessage -> {
                             finallizeDialog();
                             Toast.makeText(getApplicationContext(), getString(R.string.notify_net2), Toast.LENGTH_SHORT).show();
                             //login failed !
                         });
-                    }, () -> {
+                    }, errorMessage -> {
                         finallizeDialog();
                         Toast.makeText(getApplicationContext(), getString(R.string.notify_net2), Toast.LENGTH_SHORT).show();
                         /// register failed !
                     });
                 } else {
                     Toast.makeText(getApplicationContext(), mErrorCode, Toast.LENGTH_SHORT).show();
-                    finallizeDialog() ;
+                    finallizeDialog();
                 }
                 break;
         }

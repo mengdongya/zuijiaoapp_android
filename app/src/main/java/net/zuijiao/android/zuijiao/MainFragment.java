@@ -371,8 +371,8 @@ public class MainFragment extends Fragment implements FragmentDataListener,
             Router.getOAuthModule().login(auth.getUid(), auth.getPlatform(), Optional.<String>empty(), Optional.of(auth.getToken()), () -> {
                         fetchCommmonData(true);
                     },
-                    () -> {
-                        System.out.println("failure");
+                    errorMessage -> {
+                        System.out.println("failure " + errorMessage);
                         Toast.makeText(getActivity(), getResources().getString(R.string.notify_net2), Toast.LENGTH_LONG).show();
                     });
         } else if ((auth.getEmail() != null) && (!auth.getEmail().equals(""))) {
@@ -385,8 +385,8 @@ public class MainFragment extends Fragment implements FragmentDataListener,
                     () -> {
                         fetchCommmonData(true);
                     },
-                    () -> {
-                        System.out.println("failure");
+                    errorMessage -> {
+                        System.out.println("failure " + errorMessage);
                         Toast.makeText(getActivity(), getResources().getString(R.string.notify_net2), Toast.LENGTH_LONG).show();
                     }
             );
@@ -396,8 +396,8 @@ public class MainFragment extends Fragment implements FragmentDataListener,
                         bLogin = true;
                         fetchCommmonData(true);
                     },
-                    () -> {
-                        System.out.println("failure");
+                    errorMessage -> {
+                        System.out.println("failure " + errorMessage);
                         Toast.makeText(getActivity(), getResources().getString(R.string.notify_net2), Toast.LENGTH_LONG).show();
                     });
         }

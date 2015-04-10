@@ -136,10 +136,10 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
                                         bundle.putString("head_url", headimgurl);
                                         intent.putExtra("userinfo", bundle);
                                         WXEntryActivity.this.sendBroadcast(intent);
-                                    }, () -> {
+                                    }, errorMessage -> {
                                         Toast.makeText(getApplicationContext(),getResources().getString(R.string.notify_net2), Toast.LENGTH_SHORT).show();
                                     });
-                                }, () -> {
+                                }, errorMessage -> {
                                     Toast.makeText(getApplicationContext(),getResources().getString(R.string.notify_net2), Toast.LENGTH_SHORT).show();
                                 });
 

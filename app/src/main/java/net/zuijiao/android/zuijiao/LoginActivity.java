@@ -130,7 +130,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
                     mDialog.dismiss();
                     mDialog = null ;
                 }
-            },()->{
+            }, errorMessage ->{
                 Toast.makeText(getApplicationContext(),getString(R.string.notify_net2),Toast.LENGTH_LONG).show();
             });
 		}

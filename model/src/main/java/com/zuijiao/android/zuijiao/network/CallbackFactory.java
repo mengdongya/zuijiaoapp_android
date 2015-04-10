@@ -31,13 +31,15 @@ class CallbackFactory<T> {
         return new Callback<Response>() {
             @Override
             public void success(Response response, retrofit.client.Response response2) {
-                if (finalSuccessCallback.isPresent()) finalSuccessCallback.get().action();
+                if (finalSuccessCallback.isPresent())
+                    finalSuccessCallback.get().action();
             }
 
             @Override
             public void failure(RetrofitError error) {
                 if (finalFailureCallback.isPresent()) finalFailureCallback.get().action();
             }
+
         };
     }
 
@@ -50,7 +52,8 @@ class CallbackFactory<T> {
         return new Callback<T>() {
             @Override
             public void success(T t, retrofit.client.Response response) {
-                if (finalSuccessCallback.isPresent()) finalSuccessCallback.get().action(t);
+                if (finalSuccessCallback.isPresent())
+                    finalSuccessCallback.get().action(t);
             }
 
             @Override
@@ -58,7 +61,32 @@ class CallbackFactory<T> {
                 assert(error != null);
                 assert(finalFailureCallback != null);
                 assert(finalFailureCallback.get() != null);
-                if (finalFailureCallback.isPresent()) finalFailureCallback.get().action(error.toString());
+                if (finalFailureCallback.isPresent())
+                    finalFailureCallback.get().action(error.toString());
+            }
+        };
+    }
+
+    public Callback<T> callback(LambdaExpression successCallback
+            , OneParameterExpression<String> failureCallback
+    ) {
+        final Optional<LambdaExpression> finalSuccessCallback = Optional.ofNullable(successCallback);
+        final Optional<OneParameterExpression<String>> finalFailureCallback = Optional.ofNullable(failureCallback);
+
+        return new Callback<T>() {
+            @Override
+            public void success(T t, retrofit.client.Response response) {
+                if (finalSuccessCallback.isPresent())
+                    finalSuccessCallback.get().action();
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                assert(error != null);
+                assert(finalFailureCallback != null);
+                assert(finalFailureCallback.get() != null);
+                if (finalFailureCallback.isPresent())
+                    finalFailureCallback.get().action(error.toString());
             }
         };
     }

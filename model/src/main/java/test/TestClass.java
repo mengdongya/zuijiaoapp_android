@@ -31,10 +31,10 @@ public class TestClass {
                             Optional.empty(),
                             Optional.empty(),
                             () -> System.out.println("success"),
-                            () -> System.out.println("failure")
+                            errorMessage -> System.out.println("failure")
                     );
                 },
-                () -> System.out.println("failure"));
+                errorMessage -> System.out.println("failure"));
     }
 
     static void testVisitor() {
@@ -43,7 +43,7 @@ public class TestClass {
                 Optional.empty(),
                 Optional.empty(),
                 () -> System.out.println("success"),
-                () -> System.out.println("failure")
+                errorMessage -> System.out.println("failure")
         );
     }
 
@@ -71,12 +71,14 @@ public class TestClass {
                         System.out.println(errorString);
                     });
                 },
-                () -> System.out.println("failure")
+                errorMessage -> System.out.println("failure")
         );
     }
 
     public static void main(String[] args) throws NoSuchAlgorithmException {
-
+        MessageDigest digest = MessageDigest.getInstance("MD5");
+        byte[] hash = digest.digest("2".getBytes());
+        System.out.println("2 is " + hash.toString());
     }
 
 }

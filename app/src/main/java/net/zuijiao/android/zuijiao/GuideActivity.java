@@ -198,8 +198,8 @@ public class GuideActivity extends BaseActivity {
                         //  TinyUser user = Optional.of()Router.INSTANCE.getCurrentUser() ;
                         goToMain();
                     },
-                    () -> {
-                        System.out.println("failure");
+                    errorMessage -> {
+                        System.out.println("failure " + errorMessage);
                         Toast.makeText(GuideActivity.this, getResources().getString(R.string.notify_net2), Toast.LENGTH_LONG).show();
                         goToMain();
                     });
@@ -213,8 +213,8 @@ public class GuideActivity extends BaseActivity {
                     () -> {
                         goToMain();
                     },
-                    () -> {
-                        System.out.println("failure");
+                    errorMessage -> {
+                        System.out.println("failure " + errorMessage);
                         Toast.makeText(GuideActivity.this, getResources().getString(R.string.notify_net2), Toast.LENGTH_LONG).show();
                         goToMain();
                     }
@@ -224,8 +224,8 @@ public class GuideActivity extends BaseActivity {
             Router.getOAuthModule().visitor(() -> {
                         goToMain();
                     },
-                    () -> {
-                        System.out.println("failure");
+                    errorMessage -> {
+                        System.out.println("failure " + errorMessage);
                         Toast.makeText(GuideActivity.this, getResources().getString(R.string.notify_net2), Toast.LENGTH_LONG).show();
                         goToMain();
                     });

@@ -88,8 +88,8 @@ public class SplashActivity extends BaseActivity {
                         //  TinyUser user = Optional.of()Router.INSTANCE.getCurrentUser() ;
                         goToMain();
                     },
-                    () -> {
-                        System.out.println("failure");
+                    errorMessage -> {
+                        System.out.println(errorMessage);
                         Toast.makeText(SplashActivity.this, getResources().getString(R.string.notify_net2), Toast.LENGTH_LONG).show();
                         goToMain();
                     });
@@ -103,8 +103,8 @@ public class SplashActivity extends BaseActivity {
                     () -> {
                         goToMain();
                     },
-                    () -> {
-                        System.out.println("failure");
+                    errorMessage -> {
+                        System.out.println(errorMessage);
                         Toast.makeText(SplashActivity.this, getResources().getString(R.string.notify_net2), Toast.LENGTH_LONG).show();
                         goToMain();
                     }
@@ -114,8 +114,8 @@ public class SplashActivity extends BaseActivity {
             Router.getOAuthModule().visitor(() -> {
                         goToMain();
                     },
-                    () -> {
-                        System.out.println("failure");
+                    errorMessage -> {
+                        System.out.println(errorMessage);
                         Toast.makeText(SplashActivity.this, getResources().getString(R.string.notify_net2), Toast.LENGTH_LONG).show();
                         goToMain();
                     });

@@ -30,15 +30,6 @@ public class MD5 {
         return hashByte2MD5(hash);
     }
 
-    /**
-     *      * MD5アルゴリズム
-     *      * InputStreamを暗号化する（ファイルなどのチェックサムを求む）
-     *      *
-     *      * @param in 暗号化されるInputStreamオブジェクト
-     *      * @return 暗号化結果
-     *      * @throws NoSuchAlgorithmException
-     *     
-     */
 
     public static String crypt(InputStream in) throws NoSuchAlgorithmException, IOException {
         if (in == null || in.available() == 0) {

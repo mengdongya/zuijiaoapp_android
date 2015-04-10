@@ -109,7 +109,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 //                mPassword = "c81e728d9d4c2f636f067f89cc14862c" ;
             }
 //            try{
-//                mPassword =MD5.crypt(mPassword) ;
+//                mPassword = MD5.crypt(mPassword) ;
 //            }catch (NoSuchAlgorithmException e){
 //                e.printStackTrace();
 //            }

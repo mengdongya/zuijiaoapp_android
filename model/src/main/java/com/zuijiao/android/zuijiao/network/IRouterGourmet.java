@@ -24,16 +24,16 @@ public interface IRouterGourmet {
 
     @FormUrlEncoded
     @GET(RootURL + "/collected/cuisines")
-    void fetchFavorites(@Query("sinceID") Integer sinceId
-            , @Query("maxID") Integer toId
+    void fetchFavorites(@Query("maxID") Integer sinceId
+            , @Query("sinceID") Integer toId
             , @Query("count") Integer count
             , Callback<Gourmets> callback
     );
 
     @GET(RootURL + "/user/{userID}/collected/cuisines")
     void fetchFavoritesByUserId(@Path("userID") Integer userId
-            , @Query("sinceID") Integer sinceId
-            , @Query("maxID") Integer toId
+            , @Query("maxID") Integer sinceId
+            , @Query("sinceID") Integer toId
             , @Query("count") Integer count
             , Callback<Gourmets> callback
     );
@@ -46,8 +46,8 @@ public interface IRouterGourmet {
 
     @GET(RootURL + "/cuisine/{gourmetID}/comments")
     void fetchComments(@Path("gourmetID") Integer gourmetId
-            , @Query("sinceID") Integer sinceId
-            , @Query("maxID") Integer toId
+            , @Query("maxID") Integer sinceId
+            , @Query("sinceID") Integer toId
             , @Query("count") Integer count
             , Callback<Comments> callback
     );
@@ -111,15 +111,15 @@ public interface IRouterGourmet {
 
     @GET(RootURL + "/user/{userID}/cuisines")
     void fetchRecommendationListByUserId(@Path("userID") Integer userId
-            , @Query("sinceID") Integer fromGourmetId
-            , @Query("maxID") Integer toGourmetId
+            , @Query("maxID") Integer fromGourmetId
+            , @Query("sinceID") Integer toGourmetId
             , @Query("count") Integer count
             , Callback<Gourmets> callback
     );
 
     @GET(RootURL + "/selected/cuisines")
-    void fetchOurChoice(@Query("sinceID") Integer fromGourmetId
-            , @Query("maxID") Integer toGourmetId
+    void fetchOurChoice(@Query("maxID") Integer fromGourmetId
+            , @Query("sinceID") Integer toGourmetId
             , @Query("count") Integer count
             , Callback<Gourmets> callback
     );

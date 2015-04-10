@@ -22,8 +22,8 @@ public interface IRouterMessage {
 
     @GET(RootURL + "/ios/notifications")
     void message(@Query("showGroupID") Integer newsID
-            , @Query("sinceID") Integer sinceID
-            , @Query("maxID") Integer toID
+            , @Query("maxIDC") Integer sinceID
+            , @Query("sinceID") Integer toID
             , @Query("count") Integer count
             , Callback<Messages> callback);
 

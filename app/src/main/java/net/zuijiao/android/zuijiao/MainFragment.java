@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -28,10 +29,12 @@ import com.zuijiao.controller.PreferenceManager;
 import com.zuijiao.controller.ThirdPartySDKManager;
 import com.zuijiao.db.DBOpenHelper;
 import com.zuijiao.entity.AuthorInfo;
+import com.zuijiao.utils.UpyunUploadTask;
 import com.zuijiao.view.RefreshAndInitListView;
 import com.zuijiao.view.RefreshAndInitListView.MyListViewListener;
 import com.zuijiao.view.WordWrapView;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -78,6 +81,17 @@ public class MainFragment extends Fragment implements FragmentDataListener,
         mListView.setListViewListener(this);
         //mListView.getmHeaderView().setState(RefreshAndInitListView.XListViewHeader.STATE_REFRESHING);
         firstInit();
+
+        new UpyunUploadTask(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "1.jpg"
+                , UpyunUploadTask.avatarPath(1, "png")
+                , (long transferedBytes, long totalBytes) -> {
+            System.out.println("trans:" + transferedBytes + "; total:" + totalBytes);
+        }
+                , (boolean isComplete, String result, String error) -> {
+            System.out.println("isComplete:" + isComplete + ";result:" + result + ";error:" + error);
+        }
+        ).execute();
+
         return mContentView;
     }
 

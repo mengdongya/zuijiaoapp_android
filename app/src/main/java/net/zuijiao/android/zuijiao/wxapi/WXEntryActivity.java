@@ -85,7 +85,7 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
                 code = sp.code;
                 if (openId == null) {
                     // // 获取token
-                    url = String.format("https://api.weixin.qq.com/sns/oauth2/access_token?appid=%s&secret=%s&code=%s&grant_type=authorization_code", new String[]{WEIXIN_ID, WEIXIN_PWD, code});
+                    url = String.format("https://api.weixin.qq.com/sns/oauth2/access_token?appid=%s&secret=%s&code=%s&grant_type=authorization_code", WEIXIN_ID, WEIXIN_PWD, code);
                     final HttpClient client = new DefaultHttpClient();
                     final HttpGet httpget = new HttpGet(url);
                     httpget.setHeader("encoding","UTF-8");

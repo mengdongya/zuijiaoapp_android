@@ -22,6 +22,7 @@ import com.lidroid.xutils.view.annotation.ContentView;
 import com.lidroid.xutils.view.annotation.ViewInject;
 import com.tencent.mm.sdk.modelbase.BaseResp;
 import com.tencent.mm.sdk.modelmsg.SendAuth;
+import com.zuijiao.android.util.MD5;
 import com.zuijiao.android.util.Optional;
 import com.zuijiao.android.zuijiao.model.user.TinyUser;
 import com.zuijiao.android.zuijiao.network.Router;
@@ -29,6 +30,7 @@ import com.zuijiao.controller.MessageDef;
 import com.zuijiao.controller.ThirdPartySDKManager;
 import com.zuijiao.entity.AuthorInfo;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.NoSuchElementException;
 
 @ContentView(R.layout.activity_login)
@@ -108,11 +110,12 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
                 return super.onOptionsItemSelected(item) ;
 //                mPassword = "c81e728d9d4c2f636f067f89cc14862c" ;
             }
-//            try{
-//                mPassword = MD5.crypt(mPassword) ;
-//            }catch (NoSuchAlgorithmException e){
-//                e.printStackTrace();
-//            }
+
+            try {
+                mPassword = MD5.crypt(mPassword);
+            } catch (NoSuchAlgorithmException e) {
+            }
+
             mDialog = ProgressDialog.show(LoginActivity.this,null,getResources().getString(R.string.on_loading)) ;
             Router.getOAuthModule().loginEmailRoutine(mEmail, mPassword, Optional.<String>empty(),Optional.<String>empty(),()->{
                 TinyUser user = Router.INSTANCE.getCurrentUser().get() ;

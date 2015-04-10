@@ -16,6 +16,17 @@
 #   public *;
 #}
 -dontwarn com.squareup.okhttp.**
+-dontwarn retrofit.**
+-dontwarn okio.**
+-dontwarn java.lang.invoke**
+-dontwarn javax.xml.bind.DatatypeConverter
+-dontwarn android.test.**
+
+-dontwarn com.sina.weibo.sdk.widget**
+
 -keep class com.tencent.mm.sdk.** {
-   *;
+    *;
+}
+-keep class com.sina.weibo.sdk.widget.** {
+    *;
 }

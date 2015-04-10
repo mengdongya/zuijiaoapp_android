@@ -73,6 +73,9 @@ public class FavorPersonListActivity extends BaseActivity {
                     .placeholder(R.drawable.default_user_head)
                     .into(holder.head);
             String location = DBOpenHelper.getmInstance(getApplicationContext()).getLocationByIds(user.getProvinceID(),user.getCityID()) ;
+            if(location ==null || location.equals("")){
+                location = getString(R.string.unknown_location) ;
+            }
             holder.location.setText(location);
             holder.userName.setText(user.getNickName());
             holder.time.setText(user.getDate().toLocaleString());

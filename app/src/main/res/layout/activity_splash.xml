@@ -5,59 +5,65 @@
     android:gravity="center_vertical"
     android:orientation="vertical">
 
-    <!--<LinearLayout-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="150dip"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/splash_text1"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/app_name"
+            android:textColor="#434343"
+            android:textSize="40sp" />
+
+        <TextView
+            android:id="@+id/splash_text2"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dip"
+            android:gravity="center"
+            android:text="@string/welcome_word"
+            android:textColor="#999999"
+            android:textSize="22sp" />
+
+
+    </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/splash_progressbar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_marginBottom="40dip" />
+    <!--<ImageView-->
     <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:layout_gravity="bottom"-->
+    <!--android:background="@drawable/splash_bg" />-->
+
+    <!--<RelativeLayout-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent">-->
+
+    <!--<ImageView-->
+    <!--android:id="@+id/splash_text"-->
+    <!--android:layout_width="wrap_content"-->
     <!--android:layout_height="wrap_content"-->
-    <!--android:layout_marginTop="100dip"-->
-    <!--android:orientation="vertical">-->
+    <!--android:layout_centerInParent="true"-->
+    <!--android:src="@drawable/splash_src" />-->
 
-    <!--<TextView-->
-    <!--android:id="@+id/splash_text1"-->
-    <!--android:layout_width="fill_parent"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:gravity="center"-->
-    <!--android:text="@string/app_name"-->
-    <!--android:textColor="#434343"-->
-    <!--android:textSize="40sp" />-->
-
-    <!--<TextView-->
-    <!--android:id="@+id/splash_text2"-->
-    <!--android:layout_width="fill_parent"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_marginTop="30dip"-->
-    <!--android:gravity="center"-->
-    <!--android:text="@string/welcome_word"-->
-    <!--android:textColor="#999999"-->
-    <!--android:textSize="22sp" />-->
-
-
-    <!--</LinearLayout>-->
-
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="bottom"
-        android:background="@drawable/splash_bg" />
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <ImageView
-            android:id="@+id/splash_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:src="@drawable/splash_src" />
-
-        <ProgressBar
-            android:id="@+id/splash_progressbar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/splash_text"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="20dip" />
-    </RelativeLayout>
+    <!-- <ProgressBar
+         android:id="@+id/splash_progressbar"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_below="@id/splash_text"
+         android:layout_centerHorizontal="true"
+         android:layout_marginTop="20dip" />-->
+    <!--</RelativeLayout>-->
 
 
 </FrameLayout>

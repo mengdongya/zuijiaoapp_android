@@ -38,26 +38,48 @@ public class SplashActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        try {
-            FileManager.mainGourmet = Optional.of(dbMng.initGourmets());
-        } catch (Throwable t) {
-            t.printStackTrace();
-        }
-        new Handler().postDelayed(new Runnable() {
+        if (mPreferInfo.isAppFirstLaunch()) {
+            goToGuide();
+        } else {
+            new Handler().postDelayed(new Runnable() {
 
-            @Override
-            public void run() {
-
-                if (mPreferInfo.isAppFirstLaunch()) {
-                    goToGuide();
-                } else {
-                    DBOpenHelper.copyLocationDb(SplashActivity.this.getApplicationContext()) ;
+                @Override
+                public void run() {
+                    try {
+                        FileManager.mainGourmet = Optional.of(dbMng.initGourmets());
+                    } catch (Throwable t) {
+                        t.printStackTrace();
+                    }
+                    DBOpenHelper.copyLocationDb(SplashActivity.this.getApplicationContext());
                     AuthorInfo auth = PreferenceManager.getInstance(getApplicationContext()).getThirdPartyLoginMsg();
                     networkSetup(auth);
-
                 }
-            }
-        }, 800);
+            }, 800);
+//            DBOpenHelper.copyLocationDb(SplashActivity.this.getApplicationContext()) ;
+//            AuthorInfo auth = PreferenceManager.getInstance(getApplicationContext()).getThirdPartyLoginMsg();
+//            networkSetup(auth);
+
+        }
+//        try {
+//            FileManager.mainGourmet = Optional.of(dbMng.initGourmets());
+//        } catch (Throwable t) {
+//            t.printStackTrace();
+//        }
+//        new Handler().postDelayed(new Runnable() {
+//
+//            @Override
+//            public void run() {
+//
+//                if (mPreferInfo.isAppFirstLaunch()) {
+//                    goToGuide();
+//                } else {
+//                    DBOpenHelper.copyLocationDb(SplashActivity.this.getApplicationContext()) ;
+//                    AuthorInfo auth = PreferenceManager.getInstance(getApplicationContext()).getThirdPartyLoginMsg();
+//                    networkSetup(auth);
+//
+//                }
+//            }
+//        }, 800);
 
     }
 

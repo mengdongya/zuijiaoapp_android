@@ -45,41 +45,42 @@ public class WeiboApi extends AbsSDK {
 					SCOPE);
 		}
 		mSsoHandler = new SsoHandler((Activity) mContext, mAuthInfo);
-		mSsoHandler.authorize(new WeiboAuthListener() {
+        mSsoHandler.authorizeWeb(new WeiboAuthListenerr());
 
-            @Override
-            public void onCancel() {
-                Log.i("weibo", "oncancel");
-            }
+    }
 
-            @Override
-            public void onComplete(Bundle values) {
-                mAccessToken = Oauth2AccessToken.parseAccessToken(values);
-                if (mAccessToken.isSessionValid()) {
-                    String uid = values.getString("uid");
-                    String token = values.getString("access_token");
+    private class WeiboAuthListenerr implements WeiboAuthListener {
+        @Override
+        public void onCancel() {
+            Log.i("weibo", "oncancel");
+        }
 
-                } else {
-                    String code = values.getString("code");
-                    String message = "weibo failed";
-                    if (!TextUtils.isEmpty(code)) {
-                        message = message + "\nObtained the code: " + code;
-                    }
-                    Toast.makeText(mContext, message, Toast.LENGTH_LONG).show();
+        @Override
+        public void onComplete(Bundle values) {
+            mAccessToken = Oauth2AccessToken.parseAccessToken(values);
+            if (mAccessToken.isSessionValid()) {
+                String uid = values.getString("uid");
+                String token = values.getString("access_token");
+
+            } else {
+                String code = values.getString("code");
+                String message = "weibo failed";
+                if (!TextUtils.isEmpty(code)) {
+                    message = message + "\nObtained the code: " + code;
                 }
+                Toast.makeText(mContext, message, Toast.LENGTH_LONG).show();
             }
+        }
 
-            @Override
-            public void onWeiboException(WeiboException arg0) {
-                Log.i("weibo", "onWeiboException");
-            }
+        @Override
+        public void onWeiboException(WeiboException arg0) {
+            Log.i("weibo", "onWeiboException");
+        }
 
-        });
+    }
 
-	}
-
-	@Override
-	public void logout() {
+    @Override
+    public void logout() {
 
 	}
 
@@ -125,4 +126,11 @@ public class WeiboApi extends AbsSDK {
 		}
 		return bLogin;
 	};
+
+    @Override
+    public void onLoginResult(int requestCode, int resultCode, Intent data) {
+        if (mSsoHandler != null) {
+            mSsoHandler.authorizeCallBack(requestCode, resultCode, data);
+        }
+    }
 }

@@ -143,4 +143,8 @@ public class ThirdPartySDKManager implements AbsSDK.LoginListener{
         }
         return platform.equals(AbsSDK.QQ) || platform.equals(AbsSDK.WECHAT) || platform.equals(AbsSDK.WEIBO) ;
     }
+
+    public void onLoginResult(int requestCode, int resultCode, Intent data) {
+        mLoginApi.onLoginResult(requestCode, resultCode, data);
+    }
 }

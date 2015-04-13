@@ -141,9 +141,9 @@ public class FoodDetailActivity extends BaseActivity implements
         try {
             int index = mTendIntent.getIntExtra("click_item_index", -1);
             boolean fromFavor = mTendIntent.getBooleanExtra("b_favor", false);
-            if(index == -1 && fromFavor ==false ){
-                gourmet = FileManager.tmpMessageGourmet ;
-            }else{
+            if (index == -1 && fromFavor == false) {
+                gourmet = FileManager.tmpMessageGourmet;
+            } else {
                 gourmet = mFileMng.getItem(fromFavor, index);
             }
         } catch (Exception e) {
@@ -151,7 +151,7 @@ public class FoodDetailActivity extends BaseActivity implements
         }
         if (gourmet == null) {
             this.finish();
-            return ;
+            return;
         }
         mResource = getResources();
         setSupportActionBar(mToolbar);
@@ -203,15 +203,15 @@ public class FoodDetailActivity extends BaseActivity implements
 
                 @Override
                 public void onClick(View v) {
-                    if(gourmet.getImageURLs().isEmpty()){
-                        return ;
+                    if (gourmet.getImageURLs().isEmpty()) {
+                        return;
                     }
                     Intent intent = new Intent(FoodDetailActivity.this, BigImageActivity.class);
-                    ArrayList<String> imageUrls = new ArrayList<String>() ;
-                    for(String url :gourmet.getImageURLs()){
+                    ArrayList<String> imageUrls = new ArrayList<String>();
+                    for (String url : gourmet.getImageURLs()) {
                         imageUrls.add(url);
                     }
-                    intent.putStringArrayListExtra("image_url" ,imageUrls);
+                    intent.putStringArrayListExtra("image_url", imageUrls);
                     startActivity(intent);
                 }
             });
@@ -434,11 +434,11 @@ public class FoodDetailActivity extends BaseActivity implements
                     .placeholder(R.drawable.default_user_head)
 //                    .error(R.drawable.empty_view_greeting)
                     .into(holder.head);
-            if(comment.getReplyTo().isPresent()){
-                String replyToUserName = comment.getReplyTo().get().getNickName() ;
-                holder.commentContent.setText(String.format(mResource.getString(R.string.reply_content),replyToUserName +" "+ comment.getDetail()));
-                initReplyTextView(holder.commentContent,replyToUserName.length());
-            }else{
+            if (comment.getReplyTo().isPresent()) {
+                String replyToUserName = comment.getReplyTo().get().getNickName();
+                holder.commentContent.setText(String.format(mResource.getString(R.string.reply_content), replyToUserName + " " + comment.getDetail()));
+                initReplyTextView(holder.commentContent, replyToUserName.length());
+            } else {
                 holder.commentContent.setText(comment.getDetail());
             }
             return convertView;
@@ -488,11 +488,11 @@ public class FoodDetailActivity extends BaseActivity implements
         Log.i("scrollerY", "scrollY == " + scrollY);
     }
 
-    private void initReplyTextView(TextView tv,int userNameLength) {
-        String str = tv.getText().toString() ;
+    private void initReplyTextView(TextView tv, int userNameLength) {
+        String str = tv.getText().toString();
         SpannableStringBuilder style = new SpannableStringBuilder(str);
         style.setSpan(new ForegroundColorSpan(Color.GRAY), 2,
-                2+userNameLength, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+                2 + userNameLength, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
         tv.setText(style);
     }
 
@@ -508,8 +508,7 @@ public class FoodDetailActivity extends BaseActivity implements
                     public void onClick(View v) {
                         Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
                         startActivity(intent);
-                        if (dialog != null)
-                            dialog.dismiss();
+                        finallizeDialog(mDialog);
                     }
                 });
                 dialog.show();
@@ -538,7 +537,8 @@ public class FoodDetailActivity extends BaseActivity implements
                     createDialog();
                     Router.getGourmetModule().removeFavorite(gourmet.getIdentifier(), () -> {
                         gourmet.setWasMarked(false);
-                        Toast.makeText(getApplicationContext(),mResource.getString(R.string.remove_favor),Toast.LENGTH_SHORT).show();
+                        fetchWouldLikeList();
+                        Toast.makeText(getApplicationContext(), mResource.getString(R.string.remove_favor), Toast.LENGTH_SHORT).show();
                         topHolder.mFavorBtn2.setBackground(mResource.getDrawable(R.drawable.bg_favor));
                         topHolder.mFavorBtn2.setImageResource(R.drawable.faviro_unclick);
                         floatHolder.mFavorBtn2.setBackground(mResource.getDrawable(R.drawable.bg_favor));
@@ -615,7 +615,8 @@ public class FoodDetailActivity extends BaseActivity implements
 
     private BaseAdapter mGdAdapter = new BaseAdapter() {
         private WouldLikeToEatUser users = null;
-        private int totalCount =  0;
+        private int totalCount = 0;
+
         public void setData(WouldLikeToEatUser users) {
             this.users = users;
             notifyDataSetChanged();
@@ -623,7 +624,7 @@ public class FoodDetailActivity extends BaseActivity implements
 
         @Override
         public int getCount() {
-            totalCount = FileManager.tmpWouldLikeList.get().getCount() ;
+            totalCount = FileManager.tmpWouldLikeList.get().getCount();
             return totalCount > 5 ? 5 : totalCount;
         }
 
@@ -640,7 +641,7 @@ public class FoodDetailActivity extends BaseActivity implements
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             View contentView = null;
-            WouldLikeToEatUser user = FileManager.tmpWouldLikeList.get().getUsers().get(position) ;
+            WouldLikeToEatUser user = FileManager.tmpWouldLikeList.get().getUsers().get(position);
             if (position <= 3) {
                 contentView = mInflater.inflate(R.layout.food_detail_favor_item, null);
                 if (user.getAvatarURL().isPresent()) {

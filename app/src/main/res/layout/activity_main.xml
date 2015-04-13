@@ -4,12 +4,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="net.zuijiao.android.zuijiao.MainActivity"
-    tools:ignore="MergeRootFrame" >
+    tools:ignore="MergeRootFrame">
 
     <RelativeLayout
         android:id="@+id/badge_parent"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" >
+        android:layout_height="match_parent">
 
         <include
             android:id="@+id/main_toolbar"
@@ -19,8 +19,7 @@
             android:id="@+id/main_content_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@id/main_toolbar" >
-        </FrameLayout>
+            android:layout_below="@id/main_toolbar"></FrameLayout>
     </RelativeLayout>
 
     <LinearLayout
@@ -29,7 +28,7 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:background="#ffffff"
-        android:orientation="vertical" >
+        android:orientation="vertical">
 
         <ViewSwitcher
             android:id="@+id/vs_user_info"
@@ -37,7 +36,7 @@
             android:layout_height="200dip"
             android:layout_gravity="center"
             android:background="@drawable/bg_drawer_top"
-            android:gravity="center" >
+            android:gravity="center">
 
             <Button
                 android:id="@+id/btn_login"
@@ -55,7 +54,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center"
-                android:orientation="vertical" >
+                android:orientation="vertical">
 
                 <com.zuijiao.view.RoundImageView
                     android:id="@+id/iv_user_head"
@@ -81,8 +80,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dip"
-            android:divider="@null" >
-        </ListView>
+            android:divider="@null"></ListView>
 
         <View
             android:id="@+id/tv_version_code"
@@ -96,9 +94,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dip"
-            android:divider="@null"
-            android:paddingLeft="10dip" >
-        </ListView>
+            android:divider="@null"></ListView>
     </LinearLayout>
 
 </android.support.v4.widget.DrawerLayout>

@@ -6,8 +6,8 @@
     android:orientation="vertical">
 
     <com.zuijiao.view.RoundImageView
-        android:id= "@+id/would_like_eat_head"
+        android:id="@+id/would_like_eat_head"
         android:layout_width="48dip"
         android:layout_height="48dip"
-        android:src="@drawable/detail_show_4" />
+        android:src="@drawable/default_user_head" />
 </LinearLayout>

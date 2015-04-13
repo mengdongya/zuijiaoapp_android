@@ -22,7 +22,6 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -82,7 +81,7 @@ public final class MainActivity extends BaseActivity {
     private LinearLayout mUserInfo = null;
     @ViewInject(R.id.lv_drawe_items2)
     private ListView mSettingList2 = null;
-    private String[] settingStr;
+    //    private String[] settingStr;
     private ArrayList<Fragment> mFragmentList = null;
     private MainFragment mMainFragment = null;
     private MainFragment mFavorFragment = null;
@@ -90,101 +89,6 @@ public final class MainActivity extends BaseActivity {
     private FragmentManager mFragmentMng = null;
     private FragmentTransaction mFragmentTransaction = null;
     private String[] titles = null;
-    private View mLocationView = null;
-    private BadgeView mBadgeView = null;
-    private ProgressDialog mDialog = null;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-
-        super.onCreate(savedInstanceState);
-    }
-
-    @Override
-    protected void findViews() {
-
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-//		getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
-
-    @Override
-    protected void registeViews() {
-        setSupportActionBar(mToolBar);
-        mToolBar.setOnMenuItemClickListener(onMenuItemClick);
-        mLocationView = LayoutInflater.from(this).inflate(
-                R.layout.location_layout, null);
-        mLocationView.setOnClickListener(mLocationListener);
-        mToolBar.addView(mLocationView);
-        Optional<TinyUser> user = Router.INSTANCE.getCurrentUser();
-        if (user.isPresent()) {
-            mViewSwitcher.showNext();
-            mThirdPartyUserName.setText(user.get().getNickName());
-            try {
-
-                Picasso.with(getApplicationContext())
-                        .load(user.get().getAvatarURL().get())
-                        .placeholder(R.drawable.default_user_head)
-                        .into(mThirdPartyUserHead);
-            } catch (Exception e) {
-                mThirdPartyUserHead.setImageResource(R.drawable.default_user_head);
-            }
-            settingStr = getResources()
-                    .getStringArray(
-                            R.array.settings1);
-            mSettingList2
-                    .setAdapter(new ArrayAdapter<String>(
-                            MainActivity.this,
-                            android.R.layout.simple_list_item_1,
-                            settingStr));
-        } else {
-            settingStr = getResources().getStringArray(R.array.settings2);
-            mSettingList2.setAdapter(new ArrayAdapter<String>(MainActivity.this,
-                    android.R.layout.simple_list_item_1, settingStr));
-        }
-        mSettingList2.setOnItemClickListener(mSetting2Listener);
-        titles = getResources().getStringArray(R.array.fragment_title);
-        mToolBar.setTitle(titles[0]);
-        mBadgeView = initBadgeView();
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,
-                mToolBar, R.string.drawer_open, R.string.drawer_close);
-        mDrawerToggle.syncState();
-        mDrawerLayout.setDrawerListener(mDrawerToggle);
-        mBtnLogin.setOnClickListener(loginBtnListener);
-        mSettingList.setAdapter(mSettingListAdapter);
-        mSettingList.setOnItemClickListener(mSetting1Listener);
-        mUserInfo.setOnClickListener(mUserInfoDetail);
-        mFragmentList = new ArrayList<Fragment>();
-        mMainFragment = new MainFragment(MainFragment.MAIN_PAGE, MainActivity.this);
-        mFragmentList.add(mMainFragment);
-        mFavorFragment = new MainFragment(MainFragment.FAVOR_PAGE, MainActivity.this);
-        mFragmentList.add(mFavorFragment);
-        mMsgFragment = new MessageFragment(MainActivity.this);
-        mFragmentList.add(mMsgFragment);
-        mFragmentMng = getSupportFragmentManager();
-        mFragmentTransaction = mFragmentMng.beginTransaction();
-        mFragmentTransaction.add(R.id.main_content_container,
-                mFragmentList.get(0));
-        mFragmentTransaction.commit();
-        mToolBar.setTitle(titles[0]);
-        checkVersion();
-    }
-
-    private OnClickListener mLocationListener = new OnClickListener() {
-
-        @Override
-        public void onClick(View v) {
-            View view = LayoutInflater.from(getApplicationContext()).inflate(
-                    R.layout.location_choose_layout, null);
-            AlertDialog.Builder builder = new AlertDialog.Builder(
-                    MainActivity.this);
-            builder.setView(view).create().show();
-        }
-    };
     private OnItemClickListener mSetting1Listener = new OnItemClickListener() {
 
         @Override
@@ -201,6 +105,20 @@ public final class MainActivity extends BaseActivity {
                 mLocationView.setVisibility(View.VISIBLE);
             }
             mDrawerLayout.closeDrawer(Gravity.LEFT);
+        }
+    };
+    private View mLocationView = null;
+    private BadgeView mBadgeView = null;
+    private ProgressDialog mDialog = null;
+    private OnClickListener mLocationListener = new OnClickListener() {
+
+        @Override
+        public void onClick(View v) {
+            View view = LayoutInflater.from(getApplicationContext()).inflate(
+                    R.layout.location_choose_layout, null);
+            AlertDialog.Builder builder = new AlertDialog.Builder(
+                    MainActivity.this);
+            builder.setView(view).create().show();
         }
     };
     private OnItemClickListener mSetting2Listener = new OnItemClickListener() {
@@ -242,14 +160,16 @@ public final class MainActivity extends BaseActivity {
                                                             R.string.logout_msg),
                                                     Toast.LENGTH_LONG).show();
                                             mViewSwitcher.showPrevious();
-                                            settingStr = getResources()
+                                            mSettingArray = getResources()
                                                     .getStringArray(
                                                             R.array.settings2);
-                                            mSettingList2
-                                                    .setAdapter(new ArrayAdapter<String>(
-                                                            MainActivity.this,
-                                                            android.R.layout.simple_list_item_1,
-                                                            settingStr));
+                                            mSettingList2.setAdapter(mSettingAdapter2);
+                                            ;
+//                                            mSettingList2
+//                                                    .setAdapter(new ArrayAdapter<String>(
+//                                                            MainActivity.this,
+//                                                            android.R.layout.simple_list_item_1,
+//                                                            settingStr));
                                             if (mDialog != null) {
                                                 mDialog.dismiss();
                                                 mDialog = null;
@@ -267,50 +187,15 @@ public final class MainActivity extends BaseActivity {
             mDrawerLayout.closeDrawer(Gravity.LEFT);
         }
     };
-
-    private BadgeView initBadgeView() {
-        ViewGroup badgeParent = (ViewGroup) findViewById(R.id.badge_parent);
-        final BadgeView badgeView = new BadgeView(getApplicationContext(),
-                badgeParent);
-        badgeView.setBadgePosition(BadgeView.POSITION_TOP_LEFT);
-        badgeView.setWidth(15);
-        badgeView.setHeight(15);
-        DisplayMetrics dm = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(dm);
-        int width = View.MeasureSpec.makeMeasureSpec(0,
-                View.MeasureSpec.UNSPECIFIED);
-        int height = View.MeasureSpec.makeMeasureSpec(0,
-                View.MeasureSpec.UNSPECIFIED);
-        badgeParent.measure(width, height);
-        height = badgeParent.getMeasuredHeight();
-        width = badgeParent.getMeasuredWidth();
-        badgeView.setBadgeMargin(width * 2 / 5, height / 3);
-        badgeView.setFocusable(false);
-        return badgeView;
-    }
-
-    private void showBadgeView() {
-        if (mBadgeView == null) {
-            mBadgeView = initBadgeView();
-        }
-        if (mBadgeView != null) {
-            mBadgeView.show();
-        }
-    }
-
-    private void removeBadgeView() {
-        if (mBadgeView != null) {
-            mBadgeView.hide();
-        }
-    }
-
     private OnClickListener mUserInfoDetail = new OnClickListener() {
 
         @Override
         public void onClick(View v) {
             Intent intent = new Intent();
-            intent.setClass(MainActivity.this, UserInfoActivity.class);
-            //startActivity(intent);
+//            intent.setClass(MainActivity.this, UserInfoActivity.class);
+//            //startActivity(intent);
+            intent.setClass(MainActivity.this, ImageChooseActivity.class);
+            startActivity(intent);
         }
     };
     private OnClickListener loginBtnListener = new OnClickListener() {
@@ -323,14 +208,6 @@ public final class MainActivity extends BaseActivity {
             startActivity(intent);
         }
     };
-
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        return super.onOptionsItemSelected(item);
-    }
-
     private Toolbar.OnMenuItemClickListener onMenuItemClick = new Toolbar.OnMenuItemClickListener() {
         @Override
         public boolean onMenuItemClick(MenuItem menuItem) {
@@ -394,6 +271,151 @@ public final class MainActivity extends BaseActivity {
             return 3;
         }
     };
+    private String[] mSettingArray = null;
+    private BaseAdapter mSettingAdapter2 = new BaseAdapter() {
+        @Override
+        public int getCount() {
+            return mSettingArray.length;
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return position;
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            TextView tv = (TextView) LayoutInflater.from(getApplicationContext()).inflate(R.layout.drawer_setting2_item, null);
+            tv.setText(mSettingArray[position]);
+            return tv;
+        }
+    };
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+
+        super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    protected void findViews() {
+
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+//		getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
+
+    @Override
+    protected void registeViews() {
+        setSupportActionBar(mToolBar);
+        mToolBar.setOnMenuItemClickListener(onMenuItemClick);
+        mLocationView = LayoutInflater.from(this).inflate(
+                R.layout.location_layout, null);
+        mLocationView.setOnClickListener(mLocationListener);
+        mToolBar.addView(mLocationView);
+        Optional<TinyUser> user = Router.INSTANCE.getCurrentUser();
+        if (user.isPresent()) {
+            mViewSwitcher.showNext();
+            mThirdPartyUserName.setText(user.get().getNickName());
+            try {
+
+                Picasso.with(getApplicationContext())
+                        .load(user.get().getAvatarURL().get())
+                        .placeholder(R.drawable.default_user_head)
+                        .into(mThirdPartyUserHead);
+            } catch (Exception e) {
+                mThirdPartyUserHead.setImageResource(R.drawable.default_user_head);
+            }
+            mSettingArray = getResources()
+                    .getStringArray(
+                            R.array.settings1);
+            mSettingList2.setAdapter(mSettingAdapter2);
+            ;
+        } else {
+            mSettingArray = getResources().getStringArray(R.array.settings2);
+            mSettingList2.setAdapter(mSettingAdapter2);
+            ;
+        }
+        mSettingList2.setOnItemClickListener(mSetting2Listener);
+        titles = getResources().getStringArray(R.array.fragment_title);
+        mToolBar.setTitle(titles[0]);
+        mBadgeView = initBadgeView();
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,
+                mToolBar, R.string.drawer_open, R.string.drawer_close);
+        mDrawerToggle.syncState();
+        mDrawerLayout.setDrawerListener(mDrawerToggle);
+        mBtnLogin.setOnClickListener(loginBtnListener);
+        mSettingList.setAdapter(mSettingListAdapter);
+        mSettingList.setOnItemClickListener(mSetting1Listener);
+        mUserInfo.setOnClickListener(mUserInfoDetail);
+        mFragmentList = new ArrayList<Fragment>();
+        mMainFragment = new MainFragment(MainFragment.MAIN_PAGE, MainActivity.this);
+        mFragmentList.add(mMainFragment);
+        mFavorFragment = new MainFragment(MainFragment.FAVOR_PAGE, MainActivity.this);
+        mFragmentList.add(mFavorFragment);
+        mMsgFragment = new MessageFragment(MainActivity.this);
+        mFragmentList.add(mMsgFragment);
+        mFragmentMng = getSupportFragmentManager();
+        mFragmentTransaction = mFragmentMng.beginTransaction();
+        mFragmentTransaction.add(R.id.main_content_container,
+                mFragmentList.get(0));
+        mFragmentTransaction.commit();
+        mToolBar.setTitle(titles[0]);
+        checkVersion();
+    }
+
+    private BadgeView initBadgeView() {
+        ViewGroup badgeParent = (ViewGroup) findViewById(R.id.badge_parent);
+        final BadgeView badgeView = new BadgeView(getApplicationContext(),
+                badgeParent);
+        badgeView.setBadgePosition(BadgeView.POSITION_TOP_LEFT);
+        badgeView.setWidth(15);
+        badgeView.setHeight(15);
+        DisplayMetrics dm = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(dm);
+        int width = View.MeasureSpec.makeMeasureSpec(0,
+                View.MeasureSpec.UNSPECIFIED);
+        int height = View.MeasureSpec.makeMeasureSpec(0,
+                View.MeasureSpec.UNSPECIFIED);
+        badgeParent.measure(width, height);
+        height = badgeParent.getMeasuredHeight();
+        width = badgeParent.getMeasuredWidth();
+        badgeView.setBadgeMargin(width * 2 / 5, height / 3);
+        badgeView.setFocusable(false);
+        return badgeView;
+    }
+
+    private void showBadgeView() {
+        if (mBadgeView == null) {
+            mBadgeView = initBadgeView();
+        }
+        if (mBadgeView != null) {
+            mBadgeView.show();
+        }
+    }
+
+    private void removeBadgeView() {
+        if (mBadgeView != null) {
+            mBadgeView.hide();
+        }
+    }
+
+    ;
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        return super.onOptionsItemSelected(item);
+    }
 
     public void onBackPressed() {
         if (mDrawerLayout.isDrawerOpen(Gravity.LEFT)) {
@@ -402,8 +424,6 @@ public final class MainActivity extends BaseActivity {
         }
         super.onBackPressed();
     }
-
-    ;
 
     @Override
     protected void onDestroy() {
@@ -415,7 +435,7 @@ public final class MainActivity extends BaseActivity {
     protected void onUserInfoGot(boolean bSucces) {
         super.onUserInfoGot(bSucces);
         if (bSucces) {
-            AuthorInfo auth = PreferenceManager.getAuthInfo();
+            AuthorInfo auth = mPreferMng.getThirdPartyLoginMsg();
             mThirdPartyUserName.setText(auth.getUserName());
             if (auth.getHeadPath() == null || auth.getHeadPath().equals("")) {
                 mThirdPartyUserHead.setImageResource(R.drawable.default_user_head);
@@ -424,15 +444,17 @@ public final class MainActivity extends BaseActivity {
                         .load(auth.getHeadPath())
                         .placeholder(R.drawable.default_user_head)
                         .into(mThirdPartyUserHead);
-            mViewSwitcher.showNext();
-            settingStr = getResources()
+            mThirdPartyUserHead.setVisibility(View.VISIBLE);
+            mThirdPartyUserName.setVisibility(View.VISIBLE);
+            mSettingArray = getResources()
                     .getStringArray(
                             R.array.settings1);
-            mSettingList2
-                    .setAdapter(new ArrayAdapter<String>(
-                            MainActivity.this,
-                            android.R.layout.simple_list_item_1,
-                            settingStr));
+            mSettingList2.setAdapter(mSettingAdapter2);
+//            mSettingList2
+//                    .setAdapter(new ArrayAdapter<String>(
+//                            MainActivity.this,
+//                            android.R.layout.simple_list_item_1,
+//                            settingStr));
         }
     }
 

@@ -8,6 +8,6 @@
         android:layout_height="match_parent"
         android:layout_width="match_parent"
         android:padding="10dip"
-        android:src="@drawable/detail_show_2"></com.zuijiao.view.RoundImageView>
+        android:src="@drawable/default_user_head"></com.zuijiao.view.RoundImageView>
 
 </LinearLayout>

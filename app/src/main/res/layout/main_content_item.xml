@@ -86,7 +86,7 @@
                 android:id="@+id/content_item_user_head"
                 android:layout_width="@dimen/main_item_user_head"
                 android:layout_height="@dimen/main_item_user_head"
-                android:src="@drawable/detail_show_1" />
+                android:src="@drawable/default_user_head" />
 
             <TextView
                 android:id="@+id/content_item_user_name"

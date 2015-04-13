@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
+    android:padding="10dip"
     android:layout_height="wrap_content">
 
     <ImageView
@@ -18,7 +19,7 @@
         android:layout_marginLeft="15dip"
         android:layout_toRightOf="@+id/drawer_setting_item_image"
         android:text="setting"
-        android:textColor="#888888"
+        android:textColor="@color/black"
         android:textSize="18sp" />
 
     <TextView

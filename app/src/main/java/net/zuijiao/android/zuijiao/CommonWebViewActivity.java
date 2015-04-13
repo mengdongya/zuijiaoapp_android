@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
@@ -19,6 +20,7 @@ public class CommonWebViewActivity extends BaseActivity {
     private Toolbar mToolbar = null;
     private String title = null;
     private String contentUrl = null;
+    private WebViewClient mWvClient = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,11 +34,11 @@ public class CommonWebViewActivity extends BaseActivity {
 
     @Override
     protected void registeViews() {
-        try{
+        try {
             Intent intent = getIntent();
             title = intent.getStringExtra("title");
             contentUrl = intent.getStringExtra("content_url");
-        }catch(Throwable t){
+        } catch (Throwable t) {
             t.printStackTrace();
             finish();
         }
@@ -44,12 +46,22 @@ public class CommonWebViewActivity extends BaseActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(title);
         mWebView.getSettings().setJavaScriptEnabled(true);
-        mWebView.setWebViewClient(new WebViewClient(){
+        mWebView.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
+        mWvClient = new WebViewClient() {
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 view.loadUrl(url);
                 return true;
             }
-        });
+
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                super.onPageFinished(view, url);
+                view.setVisibility(View.VISIBLE);
+            }
+        };
+        // mWvClient.onPageFinished(mWebView,contentUrl);
+//        mWebView.set
+        mWebView.setWebViewClient(mWvClient);
         mWebView.loadUrl(contentUrl);
 
     }

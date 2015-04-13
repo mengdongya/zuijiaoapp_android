@@ -170,6 +170,10 @@ public class PreferenceManager {
         editor.commit();
     }
 
+    public void saveAvatarPath(String avatarPath) {
+        SharedPreferences sp = mContext.getSharedPreferences(PreferencesDef.FILE_NAME, Activity.MODE_PRIVATE);
+        boolean b = sp.edit().putString("headurl", avatarPath).commit();
+    }
 
     public AuthorInfo getThirdPartyLoginMsg() {
         SharedPreferences sp = mContext.getSharedPreferences(PreferencesDef.FILE_NAME, Activity.MODE_PRIVATE);
@@ -192,6 +196,7 @@ public class PreferenceManager {
         SharedPreferences sp = mContext.getSharedPreferences(PreferencesDef.FILE_NAME, Activity.MODE_PRIVATE);
         sp.edit().putLong("main_refresh_time", time).commit();
     }
+
 
     public void saveFavorLastRefreshTime(Long time) {
         SharedPreferences sp = mContext.getSharedPreferences(PreferencesDef.FILE_NAME, Activity.MODE_PRIVATE);

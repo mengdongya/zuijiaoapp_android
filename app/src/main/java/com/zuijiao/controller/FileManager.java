@@ -16,20 +16,21 @@ import java.io.InputStream;
 import java.util.List;
 
 public class FileManager {
-    private Context mContext = null;
-    private static FileManager mInstance = null;
     public final static String APP_FOLDER_NAME = "Zuijiao";
-    public static String APP_FOLDER_PATH = "";
     public final static String THIRD_PARTY_HEAD = "third_party_head.jpg";
     private static final int COPY_BLOCK_SIZE = 4096;
+    public static String APP_FOLDER_PATH = "";
     //main fragment data
     public static Optional<List<Gourmet>> mainGourmet = Optional.empty();
     //my favor fragment data
     public static Optional<List<Gourmet>> favorGourmets = Optional.empty();
-
-    public static Optional<WouldLikeToEatUsers> tmpWouldLikeList = Optional.empty() ;
+    public static Optional<WouldLikeToEatUsers> tmpWouldLikeList = Optional.empty();
     //
-    public static Gourmet tmpMessageGourmet = null ;
+    public static Gourmet tmpMessageGourmet = null;
+    private static FileManager mInstance = null;
+    public static final String CHOOSE_IMAGE = Environment.getDataDirectory()
+            .getAbsolutePath() + File.separator + "head.jpg";
+    private Context mContext = null;
 
     private FileManager(Context context) {
         this.mContext = context;
@@ -127,6 +128,19 @@ public class FileManager {
 
     }
 
+    public static void setGourmets(int type, Optional<List<Gourmet>> gourmets) {
+        if (type == MainFragment.MAIN_PAGE) {
+//            if(mainGourmet.isPresent()){
+//                mainGourmet.get().clear();
+//            }
+            mainGourmet = gourmets;
+        } else {
+//            if(favorGourmets.isPresent()){
+//                favorGourmets.get().clear();
+//            }
+            favorGourmets = gourmets;
+        }
+    }
 
     public Gourmet getItem(boolean bFavor, int index) {
         if (bFavor) {
@@ -143,20 +157,6 @@ public class FileManager {
                 }
                 return mainGourmet.get().get(index);
             }
-        }
-    }
-
-    public static void setGourmets(int type, Optional<List<Gourmet>> gourmets) {
-        if(type == MainFragment.MAIN_PAGE){
-//            if(mainGourmet.isPresent()){
-//                mainGourmet.get().clear();
-//            }
-            mainGourmet = gourmets ;
-        }else{
-//            if(favorGourmets.isPresent()){
-//                favorGourmets.get().clear();
-//            }
-            favorGourmets = gourmets ;
         }
     }
 }

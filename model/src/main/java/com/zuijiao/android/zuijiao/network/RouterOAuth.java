@@ -1,7 +1,6 @@
 package com.zuijiao.android.zuijiao.network;
 
 import com.zuijiao.android.util.Optional;
-import com.zuijiao.android.util.functional.LambdaExpression;
 import com.zuijiao.android.util.functional.OneParameterExpression;
 import com.zuijiao.android.zuijiao.model.common.OAuthModel;
 
@@ -37,7 +36,7 @@ public enum RouterOAuth {
     /**
      * 游客登录(Do *NOT* ask me why visitor need login)
      */
-    public void visitor(LambdaExpression successCallback
+    public void visitor(OneParameterExpression<Boolean> successCallback
             , OneParameterExpression<Integer> failureCallback
     ) {
         service.visitor(OAuthParam, fillOAuthToken(successCallback, failureCallback));
@@ -64,7 +63,7 @@ public enum RouterOAuth {
             , String password
             , Optional<String> deviceToken
             , Optional<String> openIDOAuthToken
-            , LambdaExpression successCallback
+            , OneParameterExpression<Boolean> successCallback
             , OneParameterExpression<Integer> failureCallback
     ) {
         assert (deviceToken != null);
@@ -113,7 +112,7 @@ public enum RouterOAuth {
             , String platform
             , Optional<String> deviceToken
             , Optional<String> openIDOAuthToken
-            , LambdaExpression successCallback
+            , OneParameterExpression<Boolean> successCallback
             , OneParameterExpression<Integer> failureCallback
     ) {
         assert (deviceToken != null);
@@ -159,7 +158,7 @@ public enum RouterOAuth {
             , String platform
             , Optional<String> deviceToken
             , Optional<String> openIDOAuthToken
-            , LambdaExpression successCallback
+            , OneParameterExpression<Boolean> successCallback
             , OneParameterExpression<Integer> failureCallback
     ) {
         assert (deviceToken != null);
@@ -205,7 +204,7 @@ public enum RouterOAuth {
             , String password
             , Optional<String> deviceToken
             , Optional<String> openIDOAuthToken
-            , LambdaExpression successCallback
+            , OneParameterExpression<Boolean> successCallback
             , OneParameterExpression<Integer> failureCallback
     ) {
         assert (deviceToken != null);
@@ -245,11 +244,11 @@ public enum RouterOAuth {
      * @return 包含 OAuthModel 的回调类
      */
     private Callback<OAuthModel> fillOAuthToken(
-            LambdaExpression successCallback
+            OneParameterExpression<Boolean> successCallback
             , OneParameterExpression<Integer> failureCallback
     ) {
 
-        final Optional<LambdaExpression> finalSuccessCallback = Optional.ofNullable(successCallback);
+        final Optional<OneParameterExpression<Boolean>> finalSuccessCallback = Optional.ofNullable(successCallback);
         final Optional<OneParameterExpression<Integer>> finalFailureCallback = Optional.ofNullable(failureCallback);
 
         return new Callback<OAuthModel>() {
@@ -261,7 +260,7 @@ public enum RouterOAuth {
                 System.out.println("token: " + oAuthModel.getAccessToken() + " has callback: " + finalSuccessCallback.isPresent());
 
                 if (finalSuccessCallback.isPresent())
-                    finalSuccessCallback.get().action();
+                    finalSuccessCallback.get().action(oAuthModel.getIsNew());
             }
 
             @Override

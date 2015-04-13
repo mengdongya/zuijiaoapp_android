@@ -444,6 +444,7 @@ public final class MainActivity extends BaseActivity {
                         .load(auth.getHeadPath())
                         .placeholder(R.drawable.default_user_head)
                         .into(mThirdPartyUserHead);
+            mBtnLogin.setVisibility(View.GONE);
             mThirdPartyUserHead.setVisibility(View.VISIBLE);
             mThirdPartyUserName.setVisibility(View.VISIBLE);
             mSettingArray = getResources()

@@ -34,4 +34,11 @@ public enum RouterAccount {
 
         service.update(gender, provinceId, cityId, story, year, month, day, tags, CallbackFactory.getInstance().callback(successCallback, failureCallback));
     }
+
+    public void updateAvatar(String avatarUrl
+            , LambdaExpression successCallback
+            , LambdaExpression failureCallback
+    ) {
+        service.updateAvatar(avatarUrl, CallbackFactory.getInstance().callback(successCallback, failureCallback));
+    }
 }

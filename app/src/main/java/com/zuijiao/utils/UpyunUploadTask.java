@@ -6,6 +6,7 @@ import com.upyun.block.api.listener.CompleteListener;
 import com.upyun.block.api.listener.ProgressListener;
 import com.upyun.block.api.main.UploaderManager;
 import com.upyun.block.api.utils.UpYunUtils;
+import com.zuijiao.android.zuijiao.network.Router;
 
 import net.zuijiao.android.zuijiao.BuildConfig;
 
@@ -63,6 +64,10 @@ public class UpyunUploadTask extends AsyncTask<Void, Void, String> {
 
     public static String avatarPath(Integer userId, String fileExtension) {
         return String.format("%s/%s.%s", BuildConfig.Avatar_Base_Url, userId, fileExtension);
+    }
+
+    public static String avatarPath(String relativeUrl) {
+        return String.format("%s%s", Router.PicBaseUrl, relativeUrl);
     }
 
     public static String gourmetPath(Integer userId, String gourmetName, String fileExtension) {

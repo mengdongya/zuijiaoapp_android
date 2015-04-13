@@ -44,7 +44,9 @@ android {
 
     packagingOptions {
         exclude 'LICENSE.txt'
+        exclude 'META-INF/LICENSE.txt'
         exclude 'AndroidManifest.xml'
+        exclude 'META-INF/NOTICE.txt'
     }
 
 

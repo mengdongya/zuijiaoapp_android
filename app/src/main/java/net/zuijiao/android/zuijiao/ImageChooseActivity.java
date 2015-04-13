@@ -257,17 +257,18 @@ public class ImageChooseActivity extends BaseActivity {
                             e.printStackTrace();
                             return;
                         }
+                        String avatarUri = UpyunUploadTask.avatarPath(Router.INSTANCE.getCurrentUser().get().getIdentifier(), "jpg");
                         new UpyunUploadTask(getCacheDir().getPath() + File.separator + "head.jpg"
-                                , UpyunUploadTask.avatarPath(Router.INSTANCE.getCurrentUser().get().getIdentifier(), "jpg")
+                                , avatarUri
                                 , (long transferedBytes, long totalBytes) -> {
                         }
                                 , (boolean isComplete, String result, String error) -> {
                             if (isComplete) {
-                                String avatarPath = UpyunUploadTask.avatarPath(Router.INSTANCE.getCurrentUser().get().getIdentifier(), "jpg");
-                                Router.INSTANCE.getCurrentUser().get().setAvatarURL(avatarPath);
-                                mPreferMng.saveAvatarPath(UpyunUploadTask.avatarPath(avatarPath));
+//                                String avatarPath = UpyunUploadTask.avatarPath(Router.INSTANCE.getCurrentUser().get().getIdentifier(), "jpg");
+                                Router.INSTANCE.getCurrentUser().get().setAvatarURL(avatarUri);
+                                mPreferMng.saveAvatarPath(UpyunUploadTask.avatarPath(avatarUri));
                                 createDialog();
-                                Router.getAccountModule().updateAvatar(avatarPath, () -> {
+                                Router.getAccountModule().updateAvatar(avatarUri, () -> {
                                     Intent intent = new Intent();
                                     intent.setAction(MessageDef.ACTION_GET_THIRD_PARTY_USER);
                                     sendBroadcast(intent);

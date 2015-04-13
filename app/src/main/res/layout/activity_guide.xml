@@ -41,6 +41,13 @@
             android:layout_marginLeft="5dip"
             android:layout_marginRight="5dip"
             android:background="@drawable/wizard_index_unselected" />
+
+        <View
+            android:layout_width="5dip"
+            android:layout_height="5dip"
+            android:layout_marginLeft="5dip"
+            android:layout_marginRight="5dip"
+            android:background="@drawable/wizard_index_unselected" />
     </LinearLayout>
 
     <Button
@@ -51,6 +58,7 @@
         android:layout_centerHorizontal="true"
         android:background="@drawable/bg_login_btn"
         android:text="@string/wizard_btn_text"
+        android:visibility="gone"
         android:textColor="@color/white" />
 
     <ProgressBar

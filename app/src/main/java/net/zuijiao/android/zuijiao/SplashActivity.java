@@ -34,6 +34,8 @@ public class SplashActivity extends BaseActivity {
     private PreferenceManager mPreferMng = null;
     private PreferenceInfo mPreferInfo = null;
     private boolean loadResult = false;
+    //    if true ,do not jump to main
+    private boolean onBackPressed = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,6 +86,9 @@ public class SplashActivity extends BaseActivity {
     }
 
     private void goToMain() {
+        if (onBackPressed) {
+            return;
+        }
         Intent mainIntent = new Intent(getApplicationContext(),
                 MainActivity.class);
         mainIntent.putExtra("login_result", loadResult);
@@ -91,7 +96,14 @@ public class SplashActivity extends BaseActivity {
         finish();
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        onBackPressed = true;
+    }
+
     private void goToGuide() {
+
         Intent mainIntent = new Intent(getApplicationContext(),
                 GuideActivity.class);
         startActivity(mainIntent);
@@ -160,8 +172,8 @@ public class SplashActivity extends BaseActivity {
         }
         int currentapiVersion = android.os.Build.VERSION.SDK_INT;
         if (currentapiVersion >= 14) {
-            getWindow().getDecorView().setSystemUiVisibility(
-                    View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
+//            getWindow().getDecorView().setSystemUiVisibility(
+//                    View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
         }
         //this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         initPreferenceInfo();

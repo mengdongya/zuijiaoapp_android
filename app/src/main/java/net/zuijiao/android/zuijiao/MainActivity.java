@@ -29,7 +29,6 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ViewSwitcher;
 
 import com.lidroid.xutils.view.annotation.ContentView;
 import com.lidroid.xutils.view.annotation.ViewInject;
@@ -57,8 +56,8 @@ public final class MainActivity extends BaseActivity {
     // DrawerListener
     private ActionBarDrawerToggle mDrawerToggle;
     // login button and user head in drawer view
-    @ViewInject(R.id.vs_user_info)
-    private ViewSwitcher mViewSwitcher = null;
+//    @ViewInject(R.id.vs_user_info)
+//    private ViewSwitcher mViewSwitcher = null;
     @ViewInject(R.id.btn_login)
     private Button mBtnLogin = null;
     // setting list in drawer view
@@ -159,7 +158,10 @@ public final class MainActivity extends BaseActivity {
                                                     getResources().getString(
                                                             R.string.logout_msg),
                                                     Toast.LENGTH_LONG).show();
-                                            mViewSwitcher.showPrevious();
+                                            mBtnLogin.setVisibility(View.VISIBLE);
+                                            mThirdPartyUserName.setVisibility(View.GONE);
+                                            mThirdPartyUserHead.setVisibility(View.GONE);
+//                                            mViewSwitcher.showPrevious();
                                             mSettingArray = getResources()
                                                     .getStringArray(
                                                             R.array.settings2);
@@ -323,7 +325,9 @@ public final class MainActivity extends BaseActivity {
         mToolBar.addView(mLocationView);
         Optional<TinyUser> user = Router.INSTANCE.getCurrentUser();
         if (user.isPresent()) {
-            mViewSwitcher.showNext();
+            mBtnLogin.setVisibility(View.GONE);
+            mThirdPartyUserName.setVisibility(View.VISIBLE);
+            mThirdPartyUserHead.setVisibility(View.VISIBLE);
             mThirdPartyUserName.setText(user.get().getNickName());
             try {
 
@@ -343,6 +347,9 @@ public final class MainActivity extends BaseActivity {
             mSettingArray = getResources().getStringArray(R.array.settings2);
             mSettingList2.setAdapter(mSettingAdapter2);
             ;
+            mBtnLogin.setVisibility(View.VISIBLE);
+            mThirdPartyUserName.setVisibility(View.GONE);
+            mThirdPartyUserHead.setVisibility(View.GONE);
         }
         mSettingList2.setOnItemClickListener(mSetting2Listener);
         titles = getResources().getStringArray(R.array.fragment_title);

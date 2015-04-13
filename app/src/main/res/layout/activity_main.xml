@@ -30,7 +30,7 @@
         android:background="#ffffff"
         android:orientation="vertical">
 
-        <ViewSwitcher
+        <FrameLayout
             android:id="@+id/vs_user_info"
             android:layout_width="match_parent"
             android:layout_height="200dip"
@@ -73,7 +73,7 @@
                     android:textColor="@color/white"
                     android:textSize="18sp" />
             </LinearLayout>
-        </ViewSwitcher>
+        </FrameLayout>
 
         <ListView
             android:id="@+id/lv_drawe_items"

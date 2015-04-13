@@ -12,7 +12,7 @@ import com.zuijiao.android.zuijiao.model.message.NewsList;
 public enum RouterMessage {
     INSTANCE;
 
-    private IRouterMessage service = Router.INSTANCE.restAdapter.create(IRouterMessage.class);
+    private IRouterMessage service = Router.getInstance().restAdapter.create(IRouterMessage.class);
 
     /**
      * 获取用户分组新消息信息
@@ -30,10 +30,10 @@ public enum RouterMessage {
     /**
      * 获取指定分组下的所有消息列表
      *
-     * @param type  分组类型
-     * @param sinceID   从几开始
-     * @param toID  到几结束
-     * @param count 拿多少条
+     * @param type            分组类型
+     * @param sinceID         从几开始
+     * @param toID            到几结束
+     * @param count           拿多少条
      * @param successCallback
      * @param failureCallback
      */
@@ -50,7 +50,7 @@ public enum RouterMessage {
     /**
      * 标记指定类型为已读
      *
-     * @param type  分组类型
+     * @param type            分组类型
      * @param successCallback
      * @param failureCallback
      */

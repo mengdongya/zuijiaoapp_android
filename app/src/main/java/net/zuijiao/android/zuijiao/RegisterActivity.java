@@ -20,7 +20,7 @@ import com.zuijiao.entity.AuthorInfo;
 
 @ContentView(R.layout.activity_register)
 public class RegisterActivity extends BaseActivity {
-    private final static String EMAIL_REGEX = "^[\\w-_\\.+]*[\\w-_\\.]\\@([\\w]+\\.)+[\\w]+[\\w]$";
+    private final static String EMAIL_REGEX = "^[\\w_\\.+-]*[\\w_\\.-]\\@([\\w]+\\.)+[\\w]+[\\w]$";
     @ViewInject(R.id.register_toolbar)
     private Toolbar mToolbar = null;
     @ViewInject(R.id.et_regist_name)
@@ -61,7 +61,7 @@ public class RegisterActivity extends BaseActivity {
                         Router.getOAuthModule().loginEmailRoutine(mEmail, mPwd, Optional.<String>empty(), Optional.<String>empty(), () -> {
 
                             //Login success !
-                            TinyUser user = Router.INSTANCE.getCurrentUser().get();
+                            TinyUser user = Router.getInstance().getCurrentUser().get();
                             AuthorInfo authorInfo = new AuthorInfo();
                             authorInfo.setUserName(user.getNickName());
                             authorInfo.setPassword(mPwd);

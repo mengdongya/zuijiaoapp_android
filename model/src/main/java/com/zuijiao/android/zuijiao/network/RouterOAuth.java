@@ -24,7 +24,7 @@ public enum RouterOAuth {
 
     // OAuth 公共参数
     private static final Map<String, String> OAuthParam;
-    private IRouterOAuth service = Router.INSTANCE.restAdapter.create(IRouterOAuth.class);
+    private IRouterOAuth service = Router.getInstance().restAdapter.create(IRouterOAuth.class);
 
     static {
         Map<String, String> aMap = new HashMap<>();
@@ -93,7 +93,7 @@ public enum RouterOAuth {
                 , deviceToken.orElse(null)
                 , openIDOAuthToken.orElse(null)
                 , OAuthParam
-                );
+        );
         fillOAuthToken(model);
     }
 
@@ -113,7 +113,7 @@ public enum RouterOAuth {
             , String platform
             , Optional<String> deviceToken
             , Optional<String> openIDOAuthToken
-            , LambdaExpression successCallback
+            , OneParameterExpression<Boolean> successCallback
             , OneParameterExpression<Integer> failureCallback
     ) {
         assert (deviceToken != null);
@@ -245,6 +245,35 @@ public enum RouterOAuth {
      * @return 包含 OAuthModel 的回调类
      */
     private Callback<OAuthModel> fillOAuthToken(
+            OneParameterExpression<Boolean> successCallback
+            , OneParameterExpression<Integer> failureCallback
+    ) {
+
+        final Optional<OneParameterExpression<Boolean>> finalSuccessCallback = Optional.ofNullable(successCallback);
+        final Optional<OneParameterExpression<Integer>> finalFailureCallback = Optional.ofNullable(failureCallback);
+
+        return new Callback<OAuthModel>() {
+            @Override
+            public void success(OAuthModel oAuthModel, Response response) {
+                Router.getInstance().accessToken = Optional.ofNullable(oAuthModel.getAccessToken());
+                Router.getInstance().currentUser = oAuthModel.getUser();
+
+                System.out.println("token: " + oAuthModel.getAccessToken() + " has callback: " + finalSuccessCallback.isPresent());
+
+                if (finalSuccessCallback.isPresent())
+                    finalSuccessCallback.get().action(oAuthModel.getIsNew());
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                System.out.println("Failure: " + error);
+                if (finalFailureCallback.isPresent())
+                    finalFailureCallback.get().action(error.getResponse().getStatus());
+            }
+        };
+    }
+
+    private Callback<OAuthModel> fillOAuthToken(
             LambdaExpression successCallback
             , OneParameterExpression<Integer> failureCallback
     ) {
@@ -255,8 +284,8 @@ public enum RouterOAuth {
         return new Callback<OAuthModel>() {
             @Override
             public void success(OAuthModel oAuthModel, Response response) {
-                Router.INSTANCE.accessToken = Optional.ofNullable(oAuthModel.getAccessToken());
-                Router.INSTANCE.currentUser = oAuthModel.getUser();
+                Router.getInstance().accessToken = Optional.ofNullable(oAuthModel.getAccessToken());
+                Router.getInstance().currentUser = oAuthModel.getUser();
 
                 System.out.println("token: " + oAuthModel.getAccessToken() + " has callback: " + finalSuccessCallback.isPresent());
 
@@ -274,8 +303,8 @@ public enum RouterOAuth {
     }
 
     private void fillOAuthToken(OAuthModel oAuthModel) {
-        Router.INSTANCE.accessToken = Optional.ofNullable(oAuthModel.getAccessToken());
-        Router.INSTANCE.currentUser = oAuthModel.getUser();
+        Router.getInstance().accessToken = Optional.ofNullable(oAuthModel.getAccessToken());
+        Router.getInstance().currentUser = oAuthModel.getUser();
     }
 
 

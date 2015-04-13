@@ -132,7 +132,7 @@ public final class MainActivity extends BaseActivity {
                         CommonWebViewActivity.class);
                 feedBackIntent.putExtra("title",
                         getResources().getString(R.string.feed_back));
-                String token = Router.INSTANCE.getAccessToken().get();
+                String token = Router.getInstance().getAccessToken().get();
                 String url = String.format(getString(R.string.feed_back_url), "", token);
                 feedBackIntent.putExtra("content_url", getString(R.string.feed_back_url));
                 startActivity(feedBackIntent);
@@ -325,7 +325,7 @@ public final class MainActivity extends BaseActivity {
                 R.layout.location_layout, null);
         mLocationView.setOnClickListener(mLocationListener);
         mToolBar.addView(mLocationView);
-        Optional<TinyUser> user = Router.INSTANCE.getCurrentUser();
+        Optional<TinyUser> user = Router.getInstance().getCurrentUser();
         if (user.isPresent()) {
             mBtnLogin.setVisibility(View.GONE);
             mThirdPartyUserName.setVisibility(View.VISIBLE);

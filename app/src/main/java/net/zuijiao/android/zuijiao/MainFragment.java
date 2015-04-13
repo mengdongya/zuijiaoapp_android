@@ -246,7 +246,7 @@ public class MainFragment extends Fragment implements FragmentDataListener,
     private boolean bLogin = false;
 
     private void fetchFavorData(Boolean isRefresh) {
-        if (Router.INSTANCE.getCurrentUser().equals(Optional.empty())) {
+        if (Router.getInstance().getCurrentUser().equals(Optional.empty())) {
             mAdapter.gourmets.get().clear();
             mAdapter.notifyDataSetChanged();
             if (isRefresh) {
@@ -257,7 +257,7 @@ public class MainFragment extends Fragment implements FragmentDataListener,
             Toast.makeText(mContext, getString(R.string.notify_unlogin), Toast.LENGTH_LONG).show();
             return;
         }
-        TinyUser user = Router.INSTANCE.getCurrentUser().get();
+        TinyUser user = Router.getInstance().getCurrentUser().get();
         List<Gourmet> tmpGourmets = mAdapter.gourmets.orElse(new ArrayList<>());
         Integer theLastOneIdentifier = null;
 
@@ -312,7 +312,7 @@ public class MainFragment extends Fragment implements FragmentDataListener,
     private void fetchCommmonData(Boolean isRefresh) {
 
         //boolean :is login status now
-        if (Router.INSTANCE.getCurrentUser().equals(Optional.empty()) && !bLogin) {
+        if (Router.getInstance().getCurrentUser().equals(Optional.empty()) && !bLogin) {
             tryLoginFirst();
             return;
         }

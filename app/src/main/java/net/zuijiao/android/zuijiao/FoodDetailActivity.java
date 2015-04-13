@@ -499,7 +499,7 @@ public class FoodDetailActivity extends BaseActivity implements
     private OnClickListener favorListener = new OnClickListener() {
         @Override
         public void onClick(View v) {
-            if (!Router.INSTANCE.getCurrentUser().isPresent()) {
+            if (!Router.getInstance().getCurrentUser().isPresent()) {
                 View contentView = mInflater.inflate(R.layout.alert_login_dialog, null);
                 TextView tv = (TextView) contentView.findViewById(R.id.fire_login);
                 final AlertDialog dialog = new AlertDialog.Builder(FoodDetailActivity.this).setView(contentView).create();

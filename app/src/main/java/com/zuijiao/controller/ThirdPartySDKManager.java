@@ -108,7 +108,7 @@ public class ThirdPartySDKManager implements AbsSDK.LoginListener {
         String imageurl = user.getHeadPath();
         String platsform = user.getPlatform();
         String token = user.getToken();
-        Router.getOAuthModule().register(userName, imageurl, openid, platsform, Optional.<String>empty(), Optional.of(token), () -> {
+        Router.getOAuthModule().register(userName, imageurl, openid, platsform, Optional.<String>empty(), Optional.of(token), isNew -> {
                     Router.getOAuthModule().login(openid, platsform, Optional.empty(), Optional.of(token), () -> {
                         PreferenceManager.getInstance(mContext).saveThirdPartyLoginMsg(user);
                         Intent intent = new Intent(

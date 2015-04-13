@@ -10,12 +10,10 @@ import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.lidroid.xutils.view.annotation.ContentView;
@@ -24,9 +22,7 @@ import com.zuijiao.android.util.Optional;
 import com.zuijiao.android.zuijiao.network.Cache;
 import com.zuijiao.android.zuijiao.network.Router;
 import com.zuijiao.android.zuijiao.network.RouterOAuth;
-import com.zuijiao.controller.PreferenceManager;
 import com.zuijiao.controller.ThirdPartySDKManager;
-import com.zuijiao.db.DBOpenHelper;
 import com.zuijiao.entity.AuthorInfo;
 
 import java.util.ArrayList;
@@ -52,10 +48,10 @@ public class GuideActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (VERSION.SDK_INT >= VERSION_CODES.KITKAT) {
-            getWindow().addFlags(
-                    WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            getWindow().addFlags(
-                    WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+//            getWindow().addFlags(
+//                    WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+//            getWindow().addFlags(
+//                    WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
         }
         if (mTendIntent != null) {
             mBCallByUser = mTendIntent.getBooleanExtra("guide_user_call", false);
@@ -96,10 +92,10 @@ public class GuideActivity extends BaseActivity {
                 R.layout.item_guide, null);
         ImageView imageView = (ImageView) view.findViewById(R.id.iguide_img);
         imageView.setImageResource(res);
-        TextView headText = (TextView) view.findViewById(R.id.wizard_text1);
-        headText.setText(head);
-        TextView noteText = (TextView) view.findViewById(R.id.wizard_text2);
-        noteText.setText(note);
+//        TextView headText = (TextView) view.findViewById(R.id.wizard_text1);
+//        headText.setText(head);
+//        TextView noteText = (TextView) view.findViewById(R.id.wizard_text2);
+//        noteText.setText(note);
         return view;
     }
 
@@ -154,9 +150,14 @@ public class GuideActivity extends BaseActivity {
             mPreferenceInfo.setAppFirstLaunch(false);
             mPreferMng.saveFirstLaunch();
             if (!mBCallByUser) {
-                DBOpenHelper.copyLocationDb(GuideActivity.this.getApplicationContext()) ;
-                AuthorInfo auth = PreferenceManager.getInstance(getApplicationContext()).getThirdPartyLoginMsg();
-                networkSetup(auth);
+                Intent intent = new Intent(GuideActivity.this, SplashActivity.class);
+                startActivity(intent);
+                finish();
+//                DBOpenHelper.copyLocationDb(GuideActivity.this.getApplicationContext()) ;
+//                AuthorInfo auth = PreferenceManager.getInstance(getApplicationContext()).getThirdPartyLoginMsg();
+//                networkSetup(auth);
+            } else {
+                goToMain();
             }
         });
     }

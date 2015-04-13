@@ -9,14 +9,6 @@ import java.security.NoSuchAlgorithmException;
  * @author http://www.syboos.jp
  */
 public class MD5 {
-    /**
-     * MD5アルゴリズム
-     * 文字列を暗号化する
-     *
-     * @param str 暗号化される文字列
-     * @return 暗号化結果
-     * @throws NoSuchAlgorithmException
-     */
     public static String crypt(String str) throws NoSuchAlgorithmException {
         if (str == null || str.length() == 0) {
             throw new IllegalArgumentException("String to encript cannot be null or zero length");
@@ -29,14 +21,6 @@ public class MD5 {
         return hashByte2MD5(hash);
     }
 
-    /**
-     * MD5アルゴリズム
-     * byte[]配列を暗号化する
-     *
-     * @param bytes 暗号化されるbyte[]配列
-     * @return 暗号化結果
-     * @throws NoSuchAlgorithmException
-     */
     public static String crypt(byte[] bytes) throws NoSuchAlgorithmException {
         if (bytes == null || bytes.length == 0) {
             throw new IllegalArgumentException("bytes to encript cannot be null or zero length");
@@ -47,14 +31,6 @@ public class MD5 {
         return hashByte2MD5(hash);
     }
 
-    /**
-     * MD5アルゴリズム
-     * InputStreamを暗号化する（ファイルなどのチェックサムを求む）
-     *
-     * @param in 暗号化されるInputStreamオブジェクト
-     * @return 暗号化結果
-     * @throws NoSuchAlgorithmException
-     */
     public static String crypt(InputStream in) throws NoSuchAlgorithmException, IOException {
         if (in == null || in.available() == 0) {
             throw new IllegalArgumentException("InputStream can't be null or zero length.");
@@ -82,7 +58,6 @@ public class MD5 {
         return hashByte2MD5(hash);
     }
 
-    //MD5　ハッシュ関数
     private static String hashByte2MD5(byte[] hash) {
         StringBuffer hexString = new StringBuffer();
         for (int i = 0; i < hash.length; i++) {
@@ -96,7 +71,6 @@ public class MD5 {
         return hexString.toString();
     }
 
-    //テスト
     public static void main(String[] args) {
         try {
             System.out.println(crypt("112233445566"));

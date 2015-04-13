@@ -139,7 +139,11 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
                     mDialog = null ;
                 }
             }, errorMessage ->{
-                Toast.makeText(getApplicationContext(),getString(R.string.notify_net2),Toast.LENGTH_LONG).show();
+                if (errorMessage == 401) {
+                    Toast.makeText(getApplicationContext(), getString(R.string.error_password), Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(getApplicationContext(), getString(R.string.notify_net2), Toast.LENGTH_LONG).show();
+                }
                 if(mDialog != null){
                     mDialog.dismiss();
                     mDialog = null ;
@@ -195,9 +199,10 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
-		// mCloudMng.onLoginResult(requestCode, resultCode, data);
-	}
-	@Override
+        mCloudMng.onLoginResult(requestCode, resultCode, data);
+    }
+
+    @Override
 	public void onResume() {
         super.onResume();
         mBClicked = false;

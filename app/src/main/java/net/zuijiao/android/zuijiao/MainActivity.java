@@ -373,7 +373,7 @@ public final class MainActivity extends BaseActivity {
             } else if (position == 2) {
                 image.setImageResource(R.drawable.setting_msg);
                 textView.setText(R.string.msg_page);
-                textMsg.setVisibility(View.VISIBLE);
+                textMsg.setVisibility(View.GONE);
             }
             return contentView;
         }

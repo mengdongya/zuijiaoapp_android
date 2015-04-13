@@ -2,7 +2,6 @@ package net.zuijiao.android.zuijiao;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -24,6 +23,7 @@ import com.zuijiao.android.zuijiao.model.user.TinyUser;
 import com.zuijiao.android.zuijiao.network.Cache;
 import com.zuijiao.android.zuijiao.network.Router;
 import com.zuijiao.android.zuijiao.network.RouterOAuth;
+import com.zuijiao.controller.ActivityTask;
 import com.zuijiao.controller.FileManager;
 import com.zuijiao.controller.PreferenceManager;
 import com.zuijiao.controller.ThirdPartySDKManager;
@@ -118,8 +118,7 @@ public class MainFragment extends Fragment implements FragmentDataListener,
         public View getView(int position, View convertView, ViewGroup parent) {
             ViewHolder holder = null;
             if (convertView == null) {
-                Typeface boldFont = Typeface.createFromAsset(mContext.getAssets(), "fonts/NotoSansHans-Regular.otf");
-
+                //Typeface boldFont = Typeface.createFromAsset(mContext.getAssets(), "fonts/NotoSansHans-Regular.otf");
                 convertView = mInflater.inflate(R.layout.main_content_item, null);
                 holder = new ViewHolder();
                 holder.image_food = (ImageView) convertView
@@ -130,7 +129,7 @@ public class MainFragment extends Fragment implements FragmentDataListener,
                         .findViewById(R.id.view_wordwrap);
                 holder.text1_food_name = (TextView) convertView
                         .findViewById(R.id.content_item_title);
-//                holder.text1_food_name.setTypeface(boldFont);
+                holder.text1_food_name.setTypeface(ActivityTask.getTypeFace(mContext));
                 holder.text2_personal = (TextView) convertView
                         .findViewById(R.id.content_item_personal_tip);
                 holder.text4_user_name = (TextView) convertView
@@ -170,7 +169,7 @@ public class MainFragment extends Fragment implements FragmentDataListener,
                 for (String tag : gourmet.getTags()) {
                     TextView textview = new TextView(getActivity());
                     textview.setBackgroundResource(R.drawable.bg_label);
-                    textview.setTextColor(getResources().getColor(R.color.main_label));
+                    textview.setTextColor(getResources().getColor(R.color.white));
                     textview.setTextSize(14);
                     textview.setText(tag);
                     holder.label.addView(textview);
@@ -237,7 +236,7 @@ public class MainFragment extends Fragment implements FragmentDataListener,
                     fetchFavorData(true);
                 }
             }
-        },450);
+        }, 450);
     }
 
     @Override

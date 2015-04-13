@@ -12,7 +12,7 @@ import java.util.Calendar;
 public enum RouterAccount {
     INSTANCE;
 
-    private IRouterAccount service = Router.INSTANCE.restAdapter.create(IRouterAccount.class);
+    private IRouterAccount service = Router.getInstance().restAdapter.create(IRouterAccount.class);
 
     public void update(User user
             , LambdaExpression successCallback

@@ -65,4 +65,5 @@ dependencies {
     compile 'commons-codec:commons-codec:1.6'
 //  <- used by upyun sdk end ->
 
+    compile 'com.facebook.stetho:stetho:1.1.0'
 }

@@ -12,7 +12,7 @@ import java.util.List;
 public enum RouterCommon {
     INSTANCE;
 
-    private IRouterCommon service = Router.INSTANCE.restAdapter.create(IRouterCommon.class);
+    private IRouterCommon service = Router.getInstance().restAdapter.create(IRouterCommon.class);
 
     public void tasteTags(OneParameterExpression<TasteTags> successCallback
             , OneParameterExpression<String> failureCallback

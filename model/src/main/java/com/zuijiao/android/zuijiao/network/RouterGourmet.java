@@ -15,7 +15,7 @@ import java.util.List;
 public enum RouterGourmet {
     INSTANCE;
 
-    private IRouterGourmet service = Router.INSTANCE.restAdapter.create(IRouterGourmet.class);
+    private IRouterGourmet service = Router.getInstance().restAdapter.create(IRouterGourmet.class);
 
     public void favoriteAdd(Integer identifier
             , LambdaExpression successCallback

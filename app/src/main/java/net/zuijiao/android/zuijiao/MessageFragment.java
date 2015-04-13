@@ -214,7 +214,7 @@ public class MessageFragment extends Fragment implements FragmentDataListener,
     }
 
     private void networkStep(boolean bRefresh) {
-        if (Router.INSTANCE.getCurrentUser().equals(Optional.empty())) {
+        if (Router.getInstance().getCurrentUser().equals(Optional.empty())) {
             mListView.setVisibility(View.GONE);
             mTextView.setVisibility(View.VISIBLE);
             mTextView.setText(getResources().getString(R.string.none_msg));
@@ -245,15 +245,15 @@ public class MessageFragment extends Fragment implements FragmentDataListener,
                     mTextView.setVisibility(View.VISIBLE);
                     mTextView.setText(getResources().getString(R.string.none_msg));
                 }
-            }else{
+            } else {
                 if (!msg.getAllMessage().isEmpty()) {
-                    if(mAdapter.mData == null){
-                        mAdapter.mData = new ArrayList<Message>() ;
+                    if (mAdapter.mData == null) {
+                        mAdapter.mData = new ArrayList<Message>();
                     }
-                    mAdapter.mData.addAll(msg.getAllMessage()) ;
+                    mAdapter.mData.addAll(msg.getAllMessage());
                     mAdapter.notifyDataSetChanged();
-                }else{
-                    Toast.makeText(mContext,getString(R.string.no_more),Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(mContext, getString(R.string.no_more), Toast.LENGTH_SHORT).show();
                 }
                 mListView.stopLoadMore();
             }

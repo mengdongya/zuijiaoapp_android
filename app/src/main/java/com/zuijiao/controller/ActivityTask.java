@@ -9,9 +9,14 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.graphics.Typeface;
 
+import com.facebook.stetho.Stetho;
+import com.zuijiao.android.zuijiao.network.Router;
 import com.zuijiao.utils.FontsOverride;
 import com.zuijiao.utils.OSUtil;
 
+import net.zuijiao.android.zuijiao.BuildConfig;
+
+import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -26,8 +31,19 @@ public class ActivityTask extends Application {
     public void onCreate() {
         super.onCreate();
         FontsOverride.setDefaultFont(this, "DEFAULT", "fonts/NotoSansHans-Light.otf");
-//        FontsOverride.setDefaultFont(this, "SERIF", "MyFontAsset3.ttf");
-//        FontsOverride.setDefaultFont(this, "SANS_SERIF", "MyFontAsset4.ttf");
+
+        File cacheDirectory = getApplicationContext().getCacheDir();
+
+        if (BuildConfig.DEBUG) {
+            cacheDirectory = null;
+            Stetho.initialize(
+                    Stetho.newInitializerBuilder(this)
+                            .enableDumpapp(Stetho.defaultDumperPluginsProvider(this))
+                            .enableWebKitInspector(Stetho.defaultInspectorModulesProvider(this))
+                            .build());
+        }
+
+        Router.setup(BuildConfig.Base_Url, cacheDirectory);
     }
 
     public static ActivityTask getInstance() {

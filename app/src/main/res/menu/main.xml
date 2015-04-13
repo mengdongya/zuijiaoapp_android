@@ -1,13 +1,13 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context="com.example.materaialdesign.MainActivity" >
+    tools:context="com.example.materaialdesign.MainActivity">
 
     <item
         android:id="@+id/action_mail"
         android:orderInCategory="100"
         android:title="@string/comfirm"
-        app:showAsAction="always"/>
+        app:showAsAction="always" />
 
     <!--
        <item android:id="@+id/action_share"

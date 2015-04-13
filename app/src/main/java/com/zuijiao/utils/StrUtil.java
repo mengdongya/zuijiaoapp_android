@@ -10,34 +10,33 @@ import java.util.List;
  */
 public class StrUtil {
 
-    public static String buildTags (List<String> list){
-        StringBuilder stringBuilder = new StringBuilder() ;
-        for(String item:list){
-            stringBuilder.append(item) ;
-            stringBuilder.append("\n") ;
+    public static String buildTags(List<String> list) {
+        StringBuilder stringBuilder = new StringBuilder();
+        for (String item : list) {
+            stringBuilder.append(item);
+            stringBuilder.append("\n");
         }
-        return  stringBuilder.toString() ;
+        return stringBuilder.toString();
     }
 
-    public static  List<String> retriveTags(String tag){
-        String[] tags = tag.split("\n") ;
-        ArrayList<String> tagsArray = new ArrayList<String>() ;
-        for(String item : tags){
+    public static List<String> retriveTags(String tag) {
+        String[] tags = tag.split("\n");
+        ArrayList<String> tagsArray = new ArrayList<String>();
+        for (String item : tags) {
             tagsArray.add(item);
         }
-        return tagsArray ;
+        return tagsArray;
     }
 
 
-
-    public static String formatTime(Date date,String res){
-        Date currentDate = new Date() ;
+    public static String formatTime(Date date, String res) {
+        Date currentDate = new Date();
         Calendar calendar = Calendar.getInstance();
-        if(currentDate.getYear() > date.getYear() + 1){
-            return String.format(res , date.toString()) ;
-        }else if(currentDate.getYear() == date.getYear() + 1){
+        if (currentDate.getYear() > date.getYear() + 1) {
+            return String.format(res, date.toString());
+        } else if (currentDate.getYear() == date.getYear() + 1) {
 
         }
-        return null ;
+        return null;
     }
 }

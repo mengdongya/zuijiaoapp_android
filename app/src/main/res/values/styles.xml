@@ -36,7 +36,7 @@
         <item name="android:actionMenuTextAppearance">@style/MenuTextStyle</item>
         <!--<item name="toolbarStyle">@style/Widget.AppCompat.Toolbar</item>-->
         <!--<item name="toolbarNavigationButtonStyle">-->
-            <!--@style/Widget.AppCompat.Toolbar.Button.Navigation-->
+        <!--@style/Widget.AppCompat.Toolbar.Button.Navigation-->
         <!--</item>-->
 
         <item name="android:editTextStyle">@style/Widget.AppCompat.EditText</item>
@@ -75,6 +75,7 @@
     <style name="AppTheme.ActionBar.TitleTextStyle" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title" type="text/css">
         <item name="android:textColor">@android:color/white</item>
     </style>
+
     <style name="TextLight">
         <item name="android:textColor">@color/tv_deep_gray</item>
         <item name="android:textSize">@dimen/text_size_small</item>

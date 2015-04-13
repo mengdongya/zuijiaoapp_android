@@ -246,7 +246,7 @@ public class RefreshAndInitListView extends ListView implements
     public void autoResetHeadView() {
         mPullRefreshing = true;
         int height = mHeaderView.getVisiableHeight();
-        int finalHeight = (int)context.getResources().getDimension(R.dimen.refresh_list_head_heght);
+        int finalHeight = (int) context.getResources().getDimension(R.dimen.refresh_list_head_heght);
         mHeaderView.setState(XListViewHeader.STATE_REFRESHING);
         mScroller.startScroll(0, height, 0, finalHeight - height,
                 SCROLL_DURATION);

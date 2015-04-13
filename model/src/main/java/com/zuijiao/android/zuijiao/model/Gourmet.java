@@ -44,7 +44,7 @@ public class Gourmet {
 
     public List<String> getImageURLs() {
         List<String> result = new ArrayList<>();
-        for (String url: imageURLs) {
+        for (String url : imageURLs) {
             if (url.length() > 0 && url.startsWith("http://"))
                 result.add(url);
             else

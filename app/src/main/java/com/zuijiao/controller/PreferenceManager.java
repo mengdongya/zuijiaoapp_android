@@ -151,8 +151,8 @@ public class PreferenceManager {
         editor.putString("openid", userInfo.getUid());
         editor.putString("platform", userInfo.getPlatform());
         editor.putString("token", userInfo.getToken());
-        editor.putString("email",userInfo.getEmail()) ;
-        editor.putString("password" ,userInfo.getPassword()) ;
+        editor.putString("email", userInfo.getEmail());
+        editor.putString("password", userInfo.getPassword());
         editor.commit();
     }
 
@@ -165,8 +165,8 @@ public class PreferenceManager {
         editor.putString("openid", "");
         editor.putString("platform", "");
         editor.putString("token", "");
-        editor.putString("email","") ;
-        editor.putString("password" ,"") ;
+        editor.putString("email", "");
+        editor.putString("password", "");
         editor.commit();
     }
 
@@ -210,16 +210,16 @@ public class PreferenceManager {
 
     public long getMainLastRefreshTime() {
         SharedPreferences sp = mContext.getSharedPreferences(PreferencesDef.FILE_NAME, Activity.MODE_PRIVATE);
-        return sp.getLong("main_refresh_time",new Date().getTime()) ;
+        return sp.getLong("main_refresh_time", new Date().getTime());
     }
 
     public long getFavorLastRefreshTime() {
         SharedPreferences sp = mContext.getSharedPreferences(PreferencesDef.FILE_NAME, Activity.MODE_PRIVATE);
-        return sp.getLong("favor_refresh_time",new Date().getTime()) ;
+        return sp.getLong("favor_refresh_time", new Date().getTime());
     }
 
     public long getMsgLastRefreshTime() {
         SharedPreferences sp = mContext.getSharedPreferences(PreferencesDef.FILE_NAME, Activity.MODE_PRIVATE);
-        return sp.getLong("msg_refresh_time",new Date().getTime()) ;
+        return sp.getLong("msg_refresh_time", new Date().getTime());
     }
 }

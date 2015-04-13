@@ -4,6 +4,7 @@ import com.squareup.okhttp.Response;
 import com.zuijiao.android.util.Optional;
 import com.zuijiao.android.util.functional.LambdaExpression;
 import com.zuijiao.android.util.functional.OneParameterExpression;
+
 import retrofit.Callback;
 import retrofit.RetrofitError;
 
@@ -58,9 +59,9 @@ class CallbackFactory<T> {
 
             @Override
             public void failure(RetrofitError error) {
-                assert(error != null);
-                assert(finalFailureCallback != null);
-                assert(finalFailureCallback.get() != null);
+                assert (error != null);
+                assert (finalFailureCallback != null);
+                assert (finalFailureCallback.get() != null);
                 if (finalFailureCallback.isPresent())
                     finalFailureCallback.get().action(error.toString());
             }
@@ -82,9 +83,9 @@ class CallbackFactory<T> {
 
             @Override
             public void failure(RetrofitError error) {
-                assert(error != null);
-                assert(finalFailureCallback != null);
-                assert(finalFailureCallback.get() != null);
+                assert (error != null);
+                assert (finalFailureCallback != null);
+                assert (finalFailureCallback.get() != null);
                 if (finalFailureCallback.isPresent())
                     finalFailureCallback.get().action(error.toString());
             }

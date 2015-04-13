@@ -5,8 +5,14 @@ import com.zuijiao.android.zuijiao.model.Comments;
 import com.zuijiao.android.zuijiao.model.Gourmet;
 import com.zuijiao.android.zuijiao.model.Gourmets;
 import com.zuijiao.android.zuijiao.model.user.WouldLikeToEatUsers;
+
 import retrofit.Callback;
-import retrofit.http.*;
+import retrofit.http.Field;
+import retrofit.http.FormUrlEncoded;
+import retrofit.http.GET;
+import retrofit.http.POST;
+import retrofit.http.Path;
+import retrofit.http.Query;
 
 /**
  * Created by Chen Hao on 3/18/15.

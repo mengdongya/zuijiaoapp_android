@@ -34,7 +34,7 @@ public abstract interface IRouterOAuth {
             , @Field("openToken") String openToken
             , @Field("deviceToken") String deviceToken
             , @FieldMap Map<String, String> oauthParam
-            );
+    );
 
     @FormUrlEncoded
     @POST(RootURL + "/ios/register")
@@ -56,7 +56,7 @@ public abstract interface IRouterOAuth {
             , @Field("openToken") String openToken
             , @Field("deviceToken") String deviceToken
             , @FieldMap Map<String, String> oauthParam
-            );
+    );
 
     @FormUrlEncoded
     @POST(RootURL + "/visitor")

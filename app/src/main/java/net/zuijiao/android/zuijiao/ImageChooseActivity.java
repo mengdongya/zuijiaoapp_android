@@ -307,6 +307,7 @@ public class ImageChooseActivity extends BaseActivity {
         mDialog.dismiss();
         mDialog = null;
     }
+
     class ViewHolder {
         ImageView image;
     }

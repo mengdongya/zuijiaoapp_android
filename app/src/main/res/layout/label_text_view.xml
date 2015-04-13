@@ -5,6 +5,6 @@
     android:background="@drawable/bg_label_textview"
     android:text="我每周必去"
     android:textColor="@color/tv_red"
-    android:textSize="18sp" >
+    android:textSize="18sp">
 
 </TextView>

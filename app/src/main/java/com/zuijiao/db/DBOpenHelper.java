@@ -159,19 +159,19 @@ public class DBOpenHelper extends SQLiteOpenHelper {
                     }
                     cursor.close();
                 }
-            }catch(Throwable t){
+            } catch (Throwable t) {
                 t.printStackTrace();
-                return "" ;
+                return "";
             }
         }
-        if(province == null){
-            province ="" ;
+        if (province == null) {
+            province = "";
         }
-        if(city == null){
-            city = "" ;
+        if (city == null) {
+            city = "";
         }
-        if(province.equals(city)){
-            return city ;
+        if (province.equals(city)) {
+            return city;
         }
         return province + city;
     }
@@ -216,28 +216,29 @@ public class DBOpenHelper extends SQLiteOpenHelper {
                 return false;
             } else {
                 insertUserInfo(gourmet.getUser());
-                insertImageUrl(gourmet.getIdentifier(), gourmet.getImageURLs()) ;
+                insertImageUrl(gourmet.getIdentifier(), gourmet.getImageURLs());
                 continue;
             }
         }
         return true;
     }
 
-    private void insertImageUrl(int id ,List<String> urls){
-        try{
-            synchronized (db){
-                db.delete(DBConstans.TABLE_GOURMET_IMAGE,DBConstans.COLUMN_GOURMET_ID + "= ?" ,new String[]{id+""}) ;
-                for(String url : urls){
-                    ContentValues values = new ContentValues() ;
-                    values.put(DBConstans.COLUMN_GOURMET_ID ,id);
-                    values.put(DBConstans.COLUMN_GOURMET_IMAGE_SERVER_PATH , url);
-                    db.insert(DBConstans.TABLE_GOURMET_IMAGE,null,values);
+    private void insertImageUrl(int id, List<String> urls) {
+        try {
+            synchronized (db) {
+                db.delete(DBConstans.TABLE_GOURMET_IMAGE, DBConstans.COLUMN_GOURMET_ID + "= ?", new String[]{id + ""});
+                for (String url : urls) {
+                    ContentValues values = new ContentValues();
+                    values.put(DBConstans.COLUMN_GOURMET_ID, id);
+                    values.put(DBConstans.COLUMN_GOURMET_IMAGE_SERVER_PATH, url);
+                    db.insert(DBConstans.TABLE_GOURMET_IMAGE, null, values);
                 }
             }
-        }catch (Throwable t){
+        } catch (Throwable t) {
             t.printStackTrace();
         }
     }
+
     public boolean initGourmet(String identify) {
         try {
             synchronized (db) {
@@ -270,7 +271,7 @@ public class DBOpenHelper extends SQLiteOpenHelper {
         try {
 
             synchronized (db) {
-                Cursor cursor = db.query(DBConstans.TABLE_GOURMET, null, null, null, null, null,  DBConstans.COLUMN_GOURMET_ID);
+                Cursor cursor = db.query(DBConstans.TABLE_GOURMET, null, null, null, null, null, DBConstans.COLUMN_GOURMET_ID);
                 if (cursor != null && cursor.getCount() > 0) {
                     List<Gourmet> tmpGourmets = new ArrayList<Gourmet>();
                     cursor.moveToFirst();
@@ -309,16 +310,16 @@ public class DBOpenHelper extends SQLiteOpenHelper {
     }
 
     private List<String> getImageUrls(int gourmetId) {
-        List<String >imageUrl = new ArrayList<String>() ;
-        Cursor c = db.query(DBConstans.TABLE_GOURMET_IMAGE,new String[]{DBConstans.COLUMN_GOURMET_IMAGE_SERVER_PATH},DBConstans.COLUMN_GOURMET_ID + "= ?" , new String[]{gourmetId+""} ,null ,null, null) ;
-        if(c != null && c.getCount() >0){
-            c.moveToFirst() ;
-            while(!c.isAfterLast()){
-                String url = c.getString(c.getColumnIndex(DBConstans.COLUMN_GOURMET_IMAGE_SERVER_PATH)) ;
-                if(url!=null){
+        List<String> imageUrl = new ArrayList<String>();
+        Cursor c = db.query(DBConstans.TABLE_GOURMET_IMAGE, new String[]{DBConstans.COLUMN_GOURMET_IMAGE_SERVER_PATH}, DBConstans.COLUMN_GOURMET_ID + "= ?", new String[]{gourmetId + ""}, null, null, null);
+        if (c != null && c.getCount() > 0) {
+            c.moveToFirst();
+            while (!c.isAfterLast()) {
+                String url = c.getString(c.getColumnIndex(DBConstans.COLUMN_GOURMET_IMAGE_SERVER_PATH));
+                if (url != null) {
                     imageUrl.add(url);
                 }
-                c.moveToNext() ;
+                c.moveToNext();
             }
         }
         return imageUrl;

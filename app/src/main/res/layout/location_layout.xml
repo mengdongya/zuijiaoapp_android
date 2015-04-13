@@ -6,7 +6,7 @@
     android:layout_gravity="bottom"
     android:orientation="horizontal"
     android:paddingLeft="15dip"
-    tools:ignore="UseCompoundDrawables" >
+    tools:ignore="UseCompoundDrawables">
 
     <TextView
         android:layout_width="wrap_content"

@@ -5,7 +5,7 @@ package com.zuijiao.db;
  */
 public interface DBConstans {
 
-    public static final String DB_NAME= "zuijiao_db" ;
+    public static final String DB_NAME = "zuijiao_db";
     //tables
     public static final String TABLE_GOURMET = "gourmet";
     public static final String TABLE_USER = "users";
@@ -28,7 +28,7 @@ public interface DBConstans {
     //gourmet image table columns
     public static final String COLUMN_GOURMET_IMAGE_LOCAL_PATH = "image_local_path";
     public static final String COLUMN_GOURMET_IMAGE_SERVER_PATH = "image_service_path";
-   // public static final String COLUMN_GOURMET_ID = "food_identifier";
+    // public static final String COLUMN_GOURMET_ID = "food_identifier";
 
 
 }

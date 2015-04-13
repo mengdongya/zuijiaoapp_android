@@ -23,20 +23,21 @@ import com.zuijiao.db.DBOpenHelper;
 @ContentView(R.layout.activity_favor_person)
 public class FavorPersonListActivity extends BaseActivity {
     @ViewInject(R.id.favor_person_toolbar)
-    private Toolbar mToolbar = null ;
+    private Toolbar mToolbar = null;
     @ViewInject(R.id.lv_favor_person)
     private ListView mList = null;
-    private LayoutInflater mInflater= null;
+    private LayoutInflater mInflater = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle(String.format(getResources().getString(R.string.favor_label),FileManager.tmpWouldLikeList.get().getCount() + ""));
+        getSupportActionBar().setTitle(String.format(getResources().getString(R.string.favor_label), FileManager.tmpWouldLikeList.get().getCount() + ""));
         mList.setAdapter(mAdapter);
-        mInflater = LayoutInflater.from(this) ;
+        mInflater = LayoutInflater.from(this);
     }
+
     private BaseAdapter mAdapter = new BaseAdapter() {
         @Override
         public int getCount() {
@@ -55,39 +56,41 @@ public class FavorPersonListActivity extends BaseActivity {
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            WouldLikeToEatUser user = FileManager.tmpWouldLikeList.get().getUsers().get(position) ;
-            ViewHolder holder = null ;
-            if(convertView == null){
-                convertView = mInflater.inflate(R.layout.favor_person_item , null);
-                holder = new ViewHolder() ;
-                holder.head= (ImageView)convertView.findViewById(R.id.favor_person_head) ;
-                holder.location = (TextView )convertView.findViewById(R.id.favor_person_location) ;
-                holder.time = (TextView) convertView.findViewById(R.id.favor_person_time) ;
+            WouldLikeToEatUser user = FileManager.tmpWouldLikeList.get().getUsers().get(position);
+            ViewHolder holder = null;
+            if (convertView == null) {
+                convertView = mInflater.inflate(R.layout.favor_person_item, null);
+                holder = new ViewHolder();
+                holder.head = (ImageView) convertView.findViewById(R.id.favor_person_head);
+                holder.location = (TextView) convertView.findViewById(R.id.favor_person_location);
+                holder.time = (TextView) convertView.findViewById(R.id.favor_person_time);
                 holder.userName = (TextView) convertView.findViewById(R.id.favor_person_name);
                 convertView.setTag(holder);
-             }else{
-                holder = (ViewHolder)convertView.getTag() ;
+            } else {
+                holder = (ViewHolder) convertView.getTag();
             }
             Picasso.with(getApplicationContext())
                     .load(user.getAvatarURL().get())
                     .placeholder(R.drawable.default_user_head)
                     .into(holder.head);
-            String location = DBOpenHelper.getmInstance(getApplicationContext()).getLocationByIds(user.getProvinceID(),user.getCityID()) ;
-            if(location ==null || location.equals("")){
-                location = getString(R.string.unknown_location) ;
+            String location = DBOpenHelper.getmInstance(getApplicationContext()).getLocationByIds(user.getProvinceID(), user.getCityID());
+            if (location == null || location.equals("")) {
+                location = getString(R.string.unknown_location);
             }
             holder.location.setText(location);
             holder.userName.setText(user.getNickName());
             holder.time.setText(user.getDate().toLocaleString());
-            return convertView ;
+            return convertView;
         }
     };
-    private class ViewHolder{
-        ImageView head ;
-        TextView userName ;
-        TextView time ;
-        TextView location ;
+
+    private class ViewHolder {
+        ImageView head;
+        TextView userName;
+        TextView time;
+        TextView location;
     }
+
     protected void findViews() {
 
     }

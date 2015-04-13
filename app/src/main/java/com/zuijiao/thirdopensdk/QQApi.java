@@ -34,7 +34,7 @@ public class QQApi extends AbsSDK {
     }
 
     @Override
-    public void Login(final LoginListener mListener ) {
+    public void Login(final LoginListener mListener) {
 
         if (mTencent == null) {
             mTencent = Tencent.createInstance(QQ_ID, mContext);
@@ -77,7 +77,7 @@ public class QQApi extends AbsSDK {
                                           @Override
                                           public void onComplete(final Object response) {
                                               try {
-                                                  String openid = mTencent.getOpenId() ;
+                                                  String openid = mTencent.getOpenId();
                                                   String token = mTencent.getAccessToken();
                                                   String userName = ((JSONObject) response).getString("nickname");
                                                   String imageurl = ((JSONObject) response).getString("figureurl_qq_2");
@@ -93,6 +93,7 @@ public class QQApi extends AbsSDK {
                                                   e.printStackTrace();
                                               }
                                           }
+
                                           @Override
                                           public void onCancel() {
                                               // TODO Auto-generated method stub

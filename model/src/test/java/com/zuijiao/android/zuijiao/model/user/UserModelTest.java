@@ -2,6 +2,7 @@ package com.zuijiao.android.zuijiao.model.user;
 
 import com.google.gson.Gson;
 import com.zuijiao.android.util.Optional;
+
 import org.junit.Before;
 import org.junit.Test;
 

@@ -2,12 +2,12 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical">
 
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent" >
+        android:layout_height="match_parent">
 
         <TextView
             android:layout_marginRight="200dip"
@@ -17,9 +17,11 @@
             android:layout_gravity="bottom|right"
             android:text=" === " />
     </FrameLayout>
-    <RelativeLayout android:layout_width="match_parent"
-        android:layout_height="match_parent" 
-        >
-        <TextView android:layout_centerInParent="true"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView android:layout_centerInParent="true" />
     </RelativeLayout>
 </LinearLayout>

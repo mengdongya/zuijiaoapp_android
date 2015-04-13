@@ -48,8 +48,8 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
     protected void onCreate(Bundle savedInstanceState) {
         // TODO Auto-generated method stub
         super.onCreate(savedInstanceState);
-        mApi = WeixinApi.mWeiXinApi ;
-        Intent i = getIntent() ;
+        mApi = WeixinApi.mWeiXinApi;
+        Intent i = getIntent();
         mApi.handleIntent(i, this);
 
     }
@@ -88,7 +88,7 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
                     url = String.format("https://api.weixin.qq.com/sns/oauth2/access_token?appid=%s&secret=%s&code=%s&grant_type=authorization_code", WEIXIN_ID, WEIXIN_PWD, code);
                     final HttpClient client = new DefaultHttpClient();
                     final HttpGet httpget = new HttpGet(url);
-                    httpget.setHeader("encoding","UTF-8");
+                    httpget.setHeader("encoding", "UTF-8");
                     new Thread(new Runnable() {
 
                         @Override
@@ -97,7 +97,7 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
                             try {
                                 HttpResponse response = client.execute(httpget);
                                 HttpEntity entity = response.getEntity();
-                                org.apache.http.Header head =entity.getContentEncoding() ;
+                                org.apache.http.Header head = entity.getContentEncoding();
                                 String strResult1 = EntityUtils.toString(response
                                         .getEntity());
                                 JSONObject jsonObject1 = null;
@@ -115,14 +115,14 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
                                 HttpGet httpget1 = new HttpGet(url);
                                 response = client.execute(httpget1);
                                 strResult1 = EntityUtils.toString(response
-                                        .getEntity(),"UTF-8");
+                                        .getEntity(), "UTF-8");
                                 jsonObject1 = getJSON(strResult1);
-                                String nickname = new String(jsonObject1.getString("nickname").getBytes() ,"utf-8");
+                                String nickname = new String(jsonObject1.getString("nickname").getBytes(), "utf-8");
                                 String headimgurl = jsonObject1
                                         .getString("headimgurl");
                                 Router.getOAuthModule().register(nickname, headimgurl, openid, "wechat", Optional.<String>empty(), Optional.of(mRereshToken), () -> {
                                     Router.getOAuthModule().login(openid, "wechat", Optional.empty(), Optional.of(mRereshToken), () -> {
-                                        AuthorInfo userInfo = new AuthorInfo() ;
+                                        AuthorInfo userInfo = new AuthorInfo();
                                         userInfo.setUserName(nickname);
                                         userInfo.setUid(openid);
                                         userInfo.setToken(mRereshToken);
@@ -137,10 +137,10 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
                                         intent.putExtra("userinfo", bundle);
                                         WXEntryActivity.this.sendBroadcast(intent);
                                     }, errorMessage -> {
-                                        Toast.makeText(getApplicationContext(),getResources().getString(R.string.notify_net2), Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(getApplicationContext(), getResources().getString(R.string.notify_net2), Toast.LENGTH_SHORT).show();
                                     });
                                 }, errorMessage -> {
-                                    Toast.makeText(getApplicationContext(),getResources().getString(R.string.notify_net2), Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getApplicationContext(), getResources().getString(R.string.notify_net2), Toast.LENGTH_SHORT).show();
                                 });
 
                             } catch (ClientProtocolException e1) {
@@ -179,7 +179,7 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
             case BaseResp.ErrCode.ERR_AUTH_DENIED:
                 Toast.makeText(WXEntryActivity.this,
                         getResources().getString(R.string.login_deny), Toast.LENGTH_SHORT).show();
-                finish() ;
+                finish();
                 break;
             default:
                 break;
@@ -201,6 +201,7 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
         setIntent(intent);
         mApi.handleIntent(intent, this);
     }
+
     public void onResume() {
         super.onResume();
         MobclickAgent.onResume(this);

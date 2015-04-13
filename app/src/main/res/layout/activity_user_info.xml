@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/bg_light_gray"
-    android:orientation="vertical" >
+    android:orientation="vertical">
 
     <include
         android:id="@+id/user_info_toolbar"
@@ -13,14 +13,14 @@
         android:layout_width="match_parent"
         android:layout_height="200dip"
         android:layout_gravity="center_horizontal"
-        android:background="@color/bg_gray_white" >
+        android:background="@color/bg_gray_white">
 
         <LinearLayout
             android:id="@+id/container_user_info_detail"
             android:layout_width="match_parent"
             android:layout_height="150dip"
             android:gravity="center"
-            android:orientation="vertical" >
+            android:orientation="vertical">
 
             <ImageView
                 android:id="@+id/iv_user_head_detail"
@@ -46,7 +46,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/container_user_info_detail"
             android:gravity="center_vertical"
-            android:orientation="horizontal" >
+            android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/user_info_suggest"
@@ -111,7 +111,6 @@
         android:layout_height="match_parent"
         android:divider="#00000000"
         android:dividerHeight="18dip"
-        android:padding="@dimen/main_content_item_margin_left" >
-    </ListView>
+        android:padding="@dimen/main_content_item_margin_left"></ListView>
 
 </LinearLayout>

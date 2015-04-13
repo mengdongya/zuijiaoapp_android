@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     android:orientation="vertical">
 
     <!-- <TextView
@@ -35,10 +36,34 @@
          android:layout_below="@+id/wizard_text2"
          android:layout_centerHorizontal="true" />-->
     <ImageView
-        android:id="@+id/iguide_img"
+        android:id="@+id/guide_image"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scaleType="centerCrop"
+        android:layout_height="wrap_content"
         android:src="@drawable/welcome1"
+        android:scaleType="fitXY"
         android:layout_centerHorizontal="true" />
-</RelativeLayout>
+
+    <TextView
+        android:id="@+id/wizard_text1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:text="最美的味道"
+        android:singleLine="true"
+        android:typeface="monospace"
+        android:background="@color/white"
+        android:textColor="@color/tv_deep_gray"
+        android:textSize="22sp" />
+
+    <TextView
+        android:id="@+id/wizard_text2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:singleLine="true"
+        android:background="@color/white"
+        android:layout_marginTop="15dip"
+        android:gravity="center_horizontal"
+        android:text="这只有最美味的食物"
+        android:textColor="#999999"
+        android:textSize="15sp" />
+</LinearLayout>

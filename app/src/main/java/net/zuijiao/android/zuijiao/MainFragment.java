@@ -277,7 +277,9 @@ public class MainFragment extends Fragment implements FragmentDataListener,
                 tmpGourmets.clear();
                 //mAdapter.gourmets = Optional.of(gourmets.getGourmets());
             } else {
-                //mAdapter.gourmets = Optional.of(tmpGourmets);
+                if (gourmets.getGourmets().size() == 0) {
+                    Toast.makeText(mContext, getString(R.string.no_more), Toast.LENGTH_SHORT).show();
+                }
             }
             tmpGourmets.addAll(gourmets.getGourmets());
             FileManager.setGourmets(type, Optional.of(tmpGourmets));

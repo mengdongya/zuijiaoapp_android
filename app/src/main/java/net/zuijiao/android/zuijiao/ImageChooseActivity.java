@@ -9,7 +9,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +16,7 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.lidroid.xutils.view.annotation.ContentView;
 import com.lidroid.xutils.view.annotation.ViewInject;
@@ -220,7 +220,7 @@ public class ImageChooseActivity extends BaseActivity {
             if (requestCode == PHOTO_RESULT) {
                 Bundle extras = data.getExtras();
                 if (extras != null) {
-                    mDialog = ProgressDialog.show(ImageChooseActivity.this, "", getString(R.string.on_uploading));
+                    createDialog();
                     Bitmap photo = extras.getParcelable("data");
 //                    String desPath = Environment.getExternalStorageDirectory()
 //                            .getAbsolutePath() + File.separator + FILE_NAME;
@@ -229,7 +229,9 @@ public class ImageChooseActivity extends BaseActivity {
                         try {
                             file.createNewFile();
                         } catch (IOException e) {
+                            Toast.makeText(mContext, getString(R.string.error_read_file), Toast.LENGTH_LONG).show();
                             e.printStackTrace();
+                            finallizeDialog();
                             return;
                         }
                     }
@@ -238,6 +240,9 @@ public class ImageChooseActivity extends BaseActivity {
                         os = new FileOutputStream(file);
                     } catch (FileNotFoundException e) {
                         e.printStackTrace();
+                        Toast.makeText(mContext, getString(R.string.error_read_file), Toast.LENGTH_LONG).show();
+                        finallizeDialog();
+                        return;
                     }
                     if (photo.compress(Bitmap.CompressFormat.JPEG, 75, os)) {
                         try {
@@ -247,7 +252,10 @@ public class ImageChooseActivity extends BaseActivity {
                             photo.recycle();
                         } catch (IOException e) {
                             // TODO Auto-generated catch block
+                            Toast.makeText(mContext, getString(R.string.error_read_file), Toast.LENGTH_LONG).show();
+                            finallizeDialog();
                             e.printStackTrace();
+                            return;
                         }
 
                         String avatarUri = UpyunUploadTask.avatarPath(Router.getInstance().getCurrentUser().get().getIdentifier(), "jpg");
@@ -260,24 +268,24 @@ public class ImageChooseActivity extends BaseActivity {
                             if (isComplete) {
                                 Router.getInstance().getCurrentUser().get().setAvatarURL(avatarUri);
                                 mPreferMng.saveAvatarPath(UpyunUploadTask.avatarPath(avatarUri));
-                                Log.d("Update Avatar", "path saved: " + UpyunUploadTask.avatarPath(avatarUri));
-
+                                createDialog();
                                 Router.getAccountModule().updateAvatar(avatarUri, () -> {
                                     Intent intent = new Intent();
                                     intent.setAction(MessageDef.ACTION_GET_THIRD_PARTY_USER);
                                     sendBroadcast(intent);
-                                    Log.d("Update Avatar", "avatar updated: " + avatarUri);
+                                    finallizeDialog();
+                                    finish();
                                 }, () -> {
                                     // TODO: Avatar upload failed
+                                    Toast.makeText(mContext, getString(R.string.error_upload), Toast.LENGTH_LONG).show();
+                                    finallizeDialog();
                                 });
                             }
-                            if (mDialog == null) {
-                                return;
-                            }
-                            mDialog.dismiss();
-                            mDialog = null;
+                            finallizeDialog();
                         }
                         ).execute();
+                    } else {
+                        finallizeDialog();
                     }
                 }
             }
@@ -285,6 +293,20 @@ public class ImageChooseActivity extends BaseActivity {
         super.onActivityResult(requestCode, resultCode, data);
     }
 
+    private void createDialog() {
+        if (mDialog != null && mDialog.isShowing()) {
+            return;
+        }
+        mDialog = ProgressDialog.show(ImageChooseActivity.this, "", getString(R.string.on_loading));
+    }
+
+    private void finallizeDialog() {
+        if (mDialog == null) {
+            return;
+        }
+        mDialog.dismiss();
+        mDialog = null;
+    }
     class ViewHolder {
         ImageView image;
     }

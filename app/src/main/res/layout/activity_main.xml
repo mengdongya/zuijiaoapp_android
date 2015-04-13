@@ -30,19 +30,18 @@
         android:background="#ffffff"
         android:orientation="vertical">
 
-        <FrameLayout
+        <RelativeLayout
             android:id="@+id/vs_user_info"
             android:layout_width="match_parent"
             android:layout_height="200dip"
             android:layout_gravity="center"
-            android:background="@drawable/bg_drawer_top"
-            android:gravity="center">
+            android:background="@drawable/bg_drawer_top">
 
             <Button
                 android:id="@+id/btn_login"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
+                android:layout_centerInParent="true"
                 android:background="#66eeeeee"
                 android:paddingLeft="5dip"
                 android:paddingRight="5dip"
@@ -54,6 +53,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center"
+                android:layout_centerInParent="true"
                 android:orientation="vertical">
 
                 <com.zuijiao.view.RoundImageView
@@ -73,7 +73,7 @@
                     android:textColor="@color/white"
                     android:textSize="18sp" />
             </LinearLayout>
-        </FrameLayout>
+        </RelativeLayout>
 
         <ListView
             android:id="@+id/lv_drawe_items"

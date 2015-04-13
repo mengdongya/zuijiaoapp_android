@@ -52,25 +52,26 @@ public class ConcerningActivity extends BaseActivity implements OnClickListener 
     }
 
     public void onClick(View v) {
-        Intent intent  = new Intent () ;
+        Intent intent = new Intent();
         String strTitle = null;
         String url = null;
         switch (v.getId()) {
             case R.id.user_protocol:
-                intent.setClass(ConcerningActivity.this,CommonWebViewActivity.class) ;
+                intent.setClass(ConcerningActivity.this, CommonWebViewActivity.class);
                 strTitle = getResources().getString(R.string.user_protocol);
                 url = getString(R.string.protocol_url);
-                break ;
+                break;
             case R.id.zuijiao_team:
-                intent.setClass(ConcerningActivity.this,CommonWebViewActivity.class) ;
+                intent.setClass(ConcerningActivity.this, CommonWebViewActivity.class);
                 strTitle = getResources().getString(R.string.zuijiao_team);
                 url = getString(R.string.team_url);
-                break ;
+                break;
             case R.id.zuijiao_welcome:
-                intent.setClass(ConcerningActivity.this,GuideActivity.class) ;
-                break ;
+                intent.putExtra("b_user_call", true);
+                intent.setClass(ConcerningActivity.this, GuideActivity.class);
+                break;
         }
-        if(strTitle != null && url !=null){
+        if (strTitle != null && url != null) {
             intent.putExtra("title", strTitle);
             intent.putExtra("content_url", url);
         }

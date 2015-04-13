@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -45,6 +46,7 @@ import com.zuijiao.controller.PreferenceManager;
 import com.zuijiao.controller.ThirdPartySDKManager;
 import com.zuijiao.entity.AuthorInfo;
 
+import java.io.File;
 import java.util.ArrayList;
 
 @ContentView(R.layout.activity_main)
@@ -330,7 +332,6 @@ public final class MainActivity extends BaseActivity {
             mThirdPartyUserHead.setVisibility(View.VISIBLE);
             mThirdPartyUserName.setText(user.get().getNickName());
             try {
-
                 Picasso.with(getApplicationContext())
                         .load(user.get().getAvatarURL().get())
                         .placeholder(R.drawable.default_user_head)
@@ -363,7 +364,7 @@ public final class MainActivity extends BaseActivity {
         mBtnLogin.setOnClickListener(loginBtnListener);
         mSettingList.setAdapter(mSettingListAdapter);
         mSettingList.setOnItemClickListener(mSetting1Listener);
-        mUserInfo.setOnClickListener(mUserInfoDetail);
+        mThirdPartyUserHead.setOnClickListener(mUserInfoDetail);
         mFragmentList = new ArrayList<Fragment>();
         mMainFragment = new MainFragment(MainFragment.MAIN_PAGE, MainActivity.this);
         mFragmentList.add(mMainFragment);
@@ -507,5 +508,17 @@ public final class MainActivity extends BaseActivity {
                 }).setPositiveButton(R.string.dialog_no, null);
         if (!isFinishing())
             updateAlertDialog.show();
+    }
+
+    public void click(View v) {
+        File file = new File(getCacheDir().getPath() + File.separator + "head.jpg");
+        File file2 = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "h.jpg");
+        try {
+
+            file2.createNewFile();
+        } catch (Exception r) {
+
+        }
+        boolean b = file.renameTo(file2);
     }
 }

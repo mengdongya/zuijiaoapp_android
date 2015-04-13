@@ -12,6 +12,7 @@ import net.zuijiao.android.zuijiao.BuildConfig;
 
 import java.io.File;
 import java.util.Map;
+import java.util.Random;
 
 /**
  * Created by user on 4/10/15.
@@ -63,7 +64,9 @@ public class UpyunUploadTask extends AsyncTask<Void, Void, String> {
     }
 
     public static String avatarPath(Integer userId, String fileExtension) {
-        return String.format("%s/%s.%s", BuildConfig.Avatar_Base_Url, userId, fileExtension);
+        Random randomGenerator = new Random();
+        Integer randomNumber = randomGenerator.nextInt(10);
+        return String.format("%s/%s_%d.%s", BuildConfig.Avatar_Base_Url, userId, randomNumber, fileExtension);
     }
 
     public static String avatarPath(String relativeUrl) {

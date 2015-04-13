@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -248,20 +249,24 @@ public class ImageChooseActivity extends BaseActivity {
                             // TODO Auto-generated catch block
                             e.printStackTrace();
                         }
+
+                        String avatarUri = UpyunUploadTask.avatarPath(Router.INSTANCE.getCurrentUser().get().getIdentifier(), "jpg");
+
                         new UpyunUploadTask(getCacheDir().getPath() + File.separator + "head.jpg"
-                                , UpyunUploadTask.avatarPath(Router.INSTANCE.getCurrentUser().get().getIdentifier(), "jpg")
+                                , avatarUri
                                 , (long transferedBytes, long totalBytes) -> {
                         }
                                 , (boolean isComplete, String result, String error) -> {
                             if (isComplete) {
-                                String avatarPath = UpyunUploadTask.avatarPath(Router.INSTANCE.getCurrentUser().get().getIdentifier(), "jpg");
-                                Router.INSTANCE.getCurrentUser().get().setAvatarURL(avatarPath);
-                                mPreferMng.saveAvatarPath(UpyunUploadTask.avatarPath(avatarPath));
+                                Router.INSTANCE.getCurrentUser().get().setAvatarURL(avatarUri);
+                                mPreferMng.saveAvatarPath(UpyunUploadTask.avatarPath(avatarUri));
+                                Log.d("Update Avatar", "path saved: " + UpyunUploadTask.avatarPath(avatarUri));
 
-                                Router.getAccountModule().updateAvatar(avatarPath, () -> {
+                                Router.getAccountModule().updateAvatar(avatarUri, () -> {
                                     Intent intent = new Intent();
                                     intent.setAction(MessageDef.ACTION_GET_THIRD_PARTY_USER);
                                     sendBroadcast(intent);
+                                    Log.d("Update Avatar", "avatar updated: " + avatarUri);
                                 }, () -> {
                                     // TODO: Avatar upload failed
                                 });

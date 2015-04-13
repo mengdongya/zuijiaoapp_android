@@ -25,4 +25,8 @@ public interface IRouterAccount {
             , Callback<Response> callback
     );
 
+    @FormUrlEncoded
+    @POST("/account/v1/profile/avatar/update")
+    void updateAvatar(@Field("imageUrl") String avatarUrl, Callback<Response> callback);
+
 }

@@ -121,7 +121,7 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
                                 String headimgurl = jsonObject1
                                         .getString("headimgurl");
                                 Router.getOAuthModule().register(nickname, headimgurl, openid, "wechat", Optional.<String>empty(), Optional.of(mRereshToken), () -> {
-                                    Router.getOAuthModule().login(openid, "weixin", Optional.empty(), Optional.of(mRereshToken), () -> {
+                                    Router.getOAuthModule().login(openid, "wechat", Optional.empty(), Optional.of(mRereshToken), () -> {
                                         AuthorInfo userInfo = new AuthorInfo() ;
                                         userInfo.setUserName(nickname);
                                         userInfo.setUid(openid);

@@ -6,10 +6,9 @@
 
     <ImageView
         android:id="@+id/drawer_setting_item_image"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="24dip"
+        android:layout_height="24dip"
         android:layout_centerVertical="true"
-        android:scaleType="center"
         android:src="@drawable/ic_launcher" />
 
     <TextView
@@ -17,6 +16,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="15dip"
+        android:layout_centerVertical="true"
         android:layout_toRightOf="@+id/drawer_setting_item_image"
         android:text="setting"
         android:textColor="@color/black"

@@ -91,7 +91,7 @@ public class MyScrollView extends ScrollView {
                 float top = this.getTop();
                 float gapY = tempY - downY;
                 if (bRecorded) {
-                    if ((gapY < 0 && top >= topY) || gapY > 0 && top < bottomY) {
+                    if ((gapY < 0 && top >= topY) || (gapY > 0 && top < bottomY)) {
 
                         changePositionByTouch((int) (tempY - downY));
                         return true;

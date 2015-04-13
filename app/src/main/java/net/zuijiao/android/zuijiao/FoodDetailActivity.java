@@ -605,7 +605,7 @@ public class FoodDetailActivity extends BaseActivity implements
 
     @Override
     public void onTopChange(int top) {
-        if (top <= mToolbar.getHeight() + 20) {
+        if (top <= mToolbar.getHeight()) {
             mToolbar.setBackgroundColor(mResource.getColor(R.color.toolbar));
         } else {
             mToolbar.setBackgroundDrawable(mResource.getDrawable(R.drawable.transparent_gradient));

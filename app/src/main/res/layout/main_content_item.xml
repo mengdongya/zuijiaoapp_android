@@ -19,11 +19,10 @@
             android:scaleType="centerCrop"
             android:src="@drawable/empty_view_greeting" />
 
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="@dimen/main_item_padding"
-            android:paddingBottom="5dip">
+            android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/content_item_title"
@@ -43,9 +42,9 @@
                 android:gravity="left|center_vertical"
                 android:singleLine="true"
                 android:text="@string/personal_tip"
-                android:textColor="@color/tv_deep_gray"
+                android:textColor="#888888"
                 android:textSize="@dimen/main_item_content_text_size" />
-        </RelativeLayout>
+        </LinearLayout>
 
         <com.zuijiao.view.WordWrapView
             android:id="@+id/view_wordwrap"

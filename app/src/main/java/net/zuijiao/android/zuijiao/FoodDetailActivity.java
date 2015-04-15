@@ -307,7 +307,7 @@ public class FoodDetailActivity extends BaseActivity implements
 
     private void fetchWouldLikeList() {
         createDialog();
-        Router.getGourmetModule().fetchWouldLikeToListByGourmetId(gourmet.getIdentifier(), null, wouldLikeUser -> {
+        Router.getGourmetModule().fetchWouldLikeToListByGourmetId(gourmet.getIdentifier(), 500, wouldLikeUser -> {
             FileManager.tmpWouldLikeList = Optional.of(wouldLikeUser);
             if (wouldLikeUser.getCount() == 0) {
                 mGdView.setVisibility(View.GONE);
@@ -330,7 +330,7 @@ public class FoodDetailActivity extends BaseActivity implements
 
     private void fetchCommentList() {
         createDialog();
-        Router.getGourmetModule().fetchComments(gourmet.getIdentifier(), null, null, null, comments -> {
+        Router.getGourmetModule().fetchComments(gourmet.getIdentifier(), null, null, 500, comments -> {
             mComments = comments;
             mCommentTitle.setText(String.format(mResource.getString(R.string.format_comment), mComments.count() + ""));
             if (mComments.count() == 0) {

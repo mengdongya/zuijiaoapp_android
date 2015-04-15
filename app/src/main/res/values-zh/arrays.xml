@@ -4,7 +4,7 @@
     <string-array name="settings1">
         <item>反馈</item>
         <item>关于</item>
-        <item>退出</item>
+        <item>登出</item>
     </string-array>
     <string-array name="test">
         <item>评论</item>

@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,8 +36,9 @@ public class MessageFragment extends Fragment implements FragmentDataListener,
     private MesssageAdapter mAdapter = null;
     private LayoutInflater mInflater = null;
     private int test_count = 1;
-    private TextView mTextView = null;
+    //    private TextView mTextView = null;
     private Context mContext;
+    private LinearLayout mLayout = null;
 
     public MessageFragment() {
         super();
@@ -54,7 +56,8 @@ public class MessageFragment extends Fragment implements FragmentDataListener,
         this.mInflater = inflater;
         mListView = (RefreshAndInitListView) mContentView
                 .findViewById(R.id.lv_msg);
-        mTextView = (TextView) mContentView.findViewById(R.id.tv_main_fm_blank);
+//        mTextView = (TextView) mContentView.findViewById(R.id.tv_main_fm_blank);
+        mLayout = (LinearLayout) mContentView.findViewById(R.id.message_empty_content);
 //        mAdapter = new MesssageAdapter();
 //        mListView.setAdapter(mAdapter);
 //        mListView.setListViewListener(this);
@@ -84,7 +87,7 @@ public class MessageFragment extends Fragment implements FragmentDataListener,
             public void run() {
                 networkStep(true);
             }
-        }, 2000);
+        }, 1000);
     }
 
     private AdapterView.OnItemClickListener mItemClickListener = new AdapterView.OnItemClickListener() {
@@ -136,10 +139,11 @@ public class MessageFragment extends Fragment implements FragmentDataListener,
             }
             Message msg = mData.get(position);
             holder.userName.setText(msg.getFromUser().getNickName());
-            Picasso.with(parent.getContext())
-                    .load(msg.getFromUser().getAvatarURL().get())
-                    .placeholder(R.drawable.default_user_head)
-                    .into(holder.userhead);
+            if (msg.getFromUser().getAvatarURL().isPresent())
+                Picasso.with(parent.getContext())
+                        .load(msg.getFromUser().getAvatarURL().get())
+                        .placeholder(R.drawable.default_user_head)
+                        .into(holder.userhead);
             holder.time.setText(msg.getCreateTime().toLocaleString());
             Optional<String> gourmetImage = Optional.of(msg.getGourmet().get().getImageURLs().get(0) + "!Thumbnails");
 
@@ -205,7 +209,7 @@ public class MessageFragment extends Fragment implements FragmentDataListener,
 //                mListView.setAdapter(mAdapter);
 
             }
-        }, 2000);
+        }, 1000);
     }
 
     @Override
@@ -215,13 +219,17 @@ public class MessageFragment extends Fragment implements FragmentDataListener,
 
     private void networkStep(boolean bRefresh) {
         if (Router.getInstance().getCurrentUser().equals(Optional.empty())) {
-            mListView.setVisibility(View.GONE);
-            mTextView.setVisibility(View.VISIBLE);
-            mTextView.setText(getResources().getString(R.string.none_msg));
+//            mListView.setVisibility(View.GONE);
+//            mTextView.setVisibility(View.VISIBLE);
+//            mTextView.setText(getResources().getString(R.string.none_msg));
+            mAdapter.setData(new ArrayList<Message>());
+            mAdapter.notifyDataSetChanged();
+            mLayout.setVisibility(View.VISIBLE);
+            mListView.stopRefresh();
+            mListView.stopLoadMore();
             return;
         }
         mListView.setRefreshTime(new Date(PreferenceManager.getInstance(getActivity()).getMsgLastRefreshTime()).toLocaleString());
-
         List<Message> tmpMessages = Optional.of(mAdapter.mData).orElse(new ArrayList<>());
         Integer theLastOneIdentifier = null;
 
@@ -232,19 +240,24 @@ public class MessageFragment extends Fragment implements FragmentDataListener,
         Router.getMessageModule().message(News.NotificationType.Comment, theLastOneIdentifier, null, 20, msg -> {
             if (bRefresh) {
                 if (!msg.getAllMessage().isEmpty()) {
-                    mTextView.setVisibility(View.GONE);
+//                    mTextView.setVisibility(View.GONE);
+                    mLayout.setVisibility(View.GONE);
                     List<Message> msgList = msg.getAllMessage();
                     if (mAdapter == null) {
                         mAdapter = new MesssageAdapter();
                     }
                     mAdapter.setData(msgList);
                     mListView.setAdapter(mAdapter);
-                    mListView.stopRefresh();
+
                 } else {
-                    mListView.setVisibility(View.GONE);
-                    mTextView.setVisibility(View.VISIBLE);
-                    mTextView.setText(getResources().getString(R.string.none_msg));
+                    mAdapter.setData(new ArrayList<Message>());
+                    mAdapter.notifyDataSetChanged();
+                    mLayout.setVisibility(View.VISIBLE);
+//                    mListView.setVisibility(View.GONE);
+//                    mTextView.setVisibility(View.VISIBLE);
+//                    mTextView.setText(getResources().getString(R.string.none_msg));
                 }
+                mListView.stopRefresh();
             } else {
                 if (!msg.getAllMessage().isEmpty()) {
                     if (mAdapter.mData == null) {
@@ -261,10 +274,11 @@ public class MessageFragment extends Fragment implements FragmentDataListener,
             PreferenceManager.getInstance(mContext).saveMsgLastRefreshTime(new Date().getTime());
         }, errorMsg -> {
             Toast.makeText(mContext, getString(R.string.notify_net), Toast.LENGTH_LONG).show();
-            mListView.setVisibility(View.GONE);
-            mTextView.setVisibility(View.VISIBLE);
-            mTextView.setText(getResources().getString(R.string.notify_net));
+//            mListView.setVisibility(View.GONE);
+//            mTextView.setVisibility(View.VISIBLE);
+//            mTextView.setText(getResources().getString(R.string.notify_net));
             mListView.stopRefresh();
+            mListView.stopLoadMore();
         });
     }
 }

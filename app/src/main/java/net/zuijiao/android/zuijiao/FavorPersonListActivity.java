@@ -69,6 +69,7 @@ public class FavorPersonListActivity extends BaseActivity {
             } else {
                 holder = (ViewHolder) convertView.getTag();
             }
+            if (user.getAvatarURL().isPresent())
             Picasso.with(getApplicationContext())
                     .load(user.getAvatarURL().get())
                     .placeholder(R.drawable.default_user_head)

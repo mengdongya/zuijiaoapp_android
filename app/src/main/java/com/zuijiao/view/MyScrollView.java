@@ -12,7 +12,6 @@ public class MyScrollView extends ScrollView {
     private float bottomY = 450;
     private float topY = 170;
     private static final int CHANGE_TOP = 1;
-
     private Handler handler = new Handler() {
 
         @Override

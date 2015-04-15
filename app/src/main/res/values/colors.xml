@@ -36,6 +36,7 @@
     <color name="toolbar_text">#eeeeee</color>
     <color name="black">#000000</color>
     <color name="transparent">#00000000</color>
+    <color name="half_transparent">#88373737</color>
     <color name="tv_light_blue">#aa4444ee</color>
     <color name="tv_orange_red">#eeee8800</color>
     <color name="tv_red">#ffff2200</color>

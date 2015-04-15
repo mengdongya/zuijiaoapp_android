@@ -12,6 +12,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -44,10 +45,11 @@ public class MainFragment extends Fragment implements FragmentDataListener,
     private View mContentView = null;
     private RefreshAndInitListView mListView = null;
     private int test_count = 2;
-    private TextView mTextView = null;
+    //    private TextView mTextView = null;
     private LayoutInflater mInflater = null;
     private MainAdapter mAdapter = null;
     private Context mContext = null;
+    private LinearLayout mLayout = null;
     //load url
 //    private String url = null;
     //personal favor or general main
@@ -68,9 +70,10 @@ public class MainFragment extends Fragment implements FragmentDataListener,
                              Bundle savedInstanceState) {
         this.mInflater = inflater;
         mContentView = inflater.inflate(R.layout.fragment_main, null);
+        mLayout = (LinearLayout) mContentView.findViewById(R.id.main_empty_content);
         mListView = (RefreshAndInitListView) mContentView
                 .findViewById(R.id.content_items);
-        mTextView = (TextView) mContentView.findViewById(R.id.tv_main_fm_blank);
+//        mTextView = (TextView) mContentView.findViewById(R.id.tv_main_fm_blank);
         mAdapter = new MainAdapter();
         mListView.setAdapter(mAdapter);
         mListView.setOnItemClickListener(mItemClickListener);
@@ -254,7 +257,9 @@ public class MainFragment extends Fragment implements FragmentDataListener,
             } else {
                 mListView.stopLoadMore();
             }
-            Toast.makeText(mContext, getString(R.string.notify_unlogin), Toast.LENGTH_LONG).show();
+            mLayout.setVisibility(View.VISIBLE);
+            mListView.setPullLoadEnable(false);
+//            Toast.makeText(mContext, getString(R.string.notify_unlogin), Toast.LENGTH_LONG).show();
             return;
         }
         TinyUser user = Router.getInstance().getCurrentUser().get();
@@ -275,9 +280,17 @@ public class MainFragment extends Fragment implements FragmentDataListener,
         {
             if (isRefresh) {
                 tmpGourmets.clear();
+                if (gourmets.getTotalCount() == 0) {
+                    mLayout.setVisibility(View.VISIBLE);
+                    mListView.setPullLoadEnable(false);
+                } else {
+                    mListView.setPullLoadEnable(true);
+                    mLayout.setVisibility(View.GONE);
+                }
                 //mAdapter.gourmets = Optional.of(gourmets.getGourmets());
             } else {
                 if (gourmets.getGourmets().size() == 0) {
+                    mListView.setPullLoadEnable(false);
                     Toast.makeText(mContext, getString(R.string.no_more), Toast.LENGTH_SHORT).show();
                 }
             }
@@ -335,9 +348,11 @@ public class MainFragment extends Fragment implements FragmentDataListener,
         {
             if (isRefresh) {
                 tmpGourmets.clear();
+                mListView.setPullLoadEnable(true);
                 //mAdapter.gourmets = Optional.of(gourmets.getGourmets());
             } else {
                 if (gourmets.getGourmets().size() == 0) {
+                    mListView.setPullLoadEnable(false);
                     Toast.makeText(mContext, getString(R.string.no_more), Toast.LENGTH_SHORT).show();
                 }
                 //  mAdapter.gourmets = Optional.of(tmpGourmets);

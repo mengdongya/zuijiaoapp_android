@@ -10,6 +10,7 @@ import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -51,10 +52,10 @@ public class GuideActivity extends BaseActivity {
             for (int i = 0; i < mDotsLayout.getChildCount(); i++) {
                 if (i == arg0) {
                     mDotsLayout.getChildAt(i).setBackgroundResource(
-                            R.drawable.wizard_index_selected);
+                            R.drawable.wizard_index_unselected);
                 } else {
                     mDotsLayout.getChildAt(i).setBackgroundResource(
-                            R.drawable.wizard_index_unselected);
+                            R.drawable.wizard_index_selected);
                 }
             }
             if (arg0 == mDotsLayout.getChildCount() - 1) {
@@ -79,6 +80,7 @@ public class GuideActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         if (VERSION.SDK_INT >= VERSION_CODES.KITKAT) {
 //            getWindow().addFlags(
 //                    WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
@@ -125,6 +127,7 @@ public class GuideActivity extends BaseActivity {
         ImageView imageView = (ImageView) view.findViewById(R.id.guide_image);
         TextView textView1 = (TextView) view.findViewById(R.id.wizard_text1);
         TextView textView2 = (TextView) view.findViewById(R.id.wizard_text2);
+        imageView.setImageResource(imageRes);
         textView1.setText(title);
         textView2.setText(note);
 //        TextView headText = (TextView) view.findViewById(R.id.wizard_text1);

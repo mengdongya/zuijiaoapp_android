@@ -26,17 +26,18 @@ import net.zuijiao.android.zuijiao.R;
 public class RefreshAndInitListView extends ListView implements
         OnScrollListener {
 
+    private final static int SCROLLBACK_HEADER = 0;
+    private final static int SCROLLBACK_FOOTER = 1;
+    private final static int SCROLL_DURATION = 400; // scroll back duration
+    private final static int PULL_LOAD_MORE_DELTA = 50; // when pull up >= 50px
+    // at bottom, trigger
+    // load more.
+    private final static float OFFSET_RADIO = 1.8f; // support iOS like pull
     private float mLastY = -1; // save event y
     private Scroller mScroller; // used for scroll back
     private OnScrollListener mScrollListener; // user's scroll listener
-
     // the interface to trigger refresh and load more.
     private MyListViewListener mListViewListener;
-
-    public XListViewHeader getmHeaderView() {
-        return mHeaderView;
-    }
-
     // -- header view
     private XListViewHeader mHeaderView;
     // header view content, use it to calculate the Header's height. And hide it
@@ -46,26 +47,15 @@ public class RefreshAndInitListView extends ListView implements
     private int mHeaderViewHeight; // header view's height
     private boolean mEnablePullRefresh = true;
     private boolean mPullRefreshing = false; // is refreashing.
-
     // -- footer view
     private XListViewFooter mFooterView;
     private boolean mEnablePullLoad;
     private boolean mPullLoading;
     private boolean mIsFooterReady = false;
-
     // total list items, used to detect is at the bottom of listview.
     private int mTotalItemCount;
-
     // for mScroller, scroll back from header or footer.
     private int mScrollBack;
-    private final static int SCROLLBACK_HEADER = 0;
-    private final static int SCROLLBACK_FOOTER = 1;
-
-    private final static int SCROLL_DURATION = 400; // scroll back duration
-    private final static int PULL_LOAD_MORE_DELTA = 50; // when pull up >= 50px
-    // at bottom, trigger
-    // load more.
-    private final static float OFFSET_RADIO = 1.8f; // support iOS like pull
     // feature.
     private Context context = null;
 
@@ -89,6 +79,10 @@ public class RefreshAndInitListView extends ListView implements
         super(context, attrs, defStyle);
         initWithContext(context);
         this.context = context;
+    }
+
+    public XListViewHeader getmHeaderView() {
+        return mHeaderView;
     }
 
     private void initWithContext(Context context) {
@@ -190,6 +184,7 @@ public class RefreshAndInitListView extends ListView implements
             mFooterView.setState(XListViewFooter.STATE_NORMAL);
         }
     }
+
 
     /**
      * set last refresh time
@@ -431,6 +426,12 @@ public class RefreshAndInitListView extends ListView implements
             }
         }
 
+        public int getBottomMargin() {
+            LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) mContentView
+                    .getLayoutParams();
+            return lp.bottomMargin;
+        }
+
         public void setBottomMargin(int height) {
             if (height < 0)
                 return;
@@ -438,12 +439,6 @@ public class RefreshAndInitListView extends ListView implements
                     .getLayoutParams();
             lp.bottomMargin = height;
             mContentView.setLayoutParams(lp);
-        }
-
-        public int getBottomMargin() {
-            LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) mContentView
-                    .getLayoutParams();
-            return lp.bottomMargin;
         }
 
         /**
@@ -500,20 +495,17 @@ public class RefreshAndInitListView extends ListView implements
     }
 
     public class XListViewHeader extends LinearLayout {
+        public final static int STATE_NORMAL = 0;
+        public final static int STATE_READY = 1;
+        public final static int STATE_REFRESHING = 2;
+        private final int ROTATE_ANIM_DURATION = 180;
         private LinearLayout mContainer;
         private ImageView mArrowImageView;
         private ProgressBar mProgressBar;
         private TextView mHintTextView;
         private int mState = STATE_NORMAL;
-
         private Animation mRotateUpAnim;
         private Animation mRotateDownAnim;
-
-        private final int ROTATE_ANIM_DURATION = 180;
-
-        public final static int STATE_NORMAL = 0;
-        public final static int STATE_READY = 1;
-        public final static int STATE_REFRESHING = 2;
 
         public XListViewHeader(Context context) {
             super(context);
@@ -592,6 +584,10 @@ public class RefreshAndInitListView extends ListView implements
             mState = state;
         }
 
+        public int getVisiableHeight() {
+            return mContainer.getHeight();
+        }
+
         public void setVisiableHeight(int height) {
             if (height < 0)
                 height = 0;
@@ -599,10 +595,6 @@ public class RefreshAndInitListView extends ListView implements
                     .getLayoutParams();
             lp.height = height;
             mContainer.setLayoutParams(lp);
-        }
-
-        public int getVisiableHeight() {
-            return mContainer.getHeight();
         }
 
     }

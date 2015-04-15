@@ -28,6 +28,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -58,8 +59,8 @@ public final class MainActivity extends BaseActivity {
     // DrawerListener
     private ActionBarDrawerToggle mDrawerToggle;
     // login button and user head in drawer view
-//    @ViewInject(R.id.vs_user_info)
-//    private ViewSwitcher mViewSwitcher = null;
+    @ViewInject(R.id.vs_user_info)
+    private RelativeLayout mUserInfo = null;
     @ViewInject(R.id.btn_login)
     private Button mBtnLogin = null;
     // setting list in drawer view
@@ -79,7 +80,7 @@ public final class MainActivity extends BaseActivity {
     @ViewInject(R.id.main_toolbar)
     private Toolbar mToolBar = null;
     @ViewInject(R.id.container_user_info)
-    private LinearLayout mUserInfo = null;
+    private LinearLayout mUserInfoArea = null;
     @ViewInject(R.id.lv_drawe_items2)
     private ListView mSettingList2 = null;
     //    private String[] settingStr;
@@ -188,7 +189,8 @@ public final class MainActivity extends BaseActivity {
                                     }
                                 }).create().show();
             }
-            mDrawerLayout.closeDrawer(Gravity.LEFT);
+            //2269
+            //mDrawerLayout.closeDrawer(Gravity.LEFT);
         }
     };
     private OnClickListener mUserInfoDetail = new OnClickListener() {
@@ -352,6 +354,12 @@ public final class MainActivity extends BaseActivity {
             mThirdPartyUserName.setVisibility(View.GONE);
             mThirdPartyUserHead.setVisibility(View.GONE);
         }
+        mUserInfoArea.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //
+            }
+        });
         mSettingList2.setOnItemClickListener(mSetting2Listener);
         titles = getResources().getStringArray(R.array.fragment_title);
         mToolBar.setTitle(titles[0]);

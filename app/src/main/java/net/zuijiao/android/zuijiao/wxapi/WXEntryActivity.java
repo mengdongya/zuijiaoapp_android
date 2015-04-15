@@ -120,25 +120,46 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
                                 String nickname = new String(jsonObject1.getString("nickname").getBytes(), "utf-8");
                                 String headimgurl = jsonObject1
                                         .getString("headimgurl");
-                                Router.getOAuthModule().register(nickname, headimgurl, openid, "wechat", Optional.<String>empty(), Optional.of(mRereshToken), () -> {
-                                    Router.getOAuthModule().login(openid, "wechat", Optional.empty(), Optional.of(mRereshToken), () -> {
-                                        AuthorInfo userInfo = new AuthorInfo();
-                                        userInfo.setUserName(nickname);
-                                        userInfo.setUid(openid);
-                                        userInfo.setToken(mRereshToken);
-                                        userInfo.setPlatform("wechat");
-                                        userInfo.setHeadPath(headimgurl);
-                                        PreferenceManager.getInstance(getApplicationContext()).saveThirdPartyLoginMsg(userInfo);
-                                        Intent intent = new Intent(
-                                                MessageDef.ACTION_GET_THIRD_PARTY_USER);
-                                        Bundle bundle = new Bundle();
-                                        bundle.putString("name", nickname);
-                                        bundle.putString("head_url", headimgurl);
-                                        intent.putExtra("userinfo", bundle);
-                                        WXEntryActivity.this.sendBroadcast(intent);
-                                    }, errorMessage -> {
-                                        Toast.makeText(getApplicationContext(), getResources().getString(R.string.notify_net2), Toast.LENGTH_SHORT).show();
-                                    });
+                                Router.getOAuthModule().register(nickname, headimgurl, openid, "wechat", Optional.<String>empty(), Optional.of(mRereshToken), isNew -> {
+                                    AuthorInfo userInfo = new AuthorInfo();
+                                    userInfo.setUserName(nickname);
+                                    userInfo.setUid(openid);
+                                    userInfo.setToken(mRereshToken);
+                                    userInfo.setPlatform("wechat");
+                                    userInfo.setHeadPath(headimgurl);
+                                    if (!isNew) {
+                                        String avataUrl = null;
+                                        if (Router.getInstance().getCurrentUser().get().getAvatarURL().isPresent()) {
+                                            avataUrl = Router.getInstance().getCurrentUser().get().getAvatarURL().get();
+                                            userInfo.setHeadPath(avataUrl);
+                                        }
+                                    }
+                                    PreferenceManager.getInstance(getApplicationContext()).saveThirdPartyLoginMsg(userInfo);
+                                    Intent intent = new Intent(
+                                            MessageDef.ACTION_GET_THIRD_PARTY_USER);
+                                    Bundle bundle = new Bundle();
+                                    bundle.putString("name", nickname);
+                                    bundle.putString("head_url", userInfo.getHeadPath());
+                                    intent.putExtra("userinfo", bundle);
+                                    WXEntryActivity.this.sendBroadcast(intent);
+//                                    Router.getOAuthModule().login(openid, "wechat", Optional.empty(), Optional.of(mRereshToken), () -> {
+//                                        AuthorInfo userInfo = new AuthorInfo();
+//                                        userInfo.setUserName(nickname);
+//                                        userInfo.setUid(openid);
+//                                        userInfo.setToken(mRereshToken);
+//                                        userInfo.setPlatform("wechat");
+//                                        userInfo.setHeadPath(headimgurl);
+//                                        PreferenceManager.getInstance(getApplicationContext()).saveThirdPartyLoginMsg(userInfo);
+//                                        Intent intent = new Intent(
+//                                                MessageDef.ACTION_GET_THIRD_PARTY_USER);
+//                                        Bundle bundle = new Bundle();
+//                                        bundle.putString("name", nickname);
+//                                        bundle.putString("head_url", headimgurl);
+//                                        intent.putExtra("userinfo", bundle);
+//                                        WXEntryActivity.this.sendBroadcast(intent);
+//                                    }, errorMessage -> {
+//                                        Toast.makeText(getApplicationContext(), getResources().getString(R.string.notify_net2), Toast.LENGTH_SHORT).show();
+//                                    });
                                 }, errorMessage -> {
                                     Toast.makeText(getApplicationContext(), getResources().getString(R.string.notify_net2), Toast.LENGTH_SHORT).show();
                                 });

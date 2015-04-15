@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/drawer_container"
+        android:layout_width="300dip"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:background="#ffffff"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:id="@+id/vs_user_info"
+            android:layout_width="match_parent"
+            android:layout_height="200dip"
+            android:background="@drawable/bg_drawer_top">
+
+            <Button
+                android:id="@+id/btn_login"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:background="@drawable/bg_login_btn"
+                android:paddingLeft="5dip"
+                android:paddingRight="5dip"
+                android:text="@string/login"
+                android:textColor="@color/toolbar" />
+
+            <LinearLayout
+                android:id="@+id/container_user_info"
+                android:layout_width="match_parent"
+                android:layout_marginLeft="16dip"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:orientation="vertical">
+
+                <com.zuijiao.view.RoundImageView
+                    android:id="@+id/iv_user_head"
+                    android:layout_width="66dip"
+                    android:layout_height="66dip"
+                    android:layout_gravity="left"
+                    android:src="@drawable/default_user_head" />
+
+                <TextView
+                    android:id="@+id/tv_user_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left"
+                    android:layout_marginTop="15dip"
+                    android:text="Jordan"
+                    android:textColor="@color/white"
+                    android:textSize="18sp" />
+            </LinearLayout>
+        </RelativeLayout>
+
+        <ListView
+            android:id="@+id/lv_drawe_items"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dip"
+            android:divider="@null"></ListView>
+
+        <View
+            android:id="@+id/tv_version_code"
+            android:layout_width="match_parent"
+            android:layout_height="1dip"
+            android:layout_marginTop="10dip"
+            android:background="@color/bg_gray_white" />
+
+        <ListView
+            android:id="@+id/lv_drawe_items2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dip"
+            android:divider="@null"></ListView>
+    </LinearLayout>
+</LinearLayout>

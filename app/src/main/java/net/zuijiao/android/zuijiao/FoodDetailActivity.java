@@ -24,7 +24,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
@@ -112,6 +111,8 @@ public class FoodDetailActivity extends BaseActivity implements
     private EditText mEtComment = null;
     @ViewInject(R.id.comment_commit)
     private ImageButton mCommentCommit = null;
+    @ViewInject(R.id.food_detail_content)
+    private LinearLayout mContentLayout = null;
     private boolean openEdit = false;
     private int toolbarHeight = 0;
     private Gourmet gourmet = null;
@@ -122,7 +123,7 @@ public class FoodDetailActivity extends BaseActivity implements
     private Integer mReplyId = null;
     private ProgressDialog mDialog = null;
     private Resources mResource = null;
-
+    private boolean doNotMove = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -179,17 +180,13 @@ public class FoodDetailActivity extends BaseActivity implements
         mScrollView.setTopY(toolbarHeight);
         mScrollView.setBottomY(viewPagerHeight);
         rootView.getViewTreeObserver().addOnGlobalLayoutListener(
-                new OnGlobalLayoutListener() {
-
-                    @Override
-                    public void onGlobalLayout() {
-                        if (openEdit) {
-                            mScrollView.moveToTop();
-                            openEdit = false;
-                        }
-                        onScroll(mScrollView.getScrollY());
-                        onTopChange(mScrollView.getTop());
+                () -> {
+                    if (openEdit) {
+                        mScrollView.moveToTop();
+                        openEdit = false;
                     }
+                    onScroll(mScrollView.getScrollY());
+                    onTopChange(mScrollView.getTop());
                 });
         ArrayList<View> data = new ArrayList<View>();
         List<String> imageUrls = gourmet.getImageURLs();
@@ -231,8 +228,9 @@ public class FoodDetailActivity extends BaseActivity implements
         mEtComment.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                openEdit = true;
+//                openEdit = true;
                 mReplyId = null;
+                mEtComment.setHint(getString(R.string.comment_hint));
             }
         });
         mFoodPrice.setText(String.format(mResource.getString(R.string.format_price), gourmet.getPrice()));
@@ -256,6 +254,22 @@ public class FoodDetailActivity extends BaseActivity implements
     private OnClickListener mCommentCommitListener = new OnClickListener() {
         @Override
         public void onClick(View v) {
+            if (!Router.getInstance().getCurrentUser().isPresent()) {
+                View contentView = mInflater.inflate(R.layout.alert_login_dialog, null);
+                TextView tv = (TextView) contentView.findViewById(R.id.fire_login);
+                final AlertDialog dialog = new AlertDialog.Builder(FoodDetailActivity.this).setView(contentView).create();
+                tv.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                        startActivity(intent);
+                        dialog.dismiss();
+                        finallizeDialog(mDialog);
+                    }
+                });
+                dialog.show();
+                return;
+            }
             String comment = mEtComment.getText().toString().trim();
             if (comment.equals("")) {
                 Toast.makeText(getApplicationContext(), mResource.getString(R.string.notify_empty_comment), Toast.LENGTH_SHORT);
@@ -299,7 +313,12 @@ public class FoodDetailActivity extends BaseActivity implements
                 mGdView.setVisibility(View.GONE);
             } else {
                 mGdView.setVisibility(View.VISIBLE);
-                mGdView.setAdapter(mGdAdapter);
+                if (mGdView.getAdapter() != null) {
+                    mGdAdapter.notifyDataSetChanged();
+                    doNotMove = true;
+                } else {
+                    mGdView.setAdapter(mGdAdapter);
+                }
             }
             mWouldLikeTitle.setText(String.format(mResource.getString(R.string.format_favor_person), wouldLikeUser.getCount()));
             finallizeDialog(mDialog);
@@ -319,7 +338,11 @@ public class FoodDetailActivity extends BaseActivity implements
             } else {
                 mCommentList.setVisibility(View.VISIBLE);
                 mNoneComment.setVisibility(View.GONE);
-                mCommentList.setAdapter(mCommentAdapter);
+                if (mCommentList.getAdapter() != null) {
+                    mCommentAdapter.notifyDataSetChanged();
+                } else {
+                    mCommentList.setAdapter(mCommentAdapter);
+                }
                 setListViewHeightBasedOnChildren(mCommentList);
             }
             finallizeDialog(mDialog);
@@ -399,15 +422,31 @@ public class FoodDetailActivity extends BaseActivity implements
     private AdapterView.OnItemClickListener mCommentListListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            mEtComment.setFocusable(true);
-            mEtComment.setFocusableInTouchMode(true);
-            mEtComment.requestFocus();
-            InputMethodManager inputManager =
-                    (InputMethodManager) mEtComment.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-            inputManager.showSoftInput(mEtComment, 0);
-            mEtComment.setHint(String.format(mResource.getString(R.string.reply_to), mComments.getCommentList().get(position).getUser().getNickName()));
-            openEdit = true;
-            mReplyId = mComments.getCommentList().get(position).getIdentifier();
+            if (!Router.getInstance().getCurrentUser().isPresent()) {
+                View contentView = mInflater.inflate(R.layout.alert_login_dialog, null);
+                TextView tv = (TextView) contentView.findViewById(R.id.fire_login);
+                final AlertDialog dialog = new AlertDialog.Builder(FoodDetailActivity.this).setView(contentView).create();
+                tv.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                        startActivity(intent);
+                        dialog.dismiss();
+                        finallizeDialog(mDialog);
+                    }
+                });
+                dialog.show();
+            } else {
+                mEtComment.setFocusable(true);
+                mEtComment.setFocusableInTouchMode(true);
+                mEtComment.requestFocus();
+                InputMethodManager inputManager =
+                        (InputMethodManager) mEtComment.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                inputManager.showSoftInput(mEtComment, 0);
+                mEtComment.setHint(String.format(mResource.getString(R.string.reply_to), mComments.getCommentList().get(position).getUser().getNickName()));
+                openEdit = true;
+                mReplyId = mComments.getCommentList().get(position).getIdentifier();
+            }
         }
     };
     private BaseAdapter mCommentAdapter = new BaseAdapter() {
@@ -429,6 +468,7 @@ public class FoodDetailActivity extends BaseActivity implements
             }
             holder.time.setText(formatSuggestTime(comment.getPostDate()));
             holder.userName.setText(comment.getUser().getNickName());
+            if (comment.getUser().getAvatarURL().isPresent())
             Picasso.with(getApplicationContext())
                     .load(comment.getUser().getAvatarURL().get())
                     .placeholder(R.drawable.default_user_head)
@@ -497,6 +537,7 @@ public class FoodDetailActivity extends BaseActivity implements
     }
 
     private OnClickListener favorListener = new OnClickListener() {
+        @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
         @Override
         public void onClick(View v) {
             if (!Router.getInstance().getCurrentUser().isPresent()) {
@@ -508,6 +549,7 @@ public class FoodDetailActivity extends BaseActivity implements
                     public void onClick(View v) {
                         Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
                         startActivity(intent);
+                        dialog.dismiss();
                         finallizeDialog(mDialog);
                     }
                 });
@@ -617,10 +659,10 @@ public class FoodDetailActivity extends BaseActivity implements
         private WouldLikeToEatUser users = null;
         private int totalCount = 0;
 
-        public void setData(WouldLikeToEatUser users) {
-            this.users = users;
-            notifyDataSetChanged();
-        }
+//        public void setData(WouldLikeToEatUser users) {
+//            this.users = users;
+//            notifyDataSetChanged();
+//        }
 
         @Override
         public int getCount() {

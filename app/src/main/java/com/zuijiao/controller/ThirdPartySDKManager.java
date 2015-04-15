@@ -109,24 +109,40 @@ public class ThirdPartySDKManager implements AbsSDK.LoginListener {
         String platsform = user.getPlatform();
         String token = user.getToken();
         Router.getOAuthModule().register(userName, imageurl, openid, platsform, Optional.<String>empty(), Optional.of(token), isNew -> {
-                    Router.getOAuthModule().login(openid, platsform, Optional.empty(), Optional.of(token), () -> {
-                        PreferenceManager.getInstance(mContext).saveThirdPartyLoginMsg(user);
-                        Intent intent = new Intent(
-                                MessageDef.ACTION_GET_THIRD_PARTY_USER);
-                        Bundle bundle = new Bundle();
-                        bundle.putBoolean("result", true);
-                        bundle.putString("name", userName);
-                        bundle.putString("head_url", imageurl);
-                        intent.putExtra("userinfo", bundle);
-                        mContext.sendBroadcast(intent);
-                    }, errorMessage -> {
-                        Intent intent = new Intent(
-                                MessageDef.ACTION_GET_THIRD_PARTY_USER);
-                        Bundle bundle = new Bundle();
-                        bundle.putBoolean("result", false);
-                        mContext.sendBroadcast(intent);
-                        Toast.makeText(mContext, mContext.getResources().getString(R.string.notify_net2), Toast.LENGTH_SHORT).show();
-                    });
+                    if (!isNew) {
+                        String avataUrl = null;
+                        if (Router.getInstance().getCurrentUser().get().getAvatarURL().isPresent()) {
+                            avataUrl = Router.getInstance().getCurrentUser().get().getAvatarURL().get();
+                            user.setHeadPath(avataUrl);
+                        }
+                    }
+                    PreferenceManager.getInstance(mContext).saveThirdPartyLoginMsg(user);
+                    Intent intent = new Intent(
+                            MessageDef.ACTION_GET_THIRD_PARTY_USER);
+                    Bundle bundle = new Bundle();
+                    bundle.putBoolean("result", true);
+                    bundle.putString("name", userName);
+                    bundle.putString("head_url", user.getHeadPath());
+                    intent.putExtra("userinfo", bundle);
+                    mContext.sendBroadcast(intent);
+//                    Router.getOAuthModule().login(openid, platsform, Optional.empty(), Optional.of(token), () -> {
+//                        PreferenceManager.getInstance(mContext).saveThirdPartyLoginMsg(user);
+//                        Intent intent = new Intent(
+//                                MessageDef.ACTION_GET_THIRD_PARTY_USER);
+//                        Bundle bundle = new Bundle();
+//                        bundle.putBoolean("result", true);
+//                        bundle.putString("name", userName);
+//                        bundle.putString("head_url", imageurl);
+//                        intent.putExtra("userinfo", bundle);
+//                        mContext.sendBroadcast(intent);
+//                    }, errorMessage -> {
+//                        Intent intent = new Intent(
+//                                MessageDef.ACTION_GET_THIRD_PARTY_USER);
+//                        Bundle bundle = new Bundle();
+//                        bundle.putBoolean("result", false);
+//                        mContext.sendBroadcast(intent);
+//                        Toast.makeText(mContext, mContext.getResources().getString(R.string.notify_net2), Toast.LENGTH_SHORT).show();
+//                    });
                 }
                 , errorMessage ->
                 {

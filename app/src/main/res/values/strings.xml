@@ -112,4 +112,7 @@
     <string name="image_chooser">选择照片</string>
     <string name="error_upload">上传出错，请重试。</string>
     <string name="error_read_file">文件读取出错</string>
+    <string name="no_favor">我一向很有品位的\n暂时还没有我喜欢的美食</string>
+    <string name="no_message">暂时还没有消息</string>
+    <string name="current_location">目前支持城市·上海</string>
 </resources>

@@ -1,0 +1,99 @@
+<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawer"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="net.zuijiao.android.zuijiao.MainActivity"
+    tools:ignore="MergeRootFrame">
+
+    <RelativeLayout
+        android:id="@+id/badge_parent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <include
+            android:id="@+id/main_toolbar"
+            layout="@layout/toolbar" />
+
+        <FrameLayout
+            android:id="@+id/main_content_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/main_toolbar"></FrameLayout>
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/drawer_container"
+        android:layout_width="300dip"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:background="#ffffff"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:id="@+id/vs_user_info"
+            android:layout_width="match_parent"
+            android:layout_height="200dip"
+            android:background="@drawable/bg_drawer_top">
+
+            <Button
+                android:id="@+id/btn_login"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:background="@drawable/bg_login_btn"
+                android:paddingLeft="5dip"
+                android:paddingRight="5dip"
+                android:text="@string/login"
+                android:textColor="?android:attr/colorPrimary" />
+
+            <LinearLayout
+                android:id="@+id/container_user_info"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:layout_centerInParent="true"
+                android:orientation="vertical">
+
+                <com.zuijiao.view.RoundImageView
+                    android:id="@+id/iv_user_head"
+                    android:layout_width="50dip"
+                    android:layout_height="50dip"
+                    android:layout_gravity="center"
+                    android:src="@drawable/default_user_head" />
+
+                <TextView
+                    android:id="@+id/tv_user_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="15dip"
+                    android:text="Jordan"
+                    android:textColor="@color/white"
+                    android:textSize="18sp" />
+            </LinearLayout>
+        </RelativeLayout>
+
+        <ListView
+            android:id="@+id/lv_drawe_items"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dip"
+            android:divider="@null"></ListView>
+
+        <View
+            android:id="@+id/tv_version_code"
+            android:layout_width="match_parent"
+            android:layout_height="1dip"
+            android:layout_marginTop="10dip"
+            android:background="@color/bg_gray_white" />
+
+        <ListView
+            android:id="@+id/lv_drawe_items2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dip"
+            android:divider="@null"></ListView>
+    </LinearLayout>
+
+</android.support.v4.widget.DrawerLayout>

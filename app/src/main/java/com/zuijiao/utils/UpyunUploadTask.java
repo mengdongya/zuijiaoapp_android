@@ -65,7 +65,7 @@ public class UpyunUploadTask extends AsyncTask<Void, Void, String> {
 
     public static String avatarPath(Integer userId, String fileExtension) {
         Random randomGenerator = new Random();
-        Integer randomNumber = randomGenerator.nextInt(10);
+        Integer randomNumber = randomGenerator.nextInt(1000);
         return String.format("%s/%s_%d.%s", BuildConfig.Avatar_Base_Url, userId, randomNumber, fileExtension);
     }
 

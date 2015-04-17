@@ -2,13 +2,14 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#f9f9f9"
     android:orientation="vertical">
 
     <include
         android:id="@+id/register_toolbar"
         layout="@layout/toolbar" />
 
-    <EditText
+    <com.zuijiao.view.MyEditText
         android:id="@+id/et_regist_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -19,7 +20,7 @@
         android:singleLine="true"
         android:textColor="@color/black" />
 
-    <EditText
+    <com.zuijiao.view.MyEditText
         android:id="@+id/et_regist_email"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -31,7 +32,7 @@
         android:singleLine="true"
         android:textColor="@color/black" />
 
-    <EditText
+    <com.zuijiao.view.MyEditText
         android:id="@+id/et_regist_password"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -43,7 +44,7 @@
         android:singleLine="true"
         android:textColor="@color/black" />
 
-    <EditText
+    <com.zuijiao.view.MyEditText
         android:id="@+id/et_regist_password_comfirm"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

@@ -296,8 +296,12 @@ public enum RouterOAuth {
             @Override
             public void failure(RetrofitError error) {
                 System.out.println("Failure: " + error);
-                if (finalFailureCallback.isPresent())
-                    finalFailureCallback.get().action(error.getResponse().getStatus());
+                if (finalFailureCallback.isPresent()) {
+                    if (error.getResponse() == null)
+                        finalFailureCallback.get().action(0);
+                    else
+                        finalFailureCallback.get().action(error.getResponse().getStatus());
+                }
             }
         };
     }

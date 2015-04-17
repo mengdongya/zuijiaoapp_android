@@ -28,7 +28,7 @@
     <color name="tv_deep_gray">#555555</color>
     <color name="bg_gray_white">#66dddddd</color>
     <color name="bg_light_gray">#888888</color>
-    <color name="white">#FFFFFF</color>
+    <color name="white">#ffFFFFFF</color>
     <color name="white1">#dddddd</color>
     <color name="white_trans">#66ffffff</color>
     <color name="toolbar">#373737</color>

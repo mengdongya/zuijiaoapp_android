@@ -17,6 +17,9 @@ import com.zuijiao.android.zuijiao.network.Router;
 import com.zuijiao.controller.MessageDef;
 import com.zuijiao.controller.PreferenceManager;
 import com.zuijiao.entity.AuthorInfo;
+import com.zuijiao.utils.MD5;
+
+import java.security.NoSuchAlgorithmException;
 
 @ContentView(R.layout.activity_register)
 public class RegisterActivity extends BaseActivity {
@@ -56,29 +59,35 @@ public class RegisterActivity extends BaseActivity {
             case R.id.login:
                 mDialog = ProgressDialog.show(RegisterActivity.this, null, getString(R.string.on_loading));
                 if (checkInputState()) {
+                    try {
+                        mPwd = MD5.crypt(mPwd);
+                    } catch (NoSuchAlgorithmException e) {
+                        e.printStackTrace();
+                        return false;
+                    }
                     Router.getOAuthModule().registerEmailRoutine(mNickName, null, mEmail, mPwd, Optional.<String>empty(), Optional.<String>empty(), () -> {
                         //register success !
-                        Router.getOAuthModule().loginEmailRoutine(mEmail, mPwd, Optional.<String>empty(), Optional.<String>empty(), () -> {
-
-                            //Login success !
-                            TinyUser user = Router.getInstance().getCurrentUser().get();
-                            AuthorInfo authorInfo = new AuthorInfo();
-                            authorInfo.setUserName(user.getNickName());
-                            authorInfo.setPassword(mPwd);
-                            authorInfo.setPlatform("");
-                            authorInfo.setEmail(mEmail);
-                            PreferenceManager.getInstance(getApplicationContext()).saveThirdPartyLoginMsg(authorInfo);
-                            Intent intent = new Intent();
-                            intent.setAction(MessageDef.ACTION_GET_THIRD_PARTY_USER);
-                            sendBroadcast(intent);
-                            intent.setClass(RegisterActivity.this, MainActivity.class);
-                            startActivity(intent);
-                            finallizeDialog();
-                        }, errorMessage -> {
-                            finallizeDialog();
-                            Toast.makeText(getApplicationContext(), getString(R.string.notify_net2), Toast.LENGTH_SHORT).show();
-                            //login failed !
-                        });
+//                        Router.getOAuthModule().loginEmailRoutine(mEmail, mPwd, Optional.<String>empty(), Optional.<String>empty(), () -> {
+                        Toast.makeText(getApplicationContext(), getString(R.string.login_success), Toast.LENGTH_SHORT).show();
+                        //Login success !
+                        TinyUser user = Router.getInstance().getCurrentUser().get();
+                        AuthorInfo authorInfo = new AuthorInfo();
+                        authorInfo.setUserName(user.getNickName());
+                        authorInfo.setPassword(mPwd);
+                        authorInfo.setPlatform("");
+                        authorInfo.setEmail(mEmail);
+                        PreferenceManager.getInstance(getApplicationContext()).saveThirdPartyLoginMsg(authorInfo);
+                        Intent intent = new Intent();
+                        intent.setAction(MessageDef.ACTION_GET_THIRD_PARTY_USER);
+                        sendBroadcast(intent);
+                        intent.setClass(RegisterActivity.this, MainActivity.class);
+                        startActivity(intent);
+                        finallizeDialog();
+//                        }, errorMessage -> {
+//                            finallizeDialog();
+//                            Toast.makeText(getApplicationContext(), getString(R.string.notify_net2), Toast.LENGTH_SHORT).show();
+//                            //login failed !
+//                        });
                     }, errorMessage -> {
                         finallizeDialog();
                         Toast.makeText(getApplicationContext(), getString(R.string.notify_net2), Toast.LENGTH_SHORT).show();
@@ -112,7 +121,7 @@ public class RegisterActivity extends BaseActivity {
             return false;
         }
         if (!mEmail.matches(EMAIL_REGEX)) {
-            mErrorCode = String.format(getString(R.string.register_error_email_format), mEmail);
+            mErrorCode = getString(R.string.register_error_email_format);
             return false;
         }
         mPwd = mEtPwd.getText().toString().trim();

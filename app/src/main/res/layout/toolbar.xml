@@ -3,7 +3,6 @@
     android:layout_width="match_parent"
     android:elevation="10dip"
     android:layout_height="@dimen/toolbar_height"
+    colorControlNormal="@color/white"
     android:background="?attr/colorPrimary"
-    android:minHeight="?attr/actionBarSize">
-
-</android.support.v7.widget.Toolbar>
+    android:minHeight="?attr/actionBarSize"></android.support.v7.widget.Toolbar>

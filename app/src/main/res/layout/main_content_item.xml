@@ -19,34 +19,36 @@
             android:scaleType="centerCrop"
             android:src="@drawable/empty_view_greeting" />
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:layout_height="35dip"
+            android:paddingBottom="0dip"
+            android:paddingLeft="10dip"
+            android:paddingRight="10dip"
+            android:paddingTop="10dip">
 
             <TextView
                 android:id="@+id/content_item_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="left|center_vertical"
                 android:singleLine="true"
-                android:text="金汤鱼肉狮子头"
+                android:gravity="center_vertical|left"
                 android:textColor="@color/tv_deep_gray"
-                android:textSize="@dimen/main_item_food_name_size" />
+                android:textSize="22sp" />
 
             <TextView
                 android:id="@+id/content_item_personal_tip"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:padding="1dip"
                 android:layout_alignParentRight="true"
-                android:gravity="left|center_vertical"
                 android:singleLine="true"
                 android:text="@string/personal_tip"
-                android:textColor="#888888"
                 android:textSize="@dimen/main_item_content_text_size" />
-        </LinearLayout>
+        </RelativeLayout>
 
         <com.zuijiao.view.WordWrapView
+            android:layout_marginTop="10dip"
             android:id="@+id/view_wordwrap"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

@@ -19,7 +19,6 @@ import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -48,13 +47,12 @@ import com.zuijiao.android.zuijiao.model.Gourmet;
 import com.zuijiao.android.zuijiao.model.user.WouldLikeToEatUser;
 import com.zuijiao.android.zuijiao.network.Router;
 import com.zuijiao.controller.FileManager;
+import com.zuijiao.utils.StrUtil;
 import com.zuijiao.view.MyScrollView;
 import com.zuijiao.view.MyScrollView.OnScrollListener;
 import com.zuijiao.view.WordWrapView;
 
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 @SuppressLint("ShowToast")
@@ -90,7 +88,10 @@ public class FoodDetailActivity extends BaseActivity implements
     private LinearLayout mImageIndex = null;
     private TopViewHolder floatHolder = null;
     private TopViewHolder topHolder = null;
-
+    @ViewInject(R.id.food_detail_food_msg_title)
+    private TextView mGourmetMsgTitle = null;
+    @ViewInject(R.id.food_detail_food_msg_splite)
+    private View mGourmetMsgSpliteView = null;
     @ViewInject(R.id.food_detail_food_msg_price)
     private TextView mFoodPrice = null;
     @ViewInject(R.id.food_detail_food_msg_location)
@@ -124,6 +125,9 @@ public class FoodDetailActivity extends BaseActivity implements
     private ProgressDialog mDialog = null;
     private Resources mResource = null;
     private boolean doNotMove = false;
+
+    //    @ViewInject(R.id.test_focusable)
+//    private LinearLayout mTestLayout = null ;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -154,6 +158,8 @@ public class FoodDetailActivity extends BaseActivity implements
             this.finish();
             return;
         }
+//        mTestLayout.requestFocus() ;
+//        mTestLayout.requestFocusFromTouch() ;
         mResource = getResources();
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -171,7 +177,7 @@ public class FoodDetailActivity extends BaseActivity implements
         for (int i = 0; i < gourmet.getTags().size(); i++) {
             TextView textview = new TextView(this);
             textview.setBackgroundResource(R.drawable.bg_label);
-            textview.setTextColor(mResource.getColor(R.color.main_label));
+            textview.setTextColor(mResource.getColor(R.color.white));
             textview.setTextSize(14);
             textview.setText(gourmet.getTags().get(i));
             mLabelContainer.addView(textview);
@@ -189,28 +195,30 @@ public class FoodDetailActivity extends BaseActivity implements
                     onTopChange(mScrollView.getTop());
                 });
         ArrayList<View> data = new ArrayList<View>();
-        List<String> imageUrls = gourmet.getImageURLs();
+        final ArrayList<String> imageUrls = (ArrayList) gourmet.getImageURLs();
         //5:image number
         for (int i = 0; i < imageUrls.size(); i++) {
             ImageView image = new ImageView(this);
             image.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
                     LayoutParams.MATCH_PARENT));
             image.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            image.setOnClickListener(new OnClickListener() {
+            image.setOnClickListener((View view) -> {
 
-                @Override
-                public void onClick(View v) {
+//                @Override
+//                public void onClick(View v) {
                     if (gourmet.getImageURLs().isEmpty()) {
                         return;
                     }
                     Intent intent = new Intent(FoodDetailActivity.this, BigImageActivity.class);
-                    ArrayList<String> imageUrls = new ArrayList<String>();
-                    for (String url : gourmet.getImageURLs()) {
-                        imageUrls.add(url);
-                    }
+//                    ArrayList<String> imageUrls = new ArrayList<String>();
+//                    for (String url : gourmet.getImageURLs()) {
+//                        imageUrls.add(url);
+//                    }
+                int currentImageIndex = mImagePager.getCurrentItem();
+                intent.putExtra("current_image_index", currentImageIndex);
                     intent.putStringArrayListExtra("image_url", imageUrls);
                     startActivity(intent);
-                }
+//                }
             });
             Picasso.with(getApplicationContext())
                     .load(imageUrls.get(i))
@@ -228,13 +236,25 @@ public class FoodDetailActivity extends BaseActivity implements
         mEtComment.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-//                openEdit = true;
+                openEdit = true;
                 mReplyId = null;
                 mEtComment.setHint(getString(R.string.comment_hint));
             }
         });
-        mFoodPrice.setText(String.format(mResource.getString(R.string.format_price), gourmet.getPrice()));
-        mFoodLocation.setText(String.format(mResource.getString(R.string.format_location), gourmet.getAddress()));
+        if (gourmet.getPrice() == null || gourmet.getPrice().equals("")) {
+            mFoodPrice.setVisibility(View.GONE);
+        } else {
+            mFoodPrice.setText(String.format(mResource.getString(R.string.format_price), gourmet.getPrice()));
+        }
+        if (gourmet.getAddress() == null || gourmet.getAddress().equals("")) {
+            mFoodLocation.setVisibility(View.GONE);
+        } else {
+            mFoodLocation.setText(String.format(mResource.getString(R.string.format_location), gourmet.getAddress()));
+        }
+        if (mFoodLocation.getVisibility() == View.GONE && mFoodPrice.getVisibility() == View.GONE) {
+            mGourmetMsgTitle.setVisibility(View.GONE);
+            mGourmetMsgSpliteView.setVisibility(View.GONE);
+        }
         mFoodDescription.setText(gourmet.getDescription());
         new Handler().postDelayed(new Runnable() {
 
@@ -385,8 +405,8 @@ public class FoodDetailActivity extends BaseActivity implements
         topHolder.mUserName1 = (TextView) mLayoutTop.findViewById(R.id.food_detail_user_name);
         floatHolder.mFavorBtn2.setOnClickListener(favorListener);
         topHolder.mFavorBtn2.setOnClickListener(favorListener);
-        floatHolder.mCreateTime1.setText(gourmet.getDate().toLocaleString());
-        topHolder.mCreateTime1.setText(gourmet.getDate().toLocaleString());
+//        floatHolder.mCreateTime1.setText(gourmet.getDate().toLocaleString());
+//        topHolder.mCreateTime1.setText(gourmet.getDate().toLocaleString());
         if (gourmet.getWasMarked()) {
             topHolder.mFavorBtn2.setBackground(mResource.getDrawable(R.drawable.bg_favor_marked));
             topHolder.mFavorBtn2.setImageResource(R.drawable.faviro_clicked);
@@ -400,8 +420,8 @@ public class FoodDetailActivity extends BaseActivity implements
                 .placeholder(R.drawable.default_user_head)
                 .into(floatHolder.mUserHead1);
         floatHolder.mUserName1.setText(gourmet.getUser().getNickName());
-        topHolder.mCreateTime1.setText(gourmet.getDate().toLocaleString());
-        floatHolder.mCreateTime1.setText(gourmet.getDate().toLocaleString());
+        topHolder.mCreateTime1.setText(String.format(getString(R.string.format_create_time), StrUtil.formatTime(gourmet.getDate(), getApplicationContext())));
+        floatHolder.mCreateTime1.setText(String.format(getString(R.string.format_create_time), StrUtil.formatTime(gourmet.getDate(), getApplicationContext())));
         topHolder.mFoodName1.setText(gourmet.getName());
         topHolder.mPrivateText1.setVisibility(gourmet.getIsPrivate() ? View.VISIBLE : View.GONE);
         Picasso.with(getApplicationContext())
@@ -411,12 +431,6 @@ public class FoodDetailActivity extends BaseActivity implements
         topHolder.mUserName1.setText(gourmet.getUser().getNickName());
     }
 
-    private String formatSuggestTime(Date date) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(date.getYear(), date.getMonth(), date.getDay());
-        calendar.setTime(date);
-        return null;
-    }
 
 
     private AdapterView.OnItemClickListener mCommentListListener = new AdapterView.OnItemClickListener() {
@@ -437,6 +451,28 @@ public class FoodDetailActivity extends BaseActivity implements
                 });
                 dialog.show();
             } else {
+                int cu = Router.getInstance().getCurrentUser().get().getIdentifier();
+                int s = (mComments.getCommentList().get(position).getUser().getIdentifier());
+                if (Router.getInstance().getCurrentUser().get().getIdentifier().equals(mComments.getCommentList().get(position).getUser().getIdentifier())) {
+                    View deleteView = LayoutInflater.from(getApplicationContext()).inflate(
+                            R.layout.alert_delete_comment, null);
+                    AlertDialog.Builder builder = new AlertDialog.Builder(
+                            FoodDetailActivity.this);
+                    AlertDialog dialog = builder.setView(deleteView).create();
+                    dialog.show();
+//                deleteView.findViewById(R.id.logout_btn_cancel).setOnClickListener((View v ) -> {
+//                    dialog.dismiss();
+//                });
+                    deleteView.findViewById(R.id.alert_delete_comment).setOnClickListener((View v) -> {
+                        dialog.dismiss();
+                        Router.getGourmetModule().removeComment(mComments.getCommentList().get(position).getIdentifier(), () ->
+                        {
+                            fetchCommentList();
+                        }, () -> {
+                            Toast.makeText(getApplicationContext(), getString(R.string.fail_delete_comment), Toast.LENGTH_SHORT).show();
+                        });
+                    });
+                } else {
                 mEtComment.setFocusable(true);
                 mEtComment.setFocusableInTouchMode(true);
                 mEtComment.requestFocus();
@@ -446,6 +482,7 @@ public class FoodDetailActivity extends BaseActivity implements
                 mEtComment.setHint(String.format(mResource.getString(R.string.reply_to), mComments.getCommentList().get(position).getUser().getNickName()));
                 openEdit = true;
                 mReplyId = mComments.getCommentList().get(position).getIdentifier();
+            }
             }
         }
     };
@@ -466,7 +503,7 @@ public class FoodDetailActivity extends BaseActivity implements
             } else {
                 holder = (CommentViewHolder) convertView.getTag();
             }
-            holder.time.setText(formatSuggestTime(comment.getPostDate()));
+            holder.time.setText(StrUtil.formatTime(comment.getPostDate(), getApplicationContext()));
             holder.userName.setText(comment.getUser().getNickName());
             if (comment.getUser().getAvatarURL().isPresent())
             Picasso.with(getApplicationContext())
@@ -560,12 +597,13 @@ public class FoodDetailActivity extends BaseActivity implements
                     Router.getGourmetModule().favoriteAdd(gourmet.getIdentifier(), () -> {
                         gourmet.setWasMarked(true);
                         fetchWouldLikeList();
-                        View view = mInflater.inflate(R.layout.favor_feedback, null);
-                        Toast toast = new Toast(getApplicationContext());
-                        toast.setDuration(Toast.LENGTH_SHORT);
-                        toast.setView(view);
-                        toast.setGravity(Gravity.CENTER, 0, 0);
-                        toast.show();
+//                        View view = mInflater.inflate(R.layout.favor_feedback, null);
+//                        Toast toast = new Toast(getApplicationContext());
+//                        toast.setDuration(Toast.LENGTH_SHORT);
+//                        toast.setView(view);
+//                        toast.setGravity(Gravity.CENTER, 0, 0);
+//                        toast.show();
+                        Toast.makeText(getApplicationContext(), getString(R.string.favor_feedback), Toast.LENGTH_SHORT).show();
                         topHolder.mFavorBtn2.setBackground(mResource.getDrawable(R.drawable.bg_favor_marked));
                         topHolder.mFavorBtn2.setImageResource(R.drawable.faviro_clicked);
                         floatHolder.mFavorBtn2.setBackground(mResource.getDrawable(R.drawable.bg_favor_marked));
@@ -710,10 +748,10 @@ public class FoodDetailActivity extends BaseActivity implements
             for (int i = 0; i < mImageIndex.getChildCount(); i++) {
                 if (i == arg0) {
                     mImageIndex.getChildAt(i).setBackgroundResource(
-                            R.drawable.wizard_index_selected);
+                            R.drawable.food_detail_index_selected);
                 } else {
                     mImageIndex.getChildAt(i).setBackgroundResource(
-                            R.drawable.wizard_index_unselected);
+                            R.drawable.food_detail_index_unselected);
                 }
             }
         }
@@ -737,11 +775,12 @@ public class FoodDetailActivity extends BaseActivity implements
         LinearLayout.LayoutParams Lp = new LinearLayout.LayoutParams(dimen, dimen);
         Lp.rightMargin = 5;
         Lp.leftMargin = 5;
+        Lp.bottomMargin = 20;
         for (int j = 0; j < count; j++) {
             mImageIndex.addView(initDot(), Lp);
         }
 //        mImageIndex.getChildAt(0).setSelected(true);
-        mImageIndex.getChildAt(0).setBackgroundResource(R.drawable.wizard_index_selected);
+        mImageIndex.getChildAt(0).setBackgroundResource(R.drawable.food_detail_index_selected);
 //        mImageIndex.getChildAt(1).setBackgroundResource(R.drawable.wizard_index_unselected);
 //        mImageIndex.getChildAt(2).setBackgroundResource(R.drawable.wizard_index_unselected);
     }
@@ -749,7 +788,7 @@ public class FoodDetailActivity extends BaseActivity implements
     private View initDot() {
         View dot = new View(getApplicationContext());
         dot.setPadding(5, 5, 5, 5);
-        dot.setBackgroundResource(R.drawable.wizard_index_unselected);
+        dot.setBackgroundResource(R.drawable.food_detail_index_unselected);
         return dot;
     }
 

@@ -7,8 +7,9 @@
     <item
         android:id="@+id/login"
         android:orderInCategory="80"
-        android:title="@string/comfirm"
+        android:title="@string/confirm"
         android:textSize="20sp"
-        app:showAsAction="always" />
+        app:showAsAction="always"
+        android:menuCategory="system" />
 
 </menu>

@@ -50,6 +50,7 @@ public class MainFragment extends Fragment implements FragmentDataListener,
     private MainAdapter mAdapter = null;
     private Context mContext = null;
     private LinearLayout mLayout = null;
+    private TextView mFavorCount = null;
     //load url
 //    private String url = null;
     //personal favor or general main
@@ -73,6 +74,7 @@ public class MainFragment extends Fragment implements FragmentDataListener,
         mLayout = (LinearLayout) mContentView.findViewById(R.id.main_empty_content);
         mListView = (RefreshAndInitListView) mContentView
                 .findViewById(R.id.content_items);
+        mFavorCount = (TextView) mContentView.findViewById(R.id.tv_show_favor_count);
 //        mTextView = (TextView) mContentView.findViewById(R.id.tv_main_fm_blank);
         mAdapter = new MainAdapter();
         mListView.setAdapter(mAdapter);
@@ -92,7 +94,6 @@ public class MainFragment extends Fragment implements FragmentDataListener,
             Intent intent = new Intent(getActivity(), FoodDetailActivity.class);
             intent.putExtra("click_item_index", position - 1);
             intent.putExtra("b_favor", type == FAVOR_PAGE);
-            Toast.makeText(mContext, position + "", Toast.LENGTH_LONG).show();
             startActivity(intent);
         }
     };
@@ -132,10 +133,9 @@ public class MainFragment extends Fragment implements FragmentDataListener,
 
             if (gourmets.isPresent()) {
                 Gourmet gourmet = gourmets.get().get(position);
-                holder.text1_food_name.setText(gourmet.getName());
+                holder.text1_food_name.setText("\u200B" + gourmet.getName());
                 holder.text4_user_name.setText(gourmet.getUser().getNickName());
                 holder.text_intro.setText(gourmet.getDescription());
-                //holder.text2_personal.setText(gourmet.getIsPrivate() ? "私房" : "");
                 holder.text2_personal.setVisibility(gourmet.getIsPrivate() ? View.VISIBLE : View.GONE);
                 if (gourmet.getImageURLs().size() > 0) {
                     holder.image_food.setVisibility(View.VISIBLE);
@@ -281,10 +281,17 @@ public class MainFragment extends Fragment implements FragmentDataListener,
             if (isRefresh) {
                 tmpGourmets.clear();
                 if (gourmets.getTotalCount() == 0) {
+                    mFavorCount.setVisibility(View.GONE);
                     mLayout.setVisibility(View.VISIBLE);
                     mListView.setPullLoadEnable(false);
                 } else {
-                    mListView.setPullLoadEnable(true);
+                    mFavorCount.setVisibility(View.VISIBLE);
+                    mFavorCount.setText(String.format(getString(R.string.favor_count), gourmets.getTotalCount()));
+                    if (gourmets.getGourmets().size() < 20) {
+                        mListView.setPullLoadEnable(false);
+                    } else {
+                        mListView.setPullLoadEnable(true);
+                    }
                     mLayout.setVisibility(View.GONE);
                 }
                 //mAdapter.gourmets = Optional.of(gourmets.getGourmets());
@@ -292,6 +299,8 @@ public class MainFragment extends Fragment implements FragmentDataListener,
                 if (gourmets.getGourmets().size() == 0) {
                     mListView.setPullLoadEnable(false);
                     Toast.makeText(mContext, getString(R.string.no_more), Toast.LENGTH_SHORT).show();
+                } else {
+                    mFavorCount.setText(String.format(getString(R.string.favor_count), tmpGourmets.size() + gourmets.getTotalCount()));
                 }
             }
             tmpGourmets.addAll(gourmets.getGourmets());

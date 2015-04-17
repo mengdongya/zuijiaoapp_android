@@ -15,6 +15,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -142,52 +143,98 @@ public final class MainActivity extends BaseActivity {
                         ConcerningActivity.class);
                 startActivity(feedBackIntent);
             } else if (position == 2) {
-                new AlertDialog.Builder(MainActivity.this)
-                        .setTitle(R.string.logout_confirm_title)
-                        .setItems(
-                                new String[]{getResources().getString(
-                                        R.string.logout)},
-                                new DialogInterface.OnClickListener() {
+                View logoutView = LayoutInflater.from(getApplicationContext()).inflate(
+                        R.layout.logout_dialog, null);
 
-                                    @Override
-                                    public void onClick(DialogInterface dialog,
-                                                        int which) {
-                                        mDialog = ProgressDialog.show(MainActivity.this, null, getResources().getString(R.string.on_loading));
-                                        ThirdPartySDKManager.getInstance(getApplicationContext()).logout(getApplicationContext());
-                                        PreferenceManager.getInstance(getApplicationContext()).clearThirdPartyLoginMsg();
-                                        Router.getOAuthModule().visitor(() -> {
-                                            Toast.makeText(
-                                                    getApplicationContext(),
-                                                    getResources().getString(
-                                                            R.string.logout_msg),
-                                                    Toast.LENGTH_LONG).show();
-                                            mBtnLogin.setVisibility(View.VISIBLE);
-                                            mThirdPartyUserName.setVisibility(View.GONE);
-                                            mThirdPartyUserHead.setVisibility(View.GONE);
+                AlertDialog.Builder builder = new AlertDialog.Builder(
+                        MainActivity.this);
+                AlertDialog dialog = builder.setView(logoutView).create();
+                dialog.show();
+                logoutView.findViewById(R.id.logout_btn_cancel).setOnClickListener((View v) -> {
+                    dialog.dismiss();
+                });
+                logoutView.findViewById(R.id.logout_btn_confirm).setOnClickListener((View v) -> {
+                    dialog.dismiss();
+                    mDialog = ProgressDialog.show(MainActivity.this, null, getResources().getString(R.string.on_loading));
+                    ThirdPartySDKManager.getInstance(getApplicationContext()).logout(getApplicationContext());
+                    PreferenceManager.getInstance(getApplicationContext()).clearThirdPartyLoginMsg();
+                    Router.getOAuthModule().visitor(() -> {
+                        Toast.makeText(
+                                getApplicationContext(),
+                                getResources().getString(
+                                        R.string.logout_msg),
+                                Toast.LENGTH_LONG).show();
+                        mBtnLogin.setVisibility(View.VISIBLE);
+                        mThirdPartyUserName.setVisibility(View.GONE);
+                        mThirdPartyUserHead.setVisibility(View.GONE);
 //                                            mViewSwitcher.showPrevious();
-                                            mSettingArray = getResources()
-                                                    .getStringArray(
-                                                            R.array.settings2);
-                                            mSettingList2.setAdapter(mSettingAdapter2);
-                                            ;
+                        mSettingArray = getResources()
+                                .getStringArray(
+                                        R.array.settings2);
+                        mSettingList2.setAdapter(mSettingAdapter2);
+                        ;
 //                                            mSettingList2
 //                                                    .setAdapter(new ArrayAdapter<String>(
 //                                                            MainActivity.this,
 //                                                            android.R.layout.simple_list_item_1,
 //                                                            settingStr));
-                                            if (mDialog != null) {
-                                                mDialog.dismiss();
-                                                mDialog = null;
-                                            }
-                                        }, errorMessage -> {
-                                            if (mDialog != null) {
-                                                mDialog.dismiss();
-                                                mDialog = null;
-                                            }
-                                        });
-
-                                    }
-                                }).create().show();
+                        if (mDialog != null) {
+                            mDialog.dismiss();
+                            mDialog = null;
+                        }
+                    }, errorMessage -> {
+                        if (mDialog != null) {
+                            mDialog.dismiss();
+                            mDialog = null;
+                        }
+                    });
+                });
+//                new AlertDialog.Builder(MainActivity.this)
+//                        .setTitle(R.string.logout_confirm_title)
+//                        .setItems(
+//                                new String[]{getResources().getString(
+//                                        R.string.logout)},
+//                                new DialogInterface.OnClickListener() {
+//
+//                                    @Override
+//                                    public void onClick(DialogInterface dialog,
+//                                                        int which) {
+//                                        mDialog = ProgressDialog.show(MainActivity.this, null, getResources().getString(R.string.on_loading));
+//                                        ThirdPartySDKManager.getInstance(getApplicationContext()).logout(getApplicationContext());
+//                                        PreferenceManager.getInstance(getApplicationContext()).clearThirdPartyLoginMsg();
+//                                        Router.getOAuthModule().visitor(() -> {
+//                                            Toast.makeText(
+//                                                    getApplicationContext(),
+//                                                    getResources().getString(
+//                                                            R.string.logout_msg),
+//                                                    Toast.LENGTH_LONG).show();
+//                                            mBtnLogin.setVisibility(View.VISIBLE);
+//                                            mThirdPartyUserName.setVisibility(View.GONE);
+//                                            mThirdPartyUserHead.setVisibility(View.GONE);
+////                                            mViewSwitcher.showPrevious();
+//                                            mSettingArray = getResources()
+//                                                    .getStringArray(
+//                                                            R.array.settings2);
+//                                            mSettingList2.setAdapter(mSettingAdapter2);
+//                                            ;
+////                                            mSettingList2
+////                                                    .setAdapter(new ArrayAdapter<String>(
+////                                                            MainActivity.this,
+////                                                            android.R.layout.simple_list_item_1,
+////                                                            settingStr));
+//                                            if (mDialog != null) {
+//                                                mDialog.dismiss();
+//                                                mDialog = null;
+//                                            }
+//                                        }, errorMessage -> {
+//                                            if (mDialog != null) {
+//                                                mDialog.dismiss();
+//                                                mDialog = null;
+//                                            }
+//                                        });
+//
+//                                    }
+//                                }).create().show();
             }
             //2269
             //mDrawerLayout.closeDrawer(Gravity.LEFT);
@@ -429,7 +476,6 @@ public final class MainActivity extends BaseActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
         return super.onOptionsItemSelected(item);
     }
 
@@ -439,6 +485,20 @@ public final class MainActivity extends BaseActivity {
             return;
         }
         super.onBackPressed();
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        switch (keyCode) {
+            case KeyEvent.KEYCODE_MENU:
+                if (mDrawerLayout.isDrawerOpen(Gravity.LEFT)) {
+                    mDrawerLayout.closeDrawer(Gravity.LEFT);
+                } else {
+                    mDrawerLayout.openDrawer(Gravity.LEFT);
+                }
+                break;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 
     @Override

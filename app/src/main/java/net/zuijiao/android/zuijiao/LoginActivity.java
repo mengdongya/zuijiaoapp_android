@@ -120,6 +120,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 
             mDialog = ProgressDialog.show(LoginActivity.this, null, getResources().getString(R.string.on_loading));
             Router.getOAuthModule().loginEmailRoutine(mEmail, mPassword, Optional.<String>empty(), Optional.<String>empty(), () -> {
+                Toast.makeText(getApplicationContext(), getString(R.string.login_success), Toast.LENGTH_SHORT).show();
                 TinyUser user = Router.getInstance().getCurrentUser().get();
                 AuthorInfo auth = new AuthorInfo();
                 auth.setEmail(mEmail);

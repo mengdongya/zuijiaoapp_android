@@ -57,6 +57,7 @@
         <activity
             android:name="net.zuijiao.android.zuijiao.BigImageActivity"
             android:label="zujiao"
+            android:theme="@style/SplashTheme"
             android:screenOrientation="portrait" />
         <activity
             android:name="net.zuijiao.android.zuijiao.UserInfoActivity"
@@ -69,10 +70,12 @@
         <activity
             android:name="net.zuijiao.android.zuijiao.RegisterActivity"
             android:screenOrientation="portrait"
+            android:label="@string/register"
             android:theme="@style/AppTheme" />
         <activity
             android:name="net.zuijiao.android.zuijiao.LoginActivity"
             android:screenOrientation="portrait"
+            android:label="@string/login"
             android:theme="@style/LoginTheme">
             <intent-filter>
                 <action android:name="com.sina.weibo.sdk.action.ACTION_SDK_REQ_ACTIVITY" />

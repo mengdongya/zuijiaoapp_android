@@ -22,6 +22,7 @@ import com.zuijiao.android.zuijiao.model.message.News;
 import com.zuijiao.android.zuijiao.network.Router;
 import com.zuijiao.controller.FileManager;
 import com.zuijiao.controller.PreferenceManager;
+import com.zuijiao.utils.StrUtil;
 import com.zuijiao.view.RefreshAndInitListView;
 import com.zuijiao.view.RefreshAndInitListView.MyListViewListener;
 
@@ -144,7 +145,7 @@ public class MessageFragment extends Fragment implements FragmentDataListener,
                         .load(msg.getFromUser().getAvatarURL().get())
                         .placeholder(R.drawable.default_user_head)
                         .into(holder.userhead);
-            holder.time.setText(msg.getCreateTime().toLocaleString());
+            holder.time.setText(StrUtil.formatTime(msg.getCreateTime(), mContext));
             Optional<String> gourmetImage = Optional.of(msg.getGourmet().get().getImageURLs().get(0) + "!Thumbnails");
 
             if (gourmetImage.isPresent()) {

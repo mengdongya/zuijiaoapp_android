@@ -30,11 +30,29 @@
             android:src="@drawable/empty_information" />
     </LinearLayout>
 
-    <com.zuijiao.view.RefreshAndInitListView
-        android:id="@+id/content_items"
-        android:layout_width="match_parent"
+    <LinearLayout
         android:layout_height="match_parent"
-        android:divider="@null"></com.zuijiao.view.RefreshAndInitListView>
+        android:layout_width="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_show_favor_count"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:text="共喜欢了一份美食"
+            android:textColor="@color/bg_light_gray"
+            android:textSize="16sp"
+            android:visibility="gone"
+            android:paddingLeft="8dip"
+            android:paddingBottom="5dip"
+            android:paddingTop="5dip" />
+
+        <com.zuijiao.view.RefreshAndInitListView
+            android:id="@+id/content_items"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:divider="@null"></com.zuijiao.view.RefreshAndInitListView>
+    </LinearLayout>
 
 
     <!--<TextView-->

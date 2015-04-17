@@ -16,6 +16,7 @@ import com.squareup.picasso.Picasso;
 import com.zuijiao.android.zuijiao.model.user.WouldLikeToEatUser;
 import com.zuijiao.controller.FileManager;
 import com.zuijiao.db.DBOpenHelper;
+import com.zuijiao.utils.StrUtil;
 
 /**
  * Created by xiaqibo on 2015/3/30.
@@ -70,17 +71,25 @@ public class FavorPersonListActivity extends BaseActivity {
                 holder = (ViewHolder) convertView.getTag();
             }
             if (user.getAvatarURL().isPresent())
-            Picasso.with(getApplicationContext())
-                    .load(user.getAvatarURL().get())
-                    .placeholder(R.drawable.default_user_head)
-                    .into(holder.head);
+                Picasso.with(getApplicationContext())
+                        .load(user.getAvatarURL().get())
+                        .placeholder(R.drawable.default_user_head)
+                        .into(holder.head);
             String location = DBOpenHelper.getmInstance(getApplicationContext()).getLocationByIds(user.getProvinceID(), user.getCityID());
             if (location == null || location.equals("")) {
-                location = getString(R.string.unknown_location);
+                location = "";
             }
-            holder.location.setText(location);
+            int recommendationCount = user.getRecommendationCount();
+            String locationAndRecommendCount = location;
+            if (recommendationCount > 0) {
+                if (!location.equals("")) {
+                    location = location + getString(R.string.splite_dot);
+                }
+                locationAndRecommendCount = location + String.format(getString(R.string.recommendation_count), recommendationCount);
+            }
+            holder.location.setText(locationAndRecommendCount);
             holder.userName.setText(user.getNickName());
-            holder.time.setText(user.getDate().toLocaleString());
+            holder.time.setText(StrUtil.formatTime(user.getDate(), getApplicationContext()));
             return convertView;
         }
     };

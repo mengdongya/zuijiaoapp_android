@@ -84,7 +84,7 @@ public class MyScrollView extends ScrollView {
             case MotionEvent.ACTION_DOWN:
                 downY = ev.getY();
                 bRecorded = true;
-                break;
+                return true;
             case MotionEvent.ACTION_MOVE:
                 tempY = ev.getY();
                 float top = this.getTop();

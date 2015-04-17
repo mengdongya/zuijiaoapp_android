@@ -109,6 +109,7 @@ public class ThirdPartySDKManager implements AbsSDK.LoginListener {
         String platsform = user.getPlatform();
         String token = user.getToken();
         Router.getOAuthModule().register(userName, imageurl, openid, platsform, Optional.<String>empty(), Optional.of(token), isNew -> {
+                    Toast.makeText(mContext, mContext.getString(R.string.login_success), Toast.LENGTH_SHORT).show();
                     if (!isNew) {
                         String avataUrl = null;
                         if (Router.getInstance().getCurrentUser().get().getAvatarURL().isPresent()) {

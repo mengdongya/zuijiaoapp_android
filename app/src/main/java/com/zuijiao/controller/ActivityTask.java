@@ -11,7 +11,6 @@ import android.graphics.Typeface;
 
 import com.facebook.stetho.Stetho;
 import com.zuijiao.android.zuijiao.network.Router;
-import com.zuijiao.utils.FontsOverride;
 import com.zuijiao.utils.OSUtil;
 
 import net.zuijiao.android.zuijiao.BuildConfig;
@@ -30,8 +29,8 @@ public class ActivityTask extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        FontsOverride.setDefaultFont(this, "DEFAULT", "fonts/NotoSansHans-Light.otf");
-
+//        FontsOverride.setDefaultFont(this, "DEFAULT", "fonts/NotoSansHans-Light.otf");
+//
         File cacheDirectory = getApplicationContext().getCacheDir();
 
         if (BuildConfig.DEBUG) {

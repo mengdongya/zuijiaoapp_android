@@ -77,7 +77,7 @@ public class MainFragment extends Fragment implements FragmentDataListener,
         mFavorCount = (TextView) mContentView.findViewById(R.id.tv_show_favor_count);
 //        mTextView = (TextView) mContentView.findViewById(R.id.tv_main_fm_blank);
         mAdapter = new MainAdapter();
-        mListView.setAdapter(mAdapter);
+//        mListView.setAdapter(mAdapter);
         mListView.setOnItemClickListener(mItemClickListener);
         mListView.setPullLoadEnable(true);
         mListView.setListViewListener(this);

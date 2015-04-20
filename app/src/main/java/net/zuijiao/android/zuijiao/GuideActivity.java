@@ -173,7 +173,7 @@ public class GuideActivity extends BaseActivity {
 
     private void firstInit() {
         try {
-            FileManager.mainGourmet = Optional.of(dbMng.initGourmets());
+            FileManager.mainGourmet = Optional.ofNullable(dbMng.initGourmets());
         } catch (Throwable t) {
             t.printStackTrace();
         }
@@ -183,8 +183,10 @@ public class GuideActivity extends BaseActivity {
     }
 
     private void networkSetup(AuthorInfo auth) {
-
+        System.err.println("prepare network");
+        Cache.INSTANCE.setup();
         if (ThirdPartySDKManager.getInstance(getApplicationContext()).isThirdParty(auth.getPlatform())) {
+            System.err.println("prepare saved third party login");
             Router.getOAuthModule().login(auth.getUid(), auth.getPlatform(), Optional.<String>empty(), Optional.of(auth.getToken()), () -> {
                         //  TinyUser user = Optional.of()Router.INSTANCE.getCurrentUser() ;
                         goToMain();
@@ -195,6 +197,7 @@ public class GuideActivity extends BaseActivity {
                         goToMain();
                     });
         } else if ((auth.getEmail() != null) && (!auth.getEmail().equals(""))) {
+            System.err.println("prepare saved email login");
             //2@2.2
             //c81e728d9d4c2f636f067f89cc14862c
             RouterOAuth.INSTANCE.loginEmailRoutine(auth.getEmail(),
@@ -212,6 +215,7 @@ public class GuideActivity extends BaseActivity {
             );
 
         } else {
+            System.err.println("prepare visitor");
             Router.getOAuthModule().visitor(() -> {
                         goToMain();
                     },
@@ -221,6 +225,7 @@ public class GuideActivity extends BaseActivity {
                         goToMain();
                     });
         }
+        System.err.println("prepare cache");
         Cache.INSTANCE.setup();
     }
 

@@ -24,7 +24,6 @@ android {
             buildConfigField "String", "Base_Url", "\"http://xielingyu2.zuijiaodev.com\""
             buildConfigField "String", "Avatar_Base_Url", "\"/debug/Avatar\""
             buildConfigField "String", "Gourmet_Base_Url", "\"/debug/Gourmet\""
-            signingConfig signingConfigs.release
         }
 
         release {

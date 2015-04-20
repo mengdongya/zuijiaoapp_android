@@ -31,7 +31,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:text="私家"
+            android:text="@string/personal_tip"
             android:textColor="@color/main_location"
             android:textSize="15sp" />
     </RelativeLayout>

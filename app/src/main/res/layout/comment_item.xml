@@ -13,6 +13,7 @@
         android:src="@drawable/default_user_head" />
 
     <RelativeLayout
+        android:id="@+id/comment_text_container"
         android:layout_marginLeft="5dip"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -34,14 +35,14 @@
             android:textColor="#888888"
             android:textSize="15sp" />
 
-        <TextView
+        <!--<TextView
             android:id="@+id/comment_content"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/comment_user_name"
             android:text="这是我回复的内容这是我这是我回复的内容这是我回复的内容"
             android:textColor="#444444"
-            android:textSize="15sp" />
+            android:textSize="15sp" />-->
     </RelativeLayout>
 
 </LinearLayout>

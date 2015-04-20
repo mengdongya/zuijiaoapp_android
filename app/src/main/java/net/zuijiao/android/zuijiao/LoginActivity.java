@@ -41,7 +41,6 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
     private ImageButton mBtnWebo = null;
     @ViewInject(R.id.iv_qq)
     private ImageButton mBtnQQ = null;
-    private boolean mBClicked = false;
     private ThirdPartySDKManager mCloudMng = null;
     private int mLoginType = ThirdPartySDKManager.CLOUD_TYPE_NONE;
     private ProgressDialog mDialog = null;
@@ -158,10 +157,6 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 
     @Override
     public void onClick(View v) {
-        if (mBClicked) {
-            return;
-        }
-        mBClicked = true;
         switch (v.getId()) {
             case R.id.iv_weixin:
                 mLoginType = ThirdPartySDKManager.CLOUD_TYPE_WEIXIN;
@@ -208,7 +203,6 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
     @Override
     public void onResume() {
         super.onResume();
-        mBClicked = false;
     }
 
     @Override

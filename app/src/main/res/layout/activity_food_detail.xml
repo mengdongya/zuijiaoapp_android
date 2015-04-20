@@ -9,7 +9,7 @@
     <FrameLayout
         android:id="@+id/image_container"
         android:layout_width="match_parent"
-        android:layout_height="224dip">
+        android:layout_height="@dimen/food_detail_image_height">
 
         <android.support.v4.view.ViewPager
             android:id="@+id/food_detail_images"
@@ -41,13 +41,15 @@
 
 
         <com.zuijiao.view.MyScrollView
+            android:layout_marginTop="224dip"
             android:id="@+id/food_detail_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_above="@+id/food_detail_input"
-            android:layout_marginTop="224dip">
-
+            android:layout_above="@+id/food_detail_input">
+            <!--android:layout_marginTop="224dip"-->
             <FrameLayout
+                android:focusable="true"
+                android:focusableInTouchMode="true"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/white">
@@ -198,7 +200,7 @@
                             android:id="@+id/lv_food_detail_comment"
                             android:layout_width="wrap_content"
                             android:visibility="gone"
-                            android:layout_height="wrap_content"></ListView>
+                            android:layout_height="match_parent"></ListView>
                     </FrameLayout>
                     <!--</LinearLayout>-->
                     <!--</ScrollView>-->
@@ -216,8 +218,6 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:background="@color/white"
-            android:focusable="true"
-            android:focusableInTouchMode="true"
             android:gravity="center_vertical">
 
             <View

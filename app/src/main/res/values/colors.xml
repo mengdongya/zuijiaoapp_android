@@ -49,5 +49,5 @@
     <color name="main_label_sel">#d05f57</color>
     <color name="bg_food_detai_top">#545454</color>
     <color name="gray">#999999</color>
-
+    <color name="comment_content_color">#444444</color>
 </resources>

@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.MenuItem;
 
+import com.umeng.analytics.MobclickAgent;
 import com.zuijiao.controller.ActivityTask;
 import com.zuijiao.controller.FileManager;
 import com.zuijiao.controller.MessageDef;
@@ -59,12 +60,12 @@ public abstract class BaseActivity extends ActionBarActivity {
 
     public void onResume() {
         super.onResume();
-        //  MobclickAgent.onResume(this);
+        MobclickAgent.onResume(this);
     }
 
     public void onPause() {
         super.onPause();
-        // MobclickAgent.onPause(this);
+        MobclickAgent.onPause(this);
     }
 
     protected void onLoginFinish() {

@@ -7,7 +7,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.Toast;
 
 import com.lidroid.xutils.view.annotation.ContentView;
 import com.lidroid.xutils.view.annotation.ViewInject;
@@ -70,8 +69,8 @@ public class CommonWebViewActivity extends BaseActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                Toast.makeText(getApplicationContext(), "onbackpressed", 1000)
-                        .show();
+//                Toast.makeText(getApplicationContext(), "onbackpressed", 1000)
+//                        .show();
                 break;
 
             default:

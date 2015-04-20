@@ -146,9 +146,8 @@ public class MessageFragment extends Fragment implements FragmentDataListener,
                         .placeholder(R.drawable.default_user_head)
                         .into(holder.userhead);
             holder.time.setText(StrUtil.formatTime(msg.getCreateTime(), mContext));
-            Optional<String> gourmetImage = Optional.of(msg.getGourmet().get().getImageURLs().get(0) + "!Thumbnails");
-
-            if (gourmetImage.isPresent()) {
+            if (msg.getGourmet().get().getImageURLs() != null && msg.getGourmet().get().getImageURLs().size() != 0) {
+                Optional<String> gourmetImage = Optional.of(msg.getGourmet().get().getImageURLs().get(0) + "!Thumbnails");
                 Picasso.with(parent.getContext())
                         .load(gourmetImage.get())
                         .placeholder(R.drawable.empty_view_greeting)
@@ -160,6 +159,12 @@ public class MessageFragment extends Fragment implements FragmentDataListener,
                 holder.gourmetName.setVisibility(View.VISIBLE);
                 holder.gourmetPic.setVisibility(View.GONE);
             }
+
+//            if (gourmetImage.isPresent()) {
+//
+//            } else {
+//
+//            }
             holder.comment.setText(msg.getDescription());
             return convertView;
         }
@@ -249,8 +254,13 @@ public class MessageFragment extends Fragment implements FragmentDataListener,
                     }
                     mAdapter.setData(msgList);
                     mListView.setAdapter(mAdapter);
-
+                    if (msg.getAllMessage().size() < 20) {
+                        mListView.setPullLoadEnable(false);
+                    } else {
+                        mListView.setPullLoadEnable(true);
+                    }
                 } else {
+                    mListView.setPullLoadEnable(false);
                     mAdapter.setData(new ArrayList<Message>());
                     mAdapter.notifyDataSetChanged();
                     mLayout.setVisibility(View.VISIBLE);
@@ -266,7 +276,13 @@ public class MessageFragment extends Fragment implements FragmentDataListener,
                     }
                     mAdapter.mData.addAll(msg.getAllMessage());
                     mAdapter.notifyDataSetChanged();
+                    if (msg.getAllMessage().size() < 20) {
+                        mListView.setPullLoadEnable(false);
+                    } else {
+                        mListView.setPullLoadEnable(true);
+                    }
                 } else {
+                    mListView.setPullLoadEnable(false);
                     Toast.makeText(mContext, getString(R.string.no_more), Toast.LENGTH_SHORT).show();
                 }
                 mListView.stopLoadMore();

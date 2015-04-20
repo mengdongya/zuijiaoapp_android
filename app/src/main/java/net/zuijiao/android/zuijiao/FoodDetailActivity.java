@@ -11,7 +11,6 @@ import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
@@ -34,6 +33,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -48,6 +48,7 @@ import com.zuijiao.android.zuijiao.model.user.WouldLikeToEatUser;
 import com.zuijiao.android.zuijiao.network.Router;
 import com.zuijiao.controller.FileManager;
 import com.zuijiao.utils.StrUtil;
+import com.zuijiao.view.MeasuredTextView;
 import com.zuijiao.view.MyScrollView;
 import com.zuijiao.view.MyScrollView.OnScrollListener;
 import com.zuijiao.view.WordWrapView;
@@ -115,7 +116,6 @@ public class FoodDetailActivity extends BaseActivity implements
     @ViewInject(R.id.food_detail_content)
     private LinearLayout mContentLayout = null;
     private boolean openEdit = false;
-    private int toolbarHeight = 0;
     private Gourmet gourmet = null;
 
     //private WouldLikeToEatUsers mUsers = null;
@@ -123,154 +123,6 @@ public class FoodDetailActivity extends BaseActivity implements
     //if comment false ,reply true ;
     private Integer mReplyId = null;
     private ProgressDialog mDialog = null;
-    private Resources mResource = null;
-    private boolean doNotMove = false;
-
-    //    @ViewInject(R.id.test_focusable)
-//    private LinearLayout mTestLayout = null ;
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-
-        super.onCreate(savedInstanceState);
-
-    }
-
-    @Override
-    protected void findViews() {
-
-    }
-
-    @SuppressLint("NewApi")
-    @Override
-    protected void registeViews() {
-        try {
-            int index = mTendIntent.getIntExtra("click_item_index", -1);
-            boolean fromFavor = mTendIntent.getBooleanExtra("b_favor", false);
-            if (index == -1 && fromFavor == false) {
-                gourmet = FileManager.tmpMessageGourmet;
-            } else {
-                gourmet = mFileMng.getItem(fromFavor, index);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        if (gourmet == null) {
-            this.finish();
-            return;
-        }
-//        mTestLayout.requestFocus() ;
-//        mTestLayout.requestFocusFromTouch() ;
-        mResource = getResources();
-        setSupportActionBar(mToolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        mInflater = LayoutInflater.from(this);
-        int width = View.MeasureSpec.makeMeasureSpec(0,
-                View.MeasureSpec.UNSPECIFIED);
-        int viewPagerHeight = View.MeasureSpec.makeMeasureSpec(0,
-                View.MeasureSpec.EXACTLY);
-        toolbarHeight = View.MeasureSpec.makeMeasureSpec(0,
-                View.MeasureSpec.UNSPECIFIED);
-        mImageContainer.measure(width, viewPagerHeight);
-        viewPagerHeight = mImageContainer.getMeasuredHeight();
-        mToolbar.measure(width, toolbarHeight);
-        toolbarHeight = mToolbar.getMeasuredHeight();
-        for (int i = 0; i < gourmet.getTags().size(); i++) {
-            TextView textview = new TextView(this);
-            textview.setBackgroundResource(R.drawable.bg_label);
-            textview.setTextColor(mResource.getColor(R.color.white));
-            textview.setTextSize(14);
-            textview.setText(gourmet.getTags().get(i));
-            mLabelContainer.addView(textview);
-        }
-        mScrollView.setOnScrollListener(this);
-        mScrollView.setTopY(toolbarHeight);
-        mScrollView.setBottomY(viewPagerHeight);
-        rootView.getViewTreeObserver().addOnGlobalLayoutListener(
-                () -> {
-                    if (openEdit) {
-                        mScrollView.moveToTop();
-                        openEdit = false;
-                    }
-                    onScroll(mScrollView.getScrollY());
-                    onTopChange(mScrollView.getTop());
-                });
-        ArrayList<View> data = new ArrayList<View>();
-        final ArrayList<String> imageUrls = (ArrayList) gourmet.getImageURLs();
-        //5:image number
-        for (int i = 0; i < imageUrls.size(); i++) {
-            ImageView image = new ImageView(this);
-            image.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
-                    LayoutParams.MATCH_PARENT));
-            image.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            image.setOnClickListener((View view) -> {
-
-//                @Override
-//                public void onClick(View v) {
-                    if (gourmet.getImageURLs().isEmpty()) {
-                        return;
-                    }
-                    Intent intent = new Intent(FoodDetailActivity.this, BigImageActivity.class);
-//                    ArrayList<String> imageUrls = new ArrayList<String>();
-//                    for (String url : gourmet.getImageURLs()) {
-//                        imageUrls.add(url);
-//                    }
-                int currentImageIndex = mImagePager.getCurrentItem();
-                intent.putExtra("current_image_index", currentImageIndex);
-                    intent.putStringArrayListExtra("image_url", imageUrls);
-                    startActivity(intent);
-//                }
-            });
-            Picasso.with(getApplicationContext())
-                    .load(imageUrls.get(i))
-                    .placeholder(R.drawable.empty_view_greeting)
-                    .error(R.drawable.empty_view_greeting)
-                    .into(image);
-            data.add(image);
-        }
-        //5:image number
-        initDots(imageUrls.size());
-        mImagePager.setAdapter(new ViewPagerAdapter(data));
-        mImagePager.setOnPageChangeListener(mPageListener);
-
-        registeTopView();
-        mEtComment.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openEdit = true;
-                mReplyId = null;
-                mEtComment.setHint(getString(R.string.comment_hint));
-            }
-        });
-        if (gourmet.getPrice() == null || gourmet.getPrice().equals("")) {
-            mFoodPrice.setVisibility(View.GONE);
-        } else {
-            mFoodPrice.setText(String.format(mResource.getString(R.string.format_price), gourmet.getPrice()));
-        }
-        if (gourmet.getAddress() == null || gourmet.getAddress().equals("")) {
-            mFoodLocation.setVisibility(View.GONE);
-        } else {
-            mFoodLocation.setText(String.format(mResource.getString(R.string.format_location), gourmet.getAddress()));
-        }
-        if (mFoodLocation.getVisibility() == View.GONE && mFoodPrice.getVisibility() == View.GONE) {
-            mGourmetMsgTitle.setVisibility(View.GONE);
-            mGourmetMsgSpliteView.setVisibility(View.GONE);
-        }
-        mFoodDescription.setText(gourmet.getDescription());
-        new Handler().postDelayed(new Runnable() {
-
-            @Override
-            public void run() {
-                int bottomY = mImageContainer.getHeight();
-                mScrollView.setBottomY(bottomY);
-            }
-        }, 200);
-        mGdView.setOnItemClickListener(mGvListener);
-        mCommentList.setOnItemClickListener(mCommentListListener);
-        mCommentCommit.setOnClickListener(mCommentCommitListener);
-        fetchWouldLikeList();
-        fetchCommentList();
-    }
-
     private OnClickListener mCommentCommitListener = new OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -324,115 +176,6 @@ public class FoodDetailActivity extends BaseActivity implements
             }
         }
     };
-
-    private void fetchWouldLikeList() {
-        createDialog();
-        Router.getGourmetModule().fetchWouldLikeToListByGourmetId(gourmet.getIdentifier(), 500, wouldLikeUser -> {
-            FileManager.tmpWouldLikeList = Optional.of(wouldLikeUser);
-            if (wouldLikeUser.getCount() == 0) {
-                mGdView.setVisibility(View.GONE);
-            } else {
-                mGdView.setVisibility(View.VISIBLE);
-                if (mGdView.getAdapter() != null) {
-                    mGdAdapter.notifyDataSetChanged();
-                    doNotMove = true;
-                } else {
-                    mGdView.setAdapter(mGdAdapter);
-                }
-            }
-            mWouldLikeTitle.setText(String.format(mResource.getString(R.string.format_favor_person), wouldLikeUser.getCount()));
-            finallizeDialog(mDialog);
-        }, errorMsg -> {
-            mGdView.setVisibility(View.GONE);
-            finallizeDialog(mDialog);
-        });
-    }
-
-    private void fetchCommentList() {
-        createDialog();
-        Router.getGourmetModule().fetchComments(gourmet.getIdentifier(), null, null, 500, comments -> {
-            mComments = comments;
-            mCommentTitle.setText(String.format(mResource.getString(R.string.format_comment), mComments.count() + ""));
-            if (mComments.count() == 0) {
-                mCommentList.setVisibility(View.GONE);
-            } else {
-                mCommentList.setVisibility(View.VISIBLE);
-                mNoneComment.setVisibility(View.GONE);
-                if (mCommentList.getAdapter() != null) {
-                    mCommentAdapter.notifyDataSetChanged();
-                } else {
-                    mCommentList.setAdapter(mCommentAdapter);
-                }
-                setListViewHeightBasedOnChildren(mCommentList);
-            }
-            finallizeDialog(mDialog);
-        }, errormsg -> {
-            mCommentList.setVisibility(View.GONE);
-            finallizeDialog(mDialog);
-        });
-    }
-
-    private void createDialog() {
-        if (mDialog != null && mDialog.isShowing()) {
-            return;
-        }
-        mDialog = ProgressDialog.show(FoodDetailActivity.this, "", mResource.getString(R.string.on_loading));
-    }
-
-    private void finallizeDialog(ProgressDialog dialog) {
-        if (dialog == null) {
-            return;
-        }
-        dialog.dismiss();
-        dialog = null;
-    }
-
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    private void registeTopView() {
-        floatHolder = new TopViewHolder();
-        topHolder = new TopViewHolder();
-        floatHolder.mCreateTime1 = (TextView) mLayoutTopFloat.findViewById(R.id.food_detail_time);
-        floatHolder.mFavorBtn2 = (ImageView) mLayoutTopFloat.findViewById(R.id.favor_btn);
-        floatHolder.mFoodName1 = (TextView) mLayoutTopFloat.findViewById(R.id.food_detai_name);
-        floatHolder.mPrivateText1 = (TextView) mLayoutTopFloat.findViewById(R.id.food_detai_isprivate);
-        floatHolder.mUserHead1 = (ImageView) mLayoutTopFloat.findViewById(R.id.food_detail_head);
-        floatHolder.mUserName1 = (TextView) mLayoutTopFloat.findViewById(R.id.food_detail_user_name);
-        topHolder.mCreateTime1 = (TextView) mLayoutTop.findViewById(R.id.food_detail_time);
-        topHolder.mFavorBtn2 = (ImageView) mLayoutTop.findViewById(R.id.favor_btn);
-        topHolder.mFoodName1 = (TextView) mLayoutTop.findViewById(R.id.food_detai_name);
-        topHolder.mPrivateText1 = (TextView) mLayoutTop.findViewById(R.id.food_detai_isprivate);
-        topHolder.mUserHead1 = (ImageView) mLayoutTop.findViewById(R.id.food_detail_head);
-        topHolder.mUserName1 = (TextView) mLayoutTop.findViewById(R.id.food_detail_user_name);
-        floatHolder.mFavorBtn2.setOnClickListener(favorListener);
-        topHolder.mFavorBtn2.setOnClickListener(favorListener);
-//        floatHolder.mCreateTime1.setText(gourmet.getDate().toLocaleString());
-//        topHolder.mCreateTime1.setText(gourmet.getDate().toLocaleString());
-        if (gourmet.getWasMarked()) {
-            topHolder.mFavorBtn2.setBackground(mResource.getDrawable(R.drawable.bg_favor_marked));
-            topHolder.mFavorBtn2.setImageResource(R.drawable.faviro_clicked);
-            floatHolder.mFavorBtn2.setBackground(mResource.getDrawable(R.drawable.bg_favor_marked));
-            floatHolder.mFavorBtn2.setImageResource(R.drawable.faviro_clicked);
-        }
-        floatHolder.mFoodName1.setText(gourmet.getName());
-        floatHolder.mPrivateText1.setVisibility(gourmet.getIsPrivate() ? View.VISIBLE : View.GONE);
-        Picasso.with(getApplicationContext())
-                .load(gourmet.getUser().getAvatarURL().get())
-                .placeholder(R.drawable.default_user_head)
-                .into(floatHolder.mUserHead1);
-        floatHolder.mUserName1.setText(gourmet.getUser().getNickName());
-        topHolder.mCreateTime1.setText(String.format(getString(R.string.format_create_time), StrUtil.formatTime(gourmet.getDate(), getApplicationContext())));
-        floatHolder.mCreateTime1.setText(String.format(getString(R.string.format_create_time), StrUtil.formatTime(gourmet.getDate(), getApplicationContext())));
-        topHolder.mFoodName1.setText(gourmet.getName());
-        topHolder.mPrivateText1.setVisibility(gourmet.getIsPrivate() ? View.VISIBLE : View.GONE);
-        Picasso.with(getApplicationContext())
-                .load(gourmet.getUser().getAvatarURL().get())
-                .placeholder(R.drawable.default_user_head)
-                .into(topHolder.mUserHead1);
-        topHolder.mUserName1.setText(gourmet.getUser().getNickName());
-    }
-
-
-
     private AdapterView.OnItemClickListener mCommentListListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -440,19 +183,14 @@ public class FoodDetailActivity extends BaseActivity implements
                 View contentView = mInflater.inflate(R.layout.alert_login_dialog, null);
                 TextView tv = (TextView) contentView.findViewById(R.id.fire_login);
                 final AlertDialog dialog = new AlertDialog.Builder(FoodDetailActivity.this).setView(contentView).create();
-                tv.setOnClickListener(new OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-                        startActivity(intent);
-                        dialog.dismiss();
-                        finallizeDialog(mDialog);
-                    }
+                tv.setOnClickListener((View v) -> {
+                    Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                    startActivity(intent);
+                    dialog.dismiss();
+                    finallizeDialog(mDialog);
                 });
                 dialog.show();
             } else {
-                int cu = Router.getInstance().getCurrentUser().get().getIdentifier();
-                int s = (mComments.getCommentList().get(position).getUser().getIdentifier());
                 if (Router.getInstance().getCurrentUser().get().getIdentifier().equals(mComments.getCommentList().get(position).getUser().getIdentifier())) {
                     View deleteView = LayoutInflater.from(getApplicationContext()).inflate(
                             R.layout.alert_delete_comment, null);
@@ -460,9 +198,6 @@ public class FoodDetailActivity extends BaseActivity implements
                             FoodDetailActivity.this);
                     AlertDialog dialog = builder.setView(deleteView).create();
                     dialog.show();
-//                deleteView.findViewById(R.id.logout_btn_cancel).setOnClickListener((View v ) -> {
-//                    dialog.dismiss();
-//                });
                     deleteView.findViewById(R.id.alert_delete_comment).setOnClickListener((View v) -> {
                         dialog.dismiss();
                         Router.getGourmetModule().removeComment(mComments.getCommentList().get(position).getIdentifier(), () ->
@@ -473,122 +208,33 @@ public class FoodDetailActivity extends BaseActivity implements
                         });
                     });
                 } else {
-                mEtComment.setFocusable(true);
-                mEtComment.setFocusableInTouchMode(true);
-                mEtComment.requestFocus();
-                InputMethodManager inputManager =
-                        (InputMethodManager) mEtComment.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-                inputManager.showSoftInput(mEtComment, 0);
-                mEtComment.setHint(String.format(mResource.getString(R.string.reply_to), mComments.getCommentList().get(position).getUser().getNickName()));
-                openEdit = true;
-                mReplyId = mComments.getCommentList().get(position).getIdentifier();
-            }
+                    mEtComment.setFocusable(true);
+                    mEtComment.setFocusableInTouchMode(true);
+                    mEtComment.requestFocus();
+                    InputMethodManager inputManager =
+                            (InputMethodManager) mEtComment.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    inputManager.showSoftInput(mEtComment, 0);
+                    mEtComment.setHint(String.format(mResource.getString(R.string.reply_to), mComments.getCommentList().get(position).getUser().getNickName()));
+                    openEdit = true;
+                    mReplyId = mComments.getCommentList().get(position).getIdentifier();
+                }
             }
         }
     };
-    private BaseAdapter mCommentAdapter = new BaseAdapter() {
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            CommentViewHolder holder = null;
-            Comment comment = mComments.getCommentList().get(position);
-            if (convertView == null) {
-                holder = new CommentViewHolder();
-                convertView = mInflater.inflate(R.layout.comment_item, null);
-                holder.commentContent = (TextView) convertView.findViewById(R.id.comment_content);
-                holder.head = (ImageView) convertView.findViewById(R.id.comment_user_head);
-                holder.time = (TextView) convertView.findViewById(R.id.comment_time);
-                holder.userName = (TextView) convertView.findViewById(R.id.comment_user_name);
-                convertView.setTag(holder);
-            } else {
-                holder = (CommentViewHolder) convertView.getTag();
-            }
-            holder.time.setText(StrUtil.formatTime(comment.getPostDate(), getApplicationContext()));
-            holder.userName.setText(comment.getUser().getNickName());
-            if (comment.getUser().getAvatarURL().isPresent())
-            Picasso.with(getApplicationContext())
-                    .load(comment.getUser().getAvatarURL().get())
-                    .placeholder(R.drawable.default_user_head)
-//                    .error(R.drawable.empty_view_greeting)
-                    .into(holder.head);
-            if (comment.getReplyTo().isPresent()) {
-                String replyToUserName = comment.getReplyTo().get().getNickName();
-                holder.commentContent.setText(String.format(mResource.getString(R.string.reply_content), replyToUserName + " " + comment.getDetail()));
-                initReplyTextView(holder.commentContent, replyToUserName.length());
-            } else {
-                holder.commentContent.setText(comment.getDetail());
-            }
-            return convertView;
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return position;
-        }
-
-        @Override
-        public Object getItem(int position) {
-            return position;
-        }
-
-        @Override
-        public int getCount() {
-            return mComments.getCommentList().size();
-        }
-
-        @Override
-        public void notifyDataSetChanged() {
-            super.notifyDataSetChanged();
-        }
-    };
-
-    private class CommentViewHolder {
-        public ImageView head;
-        public TextView userName;
-        public TextView commentContent;
-        public TextView time;
-    }
-
-    private AdapterView.OnItemClickListener mGvListener = new AdapterView.OnItemClickListener() {
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            Intent intent = new Intent(getApplicationContext(), FavorPersonListActivity.class);
-            startActivity(intent);
-        }
-    };
-
-    @Override
-    public void onScroll(int scrollY) {
-        int mBuyLayout2ParentTop = Math.max(scrollY, mFloatView.getTop());
-        mTopFloatView.layout(0, mBuyLayout2ParentTop, mTopFloatView.getWidth(),
-                mBuyLayout2ParentTop + mTopFloatView.getHeight());
-        Log.i("scrollerY", "scrollY == " + scrollY);
-    }
-
-    private void initReplyTextView(TextView tv, int userNameLength) {
-        String str = tv.getText().toString();
-        SpannableStringBuilder style = new SpannableStringBuilder(str);
-        style.setSpan(new ForegroundColorSpan(Color.GRAY), 2,
-                2 + userNameLength, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
-        tv.setText(style);
-    }
-
     private OnClickListener favorListener = new OnClickListener() {
         @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
         @Override
         public void onClick(View v) {
+            Log.i("my_scrollview", "start");
             if (!Router.getInstance().getCurrentUser().isPresent()) {
                 View contentView = mInflater.inflate(R.layout.alert_login_dialog, null);
                 TextView tv = (TextView) contentView.findViewById(R.id.fire_login);
                 final AlertDialog dialog = new AlertDialog.Builder(FoodDetailActivity.this).setView(contentView).create();
-                tv.setOnClickListener(new OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-                        startActivity(intent);
-                        dialog.dismiss();
-                        finallizeDialog(mDialog);
-                    }
+                tv.setOnClickListener((View view) -> {
+                    Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                    startActivity(intent);
+                    dialog.dismiss();
+                    finallizeDialog(mDialog);
                 });
                 dialog.show();
             } else {
@@ -633,66 +279,78 @@ public class FoodDetailActivity extends BaseActivity implements
             }
         }
     };
+    private Resources mResource = null;
+    private BaseAdapter mCommentAdapter = new BaseAdapter() {
 
-    public void setListViewHeightBasedOnChildren(ListView listView) {
-        ListAdapter listAdapter = listView.getAdapter();
-        if (listAdapter == null) {
-            return;
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            CommentViewHolder holder;
+            Comment comment = mComments.getCommentList().get(position);
+            if (convertView == null) {
+                holder = new CommentViewHolder();
+                convertView = mInflater.inflate(R.layout.comment_item, null);
+                //holder.commentContent = (TextView) convertView.findViewById(R.id.comment_content);
+                TextView commentContent = new MeasuredTextView(FoodDetailActivity.this);
+                //commentContent.setText("这是我回复的内容这是我回复的内容这是我回复的内容这是我回复的内容这是我回复的内容这是我回复的内容这是我回复的内容这是我回复的内容这是我回复的内容这是我回复的内容这是我回复的内容这是我回复的内容这是我回复的内容这是我回复的内容这是我回复的内容这是我回复的内容");
+                RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+                lp.addRule(RelativeLayout.BELOW, R.id.comment_user_name);
+                commentContent.setLayoutParams(lp);
+//                commentContent.setTextSize(getResources().getDimension(R.dimen.comment_content_text_size)) ;
+//                commentContent.setTextColor(getResources().getColor(R.color.comment_content_color )) ;
+                ((RelativeLayout) convertView.findViewById(R.id.comment_text_container)).addView(commentContent);
+                holder.commentContent = commentContent;
+                holder.head = (ImageView) convertView.findViewById(R.id.comment_user_head);
+                holder.time = (TextView) convertView.findViewById(R.id.comment_time);
+                holder.userName = (TextView) convertView.findViewById(R.id.comment_user_name);
+                convertView.setTag(holder);
+            } else {
+                holder = (CommentViewHolder) convertView.getTag();
+            }
+            holder.time.setText(StrUtil.formatTime(comment.getPostDate(), getApplicationContext()));
+            holder.userName.setText(comment.getUser().getNickName());
+            if (comment.getUser().getAvatarURL().isPresent())
+                Picasso.with(getApplicationContext())
+                        .load(comment.getUser().getAvatarURL().get())
+                        .placeholder(R.drawable.default_user_head)
+//                    .error(R.drawable.empty_view_greeting)
+                        .into(holder.head);
+            if (comment.getReplyTo().isPresent()) {
+                String replyToUserName = comment.getReplyTo().get().getNickName();
+                holder.commentContent.setText(String.format(mResource.getString(R.string.reply_content), replyToUserName + " " + comment.getDetail()));
+                initReplyTextView(holder.commentContent, replyToUserName.length());
+            } else {
+                holder.commentContent.setText(comment.getDetail());
+            }
+            return convertView;
         }
-        int totalHeight = 0;
-        for (int i = 0; i < listAdapter.getCount(); i++) {
-            View listItem = listAdapter.getView(i, null, listView);
-            listItem.measure(0, 0);
-            totalHeight += listItem.getMeasuredHeight();
+
+        @Override
+        public long getItemId(int position) {
+            return position;
         }
-        ViewGroup.LayoutParams params = listView.getLayoutParams();
-        params.height = totalHeight
-                + (listView.getDividerHeight() * (listAdapter.getCount()));
 
-    }
-
-    class ViewPagerAdapter extends PagerAdapter {
-
-        private List<View> data;
-
-        public ViewPagerAdapter(List<View> data) {
-            super();
-            this.data = data;
+        @Override
+        public Object getItem(int position) {
+            return position;
         }
 
         @Override
         public int getCount() {
-            return data.size();
+            return mComments.getCommentList().size();
         }
 
         @Override
-        public boolean isViewFromObject(View arg0, Object arg1) {
-            return arg0 == arg1;
+        public void notifyDataSetChanged() {
+            super.notifyDataSetChanged();
         }
-
+    };
+    private AdapterView.OnItemClickListener mGvListener = new AdapterView.OnItemClickListener() {
         @Override
-        public Object instantiateItem(ViewGroup container, int position) {
-            container.addView(data.get(position));
-            return data.get(position);
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            Intent intent = new Intent(getApplicationContext(), FavorPersonListActivity.class);
+            startActivity(intent);
         }
-
-        @Override
-        public void destroyItem(ViewGroup container, int position, Object object) {
-            container.removeView(data.get(position));
-        }
-
-    }
-
-    @Override
-    public void onTopChange(int top) {
-        if (top <= mToolbar.getHeight()) {
-            mToolbar.setBackgroundColor(mResource.getColor(R.color.toolbar));
-        } else {
-            mToolbar.setBackgroundDrawable(mResource.getDrawable(R.drawable.transparent_gradient));
-        }
-    }
-
-
+    };
     private BaseAdapter mGdAdapter = new BaseAdapter() {
         private WouldLikeToEatUser users = null;
         private int totalCount = 0;
@@ -767,6 +425,278 @@ public class FoodDetailActivity extends BaseActivity implements
         }
     };
 
+    //    @ViewInject(R.id.test_focusable)
+//    private LinearLayout mTestLayout = null ;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+
+        super.onCreate(savedInstanceState);
+
+    }
+
+    @Override
+    protected void findViews() {
+
+    }
+
+    @SuppressLint("NewApi")
+    @Override
+    protected void registeViews() {
+        try {
+            int index = mTendIntent.getIntExtra("click_item_index", -1);
+            boolean fromFavor = mTendIntent.getBooleanExtra("b_favor", false);
+            if (index == -1 && fromFavor == false) {
+                gourmet = FileManager.tmpMessageGourmet;
+            } else {
+                gourmet = mFileMng.getItem(fromFavor, index);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if (gourmet == null) {
+            this.finish();
+            return;
+        }
+//        mTestLayout.requestFocus() ;
+//        mTestLayout.requestFocusFromTouch() ;
+        mResource = getResources();
+        setSupportActionBar(mToolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        mInflater = LayoutInflater.from(this);
+        for (int i = 0; i < gourmet.getTags().size(); i++) {
+            TextView textview = new TextView(this);
+            textview.setBackgroundResource(R.drawable.bg_label);
+            textview.setTextColor(mResource.getColor(R.color.white));
+            textview.setTextSize(14);
+            textview.setText(gourmet.getTags().get(i));
+            mLabelContainer.addView(textview);
+        }
+        mScrollView.setOnScrollListener(this);
+        rootView.getViewTreeObserver().addOnGlobalLayoutListener(
+                () -> {
+                    if (openEdit) {
+                        mScrollView.moveToTop();
+                        openEdit = false;
+                    }
+                    onScroll(mScrollView.getScrollY());
+                    onTopChange(mScrollView.getTop());
+                });
+        ArrayList<View> data = new ArrayList<View>();
+        final ArrayList<String> imageUrls = (ArrayList) gourmet.getImageURLs();
+        //5:image number
+        for (int i = 0; i < imageUrls.size(); i++) {
+            ImageView image = new ImageView(this);
+            image.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
+                    LayoutParams.MATCH_PARENT));
+            image.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            image.setOnClickListener((View view) -> {
+                if (gourmet.getImageURLs().isEmpty()) {
+                    return;
+                }
+                Intent intent = new Intent(FoodDetailActivity.this, BigImageActivity.class);
+                int currentImageIndex = mImagePager.getCurrentItem();
+                intent.putExtra("current_image_index", currentImageIndex);
+                intent.putStringArrayListExtra("image_url", imageUrls);
+                startActivity(intent);
+            });
+            Picasso.with(getApplicationContext())
+                    .load(imageUrls.get(i))
+                    .placeholder(R.drawable.empty_view_greeting)
+                    .error(R.drawable.empty_view_greeting)
+                    .into(image);
+            data.add(image);
+        }
+        initDots(imageUrls.size());
+        mImagePager.setAdapter(new ViewPagerAdapter(data));
+        mImagePager.setOnPageChangeListener(mPageListener);
+
+        registerTopView();
+        mEtComment.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.i("my_scrollview", "start");
+                openEdit = true;
+                mReplyId = null;
+                mEtComment.setHint(getString(R.string.comment_hint));
+            }
+        });
+        if (gourmet.getPrice() == null || gourmet.getPrice().equals("")) {
+            mFoodPrice.setVisibility(View.GONE);
+        } else {
+            mFoodPrice.setText(String.format(mResource.getString(R.string.format_price), gourmet.getPrice()));
+        }
+        if (gourmet.getAddress() == null || gourmet.getAddress().equals("")) {
+            mFoodLocation.setVisibility(View.GONE);
+        } else {
+            mFoodLocation.setText(String.format(mResource.getString(R.string.format_location), gourmet.getAddress()));
+        }
+        if (mFoodLocation.getVisibility() == View.GONE && mFoodPrice.getVisibility() == View.GONE) {
+            mGourmetMsgTitle.setVisibility(View.GONE);
+            mGourmetMsgSpliteView.setVisibility(View.GONE);
+        }
+        mFoodDescription.setText(gourmet.getDescription());
+        mGdView.setOnItemClickListener(mGvListener);
+        mCommentList.setOnItemClickListener(mCommentListListener);
+        mCommentCommit.setOnClickListener(mCommentCommitListener);
+        fetchWouldLikeList();
+        fetchCommentList();
+    }
+
+    private void fetchWouldLikeList() {
+        createDialog();
+        Router.getGourmetModule().fetchWouldLikeToListByGourmetId(gourmet.getIdentifier(), 500, wouldLikeUser -> {
+            FileManager.tmpWouldLikeList = Optional.of(wouldLikeUser);
+            if (wouldLikeUser.getCount() == 0) {
+                mGdView.setVisibility(View.GONE);
+            } else {
+                mGdView.setVisibility(View.VISIBLE);
+                if (mGdView.getAdapter() != null) {
+                    mScrollView.keepState = true;
+                    mScrollView.tmpScrollY = (int) mScrollView.getY();
+                    mGdAdapter.notifyDataSetChanged();
+                } else {
+                    mGdView.setAdapter(mGdAdapter);
+                }
+            }
+            mWouldLikeTitle.setText(String.format(mResource.getString(R.string.format_favor_person), wouldLikeUser.getCount()));
+            finallizeDialog(mDialog);
+        }, errorMsg -> {
+            mGdView.setVisibility(View.GONE);
+            finallizeDialog(mDialog);
+        });
+    }
+
+
+    private void fetchCommentList() {
+        createDialog();
+        Router.getGourmetModule().fetchComments(gourmet.getIdentifier(), null, null, 500, comments -> {
+            mComments = comments;
+            mCommentTitle.setText(String.format(mResource.getString(R.string.format_comment), mComments.count() + ""));
+            mScrollView.keepState = true;
+            mScrollView.tmpScrollY = (int) mScrollView.getY();
+            if (mComments.count() == 0) {
+                mCommentList.setVisibility(View.GONE);
+            } else {
+                mCommentList.setVisibility(View.VISIBLE);
+                mNoneComment.setVisibility(View.GONE);
+                if (mCommentList.getAdapter() != null) {
+                    mCommentAdapter.notifyDataSetChanged();
+                } else {
+                    mCommentList.setAdapter(mCommentAdapter);
+                }
+                setListViewHeightBasedOnChildren(mCommentList);
+            }
+            finallizeDialog(mDialog);
+        }, errormsg -> {
+            mCommentList.setVisibility(View.GONE);
+            finallizeDialog(mDialog);
+        });
+    }
+
+    private void createDialog() {
+        if (mDialog != null && mDialog.isShowing()) {
+            return;
+        }
+        mDialog = ProgressDialog.show(FoodDetailActivity.this, "", mResource.getString(R.string.on_loading));
+    }
+
+    private void finallizeDialog(ProgressDialog dialog) {
+        if (dialog == null) {
+            return;
+        }
+        dialog.dismiss();
+        dialog = null;
+    }
+
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+    private void registerTopView() {
+        floatHolder = new TopViewHolder();
+        topHolder = new TopViewHolder();
+        floatHolder.mCreateTime1 = (TextView) mLayoutTopFloat.findViewById(R.id.food_detail_time);
+        floatHolder.mFavorBtn2 = (ImageView) mLayoutTopFloat.findViewById(R.id.favor_btn);
+        floatHolder.mFoodName1 = (TextView) mLayoutTopFloat.findViewById(R.id.food_detai_name);
+        floatHolder.mPrivateText1 = (TextView) mLayoutTopFloat.findViewById(R.id.food_detai_isprivate);
+        floatHolder.mUserHead1 = (ImageView) mLayoutTopFloat.findViewById(R.id.food_detail_head);
+        floatHolder.mUserName1 = (TextView) mLayoutTopFloat.findViewById(R.id.food_detail_user_name);
+        topHolder.mCreateTime1 = (TextView) mLayoutTop.findViewById(R.id.food_detail_time);
+        topHolder.mFavorBtn2 = (ImageView) mLayoutTop.findViewById(R.id.favor_btn);
+        topHolder.mFoodName1 = (TextView) mLayoutTop.findViewById(R.id.food_detai_name);
+        topHolder.mPrivateText1 = (TextView) mLayoutTop.findViewById(R.id.food_detai_isprivate);
+        topHolder.mUserHead1 = (ImageView) mLayoutTop.findViewById(R.id.food_detail_head);
+        topHolder.mUserName1 = (TextView) mLayoutTop.findViewById(R.id.food_detail_user_name);
+        floatHolder.mFavorBtn2.setOnClickListener(favorListener);
+        topHolder.mFavorBtn2.setOnClickListener(favorListener);
+//        floatHolder.mCreateTime1.setText(gourmet.getDate().toLocaleString());
+//        topHolder.mCreateTime1.setText(gourmet.getDate().toLocaleString());
+        if (gourmet.getWasMarked()) {
+            topHolder.mFavorBtn2.setBackground(mResource.getDrawable(R.drawable.bg_favor_marked));
+            topHolder.mFavorBtn2.setImageResource(R.drawable.faviro_clicked);
+            floatHolder.mFavorBtn2.setBackground(mResource.getDrawable(R.drawable.bg_favor_marked));
+            floatHolder.mFavorBtn2.setImageResource(R.drawable.faviro_clicked);
+        }
+        floatHolder.mFoodName1.setText(gourmet.getName());
+        floatHolder.mPrivateText1.setVisibility(gourmet.getIsPrivate() ? View.VISIBLE : View.GONE);
+        Picasso.with(getApplicationContext())
+                .load(gourmet.getUser().getAvatarURL().get())
+                .placeholder(R.drawable.default_user_head)
+                .into(floatHolder.mUserHead1);
+        floatHolder.mUserName1.setText(gourmet.getUser().getNickName());
+        topHolder.mCreateTime1.setText(String.format(getString(R.string.format_create_time), StrUtil.formatTime(gourmet.getDate(), getApplicationContext())));
+        floatHolder.mCreateTime1.setText(String.format(getString(R.string.format_create_time), StrUtil.formatTime(gourmet.getDate(), getApplicationContext())));
+        topHolder.mFoodName1.setText(gourmet.getName());
+        topHolder.mPrivateText1.setVisibility(gourmet.getIsPrivate() ? View.VISIBLE : View.GONE);
+        Picasso.with(getApplicationContext())
+                .load(gourmet.getUser().getAvatarURL().get())
+                .placeholder(R.drawable.default_user_head)
+                .into(topHolder.mUserHead1);
+        topHolder.mUserName1.setText(gourmet.getUser().getNickName());
+    }
+
+    @Override
+    public void onScroll(int scrollY) {
+        int mBuyLayout2ParentTop = Math.max(scrollY, mFloatView.getTop());
+        mTopFloatView.layout(0, mBuyLayout2ParentTop, mTopFloatView.getWidth(),
+                mBuyLayout2ParentTop + mTopFloatView.getHeight());
+        Log.i("scrollerY", "scrollY == " + scrollY);
+    }
+
+
+    private void initReplyTextView(TextView tv, int userNameLength) {
+        String str = tv.getText().toString();
+        SpannableStringBuilder style = new SpannableStringBuilder(str);
+        style.setSpan(new ForegroundColorSpan(Color.GRAY), 2,
+                2 + userNameLength, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+        tv.setText(style);
+    }
+
+    public void setListViewHeightBasedOnChildren(ListView listView) {
+//        mScrollView.keepState = true ;
+//        mScrollView.tmpScrollY = (int) mScrollView.getY() ;
+        ListAdapter listAdapter = listView.getAdapter();
+        if (listAdapter == null) {
+            return;
+        }
+        int totalHeight = 0;
+        for (int i = 0; i < listAdapter.getCount(); i++) {
+            View listItem = listAdapter.getView(i, null, listView);
+            listItem.measure(0, 0);
+            totalHeight += listItem.getMeasuredHeight();
+        }
+        ViewGroup.LayoutParams params = listView.getLayoutParams();
+        params.height = totalHeight
+                + (listView.getDividerHeight() * (listAdapter.getCount()));
+
+    }
+
+    @Override
+    public void onTopChange(int top) {
+        if (top <= mToolbar.getHeight()) {
+            mToolbar.setBackgroundColor(mResource.getColor(R.color.toolbar));
+        } else {
+            mToolbar.setBackgroundDrawable(mResource.getDrawable(R.drawable.transparent_gradient));
+        }
+    }
+
     private void initDots(int count) {
         if (count <= 1) {
             return;
@@ -790,6 +720,45 @@ public class FoodDetailActivity extends BaseActivity implements
         dot.setPadding(5, 5, 5, 5);
         dot.setBackgroundResource(R.drawable.food_detail_index_unselected);
         return dot;
+    }
+
+    private class CommentViewHolder {
+        public ImageView head;
+        public TextView userName;
+        public TextView commentContent;
+        public TextView time;
+    }
+
+    class ViewPagerAdapter extends PagerAdapter {
+
+        private List<View> data;
+
+        public ViewPagerAdapter(List<View> data) {
+            super();
+            this.data = data;
+        }
+
+        @Override
+        public int getCount() {
+            return data.size();
+        }
+
+        @Override
+        public boolean isViewFromObject(View arg0, Object arg1) {
+            return arg0 == arg1;
+        }
+
+        @Override
+        public Object instantiateItem(ViewGroup container, int position) {
+            container.addView(data.get(position));
+            return data.get(position);
+        }
+
+        @Override
+        public void destroyItem(ViewGroup container, int position, Object object) {
+            container.removeView(data.get(position));
+        }
+
     }
 
     private class TopViewHolder {

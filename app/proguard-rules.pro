@@ -15,6 +15,19 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
+
+-keep class com.tencent.mm.sdk.** {
+    *;
+}
+-keep class com.sina.weibo.sdk.widget.** {
+    *;
+}
+-keep class retrofit.** { *; }
+
+-keep class com.zuijiao.android.zuijiao.network.** { *; }
+
+-keepattributes Signature
+
 -dontwarn com.squareup.okhttp.**
 -dontwarn retrofit.**
 -dontwarn okio.**
@@ -23,10 +36,3 @@
 -dontwarn android.test.**
 
 -dontwarn com.sina.weibo.sdk.widget**
-
--keep class com.tencent.mm.sdk.** {
-    *;
-}
--keep class com.sina.weibo.sdk.widget.** {
-    *;
-}

@@ -10,11 +10,11 @@ import com.zuijiao.android.zuijiao.network.Router;
 public class TinyUser {
 
     @SerializedName("nickname")
-    private String nickName = "test";
+    private String nickName = "";
     @SerializedName("imageUrl")
-    private String avatarURL = "testurl";
+    private String avatarURL = null;
     @SerializedName("ID")
-    private Integer identifier = 1;
+    private Integer identifier = -1;
 
     public String getNickName() {
         return nickName;
@@ -22,7 +22,7 @@ public class TinyUser {
 
     public Optional<String> getAvatarURL() {
         if (avatarURL != null) {
-            if (avatarURL.length() > 0 && avatarURL.startsWith("http://"))
+            if (avatarURL.length() > 0 && avatarURL.startsWith("http"))
                 return Optional.ofNullable(avatarURL);
             else {
                 return Optional.of(Router.PicBaseUrl + avatarURL);
@@ -33,6 +33,11 @@ public class TinyUser {
 
     public Integer getIdentifier() {
         return identifier;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("Nickname: %s\tAvatarUrl: %s\tID: %S", nickName, avatarURL, identifier);
     }
 
     //20150401 qbxia add begin

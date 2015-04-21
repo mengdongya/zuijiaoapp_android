@@ -258,8 +258,6 @@ public enum RouterOAuth {
                 Router.getInstance().accessToken = Optional.ofNullable(oAuthModel.getAccessToken());
                 Router.getInstance().currentUser = oAuthModel.getUser();
 
-                System.out.println("token: " + oAuthModel.getAccessToken() + " has callback: " + finalSuccessCallback.isPresent());
-
                 if (finalSuccessCallback.isPresent())
                     finalSuccessCallback.get().action(oAuthModel.getIsNew());
             }
@@ -286,8 +284,6 @@ public enum RouterOAuth {
             public void success(OAuthModel oAuthModel, Response response) {
                 Router.getInstance().accessToken = Optional.ofNullable(oAuthModel.getAccessToken());
                 Router.getInstance().currentUser = oAuthModel.getUser();
-
-                System.out.println("token: " + oAuthModel.getAccessToken() + " has callback: " + finalSuccessCallback.isPresent());
 
                 if (finalSuccessCallback.isPresent())
                     finalSuccessCallback.get().action();

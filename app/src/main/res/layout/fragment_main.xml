@@ -54,7 +54,6 @@
             android:divider="@null"></com.zuijiao.view.RefreshAndInitListView>
     </LinearLayout>
 
-
     <!--<TextView-->
     <!--android:id="@+id/tv_main_fm_blank"-->
     <!--style="@style/TextMiddle"-->

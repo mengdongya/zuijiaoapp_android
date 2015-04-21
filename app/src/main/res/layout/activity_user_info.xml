@@ -2,18 +2,27 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bg_light_gray"
     android:orientation="vertical">
 
-    <include
+    <!--<include
         android:id="@+id/user_info_toolbar"
-        layout="@layout/toolbar" />
+
+        layout="@layout/toolbar"
+        android:elevation="0dip"/>-->
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/user_info_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/toolbar_height"
+        colorControlNormal="@color/white"
+        android:background="?attr/colorPrimary"
+        android:minHeight="?attr/actionBarSize" />
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="200dip"
         android:layout_gravity="center_horizontal"
-        android:background="@color/bg_gray_white">
+        android:elevation="5dip"
+        android:background="@color/toolbar">
 
         <LinearLayout
             android:id="@+id/container_user_info_detail"
@@ -22,12 +31,12 @@
             android:gravity="center"
             android:orientation="vertical">
 
-            <ImageView
+            <com.zuijiao.view.RoundImageView
                 android:id="@+id/iv_user_head_detail"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:src="@drawable/ic_launcher" />
+                android:src="@drawable/default_user_head" />
 
             <TextView
                 android:id="@+id/tv_user_name_detail"
@@ -36,7 +45,7 @@
                 android:layout_gravity="center"
                 android:layout_marginTop="15dip"
                 android:text="Jordan"
-                android:textColor="@color/tv_deep_gray"
+                android:textColor="@color/white"
                 android:textSize="18sp" />
         </LinearLayout>
 
@@ -56,7 +65,7 @@
                 android:layout_weight="1"
                 android:gravity="center_horizontal"
                 android:text="Jordan"
-                android:textColor="@color/tv_deep_gray" />
+                android:textColor="@color/white" />
 
             <View
                 android:layout_width="1dip"
@@ -71,7 +80,7 @@
                 android:layout_weight="1"
                 android:gravity="center_horizontal"
                 android:text="Jordan"
-                android:textColor="@color/tv_deep_gray" />
+                android:textColor="@color/white" />
 
             <View
                 android:layout_width="1dip"
@@ -86,7 +95,7 @@
                 android:layout_weight="1"
                 android:gravity="center_horizontal"
                 android:text="Jordan"
-                android:textColor="@color/tv_deep_gray" />
+                android:textColor="@color/white" />
 
             <View
                 android:layout_width="1dip"
@@ -101,7 +110,7 @@
                 android:layout_weight="1"
                 android:gravity="center_horizontal"
                 android:text="Jordan"
-                android:textColor="@color/tv_deep_gray" />
+                android:textColor="@color/white" />
         </LinearLayout>
     </RelativeLayout>
 

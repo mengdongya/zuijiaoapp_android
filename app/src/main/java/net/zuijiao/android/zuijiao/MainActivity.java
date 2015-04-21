@@ -245,9 +245,7 @@ public final class MainActivity extends BaseActivity {
         @Override
         public void onClick(View v) {
             Intent intent = new Intent();
-//            intent.setClass(MainActivity.this, UserInfoActivity.class);
-//            //startActivity(intent);
-            intent.setClass(MainActivity.this, ImageChooseActivity.class);
+            intent.setClass(MainActivity.this, UserInfoActivity.class);
             startActivity(intent);
         }
     };
@@ -386,6 +384,7 @@ public final class MainActivity extends BaseActivity {
                         .placeholder(R.drawable.default_user_head)
                         .into(mThirdPartyUserHead);
             } catch (Exception e) {
+                e.printStackTrace();
                 mThirdPartyUserHead.setImageResource(R.drawable.default_user_head);
             }
             mSettingArray = getResources()

@@ -373,12 +373,14 @@ public final class MainActivity extends BaseActivity {
         mLocationView.setOnClickListener(mLocationListener);
         mToolBar.addView(mLocationView);
         Optional<TinyUser> user = Router.getInstance().getCurrentUser();
+        System.err.println("user" + user);
         if (user.isPresent()) {
             mBtnLogin.setVisibility(View.GONE);
             mThirdPartyUserName.setVisibility(View.VISIBLE);
             mThirdPartyUserHead.setVisibility(View.VISIBLE);
             mThirdPartyUserName.setText(user.get().getNickName());
             try {
+                System.err.println("URLXXXXX_" + user.get().getAvatarURL().get());
                 Picasso.with(getApplicationContext())
                         .load(user.get().getAvatarURL().get())
                         .placeholder(R.drawable.default_user_head)

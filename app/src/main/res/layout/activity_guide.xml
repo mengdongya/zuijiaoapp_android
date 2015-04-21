@@ -54,6 +54,7 @@
         android:id="@+id/guide_btn"
         android:layout_width="wrap_content"
         android:layout_height="30dip"
+        android:layout_marginBottom="20dip"
         android:layout_above="@+id/guide_dots"
         android:layout_centerHorizontal="true"
         android:background="@color/transparent"

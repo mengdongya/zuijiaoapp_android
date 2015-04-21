@@ -13,6 +13,7 @@ import android.widget.Toast;
 import com.lidroid.xutils.view.annotation.ContentView;
 import com.lidroid.xutils.view.annotation.ViewInject;
 import com.zuijiao.android.util.Optional;
+import com.zuijiao.android.zuijiao.model.Gourmet;
 import com.zuijiao.android.zuijiao.network.Cache;
 import com.zuijiao.android.zuijiao.network.Router;
 import com.zuijiao.android.zuijiao.network.RouterOAuth;
@@ -22,6 +23,8 @@ import com.zuijiao.controller.PreferenceManager.PreferenceInfo;
 import com.zuijiao.controller.ThirdPartySDKManager;
 import com.zuijiao.db.DBOpenHelper;
 import com.zuijiao.entity.AuthorInfo;
+
+import java.util.List;
 
 @ContentView(R.layout.activity_splash)
 public class SplashActivity extends BaseActivity {
@@ -48,7 +51,15 @@ public class SplashActivity extends BaseActivity {
                 @Override
                 public void run() {
                     try {
-                        FileManager.mainGourmet = Optional.of(dbMng.initGourmets());
+//                        FileManager.mainGourmet = Optional.of(dbMng.initGourmets());
+                        List<Gourmet> list = dbMng.initGourmets();
+                        if (list != null) {
+                            FileManager.mainGourmet = Optional.ofNullable(list);
+                        } else {
+                            FileManager.mainGourmet = Optional.empty();
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     } catch (Throwable t) {
                         t.printStackTrace();
                     }

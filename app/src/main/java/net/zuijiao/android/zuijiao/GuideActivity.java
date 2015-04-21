@@ -21,6 +21,7 @@ import android.widget.Toast;
 import com.lidroid.xutils.view.annotation.ContentView;
 import com.lidroid.xutils.view.annotation.ViewInject;
 import com.zuijiao.android.util.Optional;
+import com.zuijiao.android.zuijiao.model.Gourmet;
 import com.zuijiao.android.zuijiao.network.Cache;
 import com.zuijiao.android.zuijiao.network.Router;
 import com.zuijiao.android.zuijiao.network.RouterOAuth;
@@ -151,29 +152,39 @@ public class GuideActivity extends BaseActivity {
         mPager.setAdapter(new ViewPagerAdapter(viewList));
         mPager.setOnPageChangeListener(mPageListener);
 
-        mBtn.setOnClickListener(l -> {
-            mPb.setVisibility(View.VISIBLE);
-            mBtn.setVisibility(View.GONE);
+        mBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mPb.setVisibility(View.VISIBLE);
+                mBtn.setVisibility(View.GONE);
 //                openHome();
-            mPreferenceInfo.setAppFirstLaunch(false);
-            mPreferMng.saveFirstLaunch();
-            if (!mBCallByUser) {
-                firstInit();
+                mPreferenceInfo.setAppFirstLaunch(false);
+                mPreferMng.saveFirstLaunch();
+                if (!mBCallByUser) {
+                    firstInit();
 //                Intent intent = new Intent(GuideActivity.this, SplashActivity.class);
 //                startActivity(intent);
 //                finish();
 //                DBOpenHelper.copyLocationDb(GuideActivity.this.getApplicationContext()) ;
 //                AuthorInfo auth = PreferenceManager.getInstance(getApplicationContext()).getThirdPartyLoginMsg();
 //                networkSetup(auth);
-            } else {
-                goToMain();
+                } else {
+                    goToMain();
+                }
             }
         });
     }
 
     private void firstInit() {
         try {
-            FileManager.mainGourmet = Optional.ofNullable(dbMng.initGourmets());
+            List<Gourmet> list = dbMng.initGourmets();
+            if (list != null) {
+                FileManager.mainGourmet = Optional.ofNullable(list);
+            } else {
+                FileManager.mainGourmet = Optional.empty();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         } catch (Throwable t) {
             t.printStackTrace();
         }
@@ -183,10 +194,7 @@ public class GuideActivity extends BaseActivity {
     }
 
     private void networkSetup(AuthorInfo auth) {
-        System.err.println("prepare network");
-        Cache.INSTANCE.setup();
         if (ThirdPartySDKManager.getInstance(getApplicationContext()).isThirdParty(auth.getPlatform())) {
-            System.err.println("prepare saved third party login");
             Router.getOAuthModule().login(auth.getUid(), auth.getPlatform(), Optional.<String>empty(), Optional.of(auth.getToken()), () -> {
                         //  TinyUser user = Optional.of()Router.INSTANCE.getCurrentUser() ;
                         goToMain();
@@ -197,7 +205,6 @@ public class GuideActivity extends BaseActivity {
                         goToMain();
                     });
         } else if ((auth.getEmail() != null) && (!auth.getEmail().equals(""))) {
-            System.err.println("prepare saved email login");
             //2@2.2
             //c81e728d9d4c2f636f067f89cc14862c
             RouterOAuth.INSTANCE.loginEmailRoutine(auth.getEmail(),
@@ -215,7 +222,6 @@ public class GuideActivity extends BaseActivity {
             );
 
         } else {
-            System.err.println("prepare visitor");
             Router.getOAuthModule().visitor(() -> {
                         goToMain();
                     },
@@ -225,7 +231,6 @@ public class GuideActivity extends BaseActivity {
                         goToMain();
                     });
         }
-        System.err.println("prepare cache");
         Cache.INSTANCE.setup();
     }
 

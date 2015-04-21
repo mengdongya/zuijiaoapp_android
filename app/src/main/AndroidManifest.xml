@@ -136,7 +136,7 @@
             android:value="552354ddfd98c5ad6a000b73"></meta-data>
         <meta-data
             android:name="UMENG_CHANNEL"
-            android:value="zuijiao_net"></meta-data>
+            android:value="GooglePlay"></meta-data>
 
         <activity
             android:name="com.umeng.update.UpdateDialogActivity"

@@ -38,6 +38,9 @@ class CallbackFactory<T> {
 
             @Override
             public void failure(RetrofitError error) {
+
+                error.printStackTrace();
+
                 if (finalFailureCallback.isPresent()) finalFailureCallback.get().action();
             }
 
@@ -62,6 +65,9 @@ class CallbackFactory<T> {
                 assert (error != null);
                 assert (finalFailureCallback != null);
                 assert (finalFailureCallback.get() != null);
+
+                error.printStackTrace();
+
                 if (finalFailureCallback.isPresent())
                     finalFailureCallback.get().action(error.toString());
             }
@@ -86,6 +92,9 @@ class CallbackFactory<T> {
                 assert (error != null);
                 assert (finalFailureCallback != null);
                 assert (finalFailureCallback.get() != null);
+
+                error.printStackTrace();
+
                 if (finalFailureCallback.isPresent())
                     finalFailureCallback.get().action(error.toString());
             }

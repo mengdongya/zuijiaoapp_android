@@ -3,6 +3,7 @@ package test;
 import com.zuijiao.android.util.Optional;
 import com.zuijiao.android.zuijiao.model.Gourmet;
 import com.zuijiao.android.zuijiao.model.Gourmets;
+import com.zuijiao.android.zuijiao.network.Router;
 import com.zuijiao.android.zuijiao.network.RouterGourmet;
 import com.zuijiao.android.zuijiao.network.RouterOAuth;
 
@@ -76,9 +77,8 @@ public class TestClass {
     }
 
     public static void main(String[] args) throws NoSuchAlgorithmException {
-        MessageDigest digest = MessageDigest.getInstance("MD5");
-        byte[] hash = digest.digest("2".getBytes());
-        System.out.println("2 is " + hash.toString());
+        Router.setup("http://api.zuijiaodev.com", null);
+        fetchRecommendation();
     }
 
 }

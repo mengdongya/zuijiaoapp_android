@@ -3,15 +3,14 @@ package com.zuijiao.android.zuijiao.model.user;
 import com.google.gson.annotations.SerializedName;
 import com.zuijiao.android.util.Optional;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
 /**
  * Created by Chen Hao on 3/13/15.
  */
-public class User {
+public class User implements Serializable {
     @SerializedName("ID")
     private Integer identifier;
     @SerializedName("nickname")
@@ -25,40 +24,11 @@ public class User {
     private Food food;
     @SerializedName("friendships")
     private FriendShip friendShip;
-
-    class Profile {
-        @SerializedName("gender")
-        private String gender;
-        @SerializedName("birthday")
-        private String birthday;
-        @SerializedName("provinceID")
-        private Integer provinceId;
-        @SerializedName("cityID")
-        private Integer cityId;
-        @SerializedName("story")
-        private String story;
-        @SerializedName("tasteTags")
-        private List<String> tasteTags;
-
-    }
-
-    class Food {
-        @SerializedName("collectionCount")
-        private Integer collectionCount;
-        @SerializedName("cuisineCount")
-        private Integer recommendationCount;
-    }
-
-    class FriendShip {
-        @SerializedName("followerCount")
-        private Integer followerCount;
-        @SerializedName("followingCount")
-        private Integer followingCount;
-        @SerializedName("isFollowing")
-        private Boolean isFollowing;
-        @SerializedName("isFollower")
-        private Boolean isFollower;
-    }
+    // Optional only avialabel for self
+    @SerializedName("contracts")
+    private ContactInfo contactInfo;
+    @SerializedName("feast")
+    private PrivateCuisineInfo privateCuisineInfo;
 
     public Integer getIdentifier() {
         return identifier;
@@ -72,60 +42,88 @@ public class User {
         return Optional.ofNullable(avatarURL);
     }
 
-
+    /**
+     * @deprecated Using getProfile().getGender()
+     */
+    @Deprecated
     public String getGender() {
-        return profile.gender == null ? "keepSecret" : profile.gender;
+        return profile.getGender();
     }
 
+    @Deprecated
     public Optional<Date> getBirthday() {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        Date birthday = null;
-        try {
-            birthday = sdf.parse(profile.birthday);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        return Optional.ofNullable(birthday);
+        return profile.getBirthday();
     }
 
+    @Deprecated
     public Integer getProvinceId() {
-        return profile.provinceId;
+        return profile.getProvinceId();
     }
 
+    @Deprecated
     public Integer getCityId() {
-        return profile.cityId;
+        return profile.getCityId();
     }
 
+    @Deprecated
     public Optional<String> getStory() {
-        return Optional.ofNullable(profile.story);
+        return profile.getStory();
     }
 
+    @Deprecated
     public Optional<List<String>> getTasteTags() {
-        return Optional.ofNullable(profile.tasteTags);
+        return profile.getTasteTags();
     }
 
+
+    @Deprecated
     public Integer getCollectionCount() {
-        return food.collectionCount;
+        return food.getCollectionCount();
     }
 
+    @Deprecated
     public Integer getRecommendationCount() {
-        return food.recommendationCount;
+        return food.getRecommendationCount();
     }
 
+    @Deprecated
     public Integer getFollowerCount() {
-        return friendShip.followerCount;
+        return friendShip.getFollowerCount();
     }
 
+    @Deprecated
     public Integer getFollowingCount() {
-        return friendShip.followingCount;
+        return friendShip.getFollowingCount();
     }
 
+    @Deprecated
     public Boolean getIsFollowing() {
-        return friendShip.isFollowing == null ? false : friendShip.isFollowing;
+        return friendShip.isFollowing();
     }
 
+    @Deprecated
     public Boolean getIsFollower() {
-        return friendShip.isFollower == null ? false : friendShip.isFollower;
+        return friendShip.isFollower();
+    }
+
+    public Profile getProfile() {
+        return profile;
+    }
+
+    public Food getFood() {
+        return food;
+    }
+
+    public FriendShip getFriendShip() {
+        return friendShip;
+    }
+
+    public Optional<ContactInfo> getContactInfo() {
+        return Optional.ofNullable(contactInfo);
+    }
+
+    public Optional<PrivateCuisineInfo> getPrivateCuisineInfo() {
+        return Optional.ofNullable(privateCuisineInfo);
     }
 
     // update methods
@@ -138,30 +136,29 @@ public class User {
         this.avatarURL = avatarURL;
     }
 
+    @Deprecated
     public void setGender(String gender) {
-        if ("male".equals(gender) || "female".equals(gender)) {
-            this.profile.gender = gender;
-        } else {
-            this.profile.gender = "keepSecret";
-        }
+        profile.setGender(gender);
     }
 
+    @Deprecated
     public void setBirthday(Date birthday) {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        this.profile.birthday = sdf.format(birthday);
+        profile.setBirthday(birthday);
     }
 
+    @Deprecated
     public void setProvinceAndCity(Integer provinceId, Integer cityId) {
-        this.profile.provinceId = provinceId;
-        this.profile.cityId = cityId;
+        profile.setProvinceAndCity(provinceId, cityId);
     }
 
+    @Deprecated
     public void setStory(String story) {
-        this.profile.story = story;
+        profile.setStory(story);
     }
 
+    @Deprecated
     public void setTasteTags(List<String> tasteTags) {
-        this.profile.tasteTags = tasteTags;
+        profile.setTasteTags(tasteTags);
     }
 
 }

@@ -18,19 +18,19 @@ public enum RouterAccount {
             , LambdaExpression successCallback
             , LambdaExpression failureCallback
     ) {
-        String gender = user.getGender();
-        Integer provinceId = user.getProvinceId();
-        Integer cityId = user.getCityId();
-        String story = user.getStory().orElse("");
+        String gender = user.getProfile().getGender();
+        Integer provinceId = user.getProfile().getProvinceId();
+        Integer cityId = user.getProfile().getCityId();
+        String story = user.getProfile().getStory().orElse("");
         Integer year = null, month = null, day = null;
-        if (user.getBirthday().isPresent()) {
+        if (user.getProfile().getBirthday().isPresent()) {
             Calendar cal = Calendar.getInstance();
-            cal.setTime(user.getBirthday().get());
+            cal.setTime(user.getProfile().getBirthday().get());
             year = cal.get(Calendar.YEAR);
             month = cal.get(Calendar.MONTH);
             day = cal.get(Calendar.DATE);
         }
-        String tags = Router.convertJsonFromList(user.getTasteTags().orElse(new ArrayList<>()));
+        String tags = Router.convertJsonFromList(user.getProfile().getTasteTags().orElse(new ArrayList<>()));
 
         service.update(gender, provinceId, cityId, story, year, month, day, tags, CallbackFactory.getInstance().callback(successCallback, failureCallback));
     }

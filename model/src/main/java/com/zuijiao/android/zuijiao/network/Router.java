@@ -2,7 +2,11 @@ package com.zuijiao.android.zuijiao.network;
 
 import com.facebook.stetho.okhttp.StethoInterceptor;
 import com.google.gson.GsonBuilder;
+import com.squareup.okhttp.Interceptor;
 import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.RequestBody;
+import com.squareup.okhttp.Response;
 import com.zuijiao.android.util.Optional;
 import com.zuijiao.android.zuijiao.model.user.TinyUser;
 
@@ -10,6 +14,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
+import okio.Buffer;
+import okio.BufferedSink;
 import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
 import retrofit.client.OkClient;
@@ -45,12 +51,13 @@ public class Router {
         RequestInterceptor requestInterceptor = request -> {
             if (accessToken.isPresent())
                 request.addHeader("Authorization", "Bearer " + accessToken.get());
+                request.addHeader("X-Request-Checksum", "haha");
         };
 
         OkHttpClient client = new OkHttpClient();
-        client.networkInterceptors().add(new StethoInterceptor());
 
-        if (cacheDirectory != null) {
+
+        if (cacheDirectory != null) { // release mode
             try {
                 com.squareup.okhttp.Cache responseCache = new com.squareup.okhttp.Cache(cacheDirectory, 1024 * 1024 * 16);
                 client.setCache(responseCache);
@@ -58,9 +65,12 @@ public class Router {
                 e.printStackTrace();
             }
         }
+        else { // debug mode
+//            client.networkInterceptors().add(new StethoInterceptor());
+        }
 
         restAdapter = new RestAdapter.Builder()
-                .setConverter(new GsonConverter(new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ssZ").create()))
+                .setConverter(new GsonConverter(new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX").create()))
                 .setEndpoint(baseUrl)
                 .setRequestInterceptor(requestInterceptor)
                 .setClient(new OkClient(client))

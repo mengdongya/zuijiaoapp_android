@@ -105,7 +105,7 @@ public class FavorPersonListActivity extends BaseActivity {
 
     }
 
-    protected void registeViews() {
+    protected void registerViews() {
 
     }
 

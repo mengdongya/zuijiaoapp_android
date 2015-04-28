@@ -23,4 +23,5 @@
     <dimen name="food_detail_image_index_height">8dip</dimen>
     <dimen name="food_detail_image_height">224dip</dimen>
     <dimen name="comment_content_text_size">14sp</dimen>
+    <dimen name="friend_tab_text_size">55sp</dimen>
 </resources>

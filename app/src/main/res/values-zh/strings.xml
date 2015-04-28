@@ -74,7 +74,7 @@
     <string name="favor_feedback">谢谢喜欢</string>
     <string name="favor_label">%s人喜欢</string>
     <string name="comment_hint">写下你的评论</string>
-    <string name="notify_net2">请检查你的网络亲...</string>
+    <string name="notify_net2">请检查你的网络</string>
     <string name="today">今天</string>
     <string name="yesterday">昨天</string>
     <string name="beforeyesterday">前天</string>
@@ -115,7 +115,7 @@
     <string name="error_read_file">文件读取出错</string>
     <string name="no_favor">我一向很有品位的\n暂时还没有我喜欢的美食</string>
     <string name="no_message">暂时还没有消息</string>
-    <string name="current_location">目前支持城市·上海</string>
+    <string name="current_position">目前支持城市·上海</string>
     <string name="cancel">取消</string>
     <string name="favor_count">共喜欢了%d份美食</string>
     <string name="umeng_common_icon">icon</string>

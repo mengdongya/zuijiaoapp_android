@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:myattr="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -19,7 +20,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="200dip"
+        android:layout_height="160dip"
         android:layout_gravity="center_horizontal"
         android:elevation="5dip"
         android:background="@color/toolbar">
@@ -27,14 +28,18 @@
         <LinearLayout
             android:id="@+id/container_user_info_detail"
             android:layout_width="match_parent"
-            android:layout_height="150dip"
+            android:layout_height="120dip"
             android:gravity="center"
             android:orientation="vertical">
 
             <com.zuijiao.view.RoundImageView
-                android:id="@+id/iv_user_head_detail"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:id="@+id/user_info_user_head"
+                myattr:border_thickness="1dip"
+                myattr:border_outside_color="#eeeeee"
+                myattr:border_inside_color="#eeeeee"
+                android:padding="2dip"
+                android:layout_width="66dip"
+                android:layout_height="66dip"
                 android:layout_gravity="center"
                 android:src="@drawable/default_user_head" />
 
@@ -52,64 +57,82 @@
         <LinearLayout
             android:id="@+id/container_user_info"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_below="@+id/container_user_info_detail"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/user_info_suggest"
+            <Button
+                android:id="@+id/user_info_recommend"
                 android:layout_width="0dip"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_gravity="center"
                 android:layout_weight="1"
-                android:gravity="center_horizontal"
+                android:typeface="serif"
+                android:background="@drawable/test_bg"
+                android:gravity="center"
                 android:text="Jordan"
+                android:textSize="13sp"
                 android:textColor="@color/white" />
 
             <View
                 android:layout_width="1dip"
+                android:layout_marginBottom="10dip"
+                android:layout_marginTop="10dip"
                 android:layout_height="match_parent"
                 android:background="@color/bg_light_gray" />
 
-            <TextView
+            <Button
+                android:typeface="serif"
                 android:id="@+id/user_info_wish"
                 android:layout_width="0dip"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_gravity="center"
                 android:layout_weight="1"
-                android:gravity="center_horizontal"
+                android:background="@drawable/test_bg"
+                android:textSize="13sp"
+                android:gravity="center"
                 android:text="Jordan"
                 android:textColor="@color/white" />
 
             <View
                 android:layout_width="1dip"
+                android:layout_marginBottom="10dip"
+                android:layout_marginTop="10dip"
                 android:layout_height="match_parent"
                 android:background="@color/bg_light_gray" />
 
-            <TextView
+            <Button
+                android:typeface="serif"
                 android:id="@+id/user_info_follow"
                 android:layout_width="0dip"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_gravity="center"
                 android:layout_weight="1"
-                android:gravity="center_horizontal"
+                android:textSize="13sp"
+                android:background="@drawable/test_bg"
+                android:gravity="center"
                 android:text="Jordan"
                 android:textColor="@color/white" />
 
             <View
                 android:layout_width="1dip"
+                android:layout_marginBottom="10dip"
+                android:layout_marginTop="10dip"
                 android:layout_height="match_parent"
                 android:background="@color/bg_light_gray" />
 
-            <TextView
+            <Button
+                android:typeface="serif"
                 android:id="@+id/user_info_fans"
                 android:layout_width="0dip"
-                android:layout_height="wrap_content"
+                android:background="@drawable/test_bg"
+                android:layout_height="match_parent"
                 android:layout_gravity="center"
                 android:layout_weight="1"
-                android:gravity="center_horizontal"
-                android:text="Jordan"
+                android:textSize="13sp"
+                android:gravity="center"
+                android:text="@string/follow"
                 android:textColor="@color/white" />
         </LinearLayout>
     </RelativeLayout>
@@ -117,9 +140,8 @@
     <ListView
         android:id="@+id/user_info_list"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:divider="#00000000"
-        android:dividerHeight="18dip"
-        android:padding="@dimen/main_content_item_margin_left"></ListView>
+        android:layout_height="wrap_content"
+        android:divider="#cccccc"
+        android:dividerHeight="1dip" />
 
 </LinearLayout>

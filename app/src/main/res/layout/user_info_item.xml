@@ -1,23 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:background="@color/bg_gray_white"
+    android:background="@color/transparent"
     android:padding="18dip">
 
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:id="@+id/user_info_item_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:singleLine="true"
+        android:textColor="@color/tv_deep_gray"
         android:text="基本信息"
         android:textSize="18sp" />
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:singleLine="false"
-        android:text="我很害羞，没有留下任何信息"
-        android:textSize="15sp" />
+    <RelativeLayout
+        android:layout_marginTop="18dip"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent">
+
+        <TextView
+            android:id="@+id/user_info_item_content"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:singleLine="false"
+            android:textColor="@color/tv_deep_gray"
+            android:text="我很害羞，没有留下任何信息"
+            android:textSize="15sp" />
+
+        <GridView
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:visibility="gone"
+            android:background="@color/transparent"
+            android:id="@+id/gv_user_info_favor"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:numColumns="5" />
+    </RelativeLayout>
+
 
 </LinearLayout>

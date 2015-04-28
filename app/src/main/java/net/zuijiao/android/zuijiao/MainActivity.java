@@ -1,7 +1,6 @@
 package net.zuijiao.android.zuijiao;
 
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -40,8 +39,6 @@ import com.squareup.picasso.Picasso;
 import com.umeng.update.UmengUpdateAgent;
 import com.umeng.update.UmengUpdateListener;
 import com.umeng.update.UpdateResponse;
-import com.zuijiao.android.util.Optional;
-import com.zuijiao.android.zuijiao.model.user.TinyUser;
 import com.zuijiao.android.zuijiao.network.Router;
 import com.zuijiao.controller.ActivityTask;
 import com.zuijiao.controller.PreferenceManager;
@@ -52,7 +49,7 @@ import java.io.File;
 import java.util.ArrayList;
 
 @ContentView(R.layout.activity_main)
-public final class MainActivity extends BaseActivity {
+public final class MainActivity extends BaseActivity implements MainFragment.MainFragmentDataListener {
 
     // main activity layout widget ,including slide menu
     @ViewInject(R.id.drawer)
@@ -112,7 +109,6 @@ public final class MainActivity extends BaseActivity {
     };
     private View mLocationView = null;
     private BadgeView mBadgeView = null;
-    private ProgressDialog mDialog = null;
     private OnClickListener mLocationListener = new OnClickListener() {
 
         @Override
@@ -122,122 +118,6 @@ public final class MainActivity extends BaseActivity {
             AlertDialog.Builder builder = new AlertDialog.Builder(
                     MainActivity.this);
             builder.setView(view).create().show();
-        }
-    };
-    private OnItemClickListener mSetting2Listener = new OnItemClickListener() {
-
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position,
-                                long id) {
-            if (position == 0) {
-                Intent feedBackIntent = new Intent(MainActivity.this,
-                        CommonWebViewActivity.class);
-                feedBackIntent.putExtra("title",
-                        getResources().getString(R.string.feed_back));
-                String token = Router.getInstance().getAccessToken().get();
-                String url = String.format(getString(R.string.feed_back_url), "", token);
-                feedBackIntent.putExtra("content_url", getString(R.string.feed_back_url));
-                startActivity(feedBackIntent);
-            } else if (position == 1) {
-                Intent feedBackIntent = new Intent(MainActivity.this,
-                        ConcerningActivity.class);
-                startActivity(feedBackIntent);
-            } else if (position == 2) {
-                View logoutView = LayoutInflater.from(getApplicationContext()).inflate(
-                        R.layout.logout_dialog, null);
-
-                AlertDialog.Builder builder = new AlertDialog.Builder(
-                        MainActivity.this);
-                AlertDialog dialog = builder.setView(logoutView).create();
-                dialog.show();
-                logoutView.findViewById(R.id.logout_btn_cancel).setOnClickListener((View v) -> {
-                    dialog.dismiss();
-                });
-                logoutView.findViewById(R.id.logout_btn_confirm).setOnClickListener((View v) -> {
-                    dialog.dismiss();
-                    mDialog = ProgressDialog.show(MainActivity.this, null, getResources().getString(R.string.on_loading));
-                    ThirdPartySDKManager.getInstance(getApplicationContext()).logout(getApplicationContext());
-                    PreferenceManager.getInstance(getApplicationContext()).clearThirdPartyLoginMsg();
-                    Router.getOAuthModule().visitor(() -> {
-                        Toast.makeText(
-                                getApplicationContext(),
-                                getResources().getString(
-                                        R.string.logout_msg),
-                                Toast.LENGTH_LONG).show();
-                        mBtnLogin.setVisibility(View.VISIBLE);
-                        mThirdPartyUserName.setVisibility(View.GONE);
-                        mThirdPartyUserHead.setVisibility(View.GONE);
-//                                            mViewSwitcher.showPrevious();
-                        mSettingArray = getResources()
-                                .getStringArray(
-                                        R.array.settings2);
-                        mSettingList2.setAdapter(mSettingAdapter2);
-                        ;
-//                                            mSettingList2
-//                                                    .setAdapter(new ArrayAdapter<String>(
-//                                                            MainActivity.this,
-//                                                            android.R.layout.simple_list_item_1,
-//                                                            settingStr));
-                        if (mDialog != null) {
-                            mDialog.dismiss();
-                            mDialog = null;
-                        }
-                    }, errorMessage -> {
-                        if (mDialog != null) {
-                            mDialog.dismiss();
-                            mDialog = null;
-                        }
-                    });
-                });
-//                new AlertDialog.Builder(MainActivity.this)
-//                        .setTitle(R.string.logout_confirm_title)
-//                        .setItems(
-//                                new String[]{getResources().getString(
-//                                        R.string.logout)},
-//                                new DialogInterface.OnClickListener() {
-//
-//                                    @Override
-//                                    public void onClick(DialogInterface dialog,
-//                                                        int which) {
-//                                        mDialog = ProgressDialog.show(MainActivity.this, null, getResources().getString(R.string.on_loading));
-//                                        ThirdPartySDKManager.getInstance(getApplicationContext()).logout(getApplicationContext());
-//                                        PreferenceManager.getInstance(getApplicationContext()).clearThirdPartyLoginMsg();
-//                                        Router.getOAuthModule().visitor(() -> {
-//                                            Toast.makeText(
-//                                                    getApplicationContext(),
-//                                                    getResources().getString(
-//                                                            R.string.logout_msg),
-//                                                    Toast.LENGTH_LONG).show();
-//                                            mBtnLogin.setVisibility(View.VISIBLE);
-//                                            mThirdPartyUserName.setVisibility(View.GONE);
-//                                            mThirdPartyUserHead.setVisibility(View.GONE);
-////                                            mViewSwitcher.showPrevious();
-//                                            mSettingArray = getResources()
-//                                                    .getStringArray(
-//                                                            R.array.settings2);
-//                                            mSettingList2.setAdapter(mSettingAdapter2);
-//                                            ;
-////                                            mSettingList2
-////                                                    .setAdapter(new ArrayAdapter<String>(
-////                                                            MainActivity.this,
-////                                                            android.R.layout.simple_list_item_1,
-////                                                            settingStr));
-//                                            if (mDialog != null) {
-//                                                mDialog.dismiss();
-//                                                mDialog = null;
-//                                            }
-//                                        }, errorMessage -> {
-//                                            if (mDialog != null) {
-//                                                mDialog.dismiss();
-//                                                mDialog = null;
-//                                            }
-//                                        });
-//
-//                                    }
-//                                }).create().show();
-            }
-            //2269
-            //mDrawerLayout.closeDrawer(Gravity.LEFT);
         }
     };
     private OnClickListener mUserInfoDetail = new OnClickListener() {
@@ -256,6 +136,7 @@ public final class MainActivity extends BaseActivity {
             // mViewSwitcher.showNext();
             Intent intent = new Intent();
             intent.setClass(MainActivity.this, LoginActivity.class);
+            intent.putExtra("b_self", true);
             startActivity(intent);
         }
     };
@@ -264,9 +145,6 @@ public final class MainActivity extends BaseActivity {
         public boolean onMenuItemClick(MenuItem menuItem) {
             String msg = "";
             switch (menuItem.getItemId()) {
-                case R.id.action_edit:
-                    msg += "Click edit";
-                    break;
             }
 
             if (!msg.equals("")) {
@@ -346,6 +224,54 @@ public final class MainActivity extends BaseActivity {
             return tv;
         }
     };
+    private OnItemClickListener mSetting2Listener = new OnItemClickListener() {
+
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position,
+                                long id) {
+            if (position == 0) {
+                Intent feedBackIntent = new Intent(MainActivity.this,
+                        CommonWebViewActivity.class);
+                feedBackIntent.putExtra("title",
+                        getResources().getString(R.string.feed_back));
+                String token = Router.getInstance().getAccessToken().get();
+                String url = String.format(getString(R.string.feed_back_url), "", token);
+                feedBackIntent.putExtra("content_url", getString(R.string.feed_back_url));
+                startActivity(feedBackIntent);
+            } else if (position == 1) {
+                Intent feedBackIntent = new Intent(MainActivity.this,
+                        ConcerningActivity.class);
+                startActivity(feedBackIntent);
+            } else if (position == 2) {
+                View logoutView = LayoutInflater.from(getApplicationContext()).inflate(
+                        R.layout.logout_dialog, null);
+                AlertDialog dialog = new AlertDialog.Builder(MainActivity.this).setView(logoutView).create();
+                logoutView.findViewById(R.id.logout_btn_cancel).setOnClickListener((View v) -> {
+                    dialog.dismiss();
+                });
+                logoutView.findViewById(R.id.logout_btn_confirm).setOnClickListener((View v) -> {
+                    dialog.dismiss();
+                    createDialog();
+                    ThirdPartySDKManager.getInstance(mContext).logout(mContext);
+                    PreferenceManager.getInstance(mContext).clearThirdPartyLoginMsg();
+                    mFavorFragment.clearFavorData();
+                    mMsgFragment.clearMessage();
+                    Router.getOAuthModule().visitor(() -> {
+                        Toast.makeText(mContext, getString(R.string.logout_msg), Toast.LENGTH_SHORT).show();
+                        mBtnLogin.setVisibility(View.VISIBLE);
+                        mThirdPartyUserName.setVisibility(View.GONE);
+                        mThirdPartyUserHead.setVisibility(View.GONE);
+                        mSettingArray = getResources().getStringArray(R.array.settings2);
+                        mSettingList2.setAdapter(mSettingAdapter2);
+                        finallizeDialog();
+                    }, errorMessage -> {
+                        finallizeDialog();
+                    });
+                });
+                dialog.show();
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -365,24 +291,25 @@ public final class MainActivity extends BaseActivity {
     }
 
     @Override
-    protected void registeViews() {
+    protected void registerViews() {
         setSupportActionBar(mToolBar);
         mToolBar.setOnMenuItemClickListener(onMenuItemClick);
         mLocationView = LayoutInflater.from(this).inflate(
                 R.layout.location_layout, null);
         mLocationView.setOnClickListener(mLocationListener);
         mToolBar.addView(mLocationView);
-        Optional<TinyUser> user = Router.getInstance().getCurrentUser();
-        System.err.println("user" + user);
-        if (user.isPresent()) {
+        // Optional<TinyUser> user = Router.getInstance().getCurrentUser();
+        // System.err.println("user" + user);
+        AuthorInfo auth = PreferenceManager.getInstance(mContext).getThirdPartyLoginMsg();
+        if (auth.getUserName() != null && !auth.getUserName().equals("")) {
             mBtnLogin.setVisibility(View.GONE);
             mThirdPartyUserName.setVisibility(View.VISIBLE);
             mThirdPartyUserHead.setVisibility(View.VISIBLE);
-            mThirdPartyUserName.setText(user.get().getNickName());
+            mThirdPartyUserName.setText(auth.getUserName());
             try {
-                System.err.println("URLXXXXX_" + user.get().getAvatarURL().get());
-                Picasso.with(getApplicationContext())
-                        .load(user.get().getAvatarURL().get())
+                System.err.println("URLXXXXX_" + auth.getHeadPath());
+                Picasso.with(mContext)
+                        .load(auth.getHeadPath())
                         .placeholder(R.drawable.default_user_head)
                         .into(mThirdPartyUserHead);
             } catch (Exception e) {
@@ -393,7 +320,6 @@ public final class MainActivity extends BaseActivity {
                     .getStringArray(
                             R.array.settings1);
             mSettingList2.setAdapter(mSettingAdapter2);
-            ;
         } else {
             mSettingArray = getResources().getStringArray(R.array.settings2);
             mSettingList2.setAdapter(mSettingAdapter2);
@@ -402,11 +328,7 @@ public final class MainActivity extends BaseActivity {
             mThirdPartyUserName.setVisibility(View.GONE);
             mThirdPartyUserHead.setVisibility(View.GONE);
         }
-        mUserInfoArea.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //
-            }
+        mUserInfoArea.setOnClickListener((View v) -> {
         });
         mSettingList2.setOnItemClickListener(mSetting2Listener);
         titles = getResources().getStringArray(R.array.fragment_title);
@@ -589,5 +511,9 @@ public final class MainActivity extends BaseActivity {
 
         }
         boolean b = file.renameTo(file2);
+    }
+
+    public void onDataChanged() {
+
     }
 }

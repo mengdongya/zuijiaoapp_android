@@ -32,7 +32,7 @@ public class CommonWebViewActivity extends BaseActivity {
     }
 
     @Override
-    protected void registeViews() {
+    protected void registerViews() {
         try {
             Intent intent = getIntent();
             title = intent.getStringExtra("title");

@@ -72,7 +72,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
     }
 
     @Override
-    protected void registeViews() {
+    protected void registerViews() {
         mBtnQQ.setOnClickListener(this);
         mBtnWebo.setOnClickListener(this);
         mBtnWechat.setOnClickListener(this);

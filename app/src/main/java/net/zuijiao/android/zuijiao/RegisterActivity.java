@@ -102,12 +102,12 @@ public class RegisterActivity extends BaseActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void finallizeDialog() {
-        if (mDialog != null) {
-            mDialog.dismiss();
-            mDialog = null;
-        }
-    }
+//    private void finallizeDialog() {
+//        if (mDialog != null) {
+//            mDialog.dismiss();
+//            mDialog = null;
+//        }
+//    }
 
     private boolean checkInputState() {
         mNickName = mEtNickName.getText().toString().trim();
@@ -138,7 +138,7 @@ public class RegisterActivity extends BaseActivity {
     }
 
     @Override
-    protected void registeViews() {
+    protected void registerViews() {
 
     }
 

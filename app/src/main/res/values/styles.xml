@@ -17,6 +17,11 @@
 
     <style name="DialogTheme" parent="AppBaseTheme">
         <item name="android:windowIsFloating">true</item>
+        <item name="colorAccent">#0000ff</item>
+    </style>
+
+    <style name="UserInfoEditTheme" parent="AppBaseTheme">
+        <item name="colorAccent">#0000ff</item>
     </style>
 
     <style name="AppBaseTheme" parent="Theme.AppCompat.Light" type="text/css">
@@ -34,7 +39,7 @@
         <!-- navigation text color -->
         <item name="android:textColorPrimary">@color/toolbar_text</item>
         <item name="android:actionMenuTextAppearance">@style/MenuTextStyle</item>
-        <item name="colorControlNormal">@color/white</item>
+        <item name="colorControlNormal">@color/bg_gray_white</item>
         <item name="android:textColor">@color/tv_deep_gray</item>
         <item name="android:textColorPrimaryDisableOnly">@color/white</item>
     </style>
@@ -82,4 +87,14 @@
     <style name="EditTextStyle" parent="@android:style/Widget.EditText">
         <item name="android:drawableBottom">@drawable/edti_text_bg</item>
     </style>
+
+    <style name="calendar_tv" parent="@android:style/Widget.TextView">
+        <item name="android:textColor">@color/tv_deep_gray</item>
+    </style>
+
+    <style name="calendar_tv_header_day_if_month" parent="@android:style/Widget.TextView">
+        <item name="android:textColor">@color/tv_deep_gray</item>
+        <item name="android:textSize">22sp</item>
+    </style>
+
 </resources>

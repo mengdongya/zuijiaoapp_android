@@ -58,7 +58,6 @@ public class User {
         private Boolean isFollowing;
         @SerializedName("isFollower")
         private Boolean isFollower;
-
     }
 
     public Integer getIdentifier() {

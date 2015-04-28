@@ -20,9 +20,6 @@ import android.widget.Toast;
 
 import com.lidroid.xutils.view.annotation.ContentView;
 import com.lidroid.xutils.view.annotation.ViewInject;
-import com.zuijiao.android.zuijiao.network.Router;
-import com.zuijiao.controller.MessageDef;
-import com.zuijiao.utils.UpyunUploadTask;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -112,7 +109,7 @@ public class ImageChooseActivity extends BaseActivity {
 
     }
 
-    protected void registeViews() {
+    protected void registerViews() {
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(getString(R.string.image_chooser));
@@ -232,6 +229,8 @@ public class ImageChooseActivity extends BaseActivity {
                             Toast.makeText(mContext, getString(R.string.error_read_file), Toast.LENGTH_LONG).show();
                             e.printStackTrace();
                             finallizeDialog();
+                            setResult(RESULT_CANCELED);
+                            finish();
                             return;
                         }
                     }
@@ -242,6 +241,8 @@ public class ImageChooseActivity extends BaseActivity {
                         e.printStackTrace();
                         Toast.makeText(mContext, getString(R.string.error_read_file), Toast.LENGTH_LONG).show();
                         finallizeDialog();
+                        setResult(RESULT_CANCELED);
+                        finish();
                         return;
                     }
                     if (photo.compress(Bitmap.CompressFormat.JPEG, 75, os)) {
@@ -255,58 +256,37 @@ public class ImageChooseActivity extends BaseActivity {
                             Toast.makeText(mContext, getString(R.string.error_read_file), Toast.LENGTH_LONG).show();
                             finallizeDialog();
                             e.printStackTrace();
+                            finish();
                             return;
                         }
-
-                        String avatarUri = UpyunUploadTask.avatarPath(Router.getInstance().getCurrentUser().get().getIdentifier(), "jpg");
-
-                        new UpyunUploadTask(getCacheDir().getPath() + File.separator + "head.jpg"
-                                , avatarUri
-                                , (long transferedBytes, long totalBytes) -> {
-                        }
-                                , (boolean isComplete, String result, String error) -> {
-                            if (isComplete) {
-                                Router.getInstance().getCurrentUser().get().setAvatarURL(avatarUri);
-                                mPreferMng.saveAvatarPath(UpyunUploadTask.avatarPath(avatarUri));
-                                createDialog();
-                                Router.getAccountModule().updateAvatar(avatarUri, () -> {
-                                    Intent intent = new Intent();
-                                    intent.setAction(MessageDef.ACTION_GET_THIRD_PARTY_USER);
-                                    sendBroadcast(intent);
-                                    finallizeDialog();
-                                    finish();
-                                }, () -> {
-                                    // TODO: Avatar upload failed
-                                    Toast.makeText(mContext, getString(R.string.error_upload), Toast.LENGTH_LONG).show();
-                                    finallizeDialog();
-                                });
-                            }
-                            finallizeDialog();
-                        }
-                        ).execute();
+                        setResult(RESULT_OK);
                     } else {
                         finallizeDialog();
+                        setResult(RESULT_CANCELED);
                     }
+                } else {
+                    setResult(RESULT_CANCELED);
                 }
+                finish();
             }
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    private void createDialog() {
-        if (mDialog != null && mDialog.isShowing()) {
-            return;
-        }
-        mDialog = ProgressDialog.show(ImageChooseActivity.this, "", getString(R.string.on_loading));
-    }
-
-    private void finallizeDialog() {
-        if (mDialog == null) {
-            return;
-        }
-        mDialog.dismiss();
-        mDialog = null;
-    }
+//    private void createDialog() {
+//        if (mDialog != null && mDialog.isShowing()) {
+//            return;
+//        }
+//        mDialog = ProgressDialog.show(ImageChooseActivity.this, "", getString(R.string.on_loading));
+//    }
+//
+//    private void finallizeDialog() {
+//        if (mDialog == null) {
+//            return;
+//        }
+//        mDialog.dismiss();
+//        mDialog = null;
+//    }
 
     class ViewHolder {
         ImageView image;

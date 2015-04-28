@@ -126,24 +126,6 @@ public class ThirdPartySDKManager implements AbsSDK.LoginListener {
                     bundle.putString("head_url", user.getHeadPath());
                     intent.putExtra("userinfo", bundle);
                     mContext.sendBroadcast(intent);
-//                    Router.getOAuthModule().login(openid, platsform, Optional.empty(), Optional.of(token), () -> {
-//                        PreferenceManager.getInstance(mContext).saveThirdPartyLoginMsg(user);
-//                        Intent intent = new Intent(
-//                                MessageDef.ACTION_GET_THIRD_PARTY_USER);
-//                        Bundle bundle = new Bundle();
-//                        bundle.putBoolean("result", true);
-//                        bundle.putString("name", userName);
-//                        bundle.putString("head_url", imageurl);
-//                        intent.putExtra("userinfo", bundle);
-//                        mContext.sendBroadcast(intent);
-//                    }, errorMessage -> {
-//                        Intent intent = new Intent(
-//                                MessageDef.ACTION_GET_THIRD_PARTY_USER);
-//                        Bundle bundle = new Bundle();
-//                        bundle.putBoolean("result", false);
-//                        mContext.sendBroadcast(intent);
-//                        Toast.makeText(mContext, mContext.getResources().getString(R.string.notify_net2), Toast.LENGTH_SHORT).show();
-//                    });
                 }
                 , errorMessage ->
                 {

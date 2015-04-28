@@ -37,7 +37,7 @@ public class ConcerningActivity extends BaseActivity implements OnClickListener 
     }
 
     @Override
-    protected void registeViews() {
+    protected void registerViews() {
         try {
             String versionCode = this.getPackageManager().getPackageInfo(
                     this.getPackageName(), 0).versionName;

@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Build.VERSION;
 import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
@@ -26,7 +27,6 @@ import com.zuijiao.android.zuijiao.network.Cache;
 import com.zuijiao.android.zuijiao.network.Router;
 import com.zuijiao.android.zuijiao.network.RouterOAuth;
 import com.zuijiao.controller.FileManager;
-import com.zuijiao.controller.PreferenceManager;
 import com.zuijiao.controller.ThirdPartySDKManager;
 import com.zuijiao.db.DBOpenHelper;
 import com.zuijiao.entity.AuthorInfo;
@@ -131,10 +131,6 @@ public class GuideActivity extends BaseActivity {
         imageView.setImageResource(imageRes);
         textView1.setText(title);
         textView2.setText(note);
-//        TextView headText = (TextView) view.findViewById(R.id.wizard_text1);
-//        headText.setText(head);
-//        TextView noteText = (TextView) view.findViewById(R.id.wizard_text2);
-//        noteText.setText(note);
         return view;
     }
 
@@ -144,7 +140,7 @@ public class GuideActivity extends BaseActivity {
     }
 
     @Override
-    protected void registeViews() {
+    protected void registerViews() {
         if (mTendIntent != null) {
             mBCallByUser = mTendIntent.getBooleanExtra("b_user_call", false);
         }
@@ -152,45 +148,40 @@ public class GuideActivity extends BaseActivity {
         mPager.setAdapter(new ViewPagerAdapter(viewList));
         mPager.setOnPageChangeListener(mPageListener);
 
-        mBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mPb.setVisibility(View.VISIBLE);
-                mBtn.setVisibility(View.GONE);
+        mBtn.setOnClickListener((View v) -> {
+            mPb.setVisibility(View.VISIBLE);
+            mBtn.setVisibility(View.GONE);
 //                openHome();
-                mPreferenceInfo.setAppFirstLaunch(false);
-                mPreferMng.saveFirstLaunch();
-                if (!mBCallByUser) {
-                    firstInit();
-//                Intent intent = new Intent(GuideActivity.this, SplashActivity.class);
-//                startActivity(intent);
-//                finish();
-//                DBOpenHelper.copyLocationDb(GuideActivity.this.getApplicationContext()) ;
-//                AuthorInfo auth = PreferenceManager.getInstance(getApplicationContext()).getThirdPartyLoginMsg();
-//                networkSetup(auth);
-                } else {
-                    goToMain();
-                }
+            mPreferenceInfo.setAppFirstLaunch(false);
+            mPreferMng.saveFirstLaunch();
+            if (!mBCallByUser) {
+                firstInit();
+            } else {
+                goToMain();
             }
         });
     }
 
     private void firstInit() {
-        try {
-            List<Gourmet> list = dbMng.initGourmets();
-            if (list != null) {
-                FileManager.mainGourmet = Optional.ofNullable(list);
-            } else {
-                FileManager.mainGourmet = Optional.empty();
+        tryLoginFirst(() -> {
+        }, e -> {
+        });
+        new Handler().postDelayed(() -> {
+            try {
+                List<Gourmet> list = dbMng.initGourmets();
+                if (list != null) {
+                    FileManager.mainGourmet = Optional.ofNullable(list);
+                } else {
+                    FileManager.mainGourmet = Optional.empty();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            } catch (Throwable t) {
+                t.printStackTrace();
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-        } catch (Throwable t) {
-            t.printStackTrace();
-        }
-        DBOpenHelper.copyLocationDb(GuideActivity.this.getApplicationContext());
-        AuthorInfo auth = PreferenceManager.getInstance(getApplicationContext()).getThirdPartyLoginMsg();
-        networkSetup(auth);
+            DBOpenHelper.copyLocationDb(mContext);
+            goToMain();
+        }, 800);
     }
 
     private void networkSetup(AuthorInfo auth) {

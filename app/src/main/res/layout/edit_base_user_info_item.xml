@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:layout_height="wrap_content"
+        android:layout_width="0dip"
+        android:id="@+id/edit_base_info_item_key"
+        android:gravity="left|center_vertical"
+        android:singleLine="true"
+        android:layout_weight="1"
+        android:textColor="@color/tv_light_gray"
+        android:paddingBottom="15dip"
+        android:paddingTop="15dip"
+        android:textSize="15sp"
+        android:text="@string/honey_name" />
+
+    <TextView
+        android:layout_height="wrap_content"
+        android:layout_width="0dip"
+        android:gravity="right|center_vertical"
+        android:paddingBottom="15dip"
+        android:paddingTop="15dip"
+        android:layout_weight="1"
+        android:singleLine="true"
+        android:id="@+id/edit_base_info_item_value"
+        android:textSize="15sp"
+        android:textColor="@color/black"
+        android:padding="10dip"
+        android:text="@string/default_user_name" />
+
+</LinearLayout>

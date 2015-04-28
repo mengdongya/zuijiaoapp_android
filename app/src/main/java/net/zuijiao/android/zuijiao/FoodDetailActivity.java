@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.ActionBar.LayoutParams;
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
@@ -122,7 +121,7 @@ public class FoodDetailActivity extends BaseActivity implements
     private Comments mComments = null;
     //if comment false ,reply true ;
     private Integer mReplyId = null;
-    private ProgressDialog mDialog = null;
+
     private OnClickListener mCommentCommitListener = new OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -136,7 +135,7 @@ public class FoodDetailActivity extends BaseActivity implements
                         Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
                         startActivity(intent);
                         dialog.dismiss();
-                        finallizeDialog(mDialog);
+                        finallizeDialog();
                     }
                 });
                 dialog.show();
@@ -159,19 +158,19 @@ public class FoodDetailActivity extends BaseActivity implements
                 Router.getGourmetModule().replyCommentTo(mReplyId, comment, () -> {
                     fetchCommentList();
                     Toast.makeText(getApplicationContext(), mResource.getString(R.string.reply_success), Toast.LENGTH_SHORT).show();
-                    finallizeDialog(mDialog);
+                    finallizeDialog();
                 }, () -> {
                     Toast.makeText(getApplicationContext(), mResource.getString(R.string.reply_failed), Toast.LENGTH_SHORT).show();
-                    finallizeDialog(mDialog);
+                    finallizeDialog();
                 });
             } else {
                 Router.getGourmetModule().postComment(gourmet.getIdentifier(), comment, () -> {
                     fetchCommentList();
                     Toast.makeText(getApplicationContext(), mResource.getString(R.string.comment_success), Toast.LENGTH_SHORT).show();
-                    finallizeDialog(mDialog);
+                    finallizeDialog();
                 }, () -> {
                     Toast.makeText(getApplicationContext(), mResource.getString(R.string.comment_failed), Toast.LENGTH_SHORT).show();
-                    finallizeDialog(mDialog);
+                    finallizeDialog();
                 });
             }
         }
@@ -187,7 +186,7 @@ public class FoodDetailActivity extends BaseActivity implements
                     Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
                     startActivity(intent);
                     dialog.dismiss();
-                    finallizeDialog(mDialog);
+                    finallizeDialog();
                 });
                 dialog.show();
             } else {
@@ -234,7 +233,7 @@ public class FoodDetailActivity extends BaseActivity implements
                     Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
                     startActivity(intent);
                     dialog.dismiss();
-                    finallizeDialog(mDialog);
+                    finallizeDialog();
                 });
                 dialog.show();
             } else {
@@ -254,10 +253,10 @@ public class FoodDetailActivity extends BaseActivity implements
                         topHolder.mFavorBtn2.setImageResource(R.drawable.faviro_clicked);
                         floatHolder.mFavorBtn2.setBackground(mResource.getDrawable(R.drawable.bg_favor_marked));
                         floatHolder.mFavorBtn2.setImageResource(R.drawable.faviro_clicked);
-                        finallizeDialog(mDialog);
+                        finallizeDialog();
                     }, () -> {
                         Toast.makeText(getApplicationContext(), mResource.getString(R.string.notify_net2), Toast.LENGTH_SHORT).show();
-                        finallizeDialog(mDialog);
+                        finallizeDialog();
                     });
                 } else {
                     createDialog();
@@ -269,10 +268,10 @@ public class FoodDetailActivity extends BaseActivity implements
                         topHolder.mFavorBtn2.setImageResource(R.drawable.faviro_unclick);
                         floatHolder.mFavorBtn2.setBackground(mResource.getDrawable(R.drawable.bg_favor));
                         floatHolder.mFavorBtn2.setImageResource(R.drawable.faviro_unclick);
-                        finallizeDialog(mDialog);
+                        finallizeDialog();
                     }, () -> {
                         Toast.makeText(getApplicationContext(), mResource.getString(R.string.notify_net2), Toast.LENGTH_SHORT).show();
-                        finallizeDialog(mDialog);
+                        finallizeDialog();
                     });
                 }
 
@@ -441,7 +440,7 @@ public class FoodDetailActivity extends BaseActivity implements
 
     @SuppressLint("NewApi")
     @Override
-    protected void registeViews() {
+    protected void registerViews() {
         try {
             int index = mTendIntent.getIntExtra("click_item_index", -1);
             boolean fromFavor = mTendIntent.getBooleanExtra("b_favor", false);
@@ -559,10 +558,10 @@ public class FoodDetailActivity extends BaseActivity implements
                 }
             }
             mWouldLikeTitle.setText(String.format(mResource.getString(R.string.format_favor_person), wouldLikeUser.getCount()));
-            finallizeDialog(mDialog);
+            finallizeDialog();
         }, errorMsg -> {
             mGdView.setVisibility(View.GONE);
-            finallizeDialog(mDialog);
+            finallizeDialog();
         });
     }
 
@@ -586,27 +585,13 @@ public class FoodDetailActivity extends BaseActivity implements
                 }
                 setListViewHeightBasedOnChildren(mCommentList);
             }
-            finallizeDialog(mDialog);
-        }, errormsg -> {
+            finallizeDialog();
+        }, errorMsg -> {
             mCommentList.setVisibility(View.GONE);
-            finallizeDialog(mDialog);
+            finallizeDialog();
         });
     }
 
-    private void createDialog() {
-        if (mDialog != null && mDialog.isShowing()) {
-            return;
-        }
-        mDialog = ProgressDialog.show(FoodDetailActivity.this, "", mResource.getString(R.string.on_loading));
-    }
-
-    private void finallizeDialog(ProgressDialog dialog) {
-        if (dialog == null) {
-            return;
-        }
-        dialog.dismiss();
-        dialog = null;
-    }
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     private void registerTopView() {

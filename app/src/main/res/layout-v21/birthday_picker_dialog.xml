@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:singleLine="true"
+        android:text="@string/gender"
+        android:textSize="18sp"
+        android:textColor="@color/tv_light_gray"
+        android:gravity="left"
+        android:padding="16dip" />
+
+    <View
+        android:layout_height="1dip"
+        android:layout_width="match_parent"
+        android:background="@color/bg_light_gray" />
+
+    <com.zuijiao.view.CustomDatePicker
+        android:background="@color/bg_light_gray"
+        android:datePickerMode="spinner"
+        android:headerDayOfMonthTextAppearance="@style/calendar_tv_header_day_if_month"
+        android:headerYearTextAppearance="@style/calendar_tv"
+        android:yearListItemTextAppearance="@style/calendar_tv"
+        android:dayOfWeekTextAppearance="@style/calendar_tv"
+        android:layout_gravity="center_horizontal"
+        android:calendarTextColor="@color/tv_light_gray"
+        android:calendarViewShown="false"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:id="@+id/birthday_picker" />
+</LinearLayout>

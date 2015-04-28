@@ -1,5 +1,6 @@
 package net.zuijiao.android.zuijiao;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -36,10 +37,17 @@ public class MessageFragment extends Fragment implements FragmentDataListener,
     private RefreshAndInitListView mListView = null;
     private MesssageAdapter mAdapter = null;
     private LayoutInflater mInflater = null;
-    private int test_count = 1;
-    //    private TextView mTextView = null;
     private Context mContext;
+    private AdapterView.OnItemClickListener mItemClickListener = new AdapterView.OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            FileManager.tmpMessageGourmet = mAdapter.getItem(position - 1).getGourmet().get();
+            Intent intent = new Intent(mContext, FoodDetailActivity.class);
+            startActivity(intent);
+        }
+    };
     private LinearLayout mLayout = null;
+    private Activity mActivity = null;
 
     public MessageFragment() {
         super();
@@ -55,6 +63,7 @@ public class MessageFragment extends Fragment implements FragmentDataListener,
                              Bundle savedInstanceState) {
         mContentView = inflater.inflate(R.layout.fragment_message, null);
         this.mInflater = inflater;
+        mActivity = getActivity();
         mListView = (RefreshAndInitListView) mContentView
                 .findViewById(R.id.lv_msg);
 //        mTextView = (TextView) mContentView.findViewById(R.id.tv_main_fm_blank);
@@ -72,12 +81,6 @@ public class MessageFragment extends Fragment implements FragmentDataListener,
         mListView.setPullLoadEnable(true);
         mListView.setListViewListener(this);
         firstInit();
-//        new Handler().postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                networkStep();
-//            }
-//        }, 2000);
         return mContentView;
     }
 
@@ -88,17 +91,127 @@ public class MessageFragment extends Fragment implements FragmentDataListener,
             public void run() {
                 networkStep(true);
             }
+        }, 400);
+    }
+
+    public void clearMessage() {
+        try {
+            mAdapter.mData.clear();
+            mAdapter.notifyDataSetChanged();
+            mListView.setPullLoadEnable(false);
+        } catch (Throwable t) {
+            System.err.println("no message");
+            ;
+        }
+    }
+
+    @Override
+    public ArrayList<Object> initCache(int type) {
+        return null;
+    }
+
+    @Override
+    public ArrayList<Object> getContentFromNetWork(String Url) {
+        return null;
+    }
+
+    @Override
+    public void NotifyData() {
+
+    }
+
+    @Override
+    public void onRefresh() {
+        new Handler().postDelayed(() -> {
+            networkStep(true);
         }, 1000);
     }
 
-    private AdapterView.OnItemClickListener mItemClickListener = new AdapterView.OnItemClickListener() {
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            FileManager.tmpMessageGourmet = mAdapter.getItem(position - 1).getGourmet().get();
-            Intent intent = new Intent(mContext, FoodDetailActivity.class);
-            startActivity(intent);
+    @Override
+    public void onLoadMore() {
+        networkStep(false);
+    }
+
+    private void networkStep(boolean bRefresh) {
+        if (Router.getInstance().getCurrentUser().equals(Optional.empty())) {
+            ((BaseActivity) getActivity()).tryLoginFirst(() -> {
+                if (Router.getInstance().getCurrentUser().equals(Optional.empty())) {
+                    mAdapter.mData.clear();
+                    mAdapter.notifyDataSetChanged();
+                    mListView.setPullLoadEnable(false);
+                    mListView.stopRefresh();
+                    mListView.stopLoadMore();
+                    ((BaseActivity) getActivity()).notifyLogin(() -> {
+                        if (Router.getInstance().getCurrentUser().equals(Optional.empty())) {
+
+                        } else {
+                            networkStep(bRefresh);
+                        }
+                    });
+                } else {
+                    networkStep(bRefresh);
+                }
+            }, error -> {
+                Toast.makeText(mActivity, getResources().getString(R.string.notify_net2), Toast.LENGTH_LONG).show();
+                mListView.stopRefresh();
+                mListView.stopLoadMore();
+            });
+            return;
         }
-    };
+        mListView.setRefreshTime(new Date(PreferenceManager.getInstance(getActivity()).getMsgLastRefreshTime()).toLocaleString());
+        List<Message> tmpMessages = Optional.of(mAdapter.mData).orElse(new ArrayList<>());
+        Integer theLastOneIdentifier = null;
+        if (!bRefresh) {
+            Message theLatestOne = tmpMessages.get(tmpMessages.size() - 1);
+            theLastOneIdentifier = theLatestOne.getIdentifier();
+        }
+        Router.getMessageModule().message(News.NotificationType.Comment, theLastOneIdentifier, null, 20, msg -> {
+            if (bRefresh) {
+                if (!msg.getAllMessage().isEmpty()) {
+                    mLayout.setVisibility(View.GONE);
+                    List<Message> msgList = msg.getAllMessage();
+                    if (mAdapter == null) {
+                        mAdapter = new MesssageAdapter();
+                    }
+                    mAdapter.setData(msgList);
+                    mListView.setAdapter(mAdapter);
+                    if (msg.getAllMessage().size() < 20) {
+                        mListView.setPullLoadEnable(false);
+                    } else {
+                        mListView.setPullLoadEnable(true);
+                    }
+                } else {
+                    mListView.setPullLoadEnable(false);
+                    mAdapter.setData(new ArrayList<Message>());
+                    mAdapter.notifyDataSetChanged();
+                    mLayout.setVisibility(View.VISIBLE);
+                }
+                mListView.stopRefresh();
+            } else {
+                if (!msg.getAllMessage().isEmpty()) {
+                    if (mAdapter.mData == null) {
+                        mAdapter.mData = new ArrayList<Message>();
+                    }
+                    mAdapter.mData.addAll(msg.getAllMessage());
+                    mAdapter.notifyDataSetChanged();
+                    if (msg.getAllMessage().size() < 20) {
+                        mListView.setPullLoadEnable(false);
+                    } else {
+                        mListView.setPullLoadEnable(true);
+                    }
+                } else {
+                    mListView.setPullLoadEnable(false);
+                    Toast.makeText(mContext, getString(R.string.no_more), Toast.LENGTH_SHORT).show();
+                }
+                mListView.stopLoadMore();
+            }
+            PreferenceManager.getInstance(mContext).saveMsgLastRefreshTime(new Date().getTime());
+        }, errorMsg -> {
+            Toast.makeText(mContext, getString(R.string.notify_net), Toast.LENGTH_LONG).show();
+            mListView.stopRefresh();
+            mListView.stopLoadMore();
+        });
+    }
 
     private class MesssageAdapter extends BaseAdapter {
         public List<Message> mData = new ArrayList<>();
@@ -182,120 +295,5 @@ public class MessageFragment extends Fragment implements FragmentDataListener,
             ImageView userhead;
             ImageView gourmetPic;
         }
-    }
-
-    @Override
-    public ArrayList<Object> initCache(int type) {
-        return null;
-    }
-
-    @Override
-    public ArrayList<Object> getContentFromNetWork(String Url) {
-        return null;
-    }
-
-    @Override
-    public void NotifyData() {
-
-    }
-
-    @Override
-    public void onRefresh() {
-        new Handler().postDelayed(new Runnable() {
-
-            @Override
-            public void run() {
-                networkStep(true);
-//                test_count = new Random().nextInt(2);
-//                if (test_count != 0) {
-//                    mTextView.setVisibility(View.GONE);
-//                } else {
-//                    mTextView.setVisibility(View.VISIBLE);
-//                }
-//                mListView.setAdapter(mAdapter);
-
-            }
-        }, 1000);
-    }
-
-    @Override
-    public void onLoadMore() {
-        networkStep(false);
-    }
-
-    private void networkStep(boolean bRefresh) {
-        if (Router.getInstance().getCurrentUser().equals(Optional.empty())) {
-//            mListView.setVisibility(View.GONE);
-//            mTextView.setVisibility(View.VISIBLE);
-//            mTextView.setText(getResources().getString(R.string.none_msg));
-            mAdapter.setData(new ArrayList<Message>());
-            mAdapter.notifyDataSetChanged();
-            mLayout.setVisibility(View.VISIBLE);
-            mListView.stopRefresh();
-            mListView.stopLoadMore();
-            return;
-        }
-        mListView.setRefreshTime(new Date(PreferenceManager.getInstance(getActivity()).getMsgLastRefreshTime()).toLocaleString());
-        List<Message> tmpMessages = Optional.of(mAdapter.mData).orElse(new ArrayList<>());
-        Integer theLastOneIdentifier = null;
-
-        if (!bRefresh) { // fetch more
-            Message theLatestOne = tmpMessages.get(tmpMessages.size() - 1);
-            theLastOneIdentifier = theLatestOne.getIdentifier();
-        }
-        Router.getMessageModule().message(News.NotificationType.Comment, theLastOneIdentifier, null, 20, msg -> {
-            if (bRefresh) {
-                if (!msg.getAllMessage().isEmpty()) {
-//                    mTextView.setVisibility(View.GONE);
-                    mLayout.setVisibility(View.GONE);
-                    List<Message> msgList = msg.getAllMessage();
-                    if (mAdapter == null) {
-                        mAdapter = new MesssageAdapter();
-                    }
-                    mAdapter.setData(msgList);
-                    mListView.setAdapter(mAdapter);
-                    if (msg.getAllMessage().size() < 20) {
-                        mListView.setPullLoadEnable(false);
-                    } else {
-                        mListView.setPullLoadEnable(true);
-                    }
-                } else {
-                    mListView.setPullLoadEnable(false);
-                    mAdapter.setData(new ArrayList<Message>());
-                    mAdapter.notifyDataSetChanged();
-                    mLayout.setVisibility(View.VISIBLE);
-//                    mListView.setVisibility(View.GONE);
-//                    mTextView.setVisibility(View.VISIBLE);
-//                    mTextView.setText(getResources().getString(R.string.none_msg));
-                }
-                mListView.stopRefresh();
-            } else {
-                if (!msg.getAllMessage().isEmpty()) {
-                    if (mAdapter.mData == null) {
-                        mAdapter.mData = new ArrayList<Message>();
-                    }
-                    mAdapter.mData.addAll(msg.getAllMessage());
-                    mAdapter.notifyDataSetChanged();
-                    if (msg.getAllMessage().size() < 20) {
-                        mListView.setPullLoadEnable(false);
-                    } else {
-                        mListView.setPullLoadEnable(true);
-                    }
-                } else {
-                    mListView.setPullLoadEnable(false);
-                    Toast.makeText(mContext, getString(R.string.no_more), Toast.LENGTH_SHORT).show();
-                }
-                mListView.stopLoadMore();
-            }
-
-            PreferenceManager.getInstance(mContext).saveMsgLastRefreshTime(new Date().getTime());
-        }, errorMsg -> {
-            Toast.makeText(mContext, getString(R.string.notify_net), Toast.LENGTH_LONG).show();
-//            mListView.setVisibility(View.GONE);
-//            mTextView.setVisibility(View.VISIBLE);
-//            mTextView.setText(getResources().getString(R.string.notify_net));
-            mListView.stopRefresh();
-            mListView.stopLoadMore();
-        });
     }
 }

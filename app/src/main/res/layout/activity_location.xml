@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include
+        layout="@layout/toolbar"
+        android:id="@+id/location_toolbar" />
+
+    <LinearLayout
+        android:id="@+id/fix_location_container"
+        android:layout_height="40dip"
+        android:layout_marginTop="20dip"
+        android:layout_marginBottom="20dip"
+        android:layout_width="match_parent"
+        android:orientation="horizontal">
+
+        <FrameLayout
+            android:layout_height="match_parent"
+            android:layout_width="wrap_content">
+
+            <ProgressBar
+                android:id="@+id/location_progressbar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|center_horizontal"
+                android:indeterminate="false" />
+
+            <ImageView
+                android:id="@+id/location_iv_current_location"
+                android:layout_height="match_parent"
+                android:layout_width="wrap_content"
+                android:scaleType="center"
+                android:src="@drawable/ic_launcher" />
+        </FrameLayout>
+
+        <TextView
+            android:id="@+id/location_tv"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textSize="18sp"
+            android:gravity="center_vertical|left"
+            android:text="@string/on_location" />
+    </LinearLayout>
+
+    <ListView
+
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:id="@+id/location_lv" />
+</LinearLayout>

@@ -12,6 +12,7 @@ import android.util.Log;
 import com.zuijiao.android.zuijiao.model.Gourmet;
 import com.zuijiao.android.zuijiao.model.Gourmets;
 import com.zuijiao.android.zuijiao.model.user.TinyUser;
+import com.zuijiao.entity.SimpleLocation;
 import com.zuijiao.utils.StrUtil;
 
 import net.zuijiao.android.zuijiao.R;
@@ -134,6 +135,81 @@ public class DBOpenHelper extends SQLiteOpenHelper {
         return db;
     }
 
+    public ArrayList<SimpleLocation> getProvinceList() {
+        SQLiteDatabase db = getLocationDb();
+        ArrayList<SimpleLocation> result = new ArrayList<>();
+        Cursor cursor = null;
+        try {
+            cursor = db.query("location", null, "type = ?", new String[]{1 + ""}, null, null, null);
+            if (cursor != null && cursor.getCount() > 0) {
+                cursor.moveToFirst();
+                while (!cursor.isAfterLast()) {
+                    SimpleLocation location = new SimpleLocation();
+                    location.setId(cursor.getInt(cursor.getColumnIndex("id")));
+                    location.setName(cursor.getString(cursor.getColumnIndex("name")));
+                    location.setP_id(cursor.getInt(cursor.getColumnIndex("p_id")));
+                    location.setType(cursor.getInt(cursor.getColumnIndex("type")));
+                    result.add(location);
+                    cursor.moveToNext();
+                }
+            }
+        } catch (Exception e) {
+            updateLocationDb();
+            result = getProvinceList();
+        } finally {
+            try {
+                cursor.close();
+                db.close();
+            } catch (Throwable t) {
+                t.printStackTrace();
+            }
+        }
+        return result;
+    }
+
+    public ArrayList<SimpleLocation> getCitiesByProvinceId(int id) {
+        SQLiteDatabase db = getLocationDb();
+        ArrayList<SimpleLocation> result = new ArrayList<>();
+        Cursor cursor = null;
+        try {
+            cursor = db.query("location", null, "p_id = ?", new String[]{id + ""}, null, null, null);
+            if (cursor != null && cursor.getCount() > 0) {
+                cursor.moveToFirst();
+                while (!cursor.isAfterLast()) {
+                    SimpleLocation location = new SimpleLocation();
+                    location.setId(cursor.getInt(cursor.getColumnIndex("id")));
+                    location.setName(cursor.getString(cursor.getColumnIndex("name")));
+                    location.setP_id(cursor.getInt(cursor.getColumnIndex("p_id")));
+                    location.setType(cursor.getInt(cursor.getColumnIndex("type")));
+                    result.add(location);
+                    cursor.moveToNext();
+                }
+            }
+        } catch (Exception e) {
+            updateLocationDb();
+            result = getProvinceList();
+        } finally {
+            try {
+                cursor.close();
+                db.close();
+            } catch (Throwable t) {
+                t.printStackTrace();
+            }
+        }
+        return result;
+    }
+
+    public void updateLocationDb() {
+        DB_PATH = "/data"
+                + Environment.getDataDirectory().getAbsolutePath() + File.separator + mContext.getPackageName() + File.separator + "location.db";
+        try {
+            new File(DB_PATH).delete();
+        } catch (Throwable t) {
+
+        }
+        copyLocationDb(mContext);
+    }
+
     public String getLocationByIds(int provinceId, int cityId) {
         SQLiteDatabase db = getLocationDb();
         String province = "";
@@ -173,6 +249,7 @@ public class DBOpenHelper extends SQLiteOpenHelper {
         if (province.equals(city)) {
             return city;
         }
+        db.close();
         return province + city;
     }
 
@@ -201,7 +278,13 @@ public class DBOpenHelper extends SQLiteOpenHelper {
         values.put(DBConstans.COLUMN_GOURMET_USER_ID, gourmet.getUser().getIdentifier());
         synchronized (db) {
             try {
-                db.insert(DBConstans.TABLE_GOURMET, null, values);
+                Cursor cursor = db.query(DBConstans.TABLE_GOURMET, null, DBConstans.COLUMN_GOURMET_ID + " = ?", new String[]{gourmet.getIdentifier() + ""}, null, null, null);
+                if (cursor != null && cursor.getCount() != 0) {
+                    cursor.close();
+                    db.update(DBConstans.TABLE_GOURMET, values, DBConstans.COLUMN_GOURMET_ID + " = ?", new String[]{gourmet.getIdentifier() + ""});
+                } else {
+                    db.insert(DBConstans.TABLE_GOURMET, null, values);
+                }
             } catch (Exception e) {
                 return false;
             }
@@ -370,5 +453,6 @@ public class DBOpenHelper extends SQLiteOpenHelper {
             return false;
         }
     }
+
 
 }

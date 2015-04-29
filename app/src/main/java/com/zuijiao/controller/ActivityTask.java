@@ -10,6 +10,8 @@ import android.content.Context;
 import android.graphics.Typeface;
 
 import com.facebook.stetho.Stetho;
+import com.facebook.stetho.okhttp.StethoInterceptor;
+import com.squareup.okhttp.Interceptor;
 import com.zuijiao.android.zuijiao.network.Router;
 import com.zuijiao.utils.OSUtil;
 
@@ -29,12 +31,13 @@ public class ActivityTask extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-//        FontsOverride.setDefaultFont(this, "DEFAULT", "fonts/NotoSansHans-Light.otf");
-//
+
         File cacheDirectory = getApplicationContext().getCacheDir();
+        Interceptor interceptor = null;
 
         if (BuildConfig.DEBUG) {
             cacheDirectory = null;
+            interceptor = new StethoInterceptor();
             Stetho.initialize(
                     Stetho.newInitializerBuilder(this)
                             .enableDumpapp(Stetho.defaultDumperPluginsProvider(this))
@@ -42,7 +45,7 @@ public class ActivityTask extends Application {
                             .build());
         }
 
-        Router.setup(BuildConfig.Base_Url, cacheDirectory);
+        Router.setup(BuildConfig.Base_Url, cacheDirectory, interceptor);
     }
 
     public static ActivityTask getInstance() {

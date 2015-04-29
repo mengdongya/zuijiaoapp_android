@@ -77,7 +77,7 @@ public class TestClass {
     }
 
     public static void main(String[] args) throws NoSuchAlgorithmException {
-        Router.setup("http://api.zuijiaodev.com", null);
+        Router.setup("http://api.zuijiaodev.com", null, null);
         fetchRecommendation();
     }
 

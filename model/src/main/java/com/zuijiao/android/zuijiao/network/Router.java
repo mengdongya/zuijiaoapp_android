@@ -1,8 +1,8 @@
 package com.zuijiao.android.zuijiao.network;
 
-import com.facebook.stetho.okhttp.StethoInterceptor;
 import com.google.gson.GsonBuilder;
 import com.squareup.okhttp.Interceptor;
+import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.RequestBody;
@@ -40,13 +40,13 @@ public class Router {
         return instance;
     }
 
-    public static void setup(String baseUrl, File cacheDirectory) {
+    public static void setup(String baseUrl, File cacheDirectory, Interceptor networkInterceptor) {
         if (instance == null) {
-            instance = new Router(baseUrl, cacheDirectory);
+            instance = new Router(baseUrl, cacheDirectory, networkInterceptor);
         }
     }
 
-    private Router(String baseUrl, File cacheDirectory) {
+    private Router(String baseUrl, File cacheDirectory, Interceptor networkInterceptor) {
 
         RequestInterceptor requestInterceptor = request -> {
             if (accessToken.isPresent())
@@ -56,8 +56,7 @@ public class Router {
 
         OkHttpClient client = new OkHttpClient();
 
-
-        if (cacheDirectory != null) { // release mode
+        if (cacheDirectory != null) {
             try {
                 com.squareup.okhttp.Cache responseCache = new com.squareup.okhttp.Cache(cacheDirectory, 1024 * 1024 * 16);
                 client.setCache(responseCache);
@@ -65,8 +64,9 @@ public class Router {
                 e.printStackTrace();
             }
         }
-        else { // debug mode
-//            client.networkInterceptors().add(new StethoInterceptor());
+
+        if (networkInterceptor != null) {
+            client.networkInterceptors().add(networkInterceptor);
         }
 
         restAdapter = new RestAdapter.Builder()

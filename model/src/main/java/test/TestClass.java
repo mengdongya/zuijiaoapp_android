@@ -1,6 +1,7 @@
 package test;
 
 import com.zuijiao.android.util.Optional;
+import com.zuijiao.android.util.functional.LambdaExpression;
 import com.zuijiao.android.zuijiao.model.Gourmet;
 import com.zuijiao.android.zuijiao.model.Gourmets;
 import com.zuijiao.android.zuijiao.network.Router;
@@ -9,6 +10,8 @@ import com.zuijiao.android.zuijiao.network.RouterOAuth;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.sql.Timestamp;
+import java.util.Date;
 
 import javax.xml.bind.DatatypeConverter;
 
@@ -54,31 +57,38 @@ public class TestClass {
         System.out.println("MD5(2): " + DatatypeConverter.printHexBinary(result));
     }
 
-    static void fetchRecommendation() {
+    static LambdaExpression fetchRecommendation() {
+        return () -> {
+            RouterGourmet.INSTANCE.fetchOurChoice(null
+                    , null
+                    , 20
+                    , (Gourmets gourmets) -> {
+                for (Gourmet gourmet : gourmets.getGourmets()) {
+                    System.out.println(gourmet.getName());
+                }
+            }
+                    , (String errorString) -> {
+                System.out.println(errorString);
+            });
+        };
+    }
+
+    static void testOp(LambdaExpression expression) {
         RouterOAuth.INSTANCE.loginEmailRoutine("2",
                 "c81e728d9d4c2f636f067f89cc14862c",
                 Optional.empty(),
                 Optional.empty(),
-                () -> {
-                    RouterGourmet.INSTANCE.fetchOurChoice(null
-                            , null
-                            , 20
-                            , (Gourmets gourmets) -> {
-                        for (Gourmet gourmet : gourmets.getGourmets()) {
-                            System.out.println(gourmet.getName());
-                        }
-                    }
-                            , (String errorString) -> {
-                        System.out.println(errorString);
-                    });
-                },
+                () -> expression.action(),
                 errorMessage -> System.out.println("failure")
         );
     }
 
     public static void main(String[] args) throws NoSuchAlgorithmException {
-        Router.setup("http://api.zuijiaodev.com", null, null);
-        fetchRecommendation();
+//        Router.setup("http://api.zuijiaodev.com", null, null);
+//        testOp(fetchRecommendation());
+
+        System.out.println(System.currentTimeMillis());
+
     }
 
 }

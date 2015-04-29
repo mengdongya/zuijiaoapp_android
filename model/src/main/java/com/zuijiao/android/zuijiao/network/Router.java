@@ -2,11 +2,9 @@ package com.zuijiao.android.zuijiao.network;
 
 import com.google.gson.GsonBuilder;
 import com.squareup.okhttp.Interceptor;
-import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.RequestBody;
-import com.squareup.okhttp.Response;
 import com.zuijiao.android.util.Optional;
 import com.zuijiao.android.zuijiao.model.user.TinyUser;
 
@@ -15,7 +13,6 @@ import java.io.IOException;
 import java.util.List;
 
 import okio.Buffer;
-import okio.BufferedSink;
 import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
 import retrofit.client.OkClient;
@@ -51,10 +48,27 @@ public class Router {
         RequestInterceptor requestInterceptor = request -> {
             if (accessToken.isPresent())
                 request.addHeader("Authorization", "Bearer " + accessToken.get());
-                request.addHeader("X-Request-Checksum", "haha");
         };
 
         OkHttpClient client = new OkHttpClient();
+
+
+        client.interceptors().add(chain -> {
+            Request request = chain.request();
+            Request.Builder builder = request.newBuilder();
+
+            RequestBody requestBody = request.body();
+            String checksum = "default value";
+            if ("POST".equals(request.method()) && requestBody != null) {
+                Buffer buffer = new Buffer();
+                requestBody.writeTo(buffer);
+
+                checksum = buffer.readUtf8();
+            }
+            builder.addHeader("X-Request-Checksum", checksum);
+
+            return chain.proceed(builder.build());
+        });
 
         if (cacheDirectory != null) {
             try {
@@ -97,6 +111,10 @@ public class Router {
         }
         stringBuilder.append("]");
         return stringBuilder.toString();
+    }
+
+    private String generateChecksum(String requestBody, String privateKey) {
+        return null;
     }
 
     // Modules

@@ -24,6 +24,7 @@ android {
             buildConfigField "String", "Base_Url", "\"http://api.zuijiaodev.com\""
             buildConfigField "String", "Avatar_Base_Url", "\"/debug/Avatar\""
             buildConfigField "String", "Gourmet_Base_Url", "\"/debug/Gourmet\""
+            buildConfigField "String", "Request_Key", "\"zuijiaoapp\""
             signingConfig signingConfigs.release
         }
 
@@ -33,6 +34,7 @@ android {
             buildConfigField "String", "Base_Url", "\"http://api.zuijiao.net\""
             buildConfigField "String", "Avatar_Base_Url", "\"/Avatar\""
             buildConfigField "String", "Gourmet_Base_Url", "\"/Gourmet\""
+            buildConfigField "String", "Request_Key", "\"zuijiaoapp\""
             signingConfig signingConfigs.release
         }
     }

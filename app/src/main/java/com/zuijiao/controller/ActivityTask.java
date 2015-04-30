@@ -45,7 +45,7 @@ public class ActivityTask extends Application {
                             .build());
         }
 
-        Router.setup(BuildConfig.Base_Url, cacheDirectory, interceptor);
+        Router.setup(BuildConfig.Base_Url, BuildConfig.Request_Key, cacheDirectory, interceptor);
     }
 
     public static ActivityTask getInstance() {

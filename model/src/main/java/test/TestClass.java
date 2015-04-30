@@ -1,5 +1,6 @@
 package test;
 
+import com.zuijiao.android.util.MD5;
 import com.zuijiao.android.util.Optional;
 import com.zuijiao.android.util.functional.LambdaExpression;
 import com.zuijiao.android.zuijiao.model.Gourmet;
@@ -12,6 +13,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Timestamp;
 import java.util.Date;
+import java.util.zip.CRC32;
 
 import javax.xml.bind.DatatypeConverter;
 
@@ -84,10 +86,10 @@ public class TestClass {
     }
 
     public static void main(String[] args) throws NoSuchAlgorithmException {
-//        Router.setup("http://api.zuijiaodev.com", null, null);
-//        testOp(fetchRecommendation());
+        Router.setup("http://api.zuijiaodev.com", "zuijiaoapp", null, null);
+        testOp(fetchRecommendation());
 
-        System.out.println(System.currentTimeMillis());
+
 
     }
 

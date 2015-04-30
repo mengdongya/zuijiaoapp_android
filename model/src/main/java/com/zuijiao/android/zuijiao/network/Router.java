@@ -25,25 +25,30 @@ import retrofit.converter.GsonConverter;
  */
 public class Router {
 
-    private static Router instance = null;
-
     public static final String PicBaseUrl = "http://pic.zuijiao.net";
+
+    private static Router instance = null;
 
     RestAdapter restAdapter;
     Optional<String> accessToken = Optional.empty();
     Optional<TinyUser> currentUser = Optional.empty();
 
+
+    private String key;
+
+
     public static Router getInstance() {
         return instance;
     }
 
-    public static void setup(String baseUrl, File cacheDirectory, Interceptor networkInterceptor) {
+    public static void setup(String baseUrl, String key, File cacheDirectory, Interceptor networkInterceptor) {
         if (instance == null) {
-            instance = new Router(baseUrl, cacheDirectory, networkInterceptor);
+            instance = new Router(baseUrl, key, cacheDirectory, networkInterceptor);
         }
     }
 
-    private Router(String baseUrl, File cacheDirectory, Interceptor networkInterceptor) {
+    private Router(String baseUrl, String key, File cacheDirectory, Interceptor networkInterceptor) {
+        this.key = key;
 
         RequestInterceptor requestInterceptor = request -> {
             if (accessToken.isPresent())
@@ -53,22 +58,7 @@ public class Router {
         OkHttpClient client = new OkHttpClient();
 
 
-        client.interceptors().add(chain -> {
-            Request request = chain.request();
-            Request.Builder builder = request.newBuilder();
-
-            RequestBody requestBody = request.body();
-            String checksum = "default value";
-            if ("POST".equals(request.method()) && requestBody != null) {
-                Buffer buffer = new Buffer();
-                requestBody.writeTo(buffer);
-
-                checksum = buffer.readUtf8();
-            }
-            builder.addHeader("X-Request-Checksum", checksum);
-
-            return chain.proceed(builder.build());
-        });
+        client.interceptors().add(addRequestChecksumIntecepter());
 
         if (cacheDirectory != null) {
             try {
@@ -84,7 +74,7 @@ public class Router {
         }
 
         restAdapter = new RestAdapter.Builder()
-                .setConverter(new GsonConverter(new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX").create()))
+                .setConverter(new GsonConverter(new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ssZ").create()))
                 .setEndpoint(baseUrl)
                 .setRequestInterceptor(requestInterceptor)
                 .setClient(new OkClient(client))
@@ -113,8 +103,23 @@ public class Router {
         return stringBuilder.toString();
     }
 
-    private String generateChecksum(String requestBody, String privateKey) {
-        return null;
+    private Interceptor addRequestChecksumIntecepter() {
+        return chain -> {
+            Request request = chain.request();
+            Request.Builder builder = request.newBuilder();
+
+            RequestBody requestBody = request.body();
+            String bodyString = null;
+            if ("POST".equals(request.method()) && requestBody != null) {
+                Buffer buffer = new Buffer();
+                requestBody.writeTo(buffer);
+                bodyString = buffer.readUtf8();
+            }
+            String checksum = RequestChecksumGenerator.generateCheckSum(bodyString);
+            builder.addHeader("X-Request-Checksum", checksum);
+
+            return chain.proceed(builder.build());
+        };
     }
 
     // Modules

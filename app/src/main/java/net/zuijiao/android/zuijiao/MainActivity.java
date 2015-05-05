@@ -318,7 +318,6 @@ public final class MainActivity extends BaseActivity implements MainFragment.Mai
             mThirdPartyUserHead.setVisibility(View.VISIBLE);
             mThirdPartyUserName.setText(auth.getUserName());
             try {
-                System.err.println("URLXXXXX_" + auth.getHeadPath());
                 Picasso.with(mContext)
                         .load(auth.getHeadPath())
                         .placeholder(R.drawable.default_user_head)

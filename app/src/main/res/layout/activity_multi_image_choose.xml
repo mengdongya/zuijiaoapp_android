@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include
+        android:id="@+id/multi_image_choose_toolbar"
+        layout="@layout/toolbar" />
+
+    <GridView
+        android:verticalSpacing="4dp"
+        android:listSelector="@null"
+        android:layout_centerHorizontal="true"
+        android:horizontalSpacing="4dp"
+        android:padding="5dp"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:layout_weight="1"
+        android:numColumns="3"
+        android:id="@+id/multi_image_choose_grid_view" />
+
+    <Button
+        android:id="@+id/multi_image_choose_sure_btn"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:text="@string/sure_with_num"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        android:elevation="5dip"
+        android:gravity="center" />
+</LinearLayout>

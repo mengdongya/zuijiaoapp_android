@@ -132,6 +132,11 @@ public class MessageFragment extends Fragment implements FragmentDataListener,
         networkStep(false);
     }
 
+    @Override
+    public void onTouchDown() {
+
+    }
+
     private void networkStep(boolean bRefresh) {
         if (Router.getInstance().getCurrentUser().equals(Optional.empty())) {
             ((BaseActivity) getActivity()).tryLoginFirst(() -> {

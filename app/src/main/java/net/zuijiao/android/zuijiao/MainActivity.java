@@ -63,7 +63,7 @@ public final class MainActivity extends BaseActivity implements MainFragment.Mai
     private Button mBtnLogin = null;
     // setting list in drawer view
     @ViewInject(R.id.lv_drawe_items)
-    private ListView mSettingList = null;
+    private ListView mMainTabsTitle = null;
     @ViewInject(R.id.tv_user_name)
     private TextView mThirdPartyUserName = null;
     @ViewInject(R.id.iv_user_head)
@@ -80,16 +80,17 @@ public final class MainActivity extends BaseActivity implements MainFragment.Mai
     @ViewInject(R.id.container_user_info)
     private LinearLayout mUserInfoArea = null;
     @ViewInject(R.id.lv_drawe_items2)
-    private ListView mSettingList2 = null;
+    private ListView mSettingList = null;
     //    private String[] settingStr;
     private ArrayList<Fragment> mFragmentList = null;
     private MainFragment mMainFragment = null;
     private MainFragment mFavorFragment = null;
     private MessageFragment mMsgFragment = null;
+    private NotificationFragment mNotifyFragment = null;
     private FragmentManager mFragmentMng = null;
     private FragmentTransaction mFragmentTransaction = null;
     private String[] titles = null;
-    private OnItemClickListener mSetting1Listener = new OnItemClickListener() {
+    private OnItemClickListener mTabsListener = new OnItemClickListener() {
 
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position,
@@ -107,6 +108,8 @@ public final class MainActivity extends BaseActivity implements MainFragment.Mai
             mDrawerLayout.closeDrawer(Gravity.LEFT);
         }
     };
+    private int[] mTabImages = {R.drawable.setting_home, R.drawable.setting_recommend, R.drawable.setting_favor, R.drawable.setting_msg};
+    private int[] mTabTitles = {R.string.main_page, R.string.recommend_page, R.string.favor_page, R.string.msg_page};
     private View mLocationView = null;
     private BadgeView mBadgeView = null;
     private OnClickListener mLocationListener = new OnClickListener() {
@@ -155,7 +158,7 @@ public final class MainActivity extends BaseActivity implements MainFragment.Mai
         }
     };
     private ArrayList<String> mLabelData = new ArrayList<String>();
-    private BaseAdapter mSettingListAdapter = new BaseAdapter() {
+    private BaseAdapter mTabTitleAdapter = new BaseAdapter() {
         private ArrayList<String> data = new ArrayList<String>();
 
         @Override
@@ -168,19 +171,22 @@ public final class MainActivity extends BaseActivity implements MainFragment.Mai
                     .findViewById(R.id.drawer_setting_item_text);
             TextView textMsg = (TextView) contentView
                     .findViewById(R.id.drawer_setting_item_text2);
-            if (position == 0) {
-                image.setImageResource(R.drawable.setting_home);
-                textView.setText(R.string.main_page);
-                textMsg.setVisibility(View.GONE);
-            } else if (position == 1) {
-                image.setImageResource(R.drawable.setting_favor);
-                textView.setText(R.string.favor_page);
-                textMsg.setVisibility(View.GONE);
-            } else if (position == 2) {
-                image.setImageResource(R.drawable.setting_msg);
-                textView.setText(R.string.msg_page);
-                textMsg.setVisibility(View.GONE);
-            }
+            image.setImageResource(mTabImages[position]);
+            textView.setText(getString(mTabTitles[position]));
+            textMsg.setVisibility(View.GONE);
+//            if (position == 0) {
+//                image.setImageResource(R.drawable.setting_home);
+//                textView.setText(R.string.main_page);
+//                textMsg.setVisibility(View.GONE);
+//            } else if (position == 1) {
+//                image.setImageResource(R.drawable.setting_favor);
+//                textView.setText(R.string.favor_page);
+//                textMsg.setVisibility(View.GONE);
+//            } else if (position == 2) {
+//                image.setImageResource(R.drawable.setting_msg);
+//                textView.setText(R.string.msg_page);
+//                textMsg.setVisibility(View.GONE);
+//            }
             return contentView;
         }
 
@@ -197,11 +203,11 @@ public final class MainActivity extends BaseActivity implements MainFragment.Mai
         @Override
         public int getCount() {
             // TODO Auto-generated method stub
-            return 3;
+            return 4;
         }
     };
     private String[] mSettingArray = null;
-    private BaseAdapter mSettingAdapter2 = new BaseAdapter() {
+    private BaseAdapter mSettingAdapter = new BaseAdapter() {
         @Override
         public int getCount() {
             return mSettingArray.length;
@@ -224,7 +230,7 @@ public final class MainActivity extends BaseActivity implements MainFragment.Mai
             return tv;
         }
     };
-    private OnItemClickListener mSetting2Listener = new OnItemClickListener() {
+    private OnItemClickListener mSettingListener = new OnItemClickListener() {
 
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position,
@@ -243,36 +249,41 @@ public final class MainActivity extends BaseActivity implements MainFragment.Mai
                         ConcerningActivity.class);
                 startActivity(feedBackIntent);
             } else if (position == 2) {
-                View logoutView = LayoutInflater.from(getApplicationContext()).inflate(
-                        R.layout.logout_dialog, null);
-                AlertDialog dialog = new AlertDialog.Builder(MainActivity.this).setView(logoutView).create();
-                logoutView.findViewById(R.id.logout_btn_cancel).setOnClickListener((View v) -> {
-                    dialog.dismiss();
-                });
-                logoutView.findViewById(R.id.logout_btn_confirm).setOnClickListener((View v) -> {
-                    dialog.dismiss();
-                    createDialog();
-                    ThirdPartySDKManager.getInstance(mContext).logout(mContext);
-                    PreferenceManager.getInstance(mContext).clearThirdPartyLoginMsg();
-                    mFavorFragment.clearFavorData();
-                    mMsgFragment.clearMessage();
-                    Router.getOAuthModule().visitor(() -> {
-                        Toast.makeText(mContext, getString(R.string.logout_msg), Toast.LENGTH_SHORT).show();
-                        mBtnLogin.setVisibility(View.VISIBLE);
-                        mThirdPartyUserName.setVisibility(View.GONE);
-                        mThirdPartyUserHead.setVisibility(View.GONE);
-                        mSettingArray = getResources().getStringArray(R.array.settings2);
-                        mSettingList2.setAdapter(mSettingAdapter2);
-                        finallizeDialog();
-                    }, errorMessage -> {
-                        finallizeDialog();
-                    });
-                });
-                dialog.show();
+                Intent settingIntent = new Intent(mContext, SettingActivity.class);
+                startActivity(settingIntent);
             }
         }
     };
 
+    private void logout() {
+        View logoutView = LayoutInflater.from(getApplicationContext()).inflate(
+                R.layout.logout_dialog, null);
+        AlertDialog dialog = new AlertDialog.Builder(MainActivity.this).setView(logoutView).create();
+        logoutView.findViewById(R.id.logout_btn_cancel).setOnClickListener((View v) -> {
+            dialog.dismiss();
+        });
+        logoutView.findViewById(R.id.logout_btn_confirm).setOnClickListener((View v) -> {
+            dialog.dismiss();
+            createDialog();
+            ThirdPartySDKManager.getInstance(mContext).logout(mContext);
+            PreferenceManager.getInstance(mContext).clearThirdPartyLoginMsg();
+            mFavorFragment.clearFavorData();
+            mMsgFragment.clearMessage();
+            Router.getOAuthModule().visitor(() -> {
+                Toast.makeText(mContext, getString(R.string.logout_msg), Toast.LENGTH_SHORT).show();
+                mBtnLogin.setVisibility(View.VISIBLE);
+                mThirdPartyUserName.setVisibility(View.GONE);
+                mThirdPartyUserHead.setVisibility(View.GONE);
+                mSettingArray = getResources().getStringArray(R.array.settings2);
+                mSettingList.setAdapter(mSettingAdapter);
+                finallizeDialog();
+            }, errorMessage -> {
+                finallizeDialog();
+            });
+        });
+        dialog.show();
+
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -319,10 +330,10 @@ public final class MainActivity extends BaseActivity implements MainFragment.Mai
             mSettingArray = getResources()
                     .getStringArray(
                             R.array.settings1);
-            mSettingList2.setAdapter(mSettingAdapter2);
+            mSettingList.setAdapter(mSettingAdapter);
         } else {
             mSettingArray = getResources().getStringArray(R.array.settings2);
-            mSettingList2.setAdapter(mSettingAdapter2);
+            mSettingList.setAdapter(mSettingAdapter);
             ;
             mBtnLogin.setVisibility(View.VISIBLE);
             mThirdPartyUserName.setVisibility(View.GONE);
@@ -330,7 +341,7 @@ public final class MainActivity extends BaseActivity implements MainFragment.Mai
         }
         mUserInfoArea.setOnClickListener((View v) -> {
         });
-        mSettingList2.setOnItemClickListener(mSetting2Listener);
+        mSettingList.setOnItemClickListener(mSettingListener);
         titles = getResources().getStringArray(R.array.fragment_title);
         mToolBar.setTitle(titles[0]);
         mBadgeView = initBadgeView();
@@ -340,8 +351,8 @@ public final class MainActivity extends BaseActivity implements MainFragment.Mai
         mDrawerToggle.syncState();
         mDrawerLayout.setDrawerListener(mDrawerToggle);
         mBtnLogin.setOnClickListener(loginBtnListener);
-        mSettingList.setAdapter(mSettingListAdapter);
-        mSettingList.setOnItemClickListener(mSetting1Listener);
+        mMainTabsTitle.setAdapter(mTabTitleAdapter);
+        mMainTabsTitle.setOnItemClickListener(mTabsListener);
         mThirdPartyUserHead.setOnClickListener(mUserInfoDetail);
         mFragmentList = new ArrayList<Fragment>();
         mMainFragment = new MainFragment(MainFragment.MAIN_PAGE, MainActivity.this);
@@ -350,6 +361,8 @@ public final class MainActivity extends BaseActivity implements MainFragment.Mai
         mFragmentList.add(mFavorFragment);
         mMsgFragment = new MessageFragment(MainActivity.this);
         mFragmentList.add(mMsgFragment);
+        mNotifyFragment = new NotificationFragment();
+        mFragmentList.add(mNotifyFragment);
         mFragmentMng = getSupportFragmentManager();
         mFragmentTransaction = mFragmentMng.beginTransaction();
         mFragmentTransaction.add(R.id.main_content_container,
@@ -449,12 +462,7 @@ public final class MainActivity extends BaseActivity implements MainFragment.Mai
             mSettingArray = getResources()
                     .getStringArray(
                             R.array.settings1);
-            mSettingList2.setAdapter(mSettingAdapter2);
-//            mSettingList2
-//                    .setAdapter(new ArrayAdapter<String>(
-//                            MainActivity.this,
-//                            android.R.layout.simple_list_item_1,
-//                            settingStr));
+            mSettingList.setAdapter(mSettingAdapter);
         }
     }
 

@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.location.Address;
 import android.location.Criteria;
 import android.location.Geocoder;
+import android.location.GpsSatellite;
+import android.location.GpsStatus;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -25,8 +27,11 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.baidu.location.LocationClient;
+import com.baidu.location.LocationClientOption;
 import com.lidroid.xutils.view.annotation.ContentView;
 import com.lidroid.xutils.view.annotation.ViewInject;
+import com.zuijiao.controller.ActivityTask;
 import com.zuijiao.db.DBOpenHelper;
 import com.zuijiao.entity.SimpleLocation;
 
@@ -47,10 +52,12 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 @ContentView(R.layout.activity_location)
 public class LocationActivity extends BaseActivity {
+    LocationManager locationManager;
     @ViewInject(R.id.fix_location_container)
     private LinearLayout mFixLocation = null;
     @ViewInject(R.id.location_toolbar)
@@ -64,9 +71,12 @@ public class LocationActivity extends BaseActivity {
     @ViewInject(R.id.location_lv)
     private ListView mListView = null;
     private String[] mDirectCities = null;
-    private String mCurrentLocation = "";
+    //    private String mCurrentLocation = "";
     private ArrayList<SimpleLocation> locations = null;
     private int mProvinceId = -1;
+    private static final String BAIDU_KEY = "4lE0F9aM8Q3o9bGREEk9eFHe";
+    private LocationClient mLocationClient;
+    private SimpleLocation mCurrentLocation = null;
     private BaseAdapter mAdapter = new BaseAdapter() {
         @Override
         public int getCount() {
@@ -99,15 +109,14 @@ public class LocationActivity extends BaseActivity {
             holder.tvName.setText(location.getName());
             if (isDirectCity(location.getName()) || mProvinceId != -1) {
                 holder.image.setVisibility(View.GONE);
-            } else if (mCurrentLocation != null && mCurrentLocation.equals(location.getName())) {
-                holder.image.setVisibility(View.VISIBLE);
+//            } else if (mCurrentLocation != null && mCurrentLocation.equals(location.getName())) {
+//                holder.image.setVisibility(View.VISIBLE);
             } else {
                 holder.image.setVisibility(View.VISIBLE);
             }
             return convertView;
         }
     };
-
     private AdapterView.OnItemClickListener mItemListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -124,9 +133,7 @@ public class LocationActivity extends BaseActivity {
             }
         }
     };
-    //创建位置监听器
-    private LocationListener locationListener = new LocationListener() {
-        //位置发生改变时调用
+    private LocationListener locationListener2 = new LocationListener() {
         @Override
         public void onLocationChanged(Location location) {
             Log.d("Location", "onLocationChanged");
@@ -134,19 +141,62 @@ public class LocationActivity extends BaseActivity {
             Log.d("Location", "onLocationChanged location" + location.getLongitude());
         }
 
-        //provider失效时调用
         @Override
         public void onProviderDisabled(String provider) {
             Log.d("Location", "onProviderDisabled");
         }
 
-        //provider启用时调用
         @Override
         public void onProviderEnabled(String provider) {
             Log.d("Location", "onProviderEnabled");
         }
 
-        //状态改变时调用
+        @Override
+        public void onStatusChanged(String provider, int status, Bundle extras) {
+            Log.d("Location", "onStatusChanged");
+        }
+    };
+    private GpsStatus.Listener gpsListener = new GpsStatus.Listener() {
+        @Override
+        public void onGpsStatusChanged(int event) {
+            GpsStatus gpsstatus = locationManager.getGpsStatus(null);
+            switch (event) {
+                case GpsStatus.GPS_EVENT_FIRST_FIX:
+                    break;
+                case GpsStatus.GPS_EVENT_STARTED:
+                    break;
+                case GpsStatus.GPS_EVENT_SATELLITE_STATUS:
+                    Toast.makeText(mContext, "GPS_EVENT_SATELLITE_STATUS", Toast.LENGTH_SHORT).show();
+                    Iterable<GpsSatellite> allSatellites = gpsstatus.getSatellites();
+                    Iterator<GpsSatellite> it = allSatellites.iterator();
+                    int count = 0;
+                    while (it.hasNext()) {
+                        count++;
+                    }
+                    Toast.makeText(mContext, "Satellite Count:" + count, Toast.LENGTH_SHORT).show();
+                    break;
+                case GpsStatus.GPS_EVENT_STOPPED:
+                    Log.d("Location", "GPS_EVENT_STOPPED");
+                    break;
+            }
+        }
+    };
+    private LocationListener locationListener = new LocationListener() {
+        @Override
+        public void onLocationChanged(Location location) {
+            Log.d("Location", "onLocationChanged");
+        }
+
+        @Override
+        public void onProviderDisabled(String provider) {
+            Log.d("Location", "onProviderDisabled");
+        }
+
+        @Override
+        public void onProviderEnabled(String provider) {
+            Log.d("Location", "onProviderEnabled");
+        }
+
         @Override
         public void onStatusChanged(String provider, int status, Bundle extras) {
             Log.d("Location", "onStatusChanged");
@@ -180,14 +230,7 @@ public class LocationActivity extends BaseActivity {
         mFixLocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-
-                    }
-                }).start();
-                ;
-                getLocationByNetWork();
+                InitLocation();
             }
         });
     }
@@ -222,66 +265,57 @@ public class LocationActivity extends BaseActivity {
         });
     }
 
-    private void getLocationByNetWork() {
-        //获取到LocationManager对象
-        LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-        //创建一个Criteria对象
-        Criteria criteria = new Criteria();
-        //设置粗略精确度
-        criteria.setAccuracy(Criteria.ACCURACY_COARSE);
-        //设置是否需要返回海拔信息
-        criteria.setAltitudeRequired(false);
-        //设置是否需要返回方位信息
-        criteria.setBearingRequired(false);
-        //设置是否允许付费服务
-        criteria.setCostAllowed(true);
-        //设置电量消耗等级
-        criteria.setPowerRequirement(Criteria.POWER_HIGH);
-        //设置是否需要返回速度信息
-        criteria.setSpeedRequired(false);
+    private boolean getLocationByGPS() {
+        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
         //根据设置的Criteria对象，获取最符合此标准的provider对象
+        String currentProvider = locationManager.getProvider(LocationManager.GPS_PROVIDER).getName();
+
+        Location currentLocation = locationManager.getLastKnownLocation(currentProvider);
+        if (currentLocation == null) {
+            locationManager.requestLocationUpdates(currentProvider, 0, 0, locationListener2);
+        }
+        locationManager.addGpsStatusListener(gpsListener);
+
+        currentLocation = locationManager.getLastKnownLocation(currentProvider);
+        if (currentLocation != null) {
+            Log.d("Location", "Latitude: " + currentLocation.getLatitude());
+            Log.d("Location", "location: " + currentLocation.getLongitude());
+            return true;
+        } else {
+            Log.d("Location", "Latitude: " + 0);
+            Log.d("Location", "location: " + 0);
+        }
+        return false;
+    }
+
+    private boolean getLocationByNetWork() {
+        LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        Criteria criteria = new Criteria();
+        criteria.setAccuracy(Criteria.ACCURACY_COARSE);
+        criteria.setAltitudeRequired(false);
+        criteria.setBearingRequired(false);
+        criteria.setCostAllowed(true);
+        criteria.setPowerRequirement(Criteria.POWER_HIGH);
+        criteria.setSpeedRequired(false);
+
         String currentProvider = locationManager.getBestProvider(criteria, true);
         Log.d("Location", "currentProvider: " + currentProvider);
-        //根据当前provider对象获取最后一次位置信息
         Location currentLocation = locationManager.getLastKnownLocation(currentProvider);
-        //如果位置信息为null，则请求更新位置信息
         if (currentLocation == null) {
-            locationManager.requestLocationUpdates(currentProvider, 0, 0, locationListener);
+            locationManager.requestLocationUpdates(currentProvider, 0, 0, locationListener2);
         }
-        //直到获得最后一次位置信息为止，如果未获得最后一次位置信息，则显示默认经纬度
-        //每隔10秒获取一次位置信息
-        while (true) {
-            currentLocation = locationManager.getLastKnownLocation(currentProvider);
-            if (currentLocation != null) {
-                Log.d("Location", "Latitude: " + currentLocation.getLatitude());
-                Log.d("Location", "location: " + currentLocation.getLongitude());
-                break;
-            } else {
-                Log.d("Location", "Latitude: " + 0);
-                Log.d("Location", "location: " + 0);
-            }
-            try {
-                Thread.sleep(10000);
-            } catch (InterruptedException e) {
-                Log.e("Location", e.getMessage());
-            }
+        currentLocation = locationManager.getLastKnownLocation(currentProvider);
+        if (currentLocation != null) {
+            Log.d("Location", "Latitude: " + currentLocation.getLatitude());
+            Log.d("Location", "location: " + currentLocation.getLongitude());
+            resolveLocation(currentLocation.getLatitude(), currentLocation.getLongitude());
+            return true;
+        } else {
+            Log.d("Location", "Latitude: " + 0);
+            Log.d("Location", "location: " + 0);
+            return false;
         }
-
-        //解析地址并显示
-        Geocoder geoCoder = new Geocoder(this);
-        try {
-            int latitude = (int) currentLocation.getLatitude();
-            int longitude = (int) currentLocation.getLongitude();
-            List<Address> list = geoCoder.getFromLocation(latitude, longitude, 2);
-            for (int i = 0; i < list.size(); i++) {
-                Address address = list.get(i);
-                Toast.makeText(mContext, address.getCountryName() + address.getAdminArea() + address.getFeatureName(), Toast.LENGTH_LONG).show();
-            }
-        } catch (IOException e) {
-            Toast.makeText(mContext, e.getMessage(), Toast.LENGTH_LONG).show();
-        }
-
     }
 
     //local mobile base station locate
@@ -352,6 +386,45 @@ public class LocationActivity extends BaseActivity {
         }
         Toast.makeText(mContext, stringBuffer.toString(), Toast.LENGTH_LONG).show();
 //        txtInfo.setText();setText
+    }
+
+    private void resolveLocation(double latitude, double longitude) {
+        Geocoder geoCoder = new Geocoder(this);
+        try {
+//            int latitude = (int) currentLocation.getLatitude();
+//            int longitude = (int) currentLocation.getLongitude();
+            List<Address> list = geoCoder.getFromLocation(latitude, longitude, 2);
+            for (int i = 0; i < list.size(); i++) {
+                Address address = list.get(i);
+                mCurrentLocation = new SimpleLocation();
+//                mCurrentLocation.setName();
+                //  Toast.makeText(mContext, address.getCountryName() + address.getAdminArea() + address.getFeatureName(), Toast.LENGTH_LONG).show();
+            }
+        } catch (IOException e) {
+            Toast.makeText(mContext, e.getMessage(), Toast.LENGTH_LONG).show();
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (mLocationClient != null) {
+            mLocationClient.stop();
+        }
+    }
+
+    private void InitLocation() {
+        mLocationClient = ((ActivityTask) getApplication()).mLocationClient;
+//        mLocationClient = ((LocationApplication)getApplication()).mLocationClient;
+        LocationClientOption option = new LocationClientOption();
+        option.setLocationMode(LocationClientOption.LocationMode.Hight_Accuracy);//设置定位模式
+        option.setCoorType("bd09ll");
+        int span = 1000;
+        option.setScanSpan(5000);
+        option.setIsNeedAddress(false);
+        option.setLocationNotify(true);
+        mLocationClient.setLocOption(option);
+        mLocationClient.start();
     }
 
     private class ViewHolder {

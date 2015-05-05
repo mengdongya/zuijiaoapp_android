@@ -8,6 +8,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.DisplayMetrics;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +21,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.getbase.floatingactionbutton.FloatingActionButton;
+import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.squareup.picasso.Picasso;
 import com.zuijiao.android.util.Optional;
 import com.zuijiao.android.zuijiao.model.Gourmet;
@@ -35,6 +39,8 @@ import com.zuijiao.view.WordWrapView;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import static android.view.View.OnLongClickListener;
 
 public class MainFragment extends Fragment implements FragmentDataListener,
         MyListViewListener {
@@ -56,6 +62,9 @@ public class MainFragment extends Fragment implements FragmentDataListener,
     public static final int RECOMMEND_PAGE = 3;
     private View mContentView = null;
     private RefreshAndInitListView mListView = null;
+    private FloatingActionsMenu mAddMenu = null;
+    private FloatingActionButton mFloatButtonA = null;
+    private FloatingActionButton mFloatButtonB = null;
     private LayoutInflater mInflater = null;
     private MainAdapter mAdapter = null;
     private Context mContext = null;
@@ -64,6 +73,13 @@ public class MainFragment extends Fragment implements FragmentDataListener,
     private boolean bLogin = false;
     private Activity mActivity = null;
     private boolean bFirstInit = true;
+    private View.OnClickListener mFloatBtnListener = new View.OnClickListener() {
+
+        @Override
+        public void onClick(View v) {
+
+        }
+    };
 
     public MainFragment() {
         super();
@@ -94,6 +110,17 @@ public class MainFragment extends Fragment implements FragmentDataListener,
                 .findViewById(R.id.content_items);
         mFavorCount = (TextView) mContentView.findViewById(R.id.tv_show_favor_count);
 
+//        mFloatButton.attachToListView(mListView);
+        if (mContentType == MAIN_PAGE) {
+            mAddMenu = (FloatingActionsMenu) mContentView.findViewById(R.id.multiple_actions);
+            mAddMenu.setVisibility(View.VISIBLE);
+            mFloatButtonA = (FloatingActionButton) mContentView.findViewById(R.id.action_a);
+            mFloatButtonB = (FloatingActionButton) mContentView.findViewById(R.id.action_b);
+            mFloatButtonA.setOnClickListener(new FloatButtonListener());
+            mFloatButtonB.setOnClickListener(new FloatButtonListener());
+            mFloatButtonA.setOnLongClickListener(new FloatButtonIndicator(getString(R.string.personal_gourmet)));
+            mFloatButtonB.setOnLongClickListener(new FloatButtonIndicator(getString(R.string.store_gourmet)));
+        }
         mAdapter = new MainAdapter();
         mListView.setAdapter(mAdapter);
         if (mAdapter.getCount() < 20) {
@@ -191,6 +218,12 @@ public class MainFragment extends Fragment implements FragmentDataListener,
         }
     }
 
+    public void onTouchDown() {
+        if (mAddMenu != null && mAddMenu.isExpanded()) {
+            mAddMenu.collapse();
+        }
+    }
+
     public void clearFavorData() {
         try {
             mAdapter.gourmets.get().clear();
@@ -199,7 +232,6 @@ public class MainFragment extends Fragment implements FragmentDataListener,
             mFavorCount.setVisibility(View.GONE);
         } catch (Throwable t) {
             System.err.println("no favor");
-            ;
         }
     }
 
@@ -337,9 +369,51 @@ public class MainFragment extends Fragment implements FragmentDataListener,
         });
     }
 
-
     protected interface MainFragmentDataListener {
         public void onDataChanged();
+    }
+
+    private class FloatButtonListener implements View.OnClickListener {
+        @Override
+        public void onClick(View v) {
+            mAddMenu.collapse();
+            Intent intent = new Intent();
+            intent.setClass(mContext, EditGourmetActivity.class);
+            switch (v.getId()) {
+                case R.id.action_a:
+                    intent.putExtra("is_private_gourmet", true);
+                    break;
+                case R.id.action_b:
+                    intent.putExtra("is_private_gourmet", false);
+                    break;
+                default:
+                    break;
+            }
+            startActivity(intent);
+        }
+    }
+
+    private class FloatButtonIndicator implements OnLongClickListener {
+        private String indicator = null;
+
+        public FloatButtonIndicator(String indicator) {
+            this.indicator = indicator;
+        }
+
+        @Override
+        public boolean onLongClick(View v) {
+            DisplayMetrics metric = new DisplayMetrics();
+            mActivity.getWindowManager().getDefaultDisplay().getMetrics(metric);
+            int width = metric.widthPixels;
+            int height = metric.heightPixels;
+            int[] location = {0, 0};
+            v.getLocationInWindow(location);
+            int h = v.getHeight();
+            Toast toast = Toast.makeText(mContext, indicator, Toast.LENGTH_SHORT);
+            toast.setGravity(Gravity.RIGHT | Gravity.BOTTOM, width - location[0], height - location[1] - v.getHeight() * 2 / 3);
+            toast.show();
+            return true;
+        }
     }
 
     private class MainAdapter extends BaseAdapter {

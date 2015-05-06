@@ -4,9 +4,9 @@
     tools:context="com.example.materaialdesign.MainActivity">
 
     <item
-        android:id="@+id/action_mail"
+        android:id="@+id/action_already_read"
         android:orderInCategory="100"
-        android:title="@string/confirm"
+        android:title="@string/already_read"
         app:showAsAction="always" />
 
     <!--

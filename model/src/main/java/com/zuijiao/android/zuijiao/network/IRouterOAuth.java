@@ -13,7 +13,6 @@ import retrofit.http.POST;
 /**
  * Created by Chen Hao on 3/16/15.
  * <p>
- * 登录与注册 REST 接口
  */
 public abstract interface IRouterOAuth {
     final String RootURL = "/oauth/v1";

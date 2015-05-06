@@ -87,6 +87,7 @@ public final class MainActivity extends BaseActivity implements MainFragment.Mai
     private MainFragment mFavorFragment = null;
     private MessageFragment mMsgFragment = null;
     private NotificationFragment mNotifyFragment = null;
+    private Fragment mCurrentFragment = null;
     private FragmentManager mFragmentMng = null;
     private FragmentTransaction mFragmentTransaction = null;
     private String[] titles = null;
@@ -96,10 +97,28 @@ public final class MainActivity extends BaseActivity implements MainFragment.Mai
         public void onItemClick(AdapterView<?> parent, View view, int position,
                                 long id) {
             mFragmentTransaction = mFragmentMng.beginTransaction();
-            mFragmentTransaction.replace(R.id.main_content_container,
-                    mFragmentList.get(position));
-            mFragmentTransaction.commit();
+//            mFragmentTransaction.replace(R.id.main_content_container,
+//                    mFragmentList.get(position));
+            if (!mFragmentList.get(position).isAdded()) {
+                mFragmentTransaction.hide(mCurrentFragment).add(R.id.main_content_container, mFragmentList.get(position)).commit();
+            } else {
+                mFragmentTransaction.hide(mCurrentFragment).show(mFragmentList.get(position)).commit();
+            }
+            mCurrentFragment = mFragmentList.get(position);
             mToolBar.setTitle(titles[position]);
+
+            if (position == 3) {
+                mToolBar.setElevation(0);
+                mToolBar.getMenu().add(0, R.id.action_already_read, 1, getString(R.string.already_read))
+                        .setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS)
+                        .setOnMenuItemClickListener((MenuItem item) -> {
+                            Toast.makeText(mContext, "hao", Toast.LENGTH_SHORT).show();
+                            return false;
+                        });
+            } else {
+                mToolBar.getMenu().removeItem(R.id.action_already_read);
+                mToolBar.setElevation(30);
+            }
             if (position != 0) {
                 mLocationView.setVisibility(View.INVISIBLE);
             } else {
@@ -174,19 +193,6 @@ public final class MainActivity extends BaseActivity implements MainFragment.Mai
             image.setImageResource(mTabImages[position]);
             textView.setText(getString(mTabTitles[position]));
             textMsg.setVisibility(View.GONE);
-//            if (position == 0) {
-//                image.setImageResource(R.drawable.setting_home);
-//                textView.setText(R.string.main_page);
-//                textMsg.setVisibility(View.GONE);
-//            } else if (position == 1) {
-//                image.setImageResource(R.drawable.setting_favor);
-//                textView.setText(R.string.favor_page);
-//                textMsg.setVisibility(View.GONE);
-//            } else if (position == 2) {
-//                image.setImageResource(R.drawable.setting_msg);
-//                textView.setText(R.string.msg_page);
-//                textMsg.setVisibility(View.GONE);
-//            }
             return contentView;
         }
 
@@ -284,6 +290,7 @@ public final class MainActivity extends BaseActivity implements MainFragment.Mai
         dialog.show();
 
     }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -366,6 +373,7 @@ public final class MainActivity extends BaseActivity implements MainFragment.Mai
         mFragmentTransaction = mFragmentMng.beginTransaction();
         mFragmentTransaction.add(R.id.main_content_container,
                 mFragmentList.get(0));
+        mCurrentFragment = mFragmentList.get(0);
         mFragmentTransaction.commit();
         mToolBar.setTitle(titles[0]);
         checkVersion();

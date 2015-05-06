@@ -162,6 +162,8 @@
     <string name="current_location">现居地</string>
     <string name="personal_gourmet">私房美食</string>
     <string name="store_gourmet">小店美食</string>
+    <string name="edit_store_gourmet">编辑小店美食</string>
+    <string name="edit_personal_gourmet">编辑个人美食</string>
     <string name="edit_description_hint">给好吃的东西写点什么吧</string>
     <string name="gourmet_label">美味标签</string>
     <string name="shanghai">上海</string>
@@ -211,4 +213,5 @@
     <string name="my_language">擅长语言</string>
     <string name="notification">通知</string>
     <string name="comment">评论</string>
+    <string name="already_read">已阅</string>
 </resources>

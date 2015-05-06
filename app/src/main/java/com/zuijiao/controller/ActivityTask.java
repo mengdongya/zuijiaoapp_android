@@ -8,7 +8,6 @@ import android.app.Application;
 import android.content.ComponentName;
 import android.content.Context;
 import android.graphics.Typeface;
-import android.util.Log;
 
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
@@ -42,8 +41,11 @@ public class ActivityTask extends Application {
 //        FontsOverride.setDefaultFont(this, "DEFAULT", "fonts/NotoSansHans-Light.otf");
 //
         File cacheDirectory = getApplicationContext().getCacheDir();
+        Interceptor interceptor = null;
 
         if (BuildConfig.DEBUG) {
+            interceptor = new StethoInterceptor();
+
             cacheDirectory = null;
             Stetho.initialize(
                     Stetho.newInitializerBuilder(this)
@@ -51,13 +53,10 @@ public class ActivityTask extends Application {
                             .enableWebKitInspector(Stetho.defaultInspectorModulesProvider(this))
                             .build());
         }
-
         Router.setup(BuildConfig.Base_Url, BuildConfig.Request_Key, cacheDirectory, interceptor);
-
         mLocationClient = new LocationClient(this.getApplicationContext());
         mMyLocationListener = new MyLocationListener();
         mLocationClient.registerLocationListener(mMyLocationListener);
-        Router.setup(BuildConfig.Base_Url, BuildConfig.Request_Key, cacheDirectory, interceptor);
     }
 
     public static ActivityTask getInstance() {
@@ -129,5 +128,17 @@ public class ActivityTask extends Application {
             activity.finish();
         }
         System.exit(0);
+    }
+
+    public class MyLocationListener implements BDLocationListener {
+
+        @Override
+        public void onReceiveLocation(BDLocation location) {
+            //Receive Location
+//            StringBuffer sb = new StringBuffer(256);
+
+        }
+
+
     }
 }

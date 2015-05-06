@@ -2,11 +2,9 @@ package net.zuijiao.android.zuijiao;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Handler;
 import android.support.v7.widget.Toolbar;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -20,6 +18,7 @@ import android.widget.Toast;
 
 import com.lidroid.xutils.view.annotation.ContentView;
 import com.lidroid.xutils.view.annotation.ViewInject;
+import com.zuijiao.utils.MyTextWatcher;
 import com.zuijiao.view.WordWrapView;
 
 import java.util.ArrayList;
@@ -55,22 +54,8 @@ public class LabelActivity extends BaseActivity {
         mLabelEditor.setFocusable(true);
         mLabelEditor.setFocusableInTouchMode(true);
         mLabelEditor.requestFocus();
-        mLabelEditor.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                Log.i("mLabelEditor", "beforeTextChanged");
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                mEditorIndicator.setText(String.format(getString(R.string.nick_name_watcher), s.length()));
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                Log.i("mLabelEditor", "afterTextChanged");
-            }
-        });
+        mEditorIndicator.setText(String.format(getString(R.string.nick_name_watcher), 0, 15));
+        mLabelEditor.addTextChangedListener(new MyTextWatcher(mEditorIndicator, 15, mContext));
         mLabelEditor.setOnEditorActionListener((TextView v, int actionId, KeyEvent event) -> {
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 String text = v.getText().toString().trim();
@@ -113,6 +98,12 @@ public class LabelActivity extends BaseActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.label_commit) {
+            Intent intent = new Intent();
+            intent.putExtra("labels", mAddedText);
+            setResult(RESULT_OK, intent);
+            finish();
+        }
         return super.onOptionsItemSelected(item);
     }
 

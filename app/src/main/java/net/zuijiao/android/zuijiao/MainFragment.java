@@ -381,10 +381,10 @@ public class MainFragment extends Fragment implements FragmentDataListener,
             intent.setClass(mContext, EditGourmetActivity.class);
             switch (v.getId()) {
                 case R.id.action_a:
-                    intent.putExtra("is_private_gourmet", true);
+                    intent.putExtra("edit_gourmet_type", EditGourmetActivity.TYPE_CREATE_PERSONAL_GOURMET);
                     break;
                 case R.id.action_b:
-                    intent.putExtra("is_private_gourmet", false);
+                    intent.putExtra("edit_gourmet_type", EditGourmetActivity.TYPE_CREATE_STORE_GOURMET);
                     break;
                 default:
                     break;

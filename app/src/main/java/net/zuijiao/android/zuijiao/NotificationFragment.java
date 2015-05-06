@@ -85,7 +85,8 @@ public class NotificationFragment extends Fragment {
 
         @Override
         public Fragment getItem(int position) {
-            return FriendFragment.newInstance(position);
+            return new MessageFragment(getActivity().getApplicationContext());
+//            return FriendFragment.newInstance(position);
         }
     }
 }

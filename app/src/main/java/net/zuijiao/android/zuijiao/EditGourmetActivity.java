@@ -4,6 +4,7 @@ package net.zuijiao.android.zuijiao;
 import android.content.Intent;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -16,6 +17,7 @@ import android.widget.TextView;
 
 import com.lidroid.xutils.view.annotation.ContentView;
 import com.lidroid.xutils.view.annotation.ViewInject;
+import com.zuijiao.utils.MyTextWatcher;
 
 import java.util.ArrayList;
 
@@ -31,6 +33,11 @@ public class EditGourmetActivity extends BaseActivity implements View.OnClickLis
     public static final int TYPE_CREATE_PERSONAL_GOURMET = 2;
     public static final int TYPE_EDIT_STORE_GOURMET = 3;
     public static final int TYPE_EDIT_PERSONAL_GOURMET = 4;
+
+    public static final int EDIT_LABEL_REQ = 2001;
+    public static final int EDIT_LOCATION_REQ = 2002;
+    public static final int EDIT_POSITION_REQ = 2003;
+
     @ViewInject(R.id.edit_gourmet_toolbar)
     private Toolbar mToolbar = null;
     @ViewInject(R.id.edit_gourmet_pictures)
@@ -98,6 +105,9 @@ public class EditGourmetActivity extends BaseActivity implements View.OnClickLis
             return layout;
         }
     };
+    private String mEditGourmetName = null;
+    private ArrayList<String> mEditLabels = null;
+    private String mEditGourmetDescription = null;
 
     @Override
     protected void findViews() {
@@ -111,11 +121,20 @@ public class EditGourmetActivity extends BaseActivity implements View.OnClickLis
     }
 
     @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.menu_edit_gourmet) {
+
+
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
     protected void registerViews() {
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         try {
-            mType = mTendIntent.getIntExtra("edit_gourmet_type", 0);
+            mType = mTendIntent.getIntExtra("edit_gourmet_type", TYPE_UNDEFINE);
             if (mType == TYPE_UNDEFINE) {
                 finish();
             }
@@ -124,6 +143,11 @@ public class EditGourmetActivity extends BaseActivity implements View.OnClickLis
             finish();
         }
         switch (mType) {
+            case TYPE_EDIT_PERSONAL_GOURMET:
+                getSupportActionBar().setTitle(getString(R.string.edit_personal_gourmet));
+                mPriceLayout.setVisibility(View.GONE);
+                mPositionLayout.setVisibility(View.GONE);
+                break;
             case TYPE_CREATE_PERSONAL_GOURMET:
                 getSupportActionBar().setTitle(getString(R.string.personal_gourmet));
                 mPriceLayout.setVisibility(View.GONE);
@@ -132,11 +156,14 @@ public class EditGourmetActivity extends BaseActivity implements View.OnClickLis
             case TYPE_CREATE_STORE_GOURMET:
                 getSupportActionBar().setTitle(getString(R.string.store_gourmet));
                 break;
-            case TYPE_EDIT_PERSONAL_GOURMET:
-                break;
             case TYPE_EDIT_STORE_GOURMET:
+                getSupportActionBar().setTitle(getString(R.string.edit_store_gourmet));
                 break;
         }
+        mTvGourmetNameListener.setText(String.format(getString(R.string.nick_name_watcher), 0, 15));
+        mTvDescriptionListener.setText(String.format(getString(R.string.nick_name_watcher), 0, 100));
+        mEtGourmetName.addTextChangedListener(new MyTextWatcher(mTvGourmetNameListener, 15, mContext));
+        mEtGourmetDescription.addTextChangedListener(new MyTextWatcher(mTvDescriptionListener, 100, mContext));
         mGdView.setAdapter(mSelectedImageListAdapter);
         mGdView.setOnItemClickListener(mGridListener);
         mLabelLayout.setOnClickListener(this);
@@ -149,9 +176,7 @@ public class EditGourmetActivity extends BaseActivity implements View.OnClickLis
             case R.id.edit_gourmet_labels:
                 Intent intent = new Intent();
                 intent.setClass(mContext, LabelActivity.class);
-                startActivity(intent);
-                break;
-            case R.id.edit_gourmet_price:
+                startActivityForResult(intent, EDIT_LABEL_REQ);
                 break;
             case R.id.edit_gourmet_location:
                 Intent intent3 = new Intent();
@@ -166,4 +191,15 @@ public class EditGourmetActivity extends BaseActivity implements View.OnClickLis
         }
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case EDIT_LABEL_REQ:
+                if (resultCode == RESULT_OK) {
+                    mEditLabels = data.getStringArrayListExtra("labels");
+                }
+                break;
+        }
+
+    }
 }

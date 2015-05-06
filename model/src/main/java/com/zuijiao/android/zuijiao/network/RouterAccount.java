@@ -1,6 +1,7 @@
 package com.zuijiao.android.zuijiao.network;
 
 import com.zuijiao.android.util.functional.LambdaExpression;
+import com.zuijiao.android.util.functional.OneParameterExpression;
 import com.zuijiao.android.zuijiao.model.user.User;
 
 import java.util.ArrayList;
@@ -86,5 +87,12 @@ public enum RouterAccount {
                 , avatarUrl
                 , email
                 , CallbackFactory.getInstance().callback(successCallback, failureCallback));
+    }
+
+    public void updatePhoneNumber(String phoneNumber
+            , String securityCode
+            , LambdaExpression successCallback
+            , OneParameterExpression<String> failureCallback) {
+        service.updatePhoneNumber(phoneNumber, securityCode, CallbackFactory.getInstance().callback(successCallback, failureCallback));
     }
 }

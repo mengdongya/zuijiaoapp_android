@@ -17,8 +17,12 @@ import android.widget.TextView;
 
 import com.lidroid.xutils.view.annotation.ContentView;
 import com.lidroid.xutils.view.annotation.ViewInject;
+import com.zuijiao.android.util.functional.LambdaExpression;
+import com.zuijiao.android.zuijiao.network.Router;
 import com.zuijiao.utils.MyTextWatcher;
+import com.zuijiao.utils.UpyunUploadTask;
 
+import java.io.File;
 import java.util.ArrayList;
 
 /**
@@ -105,9 +109,15 @@ public class EditGourmetActivity extends BaseActivity implements View.OnClickLis
             return layout;
         }
     };
-    private String mEditGourmetName = null;
+    private String mEditName = null;
     private ArrayList<String> mEditLabels = null;
-    private String mEditGourmetDescription = null;
+    private String mEditDescription = null;
+    private String mEditAddress = null;
+    private String mEditPrice = null;
+    private ArrayList<String> mImageUrls = new ArrayList<>();
+    private ArrayList<String> mImagePath = null;
+    private int mProvinceId = -1;
+    private int mCityId = -1;
 
     @Override
     protected void findViews() {
@@ -123,10 +133,47 @@ public class EditGourmetActivity extends BaseActivity implements View.OnClickLis
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.menu_edit_gourmet) {
-
-
+            uploadImageContinuously(mImagePath.get(0), () -> {
+                Router.getGourmetModule().addGourmet(mEditName, mEditAddress,
+                        mEditPrice, mEditDescription, mImageUrls,
+                        mEditLabels, mProvinceId, mCityId,
+                        mType == TYPE_CREATE_PERSONAL_GOURMET, () -> {
+                            finallizeDialog();
+                        }, () -> {
+                            finallizeDialog();
+                        });
+            });
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void uploadImageContinuously(String imagePath, LambdaExpression lambdaExpression) {
+        String imageUrl = UpyunUploadTask.gourmetPath(
+                Router.getInstance().getCurrentUser().get().getIdentifier(), mEditName, ".jpg");
+        createDialog();
+        new UpyunUploadTask(imagePath, imageUrl, null,
+                (boolean isComplete, String result, String error) -> {
+                    if (isComplete) {
+                        mImageUrls.add(imageUrl);
+                        String nextImagePath = getNextImagePath(imagePath);
+                        if (nextImagePath != null && new File(nextImagePath).exists()) {
+                            uploadImageContinuously(nextImagePath, lambdaExpression);
+                        } else {
+                            lambdaExpression.action();
+                        }
+                    } else {
+                        mImageUrls.clear();
+                        finallizeDialog();
+                    }
+                }).execute();
+    }
+
+    private String getNextImagePath(String currentPath) {
+        try {
+            return mImagePath.get(mImagePath.indexOf(currentPath) + 1);
+        } catch (Throwable t) {
+            return null;
+        }
     }
 
     @Override

@@ -1,5 +1,7 @@
 package test;
 
+import com.zuijiao.android.util.DateUtil;
+import com.zuijiao.android.util.HanyuPinyinHelper;
 import com.zuijiao.android.util.MD5;
 import com.zuijiao.android.util.Optional;
 import com.zuijiao.android.util.functional.LambdaExpression;
@@ -8,6 +10,11 @@ import com.zuijiao.android.zuijiao.model.Gourmets;
 import com.zuijiao.android.zuijiao.network.Router;
 import com.zuijiao.android.zuijiao.network.RouterGourmet;
 import com.zuijiao.android.zuijiao.network.RouterOAuth;
+
+import net.sourceforge.pinyin4j.format.HanyuPinyinCaseType;
+import net.sourceforge.pinyin4j.format.HanyuPinyinOutputFormat;
+import net.sourceforge.pinyin4j.format.HanyuPinyinToneType;
+import net.sourceforge.pinyin4j.format.HanyuPinyinVCharType;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -86,16 +93,6 @@ public class TestClass {
     }
 
     public static void main(String[] args) throws NoSuchAlgorithmException {
-//        Router.setup("http://api.zuijiaodev.com", "zuijiaoapp", null, null);
-//        testOp(fetchRecommendation());
-
-//        CRC32 crc32 = new CRC32();
-//        Long time = new Long(0x14d0873c72b);
-//        crc32.update(time.byteValue());
-//        System.out.println(String.format("before: %s\tafter: %s", Long.toHexString(time), Long.toHexString(crc32.getValue())));
-
-        String s = "before: 14d0873c72b\tafter: 7ebe16cd";
-        System.out.println("MD5: " + MD5.crypt(s));
 
     }
 

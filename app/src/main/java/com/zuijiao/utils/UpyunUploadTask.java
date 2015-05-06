@@ -6,18 +6,24 @@ import com.upyun.block.api.listener.CompleteListener;
 import com.upyun.block.api.listener.ProgressListener;
 import com.upyun.block.api.main.UploaderManager;
 import com.upyun.block.api.utils.UpYunUtils;
+import com.zuijiao.android.util.DateUtil;
+import com.zuijiao.android.util.HanyuPinyinHelper;
 import com.zuijiao.android.zuijiao.network.Router;
 
 import net.zuijiao.android.zuijiao.BuildConfig;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.SortedMap;
 
 /**
  * Created by user on 4/10/15.
  */
-public class UpyunUploadTask extends AsyncTask<Void, Void, String> {
+public final class UpyunUploadTask extends AsyncTask<Void, Void, String> {
 
     private static final String BUCKET = "zuijiao-app";
     private static final String API_SECRET = "zrwCHqOE1hVntGt+oSYWCufaWe8=";
@@ -73,8 +79,25 @@ public class UpyunUploadTask extends AsyncTask<Void, Void, String> {
         return String.format("%s%s", Router.PicBaseUrl, relativeUrl);
     }
 
-    public static String gourmetPath(Integer userId, String gourmetName, String fileExtension) {
-        // FIXME: not implement
-        return String.format("%s/%s.%s", BuildConfig.Gourmet_Base_Url, userId, fileExtension);
+    public static String gourmetPath(Integer userId, String gourmetName, String fileExtension, Integer index) {
+        String dateString = DateUtil.todayInString();
+        final String gourmetImageName = String.format("%s/%d_%s_%s-%d.%s"
+                , BuildConfig.Gourmet_Base_Url
+                , userId
+                , HanyuPinyinHelper.getPinyin(gourmetName).replaceAll(" ", "_")
+                , dateString
+                , index
+                , fileExtension);
+        return gourmetImageName;
     }
+
+    public static List<String> gourmetImagePaths(final Integer userId, final String gourmetName, final Integer count, String ext) {
+        List<String> result = new ArrayList<>();
+        for (int index = 0; index <= count; index++) {
+            final String gourmetImageName = gourmetPath(userId, gourmetName, ext, index);
+            result.add(gourmetImageName);
+        }
+        return result;
+    }
+
 }

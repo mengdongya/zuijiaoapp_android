@@ -1,0 +1,13 @@
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+    android:color="@color/tv_red">
+    <item>
+        <shape android:shape="oval">
+            <solid android:color="@color/tv_red" />
+            <padding
+                android:left="5dip"
+                android:right="5dip"
+                android:bottom="5dip"
+                android:top="5dip" />
+        </shape>
+    </item>
+</ripple><!--<ripple xmlns:android="http://schemas.android.com/apk/res/android" android:color="?android:colorControlHighlight">--><!--<item>--><!--<shape android:shape="oval">--><!--<solid android:color="?android:colorAccent" />--><!--<padding android:left="5dip"--><!--android:right="5dip"--><!--android:bottom="5dip"--><!--android:top="5dip"/>--><!--</shape>--><!--</item>--><!--</ripple>-->

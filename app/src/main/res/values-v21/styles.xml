@@ -15,13 +15,8 @@
         <item name="android:windowFullscreen">false</item>
     </style>
 
-    <style name="UserInfoEditTheme" parent="AppBaseTheme">
-        <item name="colorAccent">#88007800</item>
-    </style>
-
     <style name="DialogTheme" parent="AppBaseTheme">
         <item name="android:windowIsFloating">true</item>
-        <item name="colorAccent">#0000ff</item>
     </style>
 
     <style name="AppBaseTheme" parent="Theme.AppCompat.Light" type="text/css">
@@ -30,12 +25,12 @@
         <!-- tool bar -->
         <item name="colorPrimary">@color/toolbar</item>
         <!-- navigation bar -->
-        <item name="android:navigationBarColor">@color/systembar</item>
+        <item name="android:navigationBarColor">@color/system_bar</item>
         <!-- user input widget -->
-        <item name="colorAccent">#88000046</item>
+        <item name="colorAccent">#88ee0000</item>
         <!-- status bar -->
-        <item name="colorPrimaryDark">@color/systembar</item>
-        <item name="android:statusBarColor">@color/systembar</item>
+        <item name="colorPrimaryDark">@color/system_bar</item>
+        <item name="android:statusBarColor">@color/system_bar</item>
         <!-- navigation text color -->
         <item name="android:textColorPrimary">@color/toolbar_text</item>
         <item name="android:actionMenuTextAppearance">@style/MenuTextStyle</item>
@@ -44,6 +39,9 @@
         <!--@style/Widget.AppCompat.Toolbar.Button.Navigation-->
         <!--</item>-->
 
+        <item name="android:editTextStyle">@style/Widget.AppCompat.EditText</item>
+        <item name="editTextBackground">@drawable/abc_edit_text_material</item>
+        <item name="editTextColor">?android:attr/textColorPrimary</item>
         <item name="colorControlNormal">@color/white</item>
         <item name="android:textColor">@color/tv_deep_gray</item>
         <item name="android:actionMenuTextColor">@color/white</item>
@@ -88,44 +86,10 @@
         <item name="android:textSize">@dimen/text_size_small</item>
     </style>
 
-    <!-- <style name="AppBaseTheme" parent="Theme.AppCompat.Light" type="text/css">
-         <item name="windowActionBar">false</item>
-         <item name="android:windowNoTitle">true</item>
-         &lt;!&ndash; tool bar &ndash;&gt;
-         <item name="colorPrimary">@color/toolbar</item>
-         &lt;!&ndash; navigation bar &ndash;&gt;
-         <item name="android:navigationBarColor">@color/systembar</item>
-         &lt;!&ndash; user input widget &ndash;&gt;
-         <item name="colorAccent">@color/toolbar</item>
-         &lt;!&ndash; status bar &ndash;&gt;
-         <item name="colorPrimaryDark">@color/systembar</item>
-         <item name="android:statusBarColor">@color/systembar</item>
-         &lt;!&ndash; navigation text color &ndash;&gt;
-         <item name="android:textColorPrimary">@color/toolbar_text</item>
-         <item name="android:actionMenuTextAppearance">@style/MenuTextStyle</item>
-         <item name="colorControlNormal">@color/bg_gray_white</item>
-         <item name="android:textColor">@color/tv_deep_gray</item>
-         <item name="android:textColorPrimaryDisableOnly">@color/white</item>
-     </style>-->
-
-    <!--  <style name="AppBaseTheme" parent="Theme.AppCompat.Light" type="text/css">
-          <item name="windowActionBar">false</item>
-          <item name="android:windowNoTitle">true</item>
-          &lt;!&ndash; tool bar &ndash;&gt;
-          <item name="colorPrimary">@color/toolbar</item>
-          &lt;!&ndash; navigation bar &ndash;&gt;
-          <item name="android:navigationBarColor">@color/systembar</item>
-          &lt;!&ndash; user input widget &ndash;&gt;
-          <item name="colorAccent">@color/toolbar</item>
-          &lt;!&ndash; status bar &ndash;&gt;
-          <item name="colorPrimaryDark">@color/systembar</item>
-          <item name="android:statusBarColor">@color/systembar</item>
-          &lt;!&ndash; navigation text color &ndash;&gt;
-          <item name="android:textColorPrimary">@color/toolbar_text</item>
-          <item name="android:actionMenuTextAppearance">@style/MenuTextStyle</item>
-          <item name="colorControlNormal">@color/bg_gray_white</item>
-          <item name="android:textColor">@color/tv_deep_gray</item>
-          <item name="android:textColorPrimaryDisableOnly">@color/white</item>
-      </style>-->
+    <style name="FloatButtonStyle" parent="Widget.AppCompat.ActionButton">
+        <item name="android:stateListAnimator">@anim/fab_anim</item>
+        <item name="android:elevation">5dip</item>
+        <item name="android:tint">@android:color/white</item>
+    </style>
 
 </resources>

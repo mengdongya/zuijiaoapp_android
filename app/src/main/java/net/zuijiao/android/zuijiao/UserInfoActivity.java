@@ -55,7 +55,7 @@ public final class UserInfoActivity extends BaseActivity implements View.OnClick
     private BaseAdapter mFlavorAdapter = new BaseAdapter() {
         @Override
         public int getCount() {
-            return 10;
+            return 1;
         }
 
         @Override
@@ -91,9 +91,9 @@ public final class UserInfoActivity extends BaseActivity implements View.OnClick
                 title.setText(getString(R.string.base_info));
                 content.setText(getString(R.string.no_base_info));
             } else if (position == 1) {
-//                title.setText(getString(R.string.crazy_experience));
-//                content.setText(getString(R.string.no_experience));
-//            } else if (position == 2) {
+                title.setText(getString(R.string.personal_introduction));
+                content.setText(getString(R.string.no_experience));
+            } else if (position == 2) {
                 title.setText(getString(R.string.flavor_hobby));
                 if (true) {
                     GridView gdView = (GridView) contentView.findViewById(R.id.gv_user_info_favor);
@@ -123,7 +123,7 @@ public final class UserInfoActivity extends BaseActivity implements View.OnClick
 
         @Override
         public int getCount() {
-            return 2;
+            return 3;
         }
     };
 

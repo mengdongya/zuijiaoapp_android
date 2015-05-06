@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include
+        layout="@layout/toolbar"
+        android:id="@+id/label_toolbar" />
+
+    <RelativeLayout
+        android:layout_marginTop="10dip"
+        android:layout_marginLeft="10dip"
+        android:layout_marginRight="10dip"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:paddingBottom="10dip"
+        android:paddingTop="10dip"
+        android:background="@drawable/bg_white_round">
+
+        <com.zuijiao.view.WordWrapView
+            android:id="@+id/label_added_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true" />
+
+        <EditText
+            android:layout_marginLeft="10dip"
+            android:layout_marginTop="15dip"
+            android:layout_below="@id/label_added_label"
+            android:id="@+id/label_editor"
+            android:ellipsize="start"
+            android:hint="@string/label_editor_hint"
+            android:textColorHint="@color/tv_light_gray"
+            android:textColor="@color/tv_deep_gray"
+            android:textSize="16sp"
+            android:maxLength="15"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:layout_width="match_parent"
+            android:layout_toLeftOf="@+id/label_editor_indicator" />
+
+        <TextView
+            android:textColor="@color/tv_light_gray"
+            android:textSize="14sp"
+            android:layout_marginRight="10dip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/label_editor_indicator"
+            android:paddingBottom="6dip"
+            android:layout_alignBottom="@id/label_editor"
+            android:layout_alignParentRight="true"
+            android:text="0/15" />
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_marginTop="10dip"
+        android:layout_marginLeft="10dip"
+        android:layout_marginRight="10dip"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:background="@drawable/bg_white_round"
+        android:padding="10dip">
+
+        <TextView
+            android:text="@string/hot_labels"
+            android:textSize="20sp"
+            android:textColor="@color/tv_deep_gray"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content" />
+
+        <com.zuijiao.view.WordWrapView
+            android:id="@+id/label_hot_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true" />
+
+    </LinearLayout>
+</LinearLayout>

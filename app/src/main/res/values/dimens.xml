@@ -24,4 +24,8 @@
     <dimen name="food_detail_image_height">224dip</dimen>
     <dimen name="comment_content_text_size">14sp</dimen>
     <dimen name="friend_tab_text_size">55sp</dimen>
+    <dimen name="fab_size">56dp</dimen>
+    <dimen name="start_z">2dp</dimen>
+    <dimen name="end_z">5dp</dimen>
+    <dimen name="edit_gourmet_image_size">60dip</dimen>
 </resources>

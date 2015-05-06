@@ -1,6 +1,5 @@
 package net.zuijiao.android.zuijiao;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
@@ -34,9 +33,8 @@ public class CommonWebViewActivity extends BaseActivity {
     @Override
     protected void registerViews() {
         try {
-            Intent intent = getIntent();
-            title = intent.getStringExtra("title");
-            contentUrl = intent.getStringExtra("content_url");
+            title = mTendIntent.getStringExtra("title");
+            contentUrl = mTendIntent.getStringExtra("content_url");
         } catch (Throwable t) {
             t.printStackTrace();
             finish();

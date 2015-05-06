@@ -61,7 +61,10 @@ public class MessageFragment extends Fragment implements FragmentDataListener,
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        mContentView = inflater.inflate(R.layout.fragment_message, null);
+        if (mContentView == null) {
+            mContentView = inflater.inflate(R.layout.fragment_message, null);
+        }
+//        mContentView = inflater.inflate(R.layout.fragment_message, null);
         this.mInflater = inflater;
         mActivity = getActivity();
         mListView = (RefreshAndInitListView) mContentView
@@ -82,6 +85,11 @@ public class MessageFragment extends Fragment implements FragmentDataListener,
         mListView.setListViewListener(this);
         firstInit();
         return mContentView;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
     }
 
     private void firstInit() {
@@ -130,6 +138,11 @@ public class MessageFragment extends Fragment implements FragmentDataListener,
     @Override
     public void onLoadMore() {
         networkStep(false);
+    }
+
+    @Override
+    public void onTouchDown() {
+
     }
 
     private void networkStep(boolean bRefresh) {

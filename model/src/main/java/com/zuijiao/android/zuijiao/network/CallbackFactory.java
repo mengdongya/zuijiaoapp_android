@@ -11,7 +11,6 @@ import retrofit.RetrofitError;
 /**
  * Created by Chen Hao on 3/23/15.
  * <p>
- * 回调方法工厂类
  */
 class CallbackFactory<T> {
     private static CallbackFactory instance = new CallbackFactory();

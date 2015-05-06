@@ -21,7 +21,6 @@ import retrofit.converter.GsonConverter;
 /**
  * Created by Chen Hao on 3/16/15.
  * <p>
- * 总路由
  */
 public class Router {
 

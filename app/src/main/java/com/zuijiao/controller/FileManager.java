@@ -1,11 +1,14 @@
 package com.zuijiao.controller;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.os.Environment;
+import android.provider.MediaStore;
 
 import com.zuijiao.android.util.Optional;
 import com.zuijiao.android.zuijiao.model.Gourmet;
 import com.zuijiao.android.zuijiao.model.user.WouldLikeToEatUsers;
+import com.zuijiao.entity.SimpleImage;
 
 import net.zuijiao.android.zuijiao.MainFragment;
 
@@ -13,11 +16,14 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 public class FileManager {
     public final static String APP_FOLDER_NAME = "Zuijiao";
     public final static String THIRD_PARTY_HEAD = "third_party_head.jpg";
+    public static final String CHOOSE_IMAGE = Environment.getDataDirectory()
+            .getAbsolutePath() + File.separator + "head.jpg";
     private static final int COPY_BLOCK_SIZE = 4096;
     public static String APP_FOLDER_PATH = "";
     //main fragment data
@@ -28,9 +34,9 @@ public class FileManager {
     //
     public static Gourmet tmpMessageGourmet = null;
     private static FileManager mInstance = null;
-    public static final String CHOOSE_IMAGE = Environment.getDataDirectory()
-            .getAbsolutePath() + File.separator + "head.jpg";
     private Context mContext = null;
+    private static final String[] STORE_IMAGES = {
+            MediaStore.Images.Media.DISPLAY_NAME, MediaStore.Images.Media._ID,};
 
     private FileManager(Context context) {
         this.mContext = context;
@@ -158,6 +164,23 @@ public class FileManager {
                 return mainGourmet.get().get(index);
             }
         }
+    }
+
+    public static List<SimpleImage> getImageList(Context context) {
+        List<SimpleImage> list = new ArrayList<SimpleImage>();
+        Cursor cursor = MediaStore.Images.Media.query(context.getContentResolver(),
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI, STORE_IMAGES);
+        SimpleImage image = null;
+        while (cursor.moveToNext()) {
+            String id = cursor.getString(1);
+            String displayname = cursor.getString(0);
+            image = new SimpleImage();
+            image.name = displayname;
+            image.id = id;
+            list.add(image);
+        }
+        cursor.close();
+        return list;
     }
 
 

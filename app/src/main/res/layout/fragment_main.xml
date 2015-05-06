@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fab="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -54,6 +55,82 @@
             android:divider="@null"></com.zuijiao.view.RefreshAndInitListView>
     </LinearLayout>
 
+    <RelativeLayout
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:gravity="bottom|right">
+        <!--<com.getbase.floatingactionbutton.AddFloatingActionButton-->
+        <!--android:id="@+id/float_action_button"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--fab:fab_plusIconColor="@color/white"-->
+        <!--fab:fab_colorNormal="@color/blue_semi_transparent"-->
+        <!--fab:fab_colorPressed="@color/blue_semi_transparent_pressed"-->
+        <!--android:layout_centerHorizontal="true"-->
+        <!--android:layout_gravity="bottom|right"-->
+        <!--android:layout_marginBottom="16dp"/>-->
+        <com.getbase.floatingactionbutton.FloatingActionsMenu
+            android:visibility="gone"
+            android:id="@+id/multiple_actions"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            fab:fab_addButtonColorNormal="@color/white"
+            fab:fab_addButtonColorPressed="@color/white_pressed"
+            fab:fab_addButtonPlusIconColor="@color/half_black"
+            fab:fab_labelStyle="@style/menu_labels_style"
+            fab:fab_labelsPosition="left"
+            android:layout_marginBottom="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginEnd="16dp">
+
+            <com.getbase.floatingactionbutton.FloatingActionButton
+                android:id="@+id/action_a"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/personal"
+                android:padding="5dip"
+                android:scaleType="center"
+                fab:fab_colorNormal="@color/toolbar"
+                fab:fab_colorPressed="@color/system_bar" />
+
+            <com.getbase.floatingactionbutton.FloatingActionButton
+                android:id="@+id/action_b"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="5dip"
+                android:src="@drawable/store"
+                fab:fab_colorNormal="@color/toolbar"
+                android:scaleType="center"
+                fab:fab_colorPressed="@color/system_bar" />
+
+        </com.getbase.floatingactionbutton.FloatingActionsMenu>
+
+
+    </RelativeLayout>
+    <!-- <com.melnykov.fab.FloatingActionButton
+         android:id="@+id/float_action_button"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_gravity="bottom|right"
+         android:layout_margin="16dp"
+         android:src="@drawable/plus"
+         fab:fab_colorNormal="@color/toolbar"
+         fab:fab_colorPressed="@color/system_bar"
+         fab:fab_colorRipple="@color/tv_deep_gray" />-->
+    <!--<ImageButton-->
+    <!--android:visibility="gone"-->
+    <!--android:layout_width="56dp"-->
+    <!--android:layout_height="56dp"-->
+    <!--android:src="@drawable/plus"-->
+    <!--android:layout_marginRight="16dp"-->
+    <!--android:layout_marginBottom="16dp"-->
+    <!--android:id="@+id/float_action_button"-->
+    <!--android:layout_gravity="bottom|right"-->
+    <!--android:background="@drawable/ripple"-->
+    <!--style="@style/FloatButtonStyle"/>-->
     <!--<TextView-->
     <!--android:id="@+id/tv_main_fm_blank"-->
     <!--style="@style/TextMiddle"-->

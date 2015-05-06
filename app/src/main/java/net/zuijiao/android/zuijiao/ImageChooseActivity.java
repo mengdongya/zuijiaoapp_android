@@ -3,10 +3,11 @@ package net.zuijiao.android.zuijiao;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.provider.MediaStore;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
@@ -20,6 +21,8 @@ import android.widget.Toast;
 
 import com.lidroid.xutils.view.annotation.ContentView;
 import com.lidroid.xutils.view.annotation.ViewInject;
+import com.zuijiao.controller.FileManager;
+import com.zuijiao.entity.SimpleImage;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -45,10 +48,10 @@ public class ImageChooseActivity extends BaseActivity {
     private GridView mGdView = null;
     @ViewInject(R.id.image_chooser_toolbar)
     private Toolbar mToolbar;
-    private List<Photo> photos = null;
+    private List<SimpleImage> images = null;
     private Context mContext = null;
-    private HashMap<String, Bitmap> data = null;
-    private ArrayList<String> ids = null;
+    private HashMap<String, Bitmap> data = new HashMap<>();
+    private ArrayList<String> ids = new ArrayList<String>();
     private ProgressDialog mDialog = null;
     private AdapterView.OnItemClickListener mListener = new AdapterView.OnItemClickListener() {
 
@@ -56,7 +59,7 @@ public class ImageChooseActivity extends BaseActivity {
         public void onItemClick(AdapterView<?> arg0, View arg1, int position,
                                 long arg3) {
             Uri uri_temp = Uri.parse("content://media/external/images/media/"
-                    + photos.get(position).id);
+                    + images.get(position).id);
             photoZoom(uri_temp);
         }
     };
@@ -75,15 +78,25 @@ public class ImageChooseActivity extends BaseActivity {
             }
 
             Bitmap bitmap = null;
-            if ((bitmap = getFromCache(photos.get(position).id)) == null
+            if ((bitmap = getFromCache(images.get(position).id)) == null
                     || bitmap.getByteCount() <= 0 || bitmap.isRecycled()) {
-                bitmap = MediaStore.Images.Thumbnails.getThumbnail(
-                        mContext.getContentResolver(),
-                        Integer.parseInt(photos.get(position).id),
-                        MediaStore.Images.Thumbnails.MINI_KIND, null);
-                addToCache(bitmap, photos.get(position).id);
+                try {
+                    bitmap = MediaStore.Images.Thumbnails.getThumbnail(
+                            mContext.getContentResolver(),
+                            Integer.parseInt(images.get(position).id),
+                            MediaStore.Images.Thumbnails.MINI_KIND, null);
+                    addToCache(bitmap, images.get(position).id);
+                    System.out.println("bitmap == " + bitmap.toString());
+                } catch (Throwable t) {
+                    t.printStackTrace();
+                }
             }
-            holder.image.setImageBitmap(bitmap);
+            System.out.println("bitmap == " + bitmap.toString());
+            try {
+                holder.image.setImageBitmap(bitmap);
+            } catch (Throwable t) {
+                t.printStackTrace();
+            }
             return convertView;
         }
 
@@ -99,10 +112,18 @@ public class ImageChooseActivity extends BaseActivity {
 
         @Override
         public int getCount() {
-            return photos.size();
+            return images.size();
         }
     };
     ;
+
+    private Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            mGdView.setAdapter(mAdapter);
+        }
+    };
 
     @Deprecated
     protected void findViews() {
@@ -114,14 +135,48 @@ public class ImageChooseActivity extends BaseActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(getString(R.string.image_chooser));
         mContext = getApplicationContext();
-        photos = getPhotos();
-        mGdView.setAdapter(mAdapter);
+        images = FileManager.getImageList(mContext);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                initCache();
+            }
+        }).start();
+        ;
         mGdView.setOnItemClickListener(mListener);
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+    }
+
+    private void initCache() {
+        if (images == null || images.size() == 0) {
+            return;
+        }
+        for (SimpleImage image : images) {
+            if (data.size() >= 100) {
+                break;
+            }
+            try {
+                Bitmap bitmap = MediaStore.Images.Thumbnails.getThumbnail(
+                        mContext.getContentResolver(),
+                        Integer.parseInt(image.id),
+                        MediaStore.Images.Thumbnails.MINI_KIND, null);
+                if (bitmap != null) {
+                    synchronized (data) {
+                        data.put(image.id, bitmap);
+                    }
+                    synchronized (ids) {
+                        ids.add(image.id);
+                    }
+                }
+            } catch (Throwable t) {
+                t.printStackTrace();
+            }
+        }
+        mHandler.sendEmptyMessage(0x1001);
     }
 
     private void addToCache(Bitmap bitmap, String id) {
@@ -132,7 +187,7 @@ public class ImageChooseActivity extends BaseActivity {
             ids = new ArrayList<String>();
         }
         int i = 0;
-        while (ids.size() >= 100) {
+        while (ids.size() >= 500) {
             String strId = ids.get(0);
             Bitmap bm = data.get(strId);
             data.remove(bm);
@@ -159,22 +214,22 @@ public class ImageChooseActivity extends BaseActivity {
         return null;
     }
 
-    private List<Photo> getPhotos() {
-        List<Photo> list = new ArrayList<Photo>();
-        Cursor cursor = MediaStore.Images.Media.query(getContentResolver(),
-                MediaStore.Images.Media.EXTERNAL_CONTENT_URI, STORE_IMAGES);
-        Photo photo = null;
-        while (cursor.moveToNext()) {
-            String id = cursor.getString(1);
-            String displayname = cursor.getString(0);
-            photo = new Photo();
-            photo.name = displayname;
-            photo.id = id;
-            list.add(photo);
-        }
-        cursor.close();
-        return list;
-    }
+//    private List<SimpleImage> getImageList() {
+//        List<SimpleImage> list = new ArrayList<SimpleImage>();
+//        Cursor cursor = MediaStore.Images.Media.query(getContentResolver(),
+//                MediaStore.Images.Media.EXTERNAL_CONTENT_URI, STORE_IMAGES);
+//        SimpleImage image = null;
+//        while (cursor.moveToNext()) {
+//            String id = cursor.getString(1);
+//            String displayname = cursor.getString(0);
+//            image = new SimpleImage();
+//            image.name = displayname;
+//            image.id = id;
+//            list.add(image);
+//        }
+//        cursor.close();
+//        return list;
+//    }
 
     @Override
     protected void onDestroy() {
@@ -292,8 +347,4 @@ public class ImageChooseActivity extends BaseActivity {
         ImageView image;
     }
 
-    class Photo {
-        public String name;
-        public String id;
-    }
 }

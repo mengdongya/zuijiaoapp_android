@@ -9,6 +9,10 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.graphics.Typeface;
 
+import com.baidu.location.BDLocation;
+import com.baidu.location.BDLocationListener;
+import com.baidu.location.GeofenceClient;
+import com.baidu.location.LocationClient;
 import com.facebook.stetho.Stetho;
 import com.facebook.stetho.okhttp.StethoInterceptor;
 import com.squareup.okhttp.Interceptor;
@@ -25,27 +29,34 @@ public class ActivityTask extends Application {
     private static final String LOGTAG = "ActivityTask";
     public static Typeface boldFont = null;
     private static ActivityTask mInstance = null;
+    public LocationClient mLocationClient;
+    public GeofenceClient mGeofenceClient;
+    public MyLocationListener mMyLocationListener;
     // opened activities
     private LinkedList<Activity> mActivitiesList = new LinkedList<Activity>();
 
     @Override
     public void onCreate() {
         super.onCreate();
-
+//        FontsOverride.setDefaultFont(this, "DEFAULT", "fonts/NotoSansHans-Light.otf");
+//
         File cacheDirectory = getApplicationContext().getCacheDir();
         Interceptor interceptor = null;
 
         if (BuildConfig.DEBUG) {
-            cacheDirectory = null;
             interceptor = new StethoInterceptor();
+
+            cacheDirectory = null;
             Stetho.initialize(
                     Stetho.newInitializerBuilder(this)
                             .enableDumpapp(Stetho.defaultDumperPluginsProvider(this))
                             .enableWebKitInspector(Stetho.defaultInspectorModulesProvider(this))
                             .build());
         }
-
         Router.setup(BuildConfig.Base_Url, BuildConfig.Request_Key, cacheDirectory, interceptor);
+        mLocationClient = new LocationClient(this.getApplicationContext());
+        mMyLocationListener = new MyLocationListener();
+        mLocationClient.registerLocationListener(mMyLocationListener);
     }
 
     public static ActivityTask getInstance() {
@@ -117,5 +128,17 @@ public class ActivityTask extends Application {
             activity.finish();
         }
         System.exit(0);
+    }
+
+    public class MyLocationListener implements BDLocationListener {
+
+        @Override
+        public void onReceiveLocation(BDLocation location) {
+            //Receive Location
+//            StringBuffer sb = new StringBuffer(256);
+
+        }
+
+
     }
 }

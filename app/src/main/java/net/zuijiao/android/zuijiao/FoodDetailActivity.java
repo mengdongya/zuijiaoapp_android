@@ -18,6 +18,8 @@ import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -424,13 +426,36 @@ public class FoodDetailActivity extends BaseActivity implements
         }
     };
 
-    //    @ViewInject(R.id.test_focusable)
-//    private LinearLayout mTestLayout = null ;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        if (Router.getInstance().getCurrentUser().isPresent() && Router.getInstance().getCurrentUser().get().getIdentifier() == gourmet.getUser().getIdentifier()) {
+            getMenuInflater().inflate(R.menu.gourmet_detail, menu);
+        } else {
+            getMenuInflater().inflate(R.menu.gourmet_detail_simple, menu);
+        }
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.gourmet_detail_share:
+                break;
+            case R.id.gourmet_detail_refresh:
+                break;
+            case R.id.gourmet_detail_edit:
+                break;
+            case R.id.gourmet_detail_delete:
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -655,8 +680,6 @@ public class FoodDetailActivity extends BaseActivity implements
     }
 
     public void setListViewHeightBasedOnChildren(ListView listView) {
-//        mScrollView.keepState = true ;
-//        mScrollView.tmpScrollY = (int) mScrollView.getY() ;
         ListAdapter listAdapter = listView.getAdapter();
         if (listAdapter == null) {
             return;
@@ -694,10 +717,7 @@ public class FoodDetailActivity extends BaseActivity implements
         for (int j = 0; j < count; j++) {
             mImageIndex.addView(initDot(), Lp);
         }
-//        mImageIndex.getChildAt(0).setSelected(true);
         mImageIndex.getChildAt(0).setBackgroundResource(R.drawable.food_detail_index_selected);
-//        mImageIndex.getChildAt(1).setBackgroundResource(R.drawable.wizard_index_unselected);
-//        mImageIndex.getChildAt(2).setBackgroundResource(R.drawable.wizard_index_unselected);
     }
 
     private View initDot() {

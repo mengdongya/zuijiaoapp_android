@@ -8,7 +8,6 @@ package com.zuijiao.android.util.functional;
 public interface LambdaExpression {
 
     /**
-     * 无参数无返回类型的 Action
      */
     public void action();
 

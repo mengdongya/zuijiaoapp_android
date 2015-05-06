@@ -86,10 +86,16 @@ public class TestClass {
     }
 
     public static void main(String[] args) throws NoSuchAlgorithmException {
-        Router.setup("http://api.zuijiaodev.com", "zuijiaoapp", null, null);
-        testOp(fetchRecommendation());
+//        Router.setup("http://api.zuijiaodev.com", "zuijiaoapp", null, null);
+//        testOp(fetchRecommendation());
 
+//        CRC32 crc32 = new CRC32();
+//        Long time = new Long(0x14d0873c72b);
+//        crc32.update(time.byteValue());
+//        System.out.println(String.format("before: %s\tafter: %s", Long.toHexString(time), Long.toHexString(crc32.getValue())));
 
+        String s = "before: 14d0873c72b\tafter: 7ebe16cd";
+        System.out.println("MD5: " + MD5.crypt(s));
 
     }
 

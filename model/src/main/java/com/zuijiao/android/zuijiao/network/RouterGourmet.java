@@ -105,7 +105,7 @@ public enum RouterGourmet {
         service.replyCommentTo(commentId, comment, CallbackFactory.getInstance().callback(successCallback, failureCallback));
     }
 
-    void addGourmet(String name
+    public void addGourmet(String name
             , String address
             , String price
             , String description
@@ -132,7 +132,7 @@ public enum RouterGourmet {
                 , CallbackFactory.getInstance().callback(successCallback, failureCallback));
     }
 
-    void updateGourmet(Integer gourmetId
+    public void updateGourmet(Integer gourmetId
             , String address
             , String price
             , String description
@@ -172,7 +172,7 @@ public enum RouterGourmet {
                 , CallbackFactory.getInstance().callback(successCallback, failureCallback));
     }
 
-    void fetchRecommendationListByUserId(Integer userId
+    public void fetchRecommendationListByUserId(Integer userId
             , Integer fromGourmetId
             , Integer toGourmetId
             , Integer count

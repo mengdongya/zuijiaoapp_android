@@ -7,6 +7,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
@@ -24,6 +25,7 @@ import com.zuijiao.utils.UpyunUploadTask;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by xiaqibo on 2015/4/29.
@@ -94,8 +96,8 @@ public class EditGourmetActivity extends BaseActivity implements View.OnClickLis
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             LinearLayout layout = new LinearLayout(mContext);
-            LinearLayout.LayoutParams llp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-            layout.setLayoutParams(llp);
+            AbsListView.LayoutParams alp = new AbsListView.LayoutParams(AbsListView.LayoutParams.WRAP_CONTENT, AbsListView.LayoutParams.WRAP_CONTENT);
+            layout.setLayoutParams(alp);
             ImageView contentView = new ImageView(mContext);
             ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams((int) getResources().getDimension(R.dimen.edit_gourmet_image_size), (int) getResources().getDimension(R.dimen.edit_gourmet_image_size));
             contentView.setImageResource(R.drawable.shanghai);
@@ -114,7 +116,7 @@ public class EditGourmetActivity extends BaseActivity implements View.OnClickLis
     private String mEditDescription = null;
     private String mEditAddress = null;
     private String mEditPrice = null;
-    private ArrayList<String> mImageUrls = new ArrayList<>();
+    private List<String> mImageUrls = null;
     private ArrayList<String> mImagePath = null;
     private int mProvinceId = -1;
     private int mCityId = -1;
@@ -133,6 +135,8 @@ public class EditGourmetActivity extends BaseActivity implements View.OnClickLis
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.menu_edit_gourmet) {
+            mImageUrls = UpyunUploadTask.gourmetImagePaths(
+                    Router.getInstance().getCurrentUser().get().getIdentifier(), mEditName, mImagePath.size(), ".jpg");
             uploadImageContinuously(mImagePath.get(0), () -> {
                 Router.getGourmetModule().addGourmet(mEditName, mEditAddress,
                         mEditPrice, mEditDescription, mImageUrls,
@@ -148,8 +152,7 @@ public class EditGourmetActivity extends BaseActivity implements View.OnClickLis
     }
 
     private void uploadImageContinuously(String imagePath, LambdaExpression lambdaExpression) {
-        String imageUrl = UpyunUploadTask.gourmetPath(
-                Router.getInstance().getCurrentUser().get().getIdentifier(), mEditName, ".jpg");
+        String imageUrl = mImageUrls.get(mImagePath.indexOf(imagePath));
         createDialog();
         new UpyunUploadTask(imagePath, imageUrl, null,
                 (boolean isComplete, String result, String error) -> {

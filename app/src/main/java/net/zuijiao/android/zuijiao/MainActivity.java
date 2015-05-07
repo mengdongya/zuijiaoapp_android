@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.Fragment;
@@ -108,7 +109,9 @@ public final class MainActivity extends BaseActivity implements MainFragment.Mai
             mToolBar.setTitle(titles[position]);
 
             if (position == 3) {
-                mToolBar.setElevation(0);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    mToolBar.setElevation(0);
+                }
                 mToolBar.getMenu().add(0, R.id.action_already_read, 1, getString(R.string.already_read))
                         .setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS)
                         .setOnMenuItemClickListener((MenuItem item) -> {
@@ -117,7 +120,9 @@ public final class MainActivity extends BaseActivity implements MainFragment.Mai
                         });
             } else {
                 mToolBar.getMenu().removeItem(R.id.action_already_read);
-                mToolBar.setElevation(30);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    mToolBar.setElevation(30);
+                }
             }
             if (position != 0) {
                 mLocationView.setVisibility(View.INVISIBLE);

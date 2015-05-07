@@ -1,7 +1,9 @@
 package net.zuijiao.android.zuijiao;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.location.Address;
 import android.location.Criteria;
 import android.location.Geocoder;
@@ -32,6 +34,7 @@ import com.baidu.location.LocationClientOption;
 import com.lidroid.xutils.view.annotation.ContentView;
 import com.lidroid.xutils.view.annotation.ViewInject;
 import com.zuijiao.controller.ActivityTask;
+import com.zuijiao.controller.LocationService;
 import com.zuijiao.db.DBOpenHelper;
 import com.zuijiao.entity.SimpleLocation;
 
@@ -233,6 +236,25 @@ public class LocationActivity extends BaseActivity {
                 InitLocation();
             }
         });
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("locationAction");
+        this.registerReceiver(new LocationBroadcastReceiver(), filter);
+
+        // 启动服务
+        Intent intent = new Intent();
+        intent.setClass(this, LocationService.class);
+        startService(intent);
+    }
+
+    private class LocationBroadcastReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (!intent.getAction().equals("locationAction")) return;
+            String locationInfo = intent.getStringExtra("location");
+
+            unregisterReceiver(this);
+        }
     }
 
     @Override
@@ -417,14 +439,17 @@ public class LocationActivity extends BaseActivity {
         mLocationClient = ((ActivityTask) getApplication()).mLocationClient;
 //        mLocationClient = ((LocationApplication)getApplication()).mLocationClient;
         LocationClientOption option = new LocationClientOption();
-        option.setLocationMode(LocationClientOption.LocationMode.Hight_Accuracy);//设置定位模式
+        option.setLocationMode(LocationClientOption.LocationMode.Device_Sensors);//设置定位模式
         option.setCoorType("bd09ll");
         int span = 1000;
+        option.setOpenGps(true);
+        option.setProdName("zuijiao");
         option.setScanSpan(5000);
         option.setIsNeedAddress(false);
         option.setLocationNotify(true);
         mLocationClient.setLocOption(option);
         mLocationClient.start();
+        mLocationClient.requestLocation();
     }
 
     private class ViewHolder {

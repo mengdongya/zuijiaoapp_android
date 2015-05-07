@@ -52,6 +52,8 @@ public abstract class BaseActivity extends ActionBarActivity {
             }
         }
     };
+    private LambdaExpression mLoginCallBack;
+    private AlertDialog mNotifyLoginDialog = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -146,7 +148,6 @@ public abstract class BaseActivity extends ActionBarActivity {
         mDialog = null;
     }
 
-
     protected void forwardTo(Class activityName) {
         Intent intent = new Intent();
         intent.setClass(mContext, activityName);
@@ -212,20 +213,20 @@ public abstract class BaseActivity extends ActionBarActivity {
         Cache.INSTANCE.setup();
     }
 
-    private LambdaExpression mLoginCallBack;
-
     protected void notifyLogin(LambdaExpression loginCallBack) {
-        this.mLoginCallBack = loginCallBack;
-        View contentView = LayoutInflater.from(mContext).inflate(R.layout.alert_login_dialog, null);
-        TextView tv = (TextView) contentView.findViewById(R.id.fire_login);
-        final AlertDialog dialog = new AlertDialog.Builder(this).setView(contentView).create();
-        tv.setOnClickListener((View v) -> {
-            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-            startActivityForResult(intent, LOGIN_FOR_FETCH_FAVOR);
-            dialog.dismiss();
-            finallizeDialog();
-        });
-        dialog.show();
+        if (mNotifyLoginDialog == null || !mNotifyLoginDialog.isShowing()) {
+            this.mLoginCallBack = loginCallBack;
+            View contentView = LayoutInflater.from(mContext).inflate(R.layout.alert_login_dialog, null);
+            TextView tv = (TextView) contentView.findViewById(R.id.fire_login);
+            mNotifyLoginDialog = new AlertDialog.Builder(this).setView(contentView).create();
+            tv.setOnClickListener((View v) -> {
+                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                startActivityForResult(intent, LOGIN_FOR_FETCH_FAVOR);
+                mNotifyLoginDialog.dismiss();
+                finallizeDialog();
+            });
+            mNotifyLoginDialog.show();
+        }
     }
 
     @Override

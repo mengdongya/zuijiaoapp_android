@@ -212,6 +212,7 @@
                 <action android:name="com.baidu.location.service_v2.2"></action>
             </intent-filter>
         </service>
+        <service android:name="com.zuijiao.controller.LocationService" />
     </application>
 
 </manifest>

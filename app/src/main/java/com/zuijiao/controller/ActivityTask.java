@@ -8,6 +8,7 @@ import android.app.Application;
 import android.content.ComponentName;
 import android.content.Context;
 import android.graphics.Typeface;
+import android.widget.Toast;
 
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
@@ -54,7 +55,7 @@ public class ActivityTask extends Application {
                             .build());
         }
         Router.setup(BuildConfig.Base_Url, BuildConfig.Request_Key, cacheDirectory, interceptor);
-        mLocationClient = new LocationClient(this.getApplicationContext());
+        mLocationClient = new LocationClient(this);
         mMyLocationListener = new MyLocationListener();
         mLocationClient.registerLocationListener(mMyLocationListener);
     }
@@ -135,10 +136,9 @@ public class ActivityTask extends Application {
         @Override
         public void onReceiveLocation(BDLocation location) {
             //Receive Location
-//            StringBuffer sb = new StringBuffer(256);
-
+            StringBuffer sb = new StringBuffer(256);
+            Toast.makeText(ActivityTask.this, location.getAddrStr(), 10000).show();
         }
-
 
     }
 }

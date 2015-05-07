@@ -11,6 +11,8 @@ import android.widget.TextView;
 
 import com.lidroid.xutils.view.annotation.ContentView;
 import com.lidroid.xutils.view.annotation.ViewInject;
+import com.zuijiao.android.zuijiao.model.common.Restaurant;
+import com.zuijiao.android.zuijiao.network.Router;
 
 import java.util.ArrayList;
 
@@ -56,6 +58,17 @@ public class EditPositionActivity extends BaseActivity {
                 mEditorShadow.setText(s.toString());
                 mAutoSearchList.add("result" + count);
                 mAdapter.notifyDataSetChanged();
+                Router.getCommonModule().restaurantSearch(s.toString(), 20, restaurants -> {
+                    mAutoSearchList.clear();
+                    if (restaurants == null || restaurants.getRestaurants() == null) {
+                        return;
+                    }
+                    for (Restaurant restaurant : restaurants.getRestaurants()) {
+//                         mAutoSearchList.add(restaurant.get) ;
+                    }
+                }, errorMsg -> {
+
+                });
             }
 
             @Override

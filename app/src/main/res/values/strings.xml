@@ -181,6 +181,7 @@
     <string name="label_editor_hint">输入标签内容，以标记美食的与众不同</string>
     <string name="notify_delete_label">是否删除标签</string>
     <string name="label_count_upper_limit">最多5个标签</string>
+    <string name="label_repeated">所加的标签已经存在</string>
     <string name="notify_discard_edit_label">是否放弃已经编辑的标签？</string>
     <string name="edit_location_hint">输入店名或地点</string>
     <string name="for_you_locations">为你搜到如下地点</string>

@@ -93,7 +93,11 @@ public class TestClass {
     }
 
     public static void main(String[] args) throws NoSuchAlgorithmException {
-
+        Router.setup("http://api.zuijiaodev.com", null, null, null);
+        testOp(() -> {
+            Router.getCommonModule().gourmetTags(x -> {
+                System.out.println(x);}, null);
+        });
     }
 
 }

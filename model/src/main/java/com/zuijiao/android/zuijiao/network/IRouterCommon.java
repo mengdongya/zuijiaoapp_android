@@ -1,5 +1,6 @@
 package com.zuijiao.android.zuijiao.network;
 
+import com.zuijiao.android.zuijiao.model.common.GourmetTags;
 import com.zuijiao.android.zuijiao.model.common.Restaurants;
 import com.zuijiao.android.zuijiao.model.common.TasteTags;
 
@@ -19,7 +20,7 @@ public interface IRouterCommon {
     void tasteTags(Callback<TasteTags> tasteTagsCallback);
 
     @GET(RootURL + "/cuisine_tags")
-    void gourmetTags(Callback<List<String>> gourmetTagsCallback);
+    void gourmetTags(Callback<GourmetTags> gourmetTagsCallback);
 
     @GET(RootURL + "/restaurant/search")
     void restaurantSearch(@Query("key") String key, @Query("count") Integer count, Callback<Restaurants> restaurantsCallback);

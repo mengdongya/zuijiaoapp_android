@@ -1,6 +1,7 @@
 package com.zuijiao.android.zuijiao.network;
 
 import com.zuijiao.android.util.functional.OneParameterExpression;
+import com.zuijiao.android.zuijiao.model.common.GourmetTags;
 import com.zuijiao.android.zuijiao.model.common.Restaurants;
 import com.zuijiao.android.zuijiao.model.common.TasteTags;
 
@@ -23,7 +24,10 @@ public enum RouterCommon {
     public void gourmetTags(OneParameterExpression<List<String>> successCallback
             , OneParameterExpression<String> failureCallback
     ) {
-        service.gourmetTags(CallbackFactory.getInstance().callback(successCallback, failureCallback));
+        OneParameterExpression<GourmetTags> callback = tags -> {
+            successCallback.action(tags.getTags());
+        };
+        service.gourmetTags(CallbackFactory.getInstance().callback(callback, failureCallback));
     }
 
     public void restaurantSearch(String keyword, Integer count, OneParameterExpression<Restaurants> successCallback

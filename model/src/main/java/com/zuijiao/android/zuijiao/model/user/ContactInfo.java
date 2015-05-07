@@ -24,4 +24,8 @@ public class ContactInfo {
     public String getIsEmailBound() {
         return isEmailBound;
     }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
 }

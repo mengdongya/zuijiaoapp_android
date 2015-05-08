@@ -11,15 +11,12 @@ import com.zuijiao.android.zuijiao.network.Router;
 import com.zuijiao.android.zuijiao.network.RouterGourmet;
 import com.zuijiao.android.zuijiao.network.RouterOAuth;
 
-import net.sourceforge.pinyin4j.format.HanyuPinyinCaseType;
-import net.sourceforge.pinyin4j.format.HanyuPinyinOutputFormat;
-import net.sourceforge.pinyin4j.format.HanyuPinyinToneType;
-import net.sourceforge.pinyin4j.format.HanyuPinyinVCharType;
-
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Timestamp;
 import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.zip.CRC32;
 
 import javax.xml.bind.DatatypeConverter;
@@ -93,11 +90,21 @@ public class TestClass {
     }
 
     public static void main(String[] args) throws NoSuchAlgorithmException {
-        Router.setup("http://api.zuijiaodev.com", null, null, null);
-        testOp(() -> {
-            Router.getCommonModule().gourmetTags(x -> {
-                System.out.println(x);}, null);
-        });
+//        Router.setup("http://xielingyu2.zuijiaodev.com", null, null, null);
+//        testOp(() -> {
+//            Router.getGourmetModule().addGourmet("name"
+//                    , "add"
+//                    , "20"
+//                    , "desc"
+//                    , null
+//                    , null
+//                    , 1
+//                    , 1
+//                    , false
+//                    , () -> System.out.println("succ")
+//                    , () -> System.out.println("fail")
+//            );
+//        });
     }
 
 }

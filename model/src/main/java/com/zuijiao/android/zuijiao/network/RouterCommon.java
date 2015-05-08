@@ -40,6 +40,6 @@ public enum RouterCommon {
     public void requestSecurityCode(final String phoneNumber
             , final LambdaExpression successCallback
             , final LambdaExpression failureCallback) {
-        service.requestCaptcha(phoneNumber, CallbackFactory.getInstance().callback(successCallback, failureCallback));
+        service.requestSecurityCode(phoneNumber, CallbackFactory.getInstance().callback(successCallback, failureCallback));
     }
 }

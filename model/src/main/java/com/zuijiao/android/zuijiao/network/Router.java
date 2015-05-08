@@ -89,6 +89,8 @@ public class Router {
     }
 
     static String convertJsonFromList(List l) {
+        if (l == null) return "[]";
+
         StringBuilder stringBuilder = new StringBuilder("[");
         if (l.size() > 0) {
             for (Object o : l) {

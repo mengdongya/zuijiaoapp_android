@@ -1,5 +1,6 @@
 package com.zuijiao.android.zuijiao.network;
 
+import com.zuijiao.android.util.functional.LambdaExpression;
 import com.zuijiao.android.util.functional.OneParameterExpression;
 import com.zuijiao.android.zuijiao.model.common.GourmetTags;
 import com.zuijiao.android.zuijiao.model.common.Restaurants;
@@ -34,5 +35,11 @@ public enum RouterCommon {
             , OneParameterExpression<String> failureCallback
     ) {
         service.restaurantSearch(keyword, count, CallbackFactory.getInstance().callback(successCallback, failureCallback));
+    }
+
+    public void requestSecurityCode(final String phoneNumber
+            , final LambdaExpression successCallback
+            , final LambdaExpression failureCallback) {
+        service.requestSecurityCode(phoneNumber, CallbackFactory.getInstance().callback(successCallback, failureCallback));
     }
 }

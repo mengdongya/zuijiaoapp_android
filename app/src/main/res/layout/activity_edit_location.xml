@@ -74,7 +74,7 @@
         android:id="@+id/edit_location_for_you_text"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
-        android:textSize="14sp"
+        android:textSize="16sp"
         android:text="@string/for_you_locations"
         android:textColor="@color/tv_light_gray"
         android:layout_marginLeft="10dip"
@@ -86,11 +86,17 @@
         android:layout_width="match_parent" />
 
     <ListView
+        android:background="@drawable/bg_white_round"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:paddingLeft="10dip"
         android:divider="@color/bg_gray_white"
         android:dividerHeight="1dip"
+        android:layout_marginBottom="1dip"
+        android:layout_marginRight="5dip"
+        android:layout_marginLeft="5dip"
+        android:elevation="2dip"
+        android:layout_marginTop="5dip"
         android:id="@+id/edit_location_list"
         android:paddingRight="10dip" />
 

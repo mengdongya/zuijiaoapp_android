@@ -10,21 +10,23 @@
 
     <LinearLayout
         android:id="@+id/fix_location_container"
-        android:layout_height="40dip"
-        android:layout_marginTop="20dip"
-        android:layout_marginBottom="20dip"
+        android:layout_height="50dip"
+        android:background="@drawable/bg_white_transparent"
+        android:layout_marginTop="10dip"
+        android:layout_marginBottom="10dip"
         android:layout_width="match_parent"
         android:orientation="horizontal">
 
-        <FrameLayout
+        <ViewSwitcher
+            android:id="@+id/location_image_switcher"
             android:layout_height="match_parent"
-            android:layout_width="wrap_content">
+            android:layout_width="50dip">
 
             <ProgressBar
                 android:id="@+id/location_progressbar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom|center_horizontal"
+                android:layout_width="20dip"
+                android:layout_height="20dip"
+                android:layout_gravity="center"
                 android:indeterminate="false" />
 
             <ImageView
@@ -33,7 +35,7 @@
                 android:layout_width="wrap_content"
                 android:scaleType="center"
                 android:src="@drawable/ic_launcher" />
-        </FrameLayout>
+        </ViewSwitcher>
 
         <TextView
             android:id="@+id/location_tv"

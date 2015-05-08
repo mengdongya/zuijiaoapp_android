@@ -1,6 +1,9 @@
 package net.zuijiao.android.zuijiao;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
+import android.os.Handler;
+import android.os.Message;
 import android.provider.MediaStore;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
@@ -11,6 +14,7 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.lidroid.xutils.view.annotation.ContentView;
@@ -18,6 +22,8 @@ import com.lidroid.xutils.view.annotation.ViewInject;
 import com.zuijiao.controller.FileManager;
 import com.zuijiao.entity.SimpleImage;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -33,27 +39,6 @@ public class MultiImageChooseActivity extends BaseActivity {
     @ViewInject(R.id.multi_image_choose_sure_btn)
     private Button mSureBtn = null;
     private List<SimpleImage> images = null;
-
-    @Override
-    protected void findViews() {
-
-    }
-
-    @Override
-    protected void registerViews() {
-        setSupportActionBar(mToolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        images = FileManager.getImageList(mContext);
-        mGridView.setAdapter(mGridViewAdapter);
-        mGridView.setOnItemClickListener(mGridListener);
-    }
-
-    private AdapterView.OnItemClickListener mGridListener = new AdapterView.OnItemClickListener() {
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-        }
-    };
     private BaseAdapter mGridViewAdapter = new BaseAdapter() {
         @Override
         public int getCount() {
@@ -85,14 +70,179 @@ public class MultiImageChooseActivity extends BaseActivity {
             } else {
                 holder = (ViewHolder) convertView.getTag();
             }
-            Bitmap bitmap = MediaStore.Images.Thumbnails.getThumbnail(
-                    mContext.getContentResolver(),
-                    Integer.parseInt(images.get(position).id),
-                    MediaStore.Images.Thumbnails.MINI_KIND, null);
-            holder.image.setImageBitmap(bitmap);
+            Bitmap bitmap;
+            if ((bitmap = getFromCache(images.get(position).id)) == null
+                    || bitmap.getByteCount() <= 0 || bitmap.isRecycled()) {
+                try {
+                    bitmap = MediaStore.Images.Thumbnails.getThumbnail(
+                            mContext.getContentResolver(),
+                            Integer.parseInt(images.get(position).id),
+                            MediaStore.Images.Thumbnails.MINI_KIND, null);
+                    addToCache(bitmap, images.get(position).id);
+                    System.out.println("bitmap == " + bitmap.toString());
+                } catch (Throwable t) {
+                    t.printStackTrace();
+                }
+            }
+            try {
+                holder.image.setImageBitmap(bitmap);
+            } catch (Throwable t) {
+                t.printStackTrace();
+            }
+            SimpleImage image = images.get(position);
+//            String selectData = images.get(position).data;
+//            String selectId = images.get(position).id;
+            holder.btn.setChecked(selectedImageContainsCurrentImage(image));
+            holder.btn.setOnClickListener((View view) -> {
+                if (selectedImageContainsCurrentImage(image)) {
+                    removeItem(image);
+                    ((ToggleButton) view).setChecked(false);
+                } else {
+                    if (mSelectedImage.size() >= 5) {
+                        Toast.makeText(mContext, getString(R.string.image_count_upper_limit), Toast.LENGTH_SHORT).show();
+                        ((ToggleButton) view).setChecked(false);
+                    } else {
+                        mSelectedImage.add(image);
+                        ((ToggleButton) view).setChecked(true);
+                    }
+                }
+                mSureBtn.setText(String.format(getString(R.string.sure_with_num), mSelectedImage.size(), 5));
+            });
             return convertView;
         }
+
+        private boolean selectedImageContainsCurrentImage(SimpleImage image) {
+            for (SimpleImage si : mSelectedImage) {
+                if (si.data.equals(image.data)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private void removeItem(SimpleImage image) {
+            for (SimpleImage si : mSelectedImage) {
+                if (si.data.equals(image.data)) {
+                    mSelectedImage.remove(si);
+                    return;
+                }
+            }
+        }
     };
+    //cached bitmap ;
+    private HashMap<String, Bitmap> mCachedData = new HashMap<>();
+    //id of cached bitmap ;
+    private ArrayList<String> mCachedId = new ArrayList<String>();
+    private ArrayList<SimpleImage> mSelectedImage = new ArrayList<>();
+    //    private ArrayList<String> mSelectedId = new ArrayList<>();
+//    private ArrayList<String> mSelectedPath = new ArrayList<>();
+    private AdapterView.OnItemClickListener mGridListener = new AdapterView.OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+        }
+    };
+    private Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            mGridViewAdapter.notifyDataSetChanged();
+        }
+    };
+
+    @Override
+    protected void findViews() {
+
+    }
+
+    @Override
+    protected void registerViews() {
+        setSupportActionBar(mToolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        mSelectedImage = mTendIntent.getParcelableArrayListExtra("edit_images");
+//        mSelectedPath = mTendIntent.getStringArrayListExtra("selected_image_path");
+//        mSelectedId = mTendIntent.getStringArrayListExtra("selected_image_id");
+        images = FileManager.getImageList(mContext);
+        mSureBtn.setEnabled(true);
+        mSureBtn.setText(String.format(getString(R.string.sure_with_num), mSelectedImage.size(), 5));
+        mSureBtn.setOnClickListener((View v) -> {
+            Intent intent = new Intent();
+            intent.putParcelableArrayListExtra("edit_images", mSelectedImage);
+//            intent.putStringArrayListExtra("selected_image_id", mSelectedId);
+//            intent.putStringArrayListExtra("selected_image_path", mSelectedPath);
+            setResult(RESULT_OK, intent);
+            finish();
+        });
+        mGridView.setAdapter(mGridViewAdapter);
+        mGridView.setOnItemClickListener(mGridListener);
+        new Thread(() -> {
+            initCache();
+        }).start();
+    }
+
+    private void initCache() {
+        if (images == null || images.size() == 0) {
+            return;
+        }
+        for (SimpleImage image : images) {
+            if (mCachedData.size() >= 100) {
+                break;
+            }
+            try {
+                Bitmap bitmap = MediaStore.Images.Thumbnails.getThumbnail(
+                        mContext.getContentResolver(),
+                        Integer.parseInt(image.id),
+                        MediaStore.Images.Thumbnails.MINI_KIND, null);
+                if (bitmap != null) {
+                    synchronized (mCachedData) {
+                        mCachedData.put(image.id, bitmap);
+                    }
+                    synchronized (mCachedId) {
+                        mCachedId.add(image.id);
+                    }
+                }
+            } catch (Throwable t) {
+                t.printStackTrace();
+            }
+        }
+        mHandler.sendEmptyMessage(0x1001);
+
+    }
+
+    private void addToCache(Bitmap bitmap, String id) {
+        if (mCachedData == null) {
+            mCachedData = new HashMap<String, Bitmap>();
+        }
+        if (mCachedId == null) {
+            mCachedId = new ArrayList<String>();
+        }
+        int i = 0;
+        while (mCachedId.size() >= 500) {
+            String strId = mCachedId.get(0);
+            Bitmap bm = mCachedData.get(strId);
+            mCachedData.remove(bm);
+            bm.recycle();
+            bm = null;
+            mCachedId.remove(0);
+        }
+        mCachedId.add(id);
+        mCachedData.put(id, bitmap);
+    }
+
+    private Bitmap getFromCache(String id) {
+        if (mCachedData == null) {
+            return null;
+        }
+        synchronized (mCachedData) {
+            try {
+                Bitmap bitmap = mCachedData.get(id);
+                return bitmap;
+            } catch (Throwable t) {
+                t.printStackTrace();
+            }
+        }
+        return null;
+    }
 
     private class ViewHolder {
         ImageView image;

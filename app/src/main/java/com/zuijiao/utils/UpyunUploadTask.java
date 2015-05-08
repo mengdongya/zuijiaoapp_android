@@ -14,11 +14,9 @@ import net.zuijiao.android.zuijiao.BuildConfig;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.SortedMap;
 
 /**
  * Created by user on 4/10/15.
@@ -93,7 +91,7 @@ public final class UpyunUploadTask extends AsyncTask<Void, Void, String> {
 
     public static List<String> gourmetImagePaths(final Integer userId, final String gourmetName, final Integer count, String ext) {
         List<String> result = new ArrayList<>();
-        for (int index = 0; index <= count; index++) {
+        for (int index = 0; index < count; index++) {
             final String gourmetImageName = gourmetPath(userId, gourmetName, ext, index);
             result.add(gourmetImageName);
         }

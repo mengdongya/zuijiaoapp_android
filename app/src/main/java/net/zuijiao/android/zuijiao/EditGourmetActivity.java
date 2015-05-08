@@ -2,7 +2,12 @@ package net.zuijiao.android.zuijiao;
 
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -20,6 +25,7 @@ import com.lidroid.xutils.view.annotation.ContentView;
 import com.lidroid.xutils.view.annotation.ViewInject;
 import com.zuijiao.android.util.functional.LambdaExpression;
 import com.zuijiao.android.zuijiao.network.Router;
+import com.zuijiao.entity.SimpleImage;
 import com.zuijiao.utils.MyTextWatcher;
 import com.zuijiao.utils.UpyunUploadTask;
 
@@ -43,7 +49,8 @@ public class EditGourmetActivity extends BaseActivity implements View.OnClickLis
     public static final int EDIT_LABEL_REQ = 2001;
     public static final int EDIT_LOCATION_REQ = 2002;
     public static final int EDIT_POSITION_REQ = 2003;
-
+    public static final int EDIT_IMAGE_REQ = 2004;
+    public static final int PREVIEW_IMAGE_REQ = 2005;
     @ViewInject(R.id.edit_gourmet_toolbar)
     private Toolbar mToolbar = null;
     @ViewInject(R.id.edit_gourmet_pictures)
@@ -56,7 +63,16 @@ public class EditGourmetActivity extends BaseActivity implements View.OnClickLis
     private TextView mTvGourmetNameListener = null;
     @ViewInject(R.id.edit_gourmet_description_listener)
     private TextView mTvDescriptionListener = null;
-    private ArrayList<String> mSelectedImageList = new ArrayList<>();
+    @ViewInject(R.id.edit_gourmet_label_title)
+    private TextView mLabelTitle = null;
+    @ViewInject(R.id.edit_gourmet_label_count)
+    private TextView mLabelCount = null;
+    @ViewInject(R.id.edit_gourmet_location_title)
+    private TextView mLocationTitle = null;
+    @ViewInject(R.id.edit_gourmet_position_title)
+    private TextView mPositionTitle = null;
+    @ViewInject(R.id.edit_gourmet_et_price)
+    private EditText mEtPrice = null;
     @ViewInject(R.id.edit_gourmet_position)
     private LinearLayout mPositionLayout = null;
     @ViewInject(R.id.edit_gourmet_price)
@@ -65,22 +81,11 @@ public class EditGourmetActivity extends BaseActivity implements View.OnClickLis
     private LinearLayout mLabelLayout = null;
     @ViewInject(R.id.edit_gourmet_location)
     private LinearLayout mLocationLayout = null;
-    private AdapterView.OnItemClickListener mGridListener = new AdapterView.OnItemClickListener() {
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-            if (position == mSelectedImageListAdapter.getCount() - 1) {
-                Intent it = new Intent();
-                it.setClass(mContext, MultiImageChooseActivity.class);
-                startActivity(it);
-            }
-        }
-    };
     private BaseAdapter mSelectedImageListAdapter = new BaseAdapter() {
         @Override
         public int getCount() {
-//            return mSelectedImageList.size() + 1 > 5 ? 5 : mSelectedImageList.size() + 1;
-            return 5;
+            return mImages.size() >= 5 ? 5 : mImages.size() + 1;
+//            return mSelectedImageList.size() + 1;
         }
 
         @Override
@@ -100,12 +105,18 @@ public class EditGourmetActivity extends BaseActivity implements View.OnClickLis
             layout.setLayoutParams(alp);
             ImageView contentView = new ImageView(mContext);
             ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams((int) getResources().getDimension(R.dimen.edit_gourmet_image_size), (int) getResources().getDimension(R.dimen.edit_gourmet_image_size));
-            contentView.setImageResource(R.drawable.shanghai);
+//            contentView.setImageResource(R.drawable.shanghai);
             contentView.setLayoutParams(lp);
             layout.addView(contentView);
             contentView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            if (position == mSelectedImageList.size()) {
+            if (position == mImages.size()) {
                 contentView.setImageResource(R.drawable.edit_gourmet_picture);
+            } else {
+                Bitmap bitmap = MediaStore.Images.Thumbnails.getThumbnail(
+                        mContext.getContentResolver(),
+                        Integer.parseInt(mImages.get(position).id),
+                        MediaStore.Images.Thumbnails.MICRO_KIND, null);
+                contentView.setImageBitmap(bitmap);
             }
             layout.setFocusable(false);
             return layout;
@@ -114,10 +125,34 @@ public class EditGourmetActivity extends BaseActivity implements View.OnClickLis
     private String mEditName = null;
     private ArrayList<String> mEditLabels = null;
     private String mEditDescription = null;
+    //gourmet address ;
     private String mEditAddress = null;
     private String mEditPrice = null;
     private List<String> mImageUrls = null;
-    private ArrayList<String> mImagePath = null;
+    private ArrayList<SimpleImage> mImages = new ArrayList<>();
+    //    private ArrayList<String> mImagePath = new ArrayList<>();
+//    private ArrayList<String> mSelectedImageId = new ArrayList<>();
+    private AdapterView.OnItemClickListener mGridListener = new AdapterView.OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            Intent intent = new Intent();
+            if (mImages.size() < 5 && position == mSelectedImageListAdapter.getCount() - 1) {
+                intent.setClass(mContext, MultiImageChooseActivity.class);
+                intent.putParcelableArrayListExtra("edit_images", mImages);
+//                intent.putStringArrayListExtra("selected_image_path", mImagePath);
+//                intent.putStringArrayListExtra("selected_image_id", mSelectedImageId);
+                startActivityForResult(intent, EDIT_IMAGE_REQ);
+            } else {
+                intent.setClass(mContext, BigImageActivity.class);
+                intent.putParcelableArrayListExtra("edit_images", mImages);
+                intent.putExtra("current_image_index", position);
+                intent.putExtra("can_delete", true);
+                startActivityForResult(intent, PREVIEW_IMAGE_REQ);
+            }
+        }
+    };
+    //where i edit ;
+    private String mEditPosition = null;
     private int mProvinceId = -1;
     private int mCityId = -1;
 
@@ -135,12 +170,15 @@ public class EditGourmetActivity extends BaseActivity implements View.OnClickLis
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.menu_edit_gourmet) {
+            mEditName = mEtGourmetName.getText().toString().trim();
+            mEditDescription = mEtGourmetDescription.getText().toString().trim();
+            mEditPrice = mEtPrice.getText().toString().trim();
             mImageUrls = UpyunUploadTask.gourmetImagePaths(
-                    Router.getInstance().getCurrentUser().get().getIdentifier(), mEditName, mImagePath.size(), ".jpg");
-            uploadImageContinuously(mImagePath.get(0), () -> {
+                    Router.getInstance().getCurrentUser().get().getIdentifier(), mEditName, mImages.size(), ".jpg");
+            uploadImageContinuously(mImages.get(0), () -> {
                 Router.getGourmetModule().addGourmet(mEditName, mEditAddress,
                         mEditPrice, mEditDescription, mImageUrls,
-                        mEditLabels, mProvinceId, mCityId,
+                        mEditLabels, 0, 1,
                         mType == TYPE_CREATE_PERSONAL_GOURMET, () -> {
                             finallizeDialog();
                         }, () -> {
@@ -151,16 +189,16 @@ public class EditGourmetActivity extends BaseActivity implements View.OnClickLis
         return super.onOptionsItemSelected(item);
     }
 
-    private void uploadImageContinuously(String imagePath, LambdaExpression lambdaExpression) {
-        String imageUrl = mImageUrls.get(mImagePath.indexOf(imagePath));
+    private void uploadImageContinuously(SimpleImage image, LambdaExpression lambdaExpression) {
+        String imageUrl = mImageUrls.get(mImages.indexOf(image));
         createDialog();
-        new UpyunUploadTask(imagePath, imageUrl, null,
+        new UpyunUploadTask(image.data, imageUrl, null,
                 (boolean isComplete, String result, String error) -> {
                     if (isComplete) {
-                        mImageUrls.add(imageUrl);
-                        String nextImagePath = getNextImagePath(imagePath);
-                        if (nextImagePath != null && new File(nextImagePath).exists()) {
-                            uploadImageContinuously(nextImagePath, lambdaExpression);
+//                        mImageUrls.add(imageUrl);
+                        SimpleImage nextImage = getNextImage(image);
+                        if (nextImage != null && new File(nextImage.data).exists()) {
+                            uploadImageContinuously(nextImage, lambdaExpression);
                         } else {
                             lambdaExpression.action();
                         }
@@ -171,9 +209,9 @@ public class EditGourmetActivity extends BaseActivity implements View.OnClickLis
                 }).execute();
     }
 
-    private String getNextImagePath(String currentPath) {
+    private SimpleImage getNextImage(SimpleImage currentImage) {
         try {
-            return mImagePath.get(mImagePath.indexOf(currentPath) + 1);
+            return mImages.get(mImages.indexOf(currentImage) + 1);
         } catch (Throwable t) {
             return null;
         }
@@ -219,6 +257,22 @@ public class EditGourmetActivity extends BaseActivity implements View.OnClickLis
         mLabelLayout.setOnClickListener(this);
         mLocationLayout.setOnClickListener(this);
         mPositionLayout.setOnClickListener(this);
+        mEtPrice.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                mEditPrice = s.toString();
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
     }
 
     public void onClick(View view) {
@@ -226,28 +280,57 @@ public class EditGourmetActivity extends BaseActivity implements View.OnClickLis
             case R.id.edit_gourmet_labels:
                 Intent intent = new Intent();
                 intent.setClass(mContext, LabelActivity.class);
+                intent.putStringArrayListExtra("edit_label", mEditLabels);
                 startActivityForResult(intent, EDIT_LABEL_REQ);
                 break;
             case R.id.edit_gourmet_location:
                 Intent intent3 = new Intent();
                 intent3.setClass(mContext, LocationActivity.class);
-                startActivity(intent3);
+                startActivityForResult(intent3, EDIT_LOCATION_REQ);
                 break;
             case R.id.edit_gourmet_position:
                 Intent intent2 = new Intent();
                 intent2.setClass(mContext, EditPositionActivity.class);
-                startActivity(intent2);
+                startActivityForResult(intent2, EDIT_POSITION_REQ);
                 break;
         }
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode != RESULT_OK) {
+            return;
+        }
         switch (requestCode) {
             case EDIT_LABEL_REQ:
-                if (resultCode == RESULT_OK) {
-                    mEditLabels = data.getStringArrayListExtra("labels");
+                mEditLabels = data.getStringArrayListExtra("labels");
+                mLabelCount.setVisibility(View.VISIBLE);
+                mLabelCount.setText(String.format(getString(R.string.label_count), mEditLabels.size()));
+                break;
+            case EDIT_POSITION_REQ:
+                mEditAddress = data.getStringExtra("position");
+                mPositionTitle.setText(mEditPosition);
+                break;
+            case EDIT_LOCATION_REQ:
+                Bundle bundle = data.getBundleExtra("location");
+                mCityId = bundle.getInt("city_id", 0);
+                mProvinceId = bundle.getInt("province_id", 0);
+                if (mCityId == mProvinceId) {
+                    mEditPosition = bundle.getString("province");
+                } else {
+                    mEditPosition = bundle.getString("province") + bundle.getString("city");
                 }
+                mLocationTitle.setText(mEditPosition);
+                break;
+            case EDIT_IMAGE_REQ:
+                mImages = data.getParcelableArrayListExtra("edit_images");
+//                mImagePath = data.getStringArrayListExtra("selected_image_path");
+//                mSelectedImageId = data.getStringArrayListExtra("selected_image_id");
+                mSelectedImageListAdapter.notifyDataSetChanged();
+                break;
+            case PREVIEW_IMAGE_REQ:
+                mImages = data.getParcelableArrayListExtra("edit_images");
+                mSelectedImageListAdapter.notifyDataSetChanged();
                 break;
         }
 

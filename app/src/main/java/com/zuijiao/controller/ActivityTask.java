@@ -8,7 +8,6 @@ import android.app.Application;
 import android.content.ComponentName;
 import android.content.Context;
 import android.graphics.Typeface;
-import android.widget.Toast;
 
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
@@ -21,6 +20,7 @@ import com.zuijiao.android.zuijiao.network.Router;
 import com.zuijiao.utils.OSUtil;
 
 import net.zuijiao.android.zuijiao.BuildConfig;
+import net.zuijiao.android.zuijiao.LocationActivity;
 
 import java.io.File;
 import java.util.LinkedList;
@@ -33,6 +33,7 @@ public class ActivityTask extends Application {
     public LocationClient mLocationClient;
     public GeofenceClient mGeofenceClient;
     public MyLocationListener mMyLocationListener;
+    private String mapUriStr = "http://maps.google.cn/maps/api/geocode/json?latlng={0},{1}&sensor=true&language=zh-CN";
     // opened activities
     private LinkedList<Activity> mActivitiesList = new LinkedList<Activity>();
 
@@ -41,6 +42,10 @@ public class ActivityTask extends Application {
         super.onCreate();
 //        FontsOverride.setDefaultFont(this, "DEFAULT", "fonts/NotoSansHans-Light.otf");
 //
+        mLocationClient = new LocationClient(this.getApplicationContext());
+        mMyLocationListener = new MyLocationListener();
+        mLocationClient.registerLocationListener(mMyLocationListener);
+        mGeofenceClient = new GeofenceClient(getApplicationContext());
         File cacheDirectory = getApplicationContext().getCacheDir();
         Interceptor interceptor = null;
 
@@ -55,9 +60,7 @@ public class ActivityTask extends Application {
                             .build());
         }
         Router.setup(BuildConfig.Base_Url, BuildConfig.Request_Key, cacheDirectory, interceptor);
-        mLocationClient = new LocationClient(this);
-        mMyLocationListener = new MyLocationListener();
-        mLocationClient.registerLocationListener(mMyLocationListener);
+
     }
 
     public static ActivityTask getInstance() {
@@ -135,10 +138,18 @@ public class ActivityTask extends Application {
 
         @Override
         public void onReceiveLocation(BDLocation location) {
-            //Receive Location
-            StringBuffer sb = new StringBuffer(256);
-            Toast.makeText(ActivityTask.this, location.getAddrStr(), 10000).show();
+            String city = location.getCity();
+            String province = location.getProvince();
+            if (city != null && province != null) {
+                LocationActivity.mCurrentLocationTv.setText(province + city);
+                LocationActivity.mSwitcher.showNext();
+                LocationActivity.autoLocationCity = city;
+                LocationActivity.autoLocationProvince = province;
+                System.out.println(city);
+                mLocationClient.stop();
+            }
         }
-
     }
+
+
 }

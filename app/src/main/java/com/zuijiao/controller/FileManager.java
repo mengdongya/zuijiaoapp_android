@@ -36,7 +36,7 @@ public class FileManager {
     private static FileManager mInstance = null;
     private Context mContext = null;
     private static final String[] STORE_IMAGES = {
-            MediaStore.Images.Media.DISPLAY_NAME, MediaStore.Images.Media._ID,};
+            MediaStore.Images.Media.DISPLAY_NAME, MediaStore.Images.Media._ID, MediaStore.Images.ImageColumns.DATA};
 
     private FileManager(Context context) {
         this.mContext = context;
@@ -174,14 +174,15 @@ public class FileManager {
         while (cursor.moveToNext()) {
             String id = cursor.getString(1);
             String displayname = cursor.getString(0);
+            String data = cursor.getString(2);
             image = new SimpleImage();
             image.name = displayname;
             image.id = id;
+            image.data = data;
             list.add(image);
         }
         cursor.close();
         return list;
     }
-
 
 }

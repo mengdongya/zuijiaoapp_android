@@ -120,12 +120,24 @@
                     android:src="@drawable/ic_launcher" />
 
                 <TextView
+                    android:id="@+id/edit_gourmet_label_title"
                     android:layout_height="wrap_content"
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:text="@string/gourmet_label"
                     android:layout_marginLeft="15dip"
                     android:textSize="18sp"
+                    android:textColor="@color/tv_light_gray"
+                    android:gravity="center_vertical" />
+
+                <TextView
+                    android:visibility="gone"
+                    android:id="@+id/edit_gourmet_label_count"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:layout_marginRight="15dip"
+                    android:textSize="16sp"
+                    android:layout_gravity="center_vertical"
                     android:textColor="@color/tv_light_gray"
                     android:gravity="center_vertical" />
 
@@ -153,6 +165,7 @@
                     android:src="@drawable/ic_launcher" />
 
                 <TextView
+                    android:id="@+id/edit_gourmet_location_title"
                     android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
                     android:layout_weight="1"
@@ -188,6 +201,7 @@
                     android:src="@drawable/ic_launcher" />
 
                 <TextView
+                    android:id="@+id/edit_gourmet_position_title"
                     android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
                     android:layout_weight="1"
@@ -222,6 +236,7 @@
                     android:src="@drawable/ic_launcher" />
 
                 <EditText
+                    android:id="@+id/edit_gourmet_et_price"
                     android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
                     android:layout_weight="1"

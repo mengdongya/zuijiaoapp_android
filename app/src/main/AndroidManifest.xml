@@ -32,6 +32,18 @@
         android:icon="@drawable/icon"
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
+        <service
+            android:name="com.baidu.location.f"
+            android:enabled="true"
+            android:process=":remote">
+            <intent-filter>
+                <action android:name="com.baidu.location.service_v2.2"></action>
+            </intent-filter>
+        </service>
+        <meta-data
+            android:name="com.baidu.lbsapi.API_KEY"
+            android:value="4lE0F9aM8Q3o9bGREEk9eFHe" />
+
         <activity
             android:name="com.sina.weibo.sdk.component.WeiboSdkBrowser"
             android:configChanges="keyboardHidden|orientation"
@@ -191,9 +203,7 @@
         <meta-data
             android:name="UMENG_CHANNEL"
             android:value="GooglePlay"></meta-data>
-        <meta-data
-            android:name="com.baidu.lbsapi.API_KEY"
-            android:value="4lE0F9aM8Q3o9bGREEk9eFHe" />
+
 
         <activity
             android:name="com.umeng.update.UpdateDialogActivity"
@@ -204,14 +214,6 @@
             android:process=":DownloadingService"></service>
 
 
-        <service
-            android:name="com.baidu.location.f"
-            android:enabled="true"
-            android:process=":remote">
-            <intent-filter>
-                <action android:name="com.baidu.location.service_v2.2"></action>
-            </intent-filter>
-        </service>
         <service android:name="com.zuijiao.controller.LocationService" />
     </application>
 

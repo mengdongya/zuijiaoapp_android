@@ -49,6 +49,8 @@ public class LabelActivity extends BaseActivity {
     private ArrayList<String> mAddedText = new ArrayList<>();
     private List<String> mHotLabels = null;
     private MenuItem mMenuBtn = null;
+
+    private boolean bLabelChanged = false;
     private View.OnClickListener mLabelListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
@@ -64,6 +66,7 @@ public class LabelActivity extends BaseActivity {
                     mAddedLabels.removeView(view);
                     mAddedText.remove(((TextView) view).getText());
                     mMenuBtn.setTitle(String.format(getString(R.string.sure_with_num), mAddedText.size(), 5));
+                    bLabelChanged = true;
                 } catch (Throwable t) {
                     t.printStackTrace();
                 }
@@ -82,6 +85,8 @@ public class LabelActivity extends BaseActivity {
     protected void registerViews() {
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        ArrayList<String> labels = mTendIntent.getStringArrayListExtra("edit_label");
+        mAddedText = (labels == null ? new ArrayList<>() : labels);
         mLabelEditor.setFocusable(true);
         mLabelEditor.setFocusableInTouchMode(true);
         mLabelEditor.requestFocus();
@@ -103,6 +108,9 @@ public class LabelActivity extends BaseActivity {
                     (InputMethodManager) mLabelEditor.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
             inputManager.showSoftInput(mLabelEditor, 0);
         }, 200);
+        for (String label : mAddedText) {
+            addToViewGroup(label);
+        }
     }
 
     private void fetchHotLabels() {
@@ -149,7 +157,7 @@ public class LabelActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-        if (mAddedText.size() != 0) {
+        if (mAddedText.size() != 0 && bLabelChanged) {
             View logoutView = LayoutInflater.from(getApplicationContext()).inflate(
                     R.layout.delete_label_dialog, null);
             AlertDialog dialog = new AlertDialog.Builder(LabelActivity.this).setView(logoutView).create();
@@ -206,6 +214,7 @@ public class LabelActivity extends BaseActivity {
 
 
     private boolean addOneLabel(String label) {
+        bLabelChanged = true;
         if (mAddedText.size() == 5) {
             Toast.makeText(mContext, getString(R.string.label_count_upper_limit), Toast.LENGTH_SHORT).show();
             return false;
@@ -214,6 +223,14 @@ public class LabelActivity extends BaseActivity {
             Toast.makeText(mContext, getString(R.string.label_repeated), Toast.LENGTH_SHORT).show();
             return false;
         }
+        addToViewGroup(label);
+        mAddedText.add(label);
+        mMenuBtn.setTitle(String.format(getString(R.string.sure_with_num), mAddedText.size(), 5));
+        return true;
+    }
+
+
+    private void addToViewGroup(String label) {
         TextView textview = new TextView(mContext);
         textview.setBackgroundResource(R.drawable.bg_label);
         textview.setTextColor(getResources().getColor(R.color.white));
@@ -221,8 +238,5 @@ public class LabelActivity extends BaseActivity {
         textview.setText(label);
         textview.setOnClickListener(mLabelListener);
         mAddedLabels.addView(textview);
-        mAddedText.add(label);
-        mMenuBtn.setTitle(String.format(getString(R.string.sure_with_num), mAddedText.size(), 5));
-        return true;
     }
 }

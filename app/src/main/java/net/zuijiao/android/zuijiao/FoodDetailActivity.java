@@ -48,6 +48,7 @@ import com.zuijiao.android.zuijiao.model.Gourmet;
 import com.zuijiao.android.zuijiao.model.user.WouldLikeToEatUser;
 import com.zuijiao.android.zuijiao.network.Router;
 import com.zuijiao.controller.FileManager;
+import com.zuijiao.entity.SimpleImage;
 import com.zuijiao.utils.StrUtil;
 import com.zuijiao.view.MeasuredTextView;
 import com.zuijiao.view.MyScrollView;
@@ -520,7 +521,11 @@ public class FoodDetailActivity extends BaseActivity implements
                 Intent intent = new Intent(FoodDetailActivity.this, BigImageActivity.class);
                 int currentImageIndex = mImagePager.getCurrentItem();
                 intent.putExtra("current_image_index", currentImageIndex);
-                intent.putStringArrayListExtra("image_url", imageUrls);
+                ArrayList<SimpleImage> tmpList = new ArrayList<>();
+                for (String str : imageUrls) {
+                    tmpList.add(new SimpleImage("", "", str));
+                }
+                intent.putParcelableArrayListExtra("edit_images", tmpList);
                 startActivity(intent);
             });
             Picasso.with(getApplicationContext())

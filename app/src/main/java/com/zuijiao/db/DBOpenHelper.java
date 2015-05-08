@@ -455,4 +455,34 @@ public class DBOpenHelper extends SQLiteOpenHelper {
     }
 
 
+    public int getLocationIdByName(String name) {
+        String subStr = name.substring(0, 2);
+        SQLiteDatabase db = getLocationDb();
+        int id = 0;
+        Cursor cursor = null;
+        synchronized (db) {
+            try {
+                cursor = db.query("location", new String[]{"id"}, "name LIKE ?", new String[]{name.substring(0, 2) + "%"}, null, null, null);
+                if (cursor != null && cursor.getCount() != 0) {
+                    cursor.moveToFirst();
+                    while (!cursor.isAfterLast()) {
+                        id = cursor.getInt(0);
+                        return id;
+                    }
+                    cursor.close();
+                    cursor = null;
+                }
+            } catch (Throwable t) {
+                t.printStackTrace();
+            } finally {
+                try {
+                    cursor.close();
+                    db.close();
+                } catch (Throwable t) {
+                    t.printStackTrace();
+                }
+            }
+        }
+        return 0;
+    }
 }

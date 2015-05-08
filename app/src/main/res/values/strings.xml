@@ -215,4 +215,6 @@
     <string name="notification">通知</string>
     <string name="comment">评论</string>
     <string name="already_read">已阅</string>
+    <string name="label_count">%d个标签</string>
+    <string name="image_count_upper_limit">最多5张图片</string>
 </resources>

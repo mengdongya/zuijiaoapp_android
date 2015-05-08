@@ -121,7 +121,7 @@ public class ImageChooseActivity extends BaseActivity {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            mGdView.setAdapter(mAdapter);
+            mAdapter.notifyDataSetChanged();
         }
     };
 
@@ -136,14 +136,11 @@ public class ImageChooseActivity extends BaseActivity {
         getSupportActionBar().setTitle(getString(R.string.image_chooser));
         mContext = getApplicationContext();
         images = FileManager.getImageList(mContext);
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                initCache();
-            }
-        }).start();
-        ;
+        mGdView.setAdapter(mAdapter);
         mGdView.setOnItemClickListener(mListener);
+        new Thread(() -> {
+            initCache();
+        }).start();
     }
 
     @Override

@@ -22,6 +22,7 @@ import android.widget.Toast;
 
 import com.lidroid.xutils.view.annotation.ContentView;
 import com.lidroid.xutils.view.annotation.ViewInject;
+import com.zuijiao.entity.SimpleImage;
 
 import java.util.ArrayList;
 
@@ -202,9 +203,9 @@ public final class UserInfoActivity extends BaseActivity implements View.OnClick
                 break;
             case R.id.user_info_user_head:
                 intent.setClass(UserInfoActivity.this, BigImageActivity.class);
-                ArrayList<String> avatarUrl = new ArrayList<>();
-                avatarUrl.add("http://g.hiphotos.baidu.com/image/pic/item/c8177f3e6709c93d3e2755f49d3df8dcd00054df.jpg");
-                intent.putStringArrayListExtra("image_url", avatarUrl);
+                ArrayList<SimpleImage> avatarUrl = new ArrayList<>();
+                avatarUrl.add(new SimpleImage("", "", "http://g.hiphotos.baidu.com/image/pic/item/c8177f3e6709c93d3e2755f49d3df8dcd00054df.jpg"));
+                intent.putParcelableArrayListExtra("edit_images", avatarUrl);
                 break;
         }
         startActivity(intent);

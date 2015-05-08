@@ -54,7 +54,7 @@
     <color name="gray">#999999</color>
     <color name="comment_content_color">#444444</color>
     <color name="background_tab_pressed">#66373737</color>
-    <color name="almost_transparent">#55000000</color>
+    <color name="almost_transparent">#aa222222</color>
 
 
     <color name="black_semi_transparent">#B2000000</color>

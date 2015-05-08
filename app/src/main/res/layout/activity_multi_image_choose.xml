@@ -25,8 +25,9 @@
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:text="@string/sure_with_num"
-        android:textColor="@color/white"
+        android:background="@drawable/bg_multi_image_btn"
+        android:textColor="@color/system_bar"
         android:textSize="16sp"
-        android:elevation="5dip"
+        android:elevation="10dip"
         android:gravity="center" />
 </LinearLayout>

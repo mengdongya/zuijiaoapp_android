@@ -4,6 +4,7 @@ import com.google.gson.annotations.SerializedName;
 import com.zuijiao.android.zuijiao.model.user.TinyUser;
 import com.zuijiao.android.zuijiao.network.Router;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -13,7 +14,7 @@ import java.util.List;
  * <p>
  * Created by Chen Hao on 3/18/15.
  */
-public class Gourmet {
+public class Gourmet implements Serializable {
 
     @SerializedName("title")
     private String name;

@@ -55,8 +55,9 @@ public class MainFragment extends Fragment implements FragmentDataListener,
         public void onItemClick(AdapterView<?> parent, View view, int position,
                                 long id) {
             Intent intent = new Intent(getActivity(), FoodDetailActivity.class);
-            intent.putExtra("click_item_index", position - 1);
-            intent.putExtra("b_favor", mContentType == FAVOR_PAGE);
+            intent.putExtra("selected_gourmet", mAdapter.getItem(position));
+//            intent.putExtra("click_item_index", position - 1);
+//            intent.putExtra("b_favor", mContentType == FAVOR_PAGE);
             startActivity(intent);
         }
     };
@@ -212,6 +213,8 @@ public class MainFragment extends Fragment implements FragmentDataListener,
             fetchCommonData(true);
         } else if (mContentType == FAVOR_PAGE) {
             fetchFavorData(true);
+        } else if (mContentType == RECOMMEND_PAGE) {
+            fetchRecommendData(true);
         }
     }
 
@@ -221,6 +224,8 @@ public class MainFragment extends Fragment implements FragmentDataListener,
             fetchCommonData(false);
         } else if (mContentType == FAVOR_PAGE) {
             fetchFavorData(false);
+        } else if (mContentType == RECOMMEND_PAGE) {
+            fetchRecommendData(false);
         }
     }
 
@@ -553,6 +558,8 @@ public class MainFragment extends Fragment implements FragmentDataListener,
                 gourmets = FileManager.mainGourmet;
             } else if (mContentType == FAVOR_PAGE) {
                 gourmets = FileManager.favorGourmets;
+            } else if (mContentType == RECOMMEND_PAGE) {
+                gourmets = FileManager.recommendList;
             } else {
                 gourmets = Optional.empty();
             }
@@ -628,8 +635,12 @@ public class MainFragment extends Fragment implements FragmentDataListener,
         }
 
         @Override
-        public Object getItem(int position) {
-            return position;
+        public Gourmet getItem(int position) {
+//            return position;
+            if (gourmets.isPresent()) {
+                return gourmets.get().get(position);
+            }
+            return null;
         }
 
         @Override

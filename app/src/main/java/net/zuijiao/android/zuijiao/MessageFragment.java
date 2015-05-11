@@ -34,8 +34,8 @@ import java.util.List;
 public class MessageFragment extends Fragment implements FragmentDataListener,
         MyListViewListener {
     private View mContentView = null;
-    private RefreshAndInitListView mListView = null;
-    private MesssageAdapter mAdapter = null;
+    public RefreshAndInitListView mListView = null;
+    public MessageAdapter mAdapter = null;
     private LayoutInflater mInflater = null;
     private Context mContext;
     private AdapterView.OnItemClickListener mItemClickListener = new AdapterView.OnItemClickListener() {
@@ -78,7 +78,7 @@ public class MessageFragment extends Fragment implements FragmentDataListener,
 //        mListView.setPullLoadEnable(true);
 //        mListView.autoResetHeadView();
 
-        mAdapter = new MesssageAdapter();
+        mAdapter = new MessageAdapter();
         mListView.setAdapter(mAdapter);
         mListView.setOnItemClickListener(mItemClickListener);
         mListView.setPullLoadEnable(true);
@@ -102,16 +102,6 @@ public class MessageFragment extends Fragment implements FragmentDataListener,
         }, 400);
     }
 
-    public void clearMessage() {
-        try {
-            mAdapter.mData.clear();
-            mAdapter.notifyDataSetChanged();
-            mListView.setPullLoadEnable(false);
-        } catch (Throwable t) {
-            System.err.println("no message");
-            ;
-        }
-    }
 
     @Override
     public ArrayList<Object> initCache(int type) {
@@ -184,7 +174,7 @@ public class MessageFragment extends Fragment implements FragmentDataListener,
                     mLayout.setVisibility(View.GONE);
                     List<Message> msgList = msg.getAllMessage();
                     if (mAdapter == null) {
-                        mAdapter = new MesssageAdapter();
+                        mAdapter = new MessageAdapter();
                     }
                     mAdapter.setData(msgList);
                     mListView.setAdapter(mAdapter);
@@ -226,7 +216,18 @@ public class MessageFragment extends Fragment implements FragmentDataListener,
         });
     }
 
-    private class MesssageAdapter extends BaseAdapter {
+    public void clearMessage() {
+        try {
+            mAdapter.mData.clear();
+            mAdapter.notifyDataSetChanged();
+            mListView.setPullLoadEnable(false);
+        } catch (Throwable t) {
+            System.err.println("no message");
+            ;
+        }
+    }
+
+    private class MessageAdapter extends BaseAdapter {
         public List<Message> mData = new ArrayList<>();
 
         @Override

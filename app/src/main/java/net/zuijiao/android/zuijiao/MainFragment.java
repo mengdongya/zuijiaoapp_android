@@ -45,9 +45,10 @@ import static android.view.View.OnLongClickListener;
 public class MainFragment extends Fragment implements FragmentDataListener,
         MyListViewListener {
     public static final int UNDEFINE_PAGE = 0;
-    private int mContentType = UNDEFINE_PAGE;
     public static final int MAIN_PAGE = 1;
     public static final int FAVOR_PAGE = 2;
+    public static final int RECOMMEND_PAGE = 3;
+    private int mContentType = UNDEFINE_PAGE;
     private OnItemClickListener mItemClickListener = new OnItemClickListener() {
 
         @Override
@@ -59,7 +60,6 @@ public class MainFragment extends Fragment implements FragmentDataListener,
             startActivity(intent);
         }
     };
-    public static final int RECOMMEND_PAGE = 3;
     private View mContentView = null;
     private RefreshAndInitListView mListView = null;
     private FloatingActionsMenu mAddMenu = null;
@@ -73,6 +73,7 @@ public class MainFragment extends Fragment implements FragmentDataListener,
     private boolean bLogin = false;
     private Activity mActivity = null;
     private boolean bFirstInit = true;
+    private TinyUser mDisplayUser = null;
     private View.OnClickListener mFloatBtnListener = new View.OnClickListener() {
 
         @Override
@@ -90,6 +91,13 @@ public class MainFragment extends Fragment implements FragmentDataListener,
         super();
         this.mContentType = Type;
         this.mContext = context;
+        if (Router.getInstance().getCurrentUser().isPresent()) {
+            mDisplayUser = Router.getInstance().getCurrentUser().get();
+        }
+    }
+
+    public void setUser(TinyUser user) {
+        mDisplayUser = user;
     }
 
     @Override
@@ -189,16 +197,14 @@ public class MainFragment extends Fragment implements FragmentDataListener,
                         fetchFavorData(true);
                         break;
                     case RECOMMEND_PAGE:
-                        fetchRecommendDAta(true);
+                        fetchRecommendData(true);
                         break;
                 }
             }
         }, 450);
     }
 
-    private void fetchRecommendDAta(boolean b) {
 
-    }
 
     @Override
     public void onRefresh() {
@@ -235,42 +241,51 @@ public class MainFragment extends Fragment implements FragmentDataListener,
         }
     }
 
-    private void fetchFavorData(Boolean isRefresh) {
-        if (Router.getInstance().getCurrentUser().equals(Optional.empty())) {
-            ((BaseActivity) getActivity()).tryLoginFirst(() -> {
-                if (Router.getInstance().getCurrentUser().equals(Optional.empty())) {
-                    mAdapter.gourmets.get().clear();
-                    mAdapter.notifyDataSetChanged();
-                    mListView.setPullLoadEnable(false);
-                    mFavorCount.setVisibility(View.GONE);
+    private void fetchRecommendData(boolean isRefresh) {
+        if (mDisplayUser == null) {
+            if (Router.getInstance().getCurrentUser().isPresent()) {
+                mDisplayUser = Router.getInstance().getCurrentUser().get();
+            }
+            if (mDisplayUser == null) {
+                ((BaseActivity) getActivity()).tryLoginFirst(() -> {
+                    if (!Router.getInstance().getCurrentUser().isPresent()) {
+                        if (mAdapter.gourmets.isPresent())
+                            mAdapter.gourmets.get().clear();
+                        mAdapter.notifyDataSetChanged();
+                        mListView.setPullLoadEnable(false);
+                        mFavorCount.setVisibility(View.GONE);
+                        mListView.stopRefresh();
+                        mListView.stopLoadMore();
+                        ((BaseActivity) getActivity()).notifyLogin(() -> {
+                            if (Router.getInstance().getCurrentUser().isPresent()) {
+                                fetchRecommendData(isRefresh);
+                            } else {
+                                //do nothing
+                            }
+                        });
+                    } else {
+                        fetchRecommendData(isRefresh);
+                    }
+                }, error -> {
+                    Toast.makeText(mActivity, getResources().getString(R.string.notify_net2), Toast.LENGTH_LONG).show();
                     mListView.stopRefresh();
                     mListView.stopLoadMore();
-                    ((BaseActivity) getActivity()).notifyLogin(() -> {
-                        if (Router.getInstance().getCurrentUser().equals(Optional.empty())) {
+                });
+            } else {
+                fetchRecommendData(isRefresh);
+            }
 
-                        } else {
-                            fetchFavorData(isRefresh);
-                        }
-                    });
-                } else {
-                    fetchFavorData(isRefresh);
-                }
-            }, error -> {
-                Toast.makeText(mActivity, getResources().getString(R.string.notify_net2), Toast.LENGTH_LONG).show();
-                mListView.stopRefresh();
-                mListView.stopLoadMore();
-            });
             return;
         }
-        TinyUser user = Router.getInstance().getCurrentUser().get();
+        // TinyUser user = Router.getInstance().getCurrentUser().get();
         List<Gourmet> tmpGourmets = mAdapter.gourmets.orElse(new ArrayList<>());
         Integer theLastOneIdentifier = null;
         if (!isRefresh) {
             Gourmet theLatestOne = tmpGourmets.get(tmpGourmets.size() - 1);
             theLastOneIdentifier = theLatestOne.getIdentifier();
         }
-        mListView.setRefreshTime(new Date(PreferenceManager.getInstance(getActivity()).getFavorLastRefreshTime()).toLocaleString());
-        Router.getGourmetModule().fetchFavoritesByUserId(user.getIdentifier(), theLastOneIdentifier, null, 20
+        mListView.setRefreshTime(new Date(PreferenceManager.getInstance(mContext).getFavorLastRefreshTime()).toLocaleString());
+        Router.getGourmetModule().fetchRecommendationListByUserId(mDisplayUser.getIdentifier(), theLastOneIdentifier, null, 20
                 , gourmets ->
         {
             if (isRefresh) {
@@ -313,9 +328,122 @@ public class MainFragment extends Fragment implements FragmentDataListener,
         }
                 , errorMessage ->
         {
-            Toast.makeText(getActivity(), getResources().getString(R.string.notify_net2), Toast.LENGTH_LONG).show();
+            if (errorMessage.contains("401")) {
+                ((BaseActivity) getActivity()).tryLoginFirst(() -> {
+                    fetchCommonData(isRefresh);
+                }, error -> {
+                    Toast.makeText(mActivity, getResources().getString(R.string.notify_net2), Toast.LENGTH_LONG).show();
+                    mListView.stopRefresh();
+                    mListView.stopLoadMore();
+                });
+            } else {
+                Toast.makeText(mActivity, getResources().getString(R.string.notify_net2), Toast.LENGTH_LONG).show();
+                mListView.stopRefresh();
+                mListView.stopLoadMore();
+            }
+        });
+    }
+
+    private void fetchFavorData(Boolean isRefresh) {
+        if (mDisplayUser == null) {
+            if (Router.getInstance().getCurrentUser().isPresent()) {
+                mDisplayUser = Router.getInstance().getCurrentUser().get();
+            }
+            if (mDisplayUser == null) {
+                ((BaseActivity) getActivity()).tryLoginFirst(() -> {
+                    if (!Router.getInstance().getCurrentUser().isPresent()) {
+                        if (mAdapter.gourmets.isPresent())
+                            mAdapter.gourmets.get().clear();
+                        mAdapter.notifyDataSetChanged();
+                        mListView.setPullLoadEnable(false);
+                        mFavorCount.setVisibility(View.GONE);
+                        mListView.stopRefresh();
+                        mListView.stopLoadMore();
+                        ((BaseActivity) getActivity()).notifyLogin(() -> {
+                            if (Router.getInstance().getCurrentUser().isPresent()) {
+                                fetchFavorData(isRefresh);
+                            } else {
+                                //do nothing
+                            }
+                        });
+                    } else {
+                        fetchFavorData(isRefresh);
+                    }
+                }, error -> {
+                    Toast.makeText(mActivity, getResources().getString(R.string.notify_net2), Toast.LENGTH_LONG).show();
+                    mListView.stopRefresh();
+                    mListView.stopLoadMore();
+                });
+            } else {
+                fetchFavorData(isRefresh);
+            }
+
+            return;
+        }
+        // TinyUser user = Router.getInstance().getCurrentUser().get();
+        List<Gourmet> tmpGourmets = mAdapter.gourmets.orElse(new ArrayList<>());
+        Integer theLastOneIdentifier = null;
+        if (!isRefresh) {
+            Gourmet theLatestOne = tmpGourmets.get(tmpGourmets.size() - 1);
+            theLastOneIdentifier = theLatestOne.getIdentifier();
+        }
+        mListView.setRefreshTime(new Date(PreferenceManager.getInstance(mContext).getFavorLastRefreshTime()).toLocaleString());
+        Router.getGourmetModule().fetchFavoritesByUserId(mDisplayUser.getIdentifier(), theLastOneIdentifier, null, 20
+                , gourmets ->
+        {
+            if (isRefresh) {
+                tmpGourmets.clear();
+                if (gourmets.getTotalCount() == 0) {
+                    mFavorCount.setVisibility(View.GONE);
+                    mLayout.setVisibility(View.VISIBLE);
+                    mListView.setPullLoadEnable(false);
+                } else {
+                    mFavorCount.setVisibility(View.VISIBLE);
+                    mFavorCount.setText(String.format(getString(R.string.favor_count), gourmets.getTotalCount()));
+                    if (gourmets.getGourmets().size() < 20) {
+                        mListView.setPullLoadEnable(false);
+                    } else {
+                        mListView.setPullLoadEnable(true);
+                    }
+                    mLayout.setVisibility(View.GONE);
+                }
+            } else {
+                if (gourmets.getGourmets().size() == 0) {
+                    mListView.setPullLoadEnable(false);
+                    Toast.makeText(mContext, getString(R.string.no_more), Toast.LENGTH_SHORT).show();
+                } else {
+                    mFavorCount.setText(String.format(getString(R.string.favor_count), tmpGourmets.size() + gourmets.getTotalCount()));
+                }
+            }
+            tmpGourmets.addAll(gourmets.getGourmets());
+            FileManager.setGourmets(mContentType, Optional.of(tmpGourmets));
+            mAdapter.gourmets = Optional.of(tmpGourmets);
+            mAdapter.notifyDataSetChanged();
+            DBOpenHelper.getmInstance(mContext).insertGourmets(gourmets);
+            if (mContentType == MAIN_PAGE) {
+                PreferenceManager.getInstance(mContext).saveMainLastRefreshTime(new Date().getTime());
+            } else if (mContentType == FAVOR_PAGE) {
+                PreferenceManager.getInstance(mContext).saveFavorLastRefreshTime(new Date().getTime());
+            }
             mListView.stopRefresh();
             mListView.stopLoadMore();
+            bFirstInit = false;
+        }
+                , errorMessage ->
+        {
+            if (errorMessage.contains("401")) {
+                ((BaseActivity) getActivity()).tryLoginFirst(() -> {
+                    fetchCommonData(isRefresh);
+                }, error -> {
+                    Toast.makeText(mActivity, getResources().getString(R.string.notify_net2), Toast.LENGTH_LONG).show();
+                    mListView.stopRefresh();
+                    mListView.stopLoadMore();
+                });
+            } else {
+                Toast.makeText(mActivity, getResources().getString(R.string.notify_net2), Toast.LENGTH_LONG).show();
+                mListView.stopRefresh();
+                mListView.stopLoadMore();
+            }
         });
     }
 

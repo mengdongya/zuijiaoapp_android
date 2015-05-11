@@ -217,4 +217,7 @@
     <string name="already_read">已阅</string>
     <string name="label_count">%d个标签</string>
     <string name="image_count_upper_limit">最多5张图片</string>
+    <string name="notify_add_gourmet_success">添加美食成功</string>
+    <string name="notify_gourmet_name_empty">美食名称不能为空</string>
+    <string name="notify_gourmet_description_empty">美食介绍不能为空</string>
 </resources>

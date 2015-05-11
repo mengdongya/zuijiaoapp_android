@@ -194,9 +194,7 @@
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
-        <!--<service
-            android:name="com.sina.weibo.sdk.net.DownloadService"
-            android:exported="true" />-->
+
         <meta-data
             android:name="UMENG_APPKEY"
             android:value="552354ddfd98c5ad6a000b73"></meta-data>
@@ -214,7 +212,6 @@
             android:process=":DownloadingService"></service>
 
 
-        <service android:name="com.zuijiao.controller.LocationService" />
     </application>
 
 </manifest>

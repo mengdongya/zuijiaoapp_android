@@ -176,7 +176,7 @@ public enum RouterGourmet {
             , Integer fromGourmetId
             , Integer toGourmetId
             , Integer count
-            , OneParameterExpression<Gourmet> successCallback
+            , OneParameterExpression<Gourmets> successCallback
             , OneParameterExpression<String> failureCallback
     ) {
         service.fetchRecommendationListByUserId(userId

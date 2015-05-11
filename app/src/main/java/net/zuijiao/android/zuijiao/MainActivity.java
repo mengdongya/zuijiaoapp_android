@@ -85,6 +85,7 @@ public final class MainActivity extends BaseActivity implements MainFragment.Mai
     //    private String[] settingStr;
     private ArrayList<Fragment> mFragmentList = null;
     private MainFragment mMainFragment = null;
+    private MainFragment mRecommendFragment = null;
     private MainFragment mFavorFragment = null;
     private MessageFragment mMsgFragment = null;
     private NotificationFragment mNotifyFragment = null;
@@ -366,9 +367,11 @@ public final class MainActivity extends BaseActivity implements MainFragment.Mai
         mMainTabsTitle.setOnItemClickListener(mTabsListener);
         mThirdPartyUserHead.setOnClickListener(mUserInfoDetail);
         mFragmentList = new ArrayList<Fragment>();
-        mMainFragment = new MainFragment(MainFragment.MAIN_PAGE, MainActivity.this);
+        mMainFragment = new MainFragment(MainFragment.MAIN_PAGE, mContext);
         mFragmentList.add(mMainFragment);
-        mFavorFragment = new MainFragment(MainFragment.FAVOR_PAGE, MainActivity.this);
+        mRecommendFragment = new MainFragment(MainFragment.RECOMMEND_PAGE, mContext);
+        mFragmentList.add(mRecommendFragment);
+        mFavorFragment = new MainFragment(MainFragment.FAVOR_PAGE, mContext);
         mFragmentList.add(mFavorFragment);
         mMsgFragment = new MessageFragment(MainActivity.this);
         mFragmentList.add(mMsgFragment);

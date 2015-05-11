@@ -20,6 +20,7 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.lidroid.xutils.view.annotation.ContentView;
 import com.lidroid.xutils.view.annotation.ViewInject;
@@ -123,7 +124,7 @@ public class EditGourmetActivity extends BaseActivity implements View.OnClickLis
         }
     };
     private String mEditName = null;
-    private ArrayList<String> mEditLabels = null;
+    private ArrayList<String> mEditLabels = new ArrayList<>();
     private String mEditDescription = null;
     //gourmet address ;
     private String mEditAddress = null;
@@ -153,8 +154,8 @@ public class EditGourmetActivity extends BaseActivity implements View.OnClickLis
     };
     //where i edit ;
     private String mEditPosition = null;
-    private int mProvinceId = -1;
-    private int mCityId = -1;
+    private int mProvinceId = 9;
+    private int mCityId = 45055;
 
     @Override
     protected void findViews() {
@@ -171,22 +172,42 @@ public class EditGourmetActivity extends BaseActivity implements View.OnClickLis
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.menu_edit_gourmet) {
             mEditName = mEtGourmetName.getText().toString().trim();
+            if (mEditName == null || mEditName.equals("")) {
+                Toast.makeText(mContext, getString(R.string.notify_gourmet_name_empty), Toast.LENGTH_SHORT).show();
+                return super.onOptionsItemSelected(item);
+            }
             mEditDescription = mEtGourmetDescription.getText().toString().trim();
+            if (mEditDescription == null || mEditDescription.equals("")) {
+                Toast.makeText(mContext, getString(R.string.notify_gourmet_description_empty), Toast.LENGTH_SHORT).show();
+                return super.onOptionsItemSelected(item);
+            }
             mEditPrice = mEtPrice.getText().toString().trim();
-            mImageUrls = UpyunUploadTask.gourmetImagePaths(
-                    Router.getInstance().getCurrentUser().get().getIdentifier(), mEditName, mImages.size(), ".jpg");
-            uploadImageContinuously(mImages.get(0), () -> {
-                Router.getGourmetModule().addGourmet(mEditName, mEditAddress,
-                        mEditPrice, mEditDescription, mImageUrls,
-                        mEditLabels, 0, 1,
-                        mType == TYPE_CREATE_PERSONAL_GOURMET, () -> {
-                            finallizeDialog();
-                        }, () -> {
-                            finallizeDialog();
-                        });
-            });
+            if (mImages != null && mImages.size() != 0) {
+                mImageUrls = UpyunUploadTask.gourmetImagePaths(
+                        Router.getInstance().getCurrentUser().get().getIdentifier(), mEditName, mImages.size(), ".jpg");
+                uploadImageContinuously(mImages.get(0), () -> {
+                    addGourmet();
+                });
+            } else {
+                addGourmet();
+            }
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void addGourmet() {
+        createDialog();
+        Router.getGourmetModule().addGourmet(mEditName, mEditAddress,
+                mEditPrice, mEditDescription, mImageUrls,
+                mEditLabels, mProvinceId, mCityId,
+                mType == TYPE_CREATE_PERSONAL_GOURMET, () -> {
+                    Toast.makeText(mContext, getString(R.string.notify_add_gourmet_success), Toast.LENGTH_SHORT).show();
+                    finallizeDialog();
+                    finish();
+                }, () -> {
+                    Toast.makeText(mContext, getString(R.string.notify_net2), Toast.LENGTH_SHORT).show();
+                    finallizeDialog();
+                });
     }
 
     private void uploadImageContinuously(SimpleImage image, LambdaExpression lambdaExpression) {
@@ -309,12 +330,12 @@ public class EditGourmetActivity extends BaseActivity implements View.OnClickLis
                 break;
             case EDIT_POSITION_REQ:
                 mEditAddress = data.getStringExtra("position");
-                mPositionTitle.setText(mEditPosition);
+                mPositionTitle.setText(mEditAddress);
                 break;
             case EDIT_LOCATION_REQ:
                 Bundle bundle = data.getBundleExtra("location");
-                mCityId = bundle.getInt("city_id", 0);
-                mProvinceId = bundle.getInt("province_id", 0);
+                mCityId = bundle.getInt("city_id", 45055);
+                mProvinceId = bundle.getInt("province_id", 9);
                 if (mCityId == mProvinceId) {
                     mEditPosition = bundle.getString("province");
                 } else {

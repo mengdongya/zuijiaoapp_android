@@ -88,7 +88,7 @@ public interface IRouterGourmet {
             , @Field("tags") String tagList
             , @Field("provinceID") Integer provinceId
             , @Field("cityID") Integer cityId
-            , @Field("isFeast") Boolean isPrivate
+            , @Field("isFeast") Integer isPrivate
             , Callback<Response> callback
     );
 
@@ -100,7 +100,7 @@ public interface IRouterGourmet {
             , @Field("description") String description
             , @Field("imageUrls") String imageUrlList
             , @Field("tags") String tagList
-            , @Field("isFeast") Boolean isPrivate
+            , @Field("isFeast") Integer isPrivate
             , Callback<Response> callback
     );
 

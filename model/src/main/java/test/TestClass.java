@@ -90,21 +90,27 @@ public class TestClass {
     }
 
     public static void main(String[] args) throws NoSuchAlgorithmException {
-//        Router.setup("http://xielingyu2.zuijiaodev.com", null, null, null);
-//        testOp(() -> {
-//            Router.getGourmetModule().addGourmet("name"
-//                    , "add"
-//                    , "20"
-//                    , "desc"
-//                    , null
-//                    , null
-//                    , 1
-//                    , 1
-//                    , false
-//                    , () -> System.out.println("succ")
-//                    , () -> System.out.println("fail")
-//            );
-//        });
+        Router.setup("http://api.zuijiaodev.com", null, null, null);
+        testOp(() -> {
+            Router.getGourmetModule().addGourmet("public"
+                    , "add"
+                    , "20"
+                    , "desc"
+                    , null
+                    , null
+                    , 1
+                    , 1
+                    , false
+                    , () -> System.out.println("succ")
+                    , () -> System.out.println("fail")
+            );
+
+            Router.getGourmetModule().fetchMyRecommendationList(null, null, gourmets -> {
+                for (Gourmet g : gourmets.getGourmets()) {
+                    System.out.println("id: " + g.getIdentifier() + "\t" + g);
+                }
+            }, null);
+        });
     }
 
 }

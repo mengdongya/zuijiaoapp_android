@@ -32,6 +32,7 @@ public class FileManager {
     public static Optional<List<Gourmet>> favorGourmets = Optional.empty();
     public static Optional<WouldLikeToEatUsers> tmpWouldLikeList = Optional.empty();
     //
+    public static Optional<List<Gourmet>> recommendList = Optional.empty();
     public static Gourmet tmpMessageGourmet = null;
     private static FileManager mInstance = null;
     private Context mContext = null;
@@ -136,19 +137,15 @@ public class FileManager {
 
     public static void setGourmets(int type, Optional<List<Gourmet>> gourmets) {
         if (type == MainFragment.MAIN_PAGE) {
-//            if(mainGourmet.isPresent()){
-//                mainGourmet.get().clear();
-//            }
             mainGourmet = gourmets;
-        } else {
-//            if(favorGourmets.isPresent()){
-//                favorGourmets.get().clear();
-//            }
+        } else if (type == MainFragment.FAVOR_PAGE) {
             favorGourmets = gourmets;
+        } else if (type == MainFragment.RECOMMEND_PAGE) {
+            recommendList = gourmets;
         }
     }
 
-    public Gourmet getItem(boolean bFavor, int index) {
+    public Gourmet getItem1(boolean bFavor, int index) {
         if (bFavor) {
             synchronized (favorGourmets) {
                 if (!favorGourmets.isPresent()) {

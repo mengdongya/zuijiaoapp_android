@@ -87,7 +87,7 @@ public final class MainActivity extends BaseActivity implements MainFragment.Mai
     private MainFragment mMainFragment = null;
     private MainFragment mRecommendFragment = null;
     private MainFragment mFavorFragment = null;
-    private MessageFragment mMsgFragment = null;
+    //    private MessageFragment mMsgFragment = null;
     private NotificationFragment mNotifyFragment = null;
     private Fragment mCurrentFragment = null;
     private FragmentManager mFragmentMng = null;
@@ -280,7 +280,7 @@ public final class MainActivity extends BaseActivity implements MainFragment.Mai
             ThirdPartySDKManager.getInstance(mContext).logout(mContext);
             PreferenceManager.getInstance(mContext).clearThirdPartyLoginMsg();
             mFavorFragment.clearFavorData();
-            mMsgFragment.clearMessage();
+            mNotifyFragment.clearMessage();
             Router.getOAuthModule().visitor(() -> {
                 Toast.makeText(mContext, getString(R.string.logout_msg), Toast.LENGTH_SHORT).show();
                 mBtnLogin.setVisibility(View.VISIBLE);
@@ -373,8 +373,8 @@ public final class MainActivity extends BaseActivity implements MainFragment.Mai
         mFragmentList.add(mRecommendFragment);
         mFavorFragment = new MainFragment(MainFragment.FAVOR_PAGE, mContext);
         mFragmentList.add(mFavorFragment);
-        mMsgFragment = new MessageFragment(MainActivity.this);
-        mFragmentList.add(mMsgFragment);
+//        mMsgFragment = new NotificationFragment();
+//        mFragmentList.add(mMsgFragment);
         mNotifyFragment = new NotificationFragment();
         mFragmentList.add(mNotifyFragment);
         mFragmentMng = getSupportFragmentManager();

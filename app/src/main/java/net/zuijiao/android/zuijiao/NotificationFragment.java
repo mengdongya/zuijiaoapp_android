@@ -20,6 +20,8 @@ import com.zuijiao.view.PagerSlidingTab;
 public class NotificationFragment extends Fragment {
     private ViewPager mViewPager = null;
     private PagerSlidingTab mTabs = null;
+    private MessageFragment mMsgFragment = null;
+    private MessageFragment mNotifyFragment = null;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -30,6 +32,16 @@ public class NotificationFragment extends Fragment {
         initTabsValue();
         mTabs.setViewPager(mViewPager);
         return contentView;
+    }
+
+    public void clearMessage() {
+        try {
+            mMsgFragment.clearMessage();
+            mNotifyFragment.clearMessage();
+        } catch (Throwable t) {
+            System.err.println("no message");
+            ;
+        }
     }
 
     @Override

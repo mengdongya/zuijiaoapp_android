@@ -468,13 +468,14 @@ public class FoodDetailActivity extends BaseActivity implements
     @Override
     protected void registerViews() {
         try {
-            int index = mTendIntent.getIntExtra("click_item_index", -1);
-            boolean fromFavor = mTendIntent.getBooleanExtra("b_favor", false);
-            if (index == -1 && fromFavor == false) {
-                gourmet = FileManager.tmpMessageGourmet;
-            } else {
-                gourmet = mFileMng.getItem(fromFavor, index);
-            }
+//            int index = mTendIntent.getIntExtra("click_item_index", -1);
+//            boolean fromFavor = mTendIntent.getBooleanExtra("b_favor", false);
+//            if (index == -1 && fromFavor == false) {
+//                gourmet = FileManager.tmpMessageGourmet;
+//            } else {
+//                gourmet = mFileMng.getItem(fromFavor, index);
+//            }
+            gourmet = (Gourmet) mTendIntent.getSerializableExtra("selected_gourmet");
         } catch (Exception e) {
             e.printStackTrace();
         }

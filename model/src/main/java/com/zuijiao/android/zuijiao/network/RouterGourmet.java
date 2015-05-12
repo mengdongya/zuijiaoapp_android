@@ -128,7 +128,7 @@ public enum RouterGourmet {
                 , tagsJson
                 , provinceId
                 , cityId
-                , isPrivate
+                , isPrivate ? 0 : 1
                 , CallbackFactory.getInstance().callback(successCallback, failureCallback));
     }
 
@@ -151,7 +151,7 @@ public enum RouterGourmet {
                 , description
                 , imagesUrlJson
                 , tagsJson
-                , isPrivate
+                , isPrivate ? 0 : 1
                 , CallbackFactory.getInstance().callback(successCallback, failureCallback));
     }
 
@@ -164,7 +164,7 @@ public enum RouterGourmet {
 
     public void fetchMyRecommendationList(Integer toGourmetId
             , Integer count
-            , OneParameterExpression<Gourmet> successCallback
+            , OneParameterExpression<Gourmets> successCallback
             , OneParameterExpression<String> failureCallback
     ) {
         service.fetchMyRecommendationList(toGourmetId

@@ -41,12 +41,24 @@ public class Router {
     }
 
     public static void setup(String baseUrl, String key, File cacheDirectory, Interceptor networkInterceptor) {
+        setup(baseUrl, key, cacheDirectory, networkInterceptor, null);
+    }
+
+    public static void setup(String baseUrl, String key, File cacheDirectory, Interceptor networkInterceptor, String dateFormat) {
         if (instance == null) {
-            instance = new Router(baseUrl, key, cacheDirectory, networkInterceptor);
+            instance = new Router(baseUrl, key, cacheDirectory, networkInterceptor, dateFormat);
         }
     }
 
-    private Router(String baseUrl, String key, File cacheDirectory, Interceptor networkInterceptor) {
+    private Router(final String baseUrl
+            , final String key
+            , final File cacheDirectory
+            , final Interceptor networkInterceptor
+            , String dateFormat
+    ) {
+        if (dateFormat == null) {
+            dateFormat = "yyyy-MM-dd'T'HH:mm:ssZ";
+        }
         this.key = key;
 
         RequestInterceptor requestInterceptor = request -> {
@@ -73,7 +85,7 @@ public class Router {
         }
 
         restAdapter = new RestAdapter.Builder()
-                .setConverter(new GsonConverter(new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ssZ").create()))
+                .setConverter(new GsonConverter(new GsonBuilder().setDateFormat(dateFormat).create()))
                 .setEndpoint(baseUrl)
                 .setRequestInterceptor(requestInterceptor)
                 .setClient(new OkClient(client))

@@ -6,8 +6,8 @@
         android:title="@string/share"
         app:showAsAction="never"
         android:menuCategory="system" />
-    <item
-        android:id="@+id/gourmet_detail_refresh"
-        android:title="@string/refresh"
-        app:showAsAction="never" />
+    <!--<item-->
+    <!--android:id="@+id/gourmet_detail_refresh"-->
+    <!--android:title="@string/refresh"-->
+    <!--app:showAsAction="never" />-->
 </menu>

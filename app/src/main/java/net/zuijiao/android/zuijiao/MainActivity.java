@@ -40,6 +40,7 @@ import com.squareup.picasso.Picasso;
 import com.umeng.update.UmengUpdateAgent;
 import com.umeng.update.UmengUpdateListener;
 import com.umeng.update.UpdateResponse;
+import com.zuijiao.android.zuijiao.model.user.TinyUser;
 import com.zuijiao.android.zuijiao.network.Router;
 import com.zuijiao.controller.ActivityTask;
 import com.zuijiao.controller.PreferenceManager;
@@ -108,7 +109,6 @@ public final class MainActivity extends BaseActivity implements MainFragment.Mai
             }
             mCurrentFragment = mFragmentList.get(position);
             mToolBar.setTitle(titles[position]);
-
             if (position == 3) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     mToolBar.setElevation(0);
@@ -154,6 +154,15 @@ public final class MainActivity extends BaseActivity implements MainFragment.Mai
         public void onClick(View v) {
             Intent intent = new Intent();
             intent.setClass(MainActivity.this, UserInfoActivity.class);
+            TinyUser user = Router.getInstance().getCurrentUser().get();
+            if (user == null) {
+                user = new TinyUser();
+                AuthorInfo authInfo = PreferenceManager.getInstance(mContext).getThirdPartyLoginMsg();
+                user.setNickName(authInfo.getUserName());
+                user.setAvatarURL(authInfo.getHeadPath());
+//                user.setIdentifier(authInfo.getUid());
+            }
+            intent.putExtra("tiny_user", user);
             startActivity(intent);
         }
     };
@@ -166,20 +175,6 @@ public final class MainActivity extends BaseActivity implements MainFragment.Mai
             intent.setClass(MainActivity.this, LoginActivity.class);
             intent.putExtra("b_self", true);
             startActivity(intent);
-        }
-    };
-    private Toolbar.OnMenuItemClickListener onMenuItemClick = new Toolbar.OnMenuItemClickListener() {
-        @Override
-        public boolean onMenuItemClick(MenuItem menuItem) {
-            String msg = "";
-            switch (menuItem.getItemId()) {
-            }
-
-            if (!msg.equals("")) {
-                Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT)
-                        .show();
-            }
-            return true;
         }
     };
     private ArrayList<String> mLabelData = new ArrayList<String>();
@@ -317,7 +312,7 @@ public final class MainActivity extends BaseActivity implements MainFragment.Mai
     @Override
     protected void registerViews() {
         setSupportActionBar(mToolBar);
-        mToolBar.setOnMenuItemClickListener(onMenuItemClick);
+//        mToolBar.setOnMenuItemClickListener(onMenuItemClick);
         mLocationView = LayoutInflater.from(this).inflate(
                 R.layout.location_layout, null);
         mLocationView.setOnClickListener(mLocationListener);

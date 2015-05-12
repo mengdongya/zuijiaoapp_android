@@ -14,7 +14,7 @@ import java.util.List;
  * <p>
  * Created by Chen Hao on 3/18/15.
  */
-public class Gourmet implements Serializable {
+public class Gourmet implements Serializable, Cloneable {
 
     @SerializedName("title")
     private String name;
@@ -87,7 +87,12 @@ public class Gourmet implements Serializable {
     }
 
     public Boolean getIsPrivate() {
-        return isPrivate;
+        return isPrivate == null ? false : isPrivate;
+    }
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
     }
 
     //20150401 qbxia add begin

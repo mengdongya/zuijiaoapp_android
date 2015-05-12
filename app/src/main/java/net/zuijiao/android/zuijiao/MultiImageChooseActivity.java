@@ -39,6 +39,7 @@ public class MultiImageChooseActivity extends BaseActivity {
     @ViewInject(R.id.multi_image_choose_sure_btn)
     private Button mSureBtn = null;
     private List<SimpleImage> images = null;
+    private int mMaxCount = 5;
     private BaseAdapter mGridViewAdapter = new BaseAdapter() {
         @Override
         public int getCount() {
@@ -98,15 +99,15 @@ public class MultiImageChooseActivity extends BaseActivity {
                     removeItem(image);
                     ((ToggleButton) view).setChecked(false);
                 } else {
-                    if (mSelectedImage.size() >= 5) {
-                        Toast.makeText(mContext, getString(R.string.image_count_upper_limit), Toast.LENGTH_SHORT).show();
+                    if (mSelectedImage.size() >= mMaxCount) {
+                        Toast.makeText(mContext, String.format(getString(R.string.image_count_upper_limit), mMaxCount), Toast.LENGTH_SHORT).show();
                         ((ToggleButton) view).setChecked(false);
                     } else {
                         mSelectedImage.add(image);
                         ((ToggleButton) view).setChecked(true);
                     }
                 }
-                mSureBtn.setText(String.format(getString(R.string.sure_with_num), mSelectedImage.size(), 5));
+                mSureBtn.setText(String.format(getString(R.string.sure_with_num), mSelectedImage.size(), mMaxCount));
             });
             return convertView;
         }
@@ -160,11 +161,12 @@ public class MultiImageChooseActivity extends BaseActivity {
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         mSelectedImage = mTendIntent.getParcelableArrayListExtra("edit_images");
+        mMaxCount = mMaxCount - mTendIntent.getIntExtra("cloud_image_size", 0);
 //        mSelectedPath = mTendIntent.getStringArrayListExtra("selected_image_path");
 //        mSelectedId = mTendIntent.getStringArrayListExtra("selected_image_id");
         images = FileManager.getImageList(mContext);
         mSureBtn.setEnabled(true);
-        mSureBtn.setText(String.format(getString(R.string.sure_with_num), mSelectedImage.size(), 5));
+        mSureBtn.setText(String.format(getString(R.string.sure_with_num), mSelectedImage.size(), mMaxCount));
         mSureBtn.setOnClickListener((View v) -> {
             Intent intent = new Intent();
             intent.putParcelableArrayListExtra("edit_images", mSelectedImage);

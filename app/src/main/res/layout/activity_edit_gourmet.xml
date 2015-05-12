@@ -117,7 +117,7 @@
                     android:layout_gravity="center_vertical|left"
                     android:layout_height="20dip"
                     android:layout_width="20dip"
-                    android:src="@drawable/ic_launcher" />
+                    android:src="@drawable/edit_gourmet_label" />
 
                 <TextView
                     android:id="@+id/edit_gourmet_label_title"
@@ -162,7 +162,7 @@
                     android:layout_gravity="center_vertical|left"
                     android:layout_height="20dip"
                     android:layout_width="20dip"
-                    android:src="@drawable/ic_launcher" />
+                    android:src="@drawable/edit_gourmet_location" />
 
                 <TextView
                     android:id="@+id/edit_gourmet_location_title"
@@ -198,7 +198,7 @@
                     android:layout_gravity="center_vertical|left"
                     android:layout_height="20dip"
                     android:layout_width="20dip"
-                    android:src="@drawable/ic_launcher" />
+                    android:src="@drawable/edit_gourmet_position" />
 
                 <TextView
                     android:id="@+id/edit_gourmet_position_title"
@@ -224,7 +224,10 @@
                 android:elevation="1dip"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
-                android:padding="15dip"
+                android:paddingLeft="15dip"
+                android:paddingRight="15dip"
+                android:paddingTop="15dip"
+                android:paddingBottom="5dip"
                 android:layout_marginBottom="5dip"
                 android:layout_marginRight="5dip"
                 android:layout_marginLeft="5dip">
@@ -233,7 +236,7 @@
                     android:layout_gravity="center_vertical|left"
                     android:layout_height="20dip"
                     android:layout_width="20dip"
-                    android:src="@drawable/ic_launcher" />
+                    android:src="@drawable/edit_gourmet_price" />
 
                 <EditText
                     android:id="@+id/edit_gourmet_et_price"

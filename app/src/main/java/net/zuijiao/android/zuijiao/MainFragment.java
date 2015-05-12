@@ -55,7 +55,7 @@ public class MainFragment extends Fragment implements FragmentDataListener,
         public void onItemClick(AdapterView<?> parent, View view, int position,
                                 long id) {
             Intent intent = new Intent(getActivity(), FoodDetailActivity.class);
-            intent.putExtra("selected_gourmet", mAdapter.getItem(position));
+            intent.putExtra("selected_gourmet", mAdapter.getItem(position - 1));
 //            intent.putExtra("click_item_index", position - 1);
 //            intent.putExtra("b_favor", mContentType == FAVOR_PAGE);
             startActivity(intent);
@@ -206,7 +206,6 @@ public class MainFragment extends Fragment implements FragmentDataListener,
     }
 
 
-
     @Override
     public void onRefresh() {
         if (mContentType == MAIN_PAGE) {
@@ -301,7 +300,7 @@ public class MainFragment extends Fragment implements FragmentDataListener,
                     mListView.setPullLoadEnable(false);
                 } else {
                     mFavorCount.setVisibility(View.VISIBLE);
-                    mFavorCount.setText(String.format(getString(R.string.favor_count), gourmets.getTotalCount()));
+                    mFavorCount.setText(String.format(getString(R.string.recommend_count_title), gourmets.getTotalCount()));
                     if (gourmets.getGourmets().size() < 20) {
                         mListView.setPullLoadEnable(false);
                     } else {
@@ -314,14 +313,14 @@ public class MainFragment extends Fragment implements FragmentDataListener,
                     mListView.setPullLoadEnable(false);
                     Toast.makeText(mContext, getString(R.string.no_more), Toast.LENGTH_SHORT).show();
                 } else {
-                    mFavorCount.setText(String.format(getString(R.string.favor_count), tmpGourmets.size() + gourmets.getTotalCount()));
+                    mFavorCount.setText(String.format(getString(R.string.recommend_count_title), tmpGourmets.size() + gourmets.getTotalCount()));
                 }
             }
             tmpGourmets.addAll(gourmets.getGourmets());
             FileManager.setGourmets(mContentType, Optional.of(tmpGourmets));
             mAdapter.gourmets = Optional.of(tmpGourmets);
             mAdapter.notifyDataSetChanged();
-            DBOpenHelper.getmInstance(mContext).insertGourmets(gourmets);
+//            DBOpenHelper.getmInstance(mContext).insertGourmets(gourmets);
             if (mContentType == MAIN_PAGE) {
                 PreferenceManager.getInstance(mContext).saveMainLastRefreshTime(new Date().getTime());
             } else if (mContentType == FAVOR_PAGE) {
@@ -404,6 +403,7 @@ public class MainFragment extends Fragment implements FragmentDataListener,
                     mListView.setPullLoadEnable(false);
                 } else {
                     mFavorCount.setVisibility(View.VISIBLE);
+                    int count = gourmets.getTotalCount();
                     mFavorCount.setText(String.format(getString(R.string.favor_count), gourmets.getTotalCount()));
                     if (gourmets.getGourmets().size() < 20) {
                         mListView.setPullLoadEnable(false);
@@ -417,14 +417,14 @@ public class MainFragment extends Fragment implements FragmentDataListener,
                     mListView.setPullLoadEnable(false);
                     Toast.makeText(mContext, getString(R.string.no_more), Toast.LENGTH_SHORT).show();
                 } else {
-                    mFavorCount.setText(String.format(getString(R.string.favor_count), tmpGourmets.size() + gourmets.getTotalCount()));
+                    mFavorCount.setText(String.format(getString(R.string.favor_count), gourmets.getTotalCount()));
                 }
             }
             tmpGourmets.addAll(gourmets.getGourmets());
             FileManager.setGourmets(mContentType, Optional.of(tmpGourmets));
             mAdapter.gourmets = Optional.of(tmpGourmets);
             mAdapter.notifyDataSetChanged();
-            DBOpenHelper.getmInstance(mContext).insertGourmets(gourmets);
+//            DBOpenHelper.getmInstance(mContext).insertGourmets(gourmets);
             if (mContentType == MAIN_PAGE) {
                 PreferenceManager.getInstance(mContext).saveMainLastRefreshTime(new Date().getTime());
             } else if (mContentType == FAVOR_PAGE) {

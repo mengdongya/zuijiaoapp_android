@@ -48,7 +48,6 @@ import com.zuijiao.android.zuijiao.model.Gourmet;
 import com.zuijiao.android.zuijiao.model.user.WouldLikeToEatUser;
 import com.zuijiao.android.zuijiao.network.Router;
 import com.zuijiao.controller.FileManager;
-import com.zuijiao.entity.SimpleImage;
 import com.zuijiao.utils.StrUtil;
 import com.zuijiao.view.MeasuredTextView;
 import com.zuijiao.view.MyScrollView;
@@ -62,6 +61,8 @@ import java.util.List;
 @ContentView(R.layout.activity_food_detail)
 public class FoodDetailActivity extends BaseActivity implements
         OnScrollListener {
+
+    public static final int EDIT_GOURMET_REQ = 4001;
     @ViewInject(R.id.food_detail_toolbar)
     private Toolbar mToolbar;
     @ViewInject(R.id.food_detail_container)
@@ -436,7 +437,7 @@ public class FoodDetailActivity extends BaseActivity implements
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if (Router.getInstance().getCurrentUser().isPresent() && Router.getInstance().getCurrentUser().get().getIdentifier() == gourmet.getUser().getIdentifier()) {
+        if (Router.getInstance().getCurrentUser().isPresent() && Router.getInstance().getCurrentUser().get().getIdentifier().equals(gourmet.getUser().getIdentifier())) {
             getMenuInflater().inflate(R.menu.gourmet_detail, menu);
         } else {
             getMenuInflater().inflate(R.menu.gourmet_detail_simple, menu);
@@ -449,46 +450,62 @@ public class FoodDetailActivity extends BaseActivity implements
         switch (item.getItemId()) {
             case R.id.gourmet_detail_share:
                 break;
-            case R.id.gourmet_detail_refresh:
-                break;
+//            case R.id.gourmet_detail_refresh:
+//                refreshGourmet() ;
+//                break;
             case R.id.gourmet_detail_edit:
+                editGourmet();
                 break;
             case R.id.gourmet_detail_delete:
+                deleteGourmet();
                 break;
         }
         return super.onOptionsItemSelected(item);
     }
 
+    private void refreshGourmet() {
+        createDialog();
+        Router.getGourmetModule().fetchGourmetInformation(gourmet.getIdentifier(), gourmet -> {
+            finallizeDialog();
+            FoodDetailActivity.this.gourmet = gourmet;
+            initViewByGourmet();
+        }, errorMsg -> {
+            Toast.makeText(mContext, getString(R.string.notify_net2), Toast.LENGTH_SHORT).show();
+        });
+    }
+
+    private void deleteGourmet() {
+        //TODO
+
+    }
+
+    private void editGourmet() {
+        Intent intent = new Intent();
+        intent.setClass(mContext, EditGourmetActivity.class);
+        intent.putExtra("gourmet", gourmet);
+        int editType = gourmet.getIsPrivate() ? EditGourmetActivity.TYPE_EDIT_PERSONAL_GOURMET : EditGourmetActivity.TYPE_EDIT_STORE_GOURMET;
+        intent.putExtra("edit_gourmet_type", editType);
+        startActivityForResult(intent, EDIT_GOURMET_REQ);
+    }
     @Override
     protected void findViews() {
 
     }
 
-    @SuppressLint("NewApi")
     @Override
-    protected void registerViews() {
-        try {
-//            int index = mTendIntent.getIntExtra("click_item_index", -1);
-//            boolean fromFavor = mTendIntent.getBooleanExtra("b_favor", false);
-//            if (index == -1 && fromFavor == false) {
-//                gourmet = FileManager.tmpMessageGourmet;
-//            } else {
-//                gourmet = mFileMng.getItem(fromFavor, index);
-//            }
-            gourmet = (Gourmet) mTendIntent.getSerializableExtra("selected_gourmet");
-        } catch (Exception e) {
-            e.printStackTrace();
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == EDIT_GOURMET_REQ && resultCode == RESULT_OK) {
+
         }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    private void initViewByGourmet() {
         if (gourmet == null) {
             this.finish();
             return;
         }
-//        mTestLayout.requestFocus() ;
-//        mTestLayout.requestFocusFromTouch() ;
-        mResource = getResources();
-        setSupportActionBar(mToolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        mInflater = LayoutInflater.from(this);
+        mLabelContainer.removeAllViews();
         for (int i = 0; i < gourmet.getTags().size(); i++) {
             TextView textview = new TextView(this);
             textview.setBackgroundResource(R.drawable.bg_label);
@@ -497,16 +514,6 @@ public class FoodDetailActivity extends BaseActivity implements
             textview.setText(gourmet.getTags().get(i));
             mLabelContainer.addView(textview);
         }
-        mScrollView.setOnScrollListener(this);
-        rootView.getViewTreeObserver().addOnGlobalLayoutListener(
-                () -> {
-                    if (openEdit) {
-                        mScrollView.moveToTop();
-                        openEdit = false;
-                    }
-                    onScroll(mScrollView.getScrollY());
-                    onTopChange(mScrollView.getTop());
-                });
         ArrayList<View> data = new ArrayList<View>();
         final ArrayList<String> imageUrls = (ArrayList) gourmet.getImageURLs();
         //5:image number
@@ -522,11 +529,7 @@ public class FoodDetailActivity extends BaseActivity implements
                 Intent intent = new Intent(FoodDetailActivity.this, BigImageActivity.class);
                 int currentImageIndex = mImagePager.getCurrentItem();
                 intent.putExtra("current_image_index", currentImageIndex);
-                ArrayList<SimpleImage> tmpList = new ArrayList<>();
-                for (String str : imageUrls) {
-                    tmpList.add(new SimpleImage("", "", str));
-                }
-                intent.putParcelableArrayListExtra("edit_images", tmpList);
+                intent.putStringArrayListExtra("cloud_images", imageUrls);
                 startActivity(intent);
             });
             Picasso.with(getApplicationContext())
@@ -538,18 +541,8 @@ public class FoodDetailActivity extends BaseActivity implements
         }
         initDots(imageUrls.size());
         mImagePager.setAdapter(new ViewPagerAdapter(data));
-        mImagePager.setOnPageChangeListener(mPageListener);
-
+//        mImagePager.setOnPageChangeListener(mPageListener);
         registerTopView();
-        mEtComment.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.i("my_scrollview", "start");
-                openEdit = true;
-                mReplyId = null;
-                mEtComment.setHint(getString(R.string.comment_hint));
-            }
-        });
         if (gourmet.getPrice() == null || gourmet.getPrice().equals("")) {
             mFoodPrice.setVisibility(View.GONE);
         } else {
@@ -565,11 +558,104 @@ public class FoodDetailActivity extends BaseActivity implements
             mGourmetMsgSpliteView.setVisibility(View.GONE);
         }
         mFoodDescription.setText(gourmet.getDescription());
+        fetchWouldLikeList();
+        fetchCommentList();
+    }
+
+    @SuppressLint("NewApi")
+    @Override
+    protected void registerViews() {
+        try {
+            gourmet = (Gourmet) mTendIntent.getSerializableExtra("selected_gourmet");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if (gourmet == null) {
+            this.finish();
+            return;
+        }
+        mResource = getResources();
+        setSupportActionBar(mToolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        mInflater = LayoutInflater.from(this);
+//        for (int i = 0; i < gourmet.getTags().size(); i++) {
+//            TextView textview = new TextView(this);
+//            textview.setBackgroundResource(R.drawable.bg_label);
+//            textview.setTextColor(mResource.getColor(R.color.white));
+//            textview.setTextSize(14);
+//            textview.setText(gourmet.getTags().get(i));
+//            mLabelContainer.addView(textview);
+//        }
+        mScrollView.setOnScrollListener(this);
+        rootView.getViewTreeObserver().addOnGlobalLayoutListener(
+                () -> {
+                    if (openEdit) {
+                        mScrollView.moveToTop();
+                        openEdit = false;
+                    }
+                    onScroll(mScrollView.getScrollY());
+                    onTopChange(mScrollView.getTop());
+                });
+//        ArrayList<View> data = new ArrayList<View>();
+//        final ArrayList<String> imageUrls = (ArrayList) gourmet.getImageURLs();
+//        //5:image number
+//        for (int i = 0; i < imageUrls.size(); i++) {
+//            ImageView image = new ImageView(this);
+//            image.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
+//                    LayoutParams.MATCH_PARENT));
+//            image.setScaleType(ImageView.ScaleType.CENTER_CROP);
+//            image.setOnClickListener((View view) -> {
+//                if (gourmet.getImageURLs().isEmpty()) {
+//                    return;
+//                }
+//                Intent intent = new Intent(FoodDetailActivity.this, BigImageActivity.class);
+//                int currentImageIndex = mImagePager.getCurrentItem();
+//                intent.putExtra("current_image_index", currentImageIndex);
+//                intent.putStringArrayListExtra("cloud_images" , imageUrls);
+//                startActivity(intent);
+//            });
+//            Picasso.with(getApplicationContext())
+//                    .load(imageUrls.get(i))
+//                    .placeholder(R.drawable.empty_view_greeting)
+//                    .error(R.drawable.empty_view_greeting)
+//                    .into(image);
+//            data.add(image);
+//        }
+//        initDots(imageUrls.size());
+//        mImagePager.setAdapter(new ViewPagerAdapter(data));
+        mImagePager.setOnPageChangeListener(mPageListener);
+
+//        registerTopView();
+        mEtComment.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.i("my_scrollview", "start");
+                openEdit = true;
+                mReplyId = null;
+                mEtComment.setHint(getString(R.string.comment_hint));
+            }
+        });
+//        if (gourmet.getPrice() == null || gourmet.getPrice().equals("")) {
+//            mFoodPrice.setVisibility(View.GONE);
+//        } else {
+//            mFoodPrice.setText(String.format(mResource.getString(R.string.format_price), gourmet.getPrice()));
+//        }
+//        if (gourmet.getAddress() == null || gourmet.getAddress().equals("")) {
+//            mFoodLocation.setVisibility(View.GONE);
+//        } else {
+//            mFoodLocation.setText(String.format(mResource.getString(R.string.format_location), gourmet.getAddress()));
+//        }
+//        if (mFoodLocation.getVisibility() == View.GONE && mFoodPrice.getVisibility() == View.GONE) {
+//            mGourmetMsgTitle.setVisibility(View.GONE);
+//            mGourmetMsgSpliteView.setVisibility(View.GONE);
+//        }
+//        mFoodDescription.setText(gourmet.getDescription());
         mGdView.setOnItemClickListener(mGvListener);
         mCommentList.setOnItemClickListener(mCommentListListener);
         mCommentCommit.setOnClickListener(mCommentCommitListener);
-        fetchWouldLikeList();
-        fetchCommentList();
+//        fetchWouldLikeList();
+//        fetchCommentList();
+        initViewByGourmet();
     }
 
     private void fetchWouldLikeList() {

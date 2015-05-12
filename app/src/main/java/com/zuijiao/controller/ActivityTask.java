@@ -141,7 +141,11 @@ public class ActivityTask extends Application {
             String city = location.getCity();
             String province = location.getProvince();
             if (city != null && province != null) {
-                LocationActivity.mCurrentLocationTv.setText(province + city);
+                if (!province.equals(city)) {
+                    LocationActivity.mCurrentLocationTv.setText(province + city);
+                } else {
+                    LocationActivity.mCurrentLocationTv.setText(province);
+                }
                 LocationActivity.mSwitcher.showNext();
                 LocationActivity.autoLocationCity = city;
                 LocationActivity.autoLocationProvince = province;

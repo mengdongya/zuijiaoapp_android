@@ -22,6 +22,8 @@ import android.widget.Toast;
 
 import com.lidroid.xutils.view.annotation.ContentView;
 import com.lidroid.xutils.view.annotation.ViewInject;
+import com.zuijiao.android.zuijiao.model.user.TinyUser;
+import com.zuijiao.android.zuijiao.model.user.User;
 import com.zuijiao.entity.SimpleImage;
 
 import java.util.ArrayList;
@@ -42,7 +44,8 @@ public final class UserInfoActivity extends BaseActivity implements View.OnClick
     private Button mBtnFollow;
     @ViewInject(R.id.user_info_fans)
     private Button mBtnFans;
-
+    private TinyUser mTinyUser = null;
+    private User mFullUser = null;
 //    private User mUser = null ;
 //    private ParcelableUser mParcelableUser = null ;
 
@@ -167,7 +170,9 @@ public final class UserInfoActivity extends BaseActivity implements View.OnClick
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         if (mTendIntent != null) {
-            bSelf = mTendIntent.getBooleanExtra("b_self", false);
+            mTinyUser = (TinyUser) mTendIntent.getSerializableExtra("tiny_user");
+
+//            bSelf = mTendIntent.getBooleanExtra("b_self", false);
         }
         mBtnFans.setText(String.format(getString(R.string.fans_count), 10));
         mBtnFavor.setText(String.format(getString(R.string.favorite_count), 10));

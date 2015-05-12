@@ -95,4 +95,17 @@ public enum RouterAccount {
             , OneParameterExpression<String> failureCallback) {
         service.updatePhoneNumber(phoneNumber, securityCode, CallbackFactory.getInstance().callback(successCallback, failureCallback));
     }
+
+    public void fetchUserInfoById(Integer userId
+            , OneParameterExpression<User> successCallback
+            , OneParameterExpression<String> failureCallback
+    ) {
+        service.fetchUserInfoByIdentifier(userId, CallbackFactory.getInstance().callback(successCallback, failureCallback));
+    }
+
+    public void fetchMyInfo(OneParameterExpression<User> successCallback
+            , OneParameterExpression<String> failureCallback
+    ) {
+        service.fetchMyInfo(CallbackFactory.getInstance().callback(successCallback, failureCallback));
+    }
 }

@@ -1,5 +1,6 @@
 package test;
 
+import com.squareup.okhttp.Route;
 import com.zuijiao.android.util.DateUtil;
 import com.zuijiao.android.util.HanyuPinyinHelper;
 import com.zuijiao.android.util.MD5;
@@ -90,26 +91,23 @@ public class TestClass {
     }
 
     public static void main(String[] args) throws NoSuchAlgorithmException {
-        Router.setup("http://api.zuijiaodev.com", null, null, null);
+        Router.setup("http://xielingyu2.zuijiaodev.com", null, null, null, "yyyy-MM-dd'T'HH:mm:ssXXX");
         testOp(() -> {
-            Router.getGourmetModule().addGourmet("public"
-                    , "add"
-                    , "20"
-                    , "desc"
-                    , null
-                    , null
-                    , 1
-                    , 1
-                    , false
-                    , () -> System.out.println("succ")
-                    , () -> System.out.println("fail")
-            );
+//            Router.getGourmetModule().fetchOurChoice(null, null, 20, gourmets -> {
+//                for (Gourmet g : gourmets.getGourmets()) {
+//                    System.out.println("id: " + g.getIdentifier() + "\t" + g);
+//                }
+//
+//                Router.getGourmetModule().fetchGourmetInformation(5
+//                        , g -> { System.out.println("id: " + g.getIdentifier() + "\t" + g.getUser().getAvatarURL()); }
+//                        , null);
+//            }, null);
 
-            Router.getGourmetModule().fetchMyRecommendationList(null, null, gourmets -> {
-                for (Gourmet g : gourmets.getGourmets()) {
-                    System.out.println("id: " + g.getIdentifier() + "\t" + g);
-                }
-            }, null);
+
+            Router.getAccountModule().fetchMyInfo(user -> System.out.println(user), null);
+
+            Router.getAccountModule().fetchUserInfoById(239, user -> System.out.println(user), null);
+
         });
     }
 

@@ -22,11 +22,15 @@ import android.widget.Toast;
 
 import com.lidroid.xutils.view.annotation.ContentView;
 import com.lidroid.xutils.view.annotation.ViewInject;
+import com.squareup.picasso.Picasso;
 import com.zuijiao.android.zuijiao.model.user.TinyUser;
 import com.zuijiao.android.zuijiao.model.user.User;
+import com.zuijiao.android.zuijiao.network.Router;
+import com.zuijiao.db.DBOpenHelper;
 import com.zuijiao.entity.SimpleImage;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 @ContentView(R.layout.activity_user_info)
 public final class UserInfoActivity extends BaseActivity implements View.OnClickListener {
@@ -34,6 +38,8 @@ public final class UserInfoActivity extends BaseActivity implements View.OnClick
     private ListView mInfoList;
     @ViewInject(R.id.user_info_toolbar)
     private Toolbar mToolbar = null;
+    @ViewInject(R.id.tv_user_name_detail)
+    private TextView mUserName = null;
     @ViewInject(R.id.user_info_user_head)
     private ImageView mUserHead = null;
     @ViewInject(R.id.user_info_recommend)
@@ -44,12 +50,13 @@ public final class UserInfoActivity extends BaseActivity implements View.OnClick
     private Button mBtnFollow;
     @ViewInject(R.id.user_info_fans)
     private Button mBtnFans;
+
     private TinyUser mTinyUser = null;
     private User mFullUser = null;
 //    private User mUser = null ;
 //    private ParcelableUser mParcelableUser = null ;
 
-    private boolean bSelf = false;
+    //    private boolean bSelf = false;
     private AdapterView.OnItemClickListener mUserInfoItemListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -93,24 +100,38 @@ public final class UserInfoActivity extends BaseActivity implements View.OnClick
             TextView content = (TextView) contentView.findViewById(R.id.user_info_item_content);
             if (position == 0) {
                 title.setText(getString(R.string.base_info));
-                content.setText(getString(R.string.no_base_info));
+                String basicInfo;
+                if (mFullUser != null) {
+                    String age = String.format(getString(R.string.year_old), new Date().getYear() - mFullUser.getBirthday().get().getYear());
+                    String address = DBOpenHelper.getmInstance(mContext).getLocationByIds(mFullUser.getProfile().getProvinceId(), mFullUser.getProfile().getCityId());
+                    basicInfo = mFullUser.getProfile().getGender() + age + address;
+                } else {
+                    basicInfo = getString(R.string.no_base_info);
+                }
+                content.setText(basicInfo);
             } else if (position == 1) {
                 title.setText(getString(R.string.personal_introduction));
-                content.setText(getString(R.string.no_experience));
+                String intro;
+                if (mFullUser != null) {
+                    intro = mFullUser.getProfile().getSelfIntroduction().get();
+                } else {
+                    intro = getString(R.string.no_experience);
+                }
+                content.setText(intro);
             } else if (position == 2) {
                 title.setText(getString(R.string.flavor_hobby));
-                if (true) {
-                    GridView gdView = (GridView) contentView.findViewById(R.id.gv_user_info_favor);
-                    gdView.setVisibility(View.VISIBLE);
-                    content.setVisibility(View.GONE);
-                    gdView.setOnItemClickListener(mFlavorItemListener);
-                    gdView.setFocusable(false);
-                    gdView.setFocusableInTouchMode(false);
-                    gdView.setAdapter(mFlavorAdapter);
-                    setListViewHeightBasedOnChildren(gdView);
-                } else {
-                    content.setText(getString(R.string.no_hobby));
-                }
+//                if (mFullUser.getProfile().getTasteTags().isPresent()) {
+//                    GridView gdView = (GridView) contentView.findViewById(R.id.gv_user_info_favor);
+//                    gdView.setVisibility(View.VISIBLE);
+//                    content.setVisibility(View.GONE);
+//                    gdView.setOnItemClickListener(mFlavorItemListener);
+//                    gdView.setFocusable(false);
+//                    gdView.setFocusableInTouchMode(false);
+//                    gdView.setAdapter(mFlavorAdapter);
+//                    setListViewHeightBasedOnChildren(gdView);
+//                } else {
+//                    content.setText(getString(R.string.no_hobby));
+//                }
             }
             return contentView;
         }
@@ -146,7 +167,7 @@ public final class UserInfoActivity extends BaseActivity implements View.OnClick
         switch (item.getItemId()) {
             case R.id.menu_edit_self_info:
                 Intent intent = new Intent();
-                intent.setClass(UserInfoActivity.this, EditUserInfoActivity.class);
+                intent.setClass(mContext, EditUserInfoActivity.class);
                 startActivity(intent);
                 break;
             case R.id.menu_follow_someone:
@@ -157,12 +178,27 @@ public final class UserInfoActivity extends BaseActivity implements View.OnClick
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if (bSelf) {
-            getMenuInflater().inflate(R.menu.user_info, menu);
-        } else {
+        if (mTinyUser.getIdentifier().equals(Router.getInstance().getCurrentUser().get().getIdentifier()) || mTinyUser.getIdentifier() == -1) {
             getMenuInflater().inflate(R.menu.user_info_self, menu);
+        } else {
+            getMenuInflater().inflate(R.menu.user_info, menu);
         }
         return super.onCreateOptionsMenu(menu);
+    }
+
+    private void getUserInfo() {
+        Router.getAccountModule().fetchUserInfoById(mTinyUser.getIdentifier(), fullUser -> {
+            mFullUser = fullUser;
+            Picasso.with(mContext).load(mFullUser.getAvatarURL().get()).placeholder(R.drawable.default_user_head).into(mUserHead);
+            mUserName.setText(mFullUser.getNickname().get());
+            mBtnFans.setText(String.format(getString(R.string.fans_count), mFullUser.getFriendShip().getFollowerCount()));
+            mBtnFavor.setText(String.format(getString(R.string.favorite_count), mFullUser.getFood().getCollectionCount()));
+            mBtnFollow.setText(String.format(getString(R.string.follow_count), mFullUser.getFriendShip().getFollowingCount()));
+            mBtnRecommend.setText(String.format(getString(R.string.recommend_count), mFullUser.getFood().getRecommendationCount()));
+            mInfoAdapter.notifyDataSetChanged();
+        }, errorMsg -> {
+            Toast.makeText(mContext, getString(R.string.notify_net2), Toast.LENGTH_SHORT).show();
+        });
     }
 
     @Override
@@ -171,13 +207,26 @@ public final class UserInfoActivity extends BaseActivity implements View.OnClick
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         if (mTendIntent != null) {
             mTinyUser = (TinyUser) mTendIntent.getSerializableExtra("tiny_user");
-
-//            bSelf = mTendIntent.getBooleanExtra("b_self", false);
+            if (mTinyUser == null) {
+                finish();
+            }
+            int id = mTinyUser.getIdentifier();
+            if (id == -1) {
+                tryLoginFirst(() -> {
+                    getUserInfo();
+                }, errorMsg -> {
+                    Toast.makeText(mContext, getString(R.string.notify_net2), Toast.LENGTH_SHORT).show();
+                });
+            } else {
+                getUserInfo();
+            }
         }
-        mBtnFans.setText(String.format(getString(R.string.fans_count), 10));
-        mBtnFavor.setText(String.format(getString(R.string.favorite_count), 10));
-        mBtnFollow.setText(String.format(getString(R.string.follow_count), 10));
-        mBtnRecommend.setText(String.format(getString(R.string.recommend_count), 10));
+        Picasso.with(mContext).load(mTinyUser.getAvatarURL().get()).placeholder(R.drawable.default_user_head).into(mUserHead);
+        mUserName.setText(mTinyUser.getNickName());
+        mBtnFans.setText(String.format(getString(R.string.fans_count), 0));
+        mBtnFavor.setText(String.format(getString(R.string.favorite_count), 0));
+        mBtnFollow.setText(String.format(getString(R.string.follow_count), 0));
+        mBtnRecommend.setText(String.format(getString(R.string.recommend_count), 0));
         mBtnRecommend.setOnClickListener(this);
         mBtnFollow.setOnClickListener(this);
         mBtnFans.setOnClickListener(this);
@@ -188,12 +237,15 @@ public final class UserInfoActivity extends BaseActivity implements View.OnClick
         mInfoList.setOnItemClickListener(mUserInfoItemListener);
     }
 
+
     @Override
     public void onClick(View view) {
         Intent intent = new Intent();
         switch (view.getId()) {
             case R.id.user_info_recommend:
                 intent.setClass(UserInfoActivity.this, RecommendAndFavorActivity.class);
+                intent.putExtra("content_type", MainFragment.RECOMMEND_PAGE);
+                intent.putExtra("tiny_user", mTinyUser);
                 break;
             case R.id.user_info_fans:
                 intent.setClass(UserInfoActivity.this, FriendActivity.class);
@@ -205,12 +257,20 @@ public final class UserInfoActivity extends BaseActivity implements View.OnClick
                 break;
             case R.id.user_info_wish:
                 intent.setClass(UserInfoActivity.this, RecommendAndFavorActivity.class);
+                intent.putExtra("content_type", MainFragment.FAVOR_PAGE);
+                intent.putExtra("tiny_user", mTinyUser);
                 break;
             case R.id.user_info_user_head:
                 intent.setClass(UserInfoActivity.this, BigImageActivity.class);
-                ArrayList<SimpleImage> avatarUrl = new ArrayList<>();
-                avatarUrl.add(new SimpleImage("", "", "http://g.hiphotos.baidu.com/image/pic/item/c8177f3e6709c93d3e2755f49d3df8dcd00054df.jpg"));
-                intent.putParcelableArrayListExtra("edit_images", avatarUrl);
+                ArrayList<SimpleImage> avatarUrls = new ArrayList<>();
+                String avatarUrl = null;
+                if (mFullUser != null) {
+                    avatarUrl = mFullUser.getAvatarURL().get();
+                } else {
+                    avatarUrl = mTinyUser.getAvatarURL().get();
+                }
+                avatarUrls.add(new SimpleImage("", "", avatarUrl));
+                intent.putParcelableArrayListExtra("edit_images", avatarUrls);
                 break;
         }
         startActivity(intent);

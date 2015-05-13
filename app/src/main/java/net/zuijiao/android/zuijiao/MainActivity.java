@@ -103,9 +103,17 @@ public final class MainActivity extends BaseActivity implements MainFragment.Mai
 //            mFragmentTransaction.replace(R.id.main_content_container,
 //                    mFragmentList.get(position));
             if (!mFragmentList.get(position).isAdded()) {
+//                if(mFragmentList.indexOf(mCurrentFragment) == 0){
+//                    mFragmentTransaction.hide(mCurrentFragment).addToBackStack("main_fragment").add(R.id.main_content_container ,mFragmentList.get(position)).commit();
+//                }else {
                 mFragmentTransaction.hide(mCurrentFragment).add(R.id.main_content_container, mFragmentList.get(position)).commit();
+//                }
             } else {
+//                if(mFragmentList.indexOf(mCurrentFragment) == 0){
+//                    mFragmentTransaction.hide(mCurrentFragment).addToBackStack("main_fragment").show(mFragmentList.get(position)).commit();
+//                }else{
                 mFragmentTransaction.hide(mCurrentFragment).show(mFragmentList.get(position)).commit();
+//                }
             }
             mCurrentFragment = mFragmentList.get(position);
             mToolBar.setTitle(titles[position]);
@@ -160,7 +168,7 @@ public final class MainActivity extends BaseActivity implements MainFragment.Mai
                 AuthorInfo authInfo = PreferenceManager.getInstance(mContext).getThirdPartyLoginMsg();
                 user.setNickName(authInfo.getUserName());
                 user.setAvatarURL(authInfo.getHeadPath());
-//                user.setIdentifier(authInfo.getUid());
+                user.setIdentifier(authInfo.getUserId());
             }
             intent.putExtra("tiny_user", user);
             startActivity(intent);
@@ -341,7 +349,6 @@ public final class MainActivity extends BaseActivity implements MainFragment.Mai
         } else {
             mSettingArray = getResources().getStringArray(R.array.settings2);
             mSettingList.setAdapter(mSettingAdapter);
-            ;
             mBtnLogin.setVisibility(View.VISIBLE);
             mThirdPartyUserName.setVisibility(View.GONE);
             mThirdPartyUserHead.setVisibility(View.GONE);
@@ -517,6 +524,18 @@ public final class MainActivity extends BaseActivity implements MainFragment.Mai
                 }).setPositiveButton(R.string.dialog_no, null);
         if (!isFinishing())
             updateAlertDialog.show();
+    }
+
+    @Override
+    protected void onRecommendationChanged() {
+        super.onRecommendationChanged();
+        try {
+            mRecommendFragment.firstInit();
+        } catch (Exception r) {
+            r.printStackTrace();
+        } catch (Throwable t) {
+            t.printStackTrace();
+        }
     }
 
     public void click(View v) {

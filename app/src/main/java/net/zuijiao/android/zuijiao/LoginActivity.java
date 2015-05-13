@@ -88,10 +88,6 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        // if(mEmailEdit.getText().toString()==null ||
-        // mPwdEdit.getText().toString() ==null){
-        // return false ;
-        // }
         return super.onPrepareOptionsMenu(menu);
     }
 
@@ -132,6 +128,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
                 }
                 auth.setPassword(mPassword);
                 auth.setUserName(user.getNickName());
+                auth.setUserId(user.getIdentifier());
                 mPreferMng.saveThirdPartyLoginMsg(auth);
                 Intent intent = new Intent();
                 intent.setAction(MessageDef.ACTION_GET_THIRD_PARTY_USER);

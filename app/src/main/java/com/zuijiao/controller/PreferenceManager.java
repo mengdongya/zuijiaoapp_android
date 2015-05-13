@@ -153,6 +153,7 @@ public class PreferenceManager {
         editor.putString("token", userInfo.getToken());
         editor.putString("email", userInfo.getEmail());
         editor.putString("password", userInfo.getPassword());
+        editor.putInt("user_id", userInfo.getUserId());
         editor.commit();
     }
 
@@ -167,6 +168,7 @@ public class PreferenceManager {
         editor.putString("token", "");
         editor.putString("email", "");
         editor.putString("password", "");
+        editor.putInt("user_id", -1);
         editor.commit();
     }
 
@@ -185,7 +187,13 @@ public class PreferenceManager {
         authInfo.setUserName(sp.getString("nickname", ""));
         authInfo.setEmail(sp.getString("email", ""));
         authInfo.setPassword(sp.getString("password", ""));
+        authInfo.setUserId(sp.getInt("user_id", -1));
         return authInfo;
+    }
+
+    public int getStoredUserId() {
+        SharedPreferences sp = mContext.getSharedPreferences(PreferencesDef.FILE_NAME, Activity.MODE_PRIVATE);
+        return sp.getInt("user_id", -1);
     }
 
     public static AuthorInfo getAuthInfo() {

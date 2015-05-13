@@ -49,9 +49,16 @@ public abstract class BaseActivity extends ActionBarActivity {
                 onLoginFinish();
             } else if (intent.getAction().equals(MessageDef.ACTION_GET_THIRD_PARTY_USER)) {
                 onUserInfoGot(true);
+            } else if (intent.getAction().equals(MessageDef.ACTION_REFRESH_RECOMMENDATION)) {
+                onRecommendationChanged();
             }
         }
     };
+
+    protected void onRecommendationChanged() {
+
+    }
+
     private LambdaExpression mLoginCallBack;
     private AlertDialog mNotifyLoginDialog = null;
 
@@ -75,6 +82,7 @@ public abstract class BaseActivity extends ActionBarActivity {
         IntentFilter filter = new IntentFilter();
         filter.addAction(MessageDef.ACTION_LOGIN_FINISH);
         filter.addAction(MessageDef.ACTION_GET_THIRD_PARTY_USER);
+        filter.addAction(MessageDef.ACTION_REFRESH_RECOMMENDATION);
         registerReceiver(mReceiver, filter);
         ActivityTask.getInstance().addActivity(this);
     }
@@ -166,6 +174,7 @@ public abstract class BaseActivity extends ActionBarActivity {
         AuthorInfo authFromUser = new AuthorInfo();
         authFromUser.setHeadPath(user.getAvatarURL().orElse("placeholder"));
         authFromUser.setUserName(user.getNickName());
+        authFromUser.setUserId(user.getIdentifier());
         authFromUser.setPassword(auth.getPassword());
         authFromUser.setUid(auth.getUid());
         authFromUser.setToken(auth.getToken());

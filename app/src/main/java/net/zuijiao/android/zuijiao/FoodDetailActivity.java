@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
@@ -17,6 +18,7 @@ import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -34,6 +36,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -48,6 +51,7 @@ import com.zuijiao.android.zuijiao.model.Gourmet;
 import com.zuijiao.android.zuijiao.model.user.WouldLikeToEatUser;
 import com.zuijiao.android.zuijiao.network.Router;
 import com.zuijiao.controller.FileManager;
+import com.zuijiao.controller.MessageDef;
 import com.zuijiao.utils.StrUtil;
 import com.zuijiao.view.MeasuredTextView;
 import com.zuijiao.view.MyScrollView;
@@ -63,6 +67,11 @@ public class FoodDetailActivity extends BaseActivity implements
         OnScrollListener {
 
     public static final int EDIT_GOURMET_REQ = 4001;
+    private static final int SHARE_TO_WEIBO = 0;
+    private static final int SHARE_TO_WECHAT = 1;
+    private static final int SHARE_TO_FRIEND_CIRCLE = 2;
+    private static final int SHARE_TO_QQ = 3;
+    private static final int SHARE_TO_QQ_SPACE = 4;
     @ViewInject(R.id.food_detail_toolbar)
     private Toolbar mToolbar;
     @ViewInject(R.id.food_detail_container)
@@ -96,18 +105,17 @@ public class FoodDetailActivity extends BaseActivity implements
     private TextView mGourmetMsgTitle = null;
     @ViewInject(R.id.food_detail_food_msg_splite)
     private View mGourmetMsgSpliteView = null;
+    ;
     @ViewInject(R.id.food_detail_food_msg_price)
     private TextView mFoodPrice = null;
     @ViewInject(R.id.food_detail_food_msg_location)
     private TextView mFoodLocation = null;
     @ViewInject(R.id.none_person_like)
     private TextView mNonePerson = null;
-
     @ViewInject(R.id.content_item_comment)
     private TextView mFoodDescription = null;
     @ViewInject(R.id.food_detail_food_like_title)
     private TextView mWouldLikeTitle = null;
-    ;
     @ViewInject(R.id.food_detail_food_comment_title)
     private TextView mCommentTitle = null;
     @ViewInject(R.id.none_comment_text)
@@ -120,12 +128,10 @@ public class FoodDetailActivity extends BaseActivity implements
     private LinearLayout mContentLayout = null;
     private boolean openEdit = false;
     private Gourmet gourmet = null;
-
     //private WouldLikeToEatUsers mUsers = null;
     private Comments mComments = null;
     //if comment false ,reply true ;
     private Integer mReplyId = null;
-
     private OnClickListener mCommentCommitListener = new OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -223,6 +229,13 @@ public class FoodDetailActivity extends BaseActivity implements
                 }
             }
         }
+    };
+
+    private OnClickListener userHeadListener = (View v) -> {
+        Intent intent = new Intent();
+        intent.setClass(mContext, UserInfoActivity.class);
+        intent.putExtra("tiny_user", gourmet.getUser());
+        startActivity(intent);
     };
     private OnClickListener favorListener = new OnClickListener() {
         @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
@@ -427,6 +440,38 @@ public class FoodDetailActivity extends BaseActivity implements
 
         }
     };
+    //    public List<ResolveInfo> getShareApps(Context context) {
+//        List<ResolveInfo> mApps = new ArrayList<ResolveInfo>();
+//        Intent intent = new Intent(Intent.ACTION_SEND, null);
+//        intent.addCategory(Intent.CATEGORY_DEFAULT);
+//        intent.setType("text/plain");
+////      intent.setType("*/*");
+//        PackageManager pManager = context.getPackageManager();
+//        mApps = pManager.queryIntentActivities(intent,
+//                PackageManager.COMPONENT_ENABLED_STATE_DEFAULT);
+//        return mApps;
+//    }
+//    private List<AppInfo> getShareAppList() {
+//        List<AppInfo> shareAppInfos = new ArrayList<AppInfo>();
+//        PackageManager packageManager = getPackageManager();
+//        List<ResolveInfo> resolveInfos = getShareApps(mContext);
+//        if (null == resolveInfos) {
+//            return null;
+//        } else {
+//            for (ResolveInfo resolveInfo : resolveInfos) {
+//                AppInfo appInfo = new AppInfo();
+//                appInfo.setAppPkgName(resolveInfo.activityInfo.packageName);
+////              showLog_I(TAG, "pkg>" + resolveInfo.activityInfo.packageName + ";name>" + resolveInfo.activityInfo.name);
+//                appInfo.setAppLauncherClassName(resolveInfo.activityInfo.name);
+//                appInfo.setAppName(resolveInfo.loadLabel(packageManager).toString());
+//                appInfo.setAppIcon(resolveInfo.loadIcon(packageManager));
+//                shareAppInfos.add(appInfo);
+//            }
+//        }
+//        return shareAppInfos;
+//    }
+    private int mShareImageRes[] = {R.drawable.share_weibo, R.drawable.share_weixin, R.drawable.share_friend_circle, R.drawable.share_qq, R.drawable.share_qq_space};
+    private int mShareTextRes[] = {R.string.weibo, R.string.weixin_friend, R.string.weixin_friend_circle, R.string.qq_friend, R.string.qq_space};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -449,6 +494,7 @@ public class FoodDetailActivity extends BaseActivity implements
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.gourmet_detail_share:
+                createShareWindow();
                 break;
 //            case R.id.gourmet_detail_refresh:
 //                refreshGourmet() ;
@@ -461,6 +507,77 @@ public class FoodDetailActivity extends BaseActivity implements
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void createShareWindow() {
+        PopupWindow sharePopupWindow = null;
+        View view = null;
+        GridView shareList = null;
+        if (null == sharePopupWindow) {
+            view = LayoutInflater.from(mContext).inflate(R.layout.share_dialog, null);
+            shareList = (GridView) view.findViewById(R.id.gv_share_dialog);
+            shareList.setAdapter(new BaseAdapter() {
+                @Override
+                public int getCount() {
+                    return 5;
+                }
+
+                @Override
+                public Object getItem(int position) {
+                    return position;
+                }
+
+                @Override
+                public long getItemId(int position) {
+                    return position;
+                }
+
+                @Override
+                public View getView(int position, View convertView, ViewGroup parent) {
+                    View contentView = LayoutInflater.from(mContext).inflate(R.layout.share_item, null);
+                    TextView text = (TextView) contentView.findViewById(R.id.share_item_text);
+                    ImageView image = (ImageView) contentView.findViewById(R.id.share_item_image);
+                    text.setText(getString(mShareTextRes[position]));
+                    image.setImageResource(mShareImageRes[position]);
+                    return contentView;
+                }
+            });
+            shareList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view,
+                                        int position, long id) {
+                    distributeShareAction(position);
+                }
+            });
+            sharePopupWindow = new PopupWindow(view,
+                    LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT, true);
+        }
+        //使其聚焦
+        sharePopupWindow.setFocusable(false);
+        //设置允许在外点击消失
+        sharePopupWindow.setOutsideTouchable(true);
+        // 这个是为了点击“返回Back”也能使其消失，并且并不会影响你的背景
+        sharePopupWindow.setBackgroundDrawable(new BitmapDrawable());
+        //xoff,yoff基于anchor的左下角进行偏移。正数表示下方右边，负数表示（上方左边）
+        //showAsDropDown(parent, xPos, yPos);
+//        sharePopupWindow.showAsDropDown(parent, -5, 5);
+        sharePopupWindow.showAtLocation(rootView, Gravity.BOTTOM, 0, 0);
+    }
+
+    private void distributeShareAction(int action) {
+        switch (action) {
+            case SHARE_TO_WEIBO:
+                break;
+            case SHARE_TO_WECHAT:
+                break;
+            case SHARE_TO_FRIEND_CIRCLE:
+                break;
+            case SHARE_TO_QQ:
+                break;
+            case SHARE_TO_QQ_SPACE:
+                break;
+        }
     }
 
     private void refreshGourmet() {
@@ -476,7 +593,15 @@ public class FoodDetailActivity extends BaseActivity implements
 
     private void deleteGourmet() {
         //TODO
-
+        Router.getGourmetModule().removeMyRecommendation(gourmet.getIdentifier(), () -> {
+            Toast.makeText(mContext, getString(R.string.success_delete_comment), Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent();
+            intent.setAction(MessageDef.ACTION_REFRESH_RECOMMENDATION);
+            sendBroadcast(intent);
+            finish();
+        }, () -> {
+            Toast.makeText(mContext, getString(R.string.fail_delete_comment) + "   " + getString(R.string.notify_net2), Toast.LENGTH_SHORT).show();
+        });
     }
 
     private void editGourmet() {
@@ -487,6 +612,7 @@ public class FoodDetailActivity extends BaseActivity implements
         intent.putExtra("edit_gourmet_type", editType);
         startActivityForResult(intent, EDIT_GOURMET_REQ);
     }
+
     @Override
     protected void findViews() {
 
@@ -728,6 +854,8 @@ public class FoodDetailActivity extends BaseActivity implements
         topHolder.mUserName1 = (TextView) mLayoutTop.findViewById(R.id.food_detail_user_name);
         floatHolder.mFavorBtn2.setOnClickListener(favorListener);
         topHolder.mFavorBtn2.setOnClickListener(favorListener);
+        topHolder.mUserHead1.setOnClickListener(userHeadListener);
+        floatHolder.mUserHead1.setOnClickListener(userHeadListener);
 //        floatHolder.mCreateTime1.setText(gourmet.getDate().toLocaleString());
 //        topHolder.mCreateTime1.setText(gourmet.getDate().toLocaleString());
         if (gourmet.getWasMarked()) {

@@ -26,6 +26,7 @@ import com.squareup.picasso.Picasso;
 import com.zuijiao.android.util.functional.LambdaExpression;
 import com.zuijiao.android.zuijiao.model.Gourmet;
 import com.zuijiao.android.zuijiao.network.Router;
+import com.zuijiao.controller.MessageDef;
 import com.zuijiao.entity.SimpleImage;
 import com.zuijiao.utils.MyTextWatcher;
 import com.zuijiao.utils.UpyunUploadTask;
@@ -151,11 +152,18 @@ public class EditGourmetActivity extends BaseActivity implements View.OnClickLis
                 mType == TYPE_EDIT_PERSONAL_GOURMET, () -> {
                     Toast.makeText(mContext, getString(R.string.notify_edit_gourmet_success), Toast.LENGTH_SHORT).show();
                     System.out.println("EditGourmet" + " edit_success");
+                    Intent intent = new Intent();
+                    intent.setAction(MessageDef.ACTION_REFRESH_RECOMMENDATION);
+                    sendBroadcast(intent);
+                    finallizeDialog();
+                    finish();
                 }, () -> {
                     Toast.makeText(mContext, getString(R.string.notify_edit_gourmet_failed), Toast.LENGTH_SHORT).show();
                     System.out.println("EditGourmet" + " edit_failed");
+                    finallizeDialog();
                 });
     }
+
     private void addGourmet() {
         createDialog();
         Router.getGourmetModule().addGourmet(mEditName, mEditLocation,
@@ -163,6 +171,9 @@ public class EditGourmetActivity extends BaseActivity implements View.OnClickLis
                 mEditLabels, mProvinceId, mCityId,
                 mType == TYPE_CREATE_PERSONAL_GOURMET, () -> {
                     Toast.makeText(mContext, getString(R.string.notify_add_gourmet_success), Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent();
+                    intent.setAction(MessageDef.ACTION_REFRESH_RECOMMENDATION);
+                    sendBroadcast(intent);
                     finallizeDialog();
                     finish();
                 }, () -> {

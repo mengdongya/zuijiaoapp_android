@@ -106,7 +106,9 @@ public class TestClass {
 
 //            Router.getAccountModule().fetchMyInfo(user -> System.out.println(user), err);
 
-            Router.getSocialModule().follow(24, () -> System.out.println("su"), s -> System.out.println(s));
+            Router.getAccountModule().fetchUserInfoById(276, user -> {
+                System.out.println(user);
+            }, null);
 
         });
     }

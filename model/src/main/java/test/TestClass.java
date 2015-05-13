@@ -91,7 +91,7 @@ public class TestClass {
     }
 
     public static void main(String[] args) throws NoSuchAlgorithmException {
-        Router.setup("http://xielingyu2.zuijiaodev.com", null, null, null, "yyyy-MM-dd'T'HH:mm:ssXXX");
+        Router.setup("http://api.zuijiaodev.com", null, null, null, "yyyy-MM-dd'T'HH:mm:ssXXX");
         testOp(() -> {
 //            Router.getGourmetModule().fetchOurChoice(null, null, 20, gourmets -> {
 //                for (Gourmet g : gourmets.getGourmets()) {
@@ -104,9 +104,11 @@ public class TestClass {
 //            }, null);
 
 
-            Router.getAccountModule().fetchMyInfo(user -> System.out.println(user), null);
+//            Router.getAccountModule().fetchMyInfo(user -> System.out.println(user), err);
 
-            Router.getAccountModule().fetchUserInfoById(239, user -> System.out.println(user), null);
+            Router.getAccountModule().fetchUserInfoById(276
+                    , user -> System.out.println(user)
+                    , s -> System.out.println("failed"));
 
         });
     }

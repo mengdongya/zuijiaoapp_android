@@ -17,7 +17,7 @@ import retrofit.http.Query;
  * Created by user on 4/28/15.
  */
 public interface IRouterSocial {
-    final String RootURL = "/foods/v1";
+    final String RootURL = "/friendships/v1";
 
     @GET(RootURL + "/followers")
     void getFollowers(@Query("maxID") Integer thresholdID, @Query("count") Integer count, Callback<SocialEntities> callback);

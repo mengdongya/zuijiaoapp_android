@@ -55,7 +55,7 @@ public class MainFragment extends Fragment implements FragmentDataListener,
         public void onItemClick(AdapterView<?> parent, View view, int position,
                                 long id) {
             Intent intent = new Intent(getActivity(), FoodDetailActivity.class);
-            intent.putExtra("selected_gourmet", mAdapter.getItem(position));
+            intent.putExtra("selected_gourmet", mAdapter.getItem(position - 1));
 //            intent.putExtra("click_item_index", position - 1);
 //            intent.putExtra("b_favor", mContentType == FAVOR_PAGE);
             startActivity(intent);
@@ -75,6 +75,8 @@ public class MainFragment extends Fragment implements FragmentDataListener,
     private Activity mActivity = null;
     private boolean bFirstInit = true;
     private TinyUser mDisplayUser = null;
+    private Date tmpDate = null;
+    private boolean bSelf = false;
     private View.OnClickListener mFloatBtnListener = new View.OnClickListener() {
 
         @Override
@@ -97,39 +99,26 @@ public class MainFragment extends Fragment implements FragmentDataListener,
         }
     }
 
+    public void setType(int type) {
+        this.mContentType = type;
+    }
     public void setUser(TinyUser user) {
         mDisplayUser = user;
+        bSelf = displaySelfInfo();
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        this.mInflater = inflater;
-        mActivity = getActivity();
+    public void onStart() {
+        super.onStart();
         if (mContentType == UNDEFINE_PAGE) {
             try {
                 mContentType = ((RecommendAndFavorActivity) mActivity).mContentType;
+                mDisplayUser = ((RecommendAndFavorActivity) mActivity).mCurrentUser;
             } catch (Throwable e) {
                 e.printStackTrace();
             }
         }
-        mContentView = inflater.inflate(R.layout.fragment_main, null);
-        mLayout = (LinearLayout) mContentView.findViewById(R.id.main_empty_content);
-        mListView = (RefreshAndInitListView) mContentView
-                .findViewById(R.id.content_items);
-        mFavorCount = (TextView) mContentView.findViewById(R.id.tv_show_favor_count);
-
-//        mFloatButton.attachToListView(mListView);
-        if (mContentType == MAIN_PAGE) {
-            mAddMenu = (FloatingActionsMenu) mContentView.findViewById(R.id.multiple_actions);
-            mAddMenu.setVisibility(View.VISIBLE);
-            mFloatButtonA = (FloatingActionButton) mContentView.findViewById(R.id.action_a);
-            mFloatButtonB = (FloatingActionButton) mContentView.findViewById(R.id.action_b);
-            mFloatButtonA.setOnClickListener(new FloatButtonListener());
-            mFloatButtonB.setOnClickListener(new FloatButtonListener());
-            mFloatButtonA.setOnLongClickListener(new FloatButtonIndicator(getString(R.string.personal_gourmet)));
-            mFloatButtonB.setOnLongClickListener(new FloatButtonIndicator(getString(R.string.store_gourmet)));
-        }
+        bSelf = displaySelfInfo();
         mAdapter = new MainAdapter();
         mListView.setAdapter(mAdapter);
         if (mAdapter.getCount() < 20) {
@@ -143,10 +132,33 @@ public class MainFragment extends Fragment implements FragmentDataListener,
         } else {
             mFavorCount.setVisibility(View.GONE);
         }
-        mListView.setOnItemClickListener(mItemClickListener);
-        mListView.setListViewListener(this);
         if (bFirstInit)
             firstInit();
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        this.mInflater = inflater;
+        mActivity = getActivity();
+        mContentView = inflater.inflate(R.layout.fragment_main, null);
+        mLayout = (LinearLayout) mContentView.findViewById(R.id.main_empty_content);
+        mListView = (RefreshAndInitListView) mContentView
+                .findViewById(R.id.content_items);
+        mFavorCount = (TextView) mContentView.findViewById(R.id.tv_show_favor_count);
+//        mFloatButton.attachToListView(mListView);
+        if (mContentType == MAIN_PAGE) {
+            mAddMenu = (FloatingActionsMenu) mContentView.findViewById(R.id.multiple_actions);
+            mAddMenu.setVisibility(View.VISIBLE);
+            mFloatButtonA = (FloatingActionButton) mContentView.findViewById(R.id.action_a);
+            mFloatButtonB = (FloatingActionButton) mContentView.findViewById(R.id.action_b);
+            mFloatButtonA.setOnClickListener(new FloatButtonListener());
+            mFloatButtonB.setOnClickListener(new FloatButtonListener());
+            mFloatButtonA.setOnLongClickListener(new FloatButtonIndicator(getString(R.string.personal_gourmet)));
+            mFloatButtonB.setOnLongClickListener(new FloatButtonIndicator(getString(R.string.store_gourmet)));
+        }
+        mListView.setOnItemClickListener(mItemClickListener);
+        mListView.setListViewListener(this);
         return mContentView;
     }
 
@@ -163,6 +175,16 @@ public class MainFragment extends Fragment implements FragmentDataListener,
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
     }
 
     @Override
@@ -185,26 +207,15 @@ public class MainFragment extends Fragment implements FragmentDataListener,
 
     }
 
-    private void firstInit() {
+    public void firstInit() {
         mListView.autoResetHeadView();
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                switch (mContentType) {
-                    case MAIN_PAGE:
-                        fetchCommonData(true);
-                        break;
-                    case FAVOR_PAGE:
-                        fetchFavorData(true);
-                        break;
-                    case RECOMMEND_PAGE:
-                        fetchRecommendData(true);
-                        break;
-                }
+                onRefresh();
             }
         }, 450);
     }
-
 
 
     @Override
@@ -279,17 +290,19 @@ public class MainFragment extends Fragment implements FragmentDataListener,
             } else {
                 fetchRecommendData(isRefresh);
             }
-
             return;
         }
-        // TinyUser user = Router.getInstance().getCurrentUser().get();
         List<Gourmet> tmpGourmets = mAdapter.gourmets.orElse(new ArrayList<>());
         Integer theLastOneIdentifier = null;
         if (!isRefresh) {
             Gourmet theLatestOne = tmpGourmets.get(tmpGourmets.size() - 1);
             theLastOneIdentifier = theLatestOne.getIdentifier();
         }
-        mListView.setRefreshTime(new Date(PreferenceManager.getInstance(mContext).getFavorLastRefreshTime()).toLocaleString());
+        if (bSelf) {
+            mListView.setRefreshTime(new Date(PreferenceManager.getInstance(mContext).getFavorLastRefreshTime()).toLocaleString());
+        } else if (tmpDate != null) {
+            mListView.setRefreshTime(tmpDate.toLocaleString());
+        }
         Router.getGourmetModule().fetchRecommendationListByUserId(mDisplayUser.getIdentifier(), theLastOneIdentifier, null, 20
                 , gourmets ->
         {
@@ -298,10 +311,11 @@ public class MainFragment extends Fragment implements FragmentDataListener,
                 if (gourmets.getTotalCount() == 0) {
                     mFavorCount.setVisibility(View.GONE);
                     mLayout.setVisibility(View.VISIBLE);
+                    ((TextView) mContentView.findViewById(R.id.fragment_main_no_content_text_view)).setText(getString(R.string.no_recommendation));
                     mListView.setPullLoadEnable(false);
                 } else {
                     mFavorCount.setVisibility(View.VISIBLE);
-                    mFavorCount.setText(String.format(getString(R.string.favor_count), gourmets.getTotalCount()));
+                    mFavorCount.setText(String.format(getString(R.string.recommend_count_title), gourmets.getTotalCount()));
                     if (gourmets.getGourmets().size() < 20) {
                         mListView.setPullLoadEnable(false);
                     } else {
@@ -314,18 +328,18 @@ public class MainFragment extends Fragment implements FragmentDataListener,
                     mListView.setPullLoadEnable(false);
                     Toast.makeText(mContext, getString(R.string.no_more), Toast.LENGTH_SHORT).show();
                 } else {
-                    mFavorCount.setText(String.format(getString(R.string.favor_count), tmpGourmets.size() + gourmets.getTotalCount()));
+                    mFavorCount.setText(String.format(getString(R.string.recommend_count_title), tmpGourmets.size() + gourmets.getTotalCount()));
                 }
             }
             tmpGourmets.addAll(gourmets.getGourmets());
-            FileManager.setGourmets(mContentType, Optional.of(tmpGourmets));
             mAdapter.gourmets = Optional.of(tmpGourmets);
             mAdapter.notifyDataSetChanged();
-            DBOpenHelper.getmInstance(mContext).insertGourmets(gourmets);
-            if (mContentType == MAIN_PAGE) {
-                PreferenceManager.getInstance(mContext).saveMainLastRefreshTime(new Date().getTime());
-            } else if (mContentType == FAVOR_PAGE) {
+//            DBOpenHelper.getmInstance(mContext).insertGourmets(gourmets);
+            if (bSelf) {
+                FileManager.setGourmets(mContentType, Optional.of(tmpGourmets));
                 PreferenceManager.getInstance(mContext).saveFavorLastRefreshTime(new Date().getTime());
+            } else {
+                tmpDate = new Date();
             }
             mListView.stopRefresh();
             mListView.stopLoadMore();
@@ -404,6 +418,7 @@ public class MainFragment extends Fragment implements FragmentDataListener,
                     mListView.setPullLoadEnable(false);
                 } else {
                     mFavorCount.setVisibility(View.VISIBLE);
+                    int count = gourmets.getTotalCount();
                     mFavorCount.setText(String.format(getString(R.string.favor_count), gourmets.getTotalCount()));
                     if (gourmets.getGourmets().size() < 20) {
                         mListView.setPullLoadEnable(false);
@@ -417,18 +432,19 @@ public class MainFragment extends Fragment implements FragmentDataListener,
                     mListView.setPullLoadEnable(false);
                     Toast.makeText(mContext, getString(R.string.no_more), Toast.LENGTH_SHORT).show();
                 } else {
-                    mFavorCount.setText(String.format(getString(R.string.favor_count), tmpGourmets.size() + gourmets.getTotalCount()));
+                    mFavorCount.setText(String.format(getString(R.string.favor_count), gourmets.getTotalCount()));
                 }
             }
             tmpGourmets.addAll(gourmets.getGourmets());
-            FileManager.setGourmets(mContentType, Optional.of(tmpGourmets));
+
             mAdapter.gourmets = Optional.of(tmpGourmets);
             mAdapter.notifyDataSetChanged();
-            DBOpenHelper.getmInstance(mContext).insertGourmets(gourmets);
-            if (mContentType == MAIN_PAGE) {
-                PreferenceManager.getInstance(mContext).saveMainLastRefreshTime(new Date().getTime());
-            } else if (mContentType == FAVOR_PAGE) {
+//            DBOpenHelper.getmInstance(mContext).insertGourmets(gourmets);
+            if (bSelf) {
+                FileManager.setGourmets(mContentType, Optional.of(tmpGourmets));
                 PreferenceManager.getInstance(mContext).saveFavorLastRefreshTime(new Date().getTime());
+            } else {
+                tmpDate = new Date();
             }
             mListView.stopRefresh();
             mListView.stopLoadMore();
@@ -549,6 +565,12 @@ public class MainFragment extends Fragment implements FragmentDataListener,
         }
     }
 
+    private boolean displaySelfInfo() {
+        if (mDisplayUser == null) {
+            return false;
+        }
+        return mDisplayUser.getIdentifier().equals(PreferenceManager.getInstance(mContext).getStoredUserId());
+    }
     private class MainAdapter extends BaseAdapter {
         Optional<List<Gourmet>> gourmets;
 
@@ -556,14 +578,15 @@ public class MainFragment extends Fragment implements FragmentDataListener,
             super();
             if (mContentType == MAIN_PAGE) {
                 gourmets = FileManager.mainGourmet;
-            } else if (mContentType == FAVOR_PAGE) {
+            } else if (mContentType == FAVOR_PAGE && bSelf) {
                 gourmets = FileManager.favorGourmets;
-            } else if (mContentType == RECOMMEND_PAGE) {
+            } else if (mContentType == RECOMMEND_PAGE && bSelf) {
                 gourmets = FileManager.recommendList;
             } else {
                 gourmets = Optional.empty();
             }
         }
+
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
@@ -586,6 +609,7 @@ public class MainFragment extends Fragment implements FragmentDataListener,
                         .findViewById(R.id.content_item_user_name);
                 holder.text_intro = (TextView) convertView
                         .findViewById(R.id.content_item_comment);
+                holder.user = convertView.findViewById(R.id.content_item_user);
                 convertView.setTag(holder);
             } else {
                 holder = (ViewHolder) convertView.getTag();
@@ -612,7 +636,12 @@ public class MainFragment extends Fragment implements FragmentDataListener,
                             .placeholder(R.drawable.default_user_head)
                             .into(holder.image_user_head);
                 }
-
+                holder.user.setOnClickListener((View v) -> {
+                    Intent intent = new Intent();
+                    intent.setClass(mContext, UserInfoActivity.class);
+                    intent.putExtra("tiny_user", gourmet.getUser());
+                    startActivity(intent);
+                });
                 holder.label.removeAllViews();
                 for (String tag : gourmet.getTags()) {
                     TextView textview = new TextView(getActivity());
@@ -657,5 +686,6 @@ public class MainFragment extends Fragment implements FragmentDataListener,
         public TextView text_intro;
         public ImageView image_user_head;
         public TextView text4_user_name;
+        private View user;
     }
 }

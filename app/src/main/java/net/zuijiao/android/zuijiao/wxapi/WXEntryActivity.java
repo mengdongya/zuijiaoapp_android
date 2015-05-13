@@ -123,7 +123,7 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
                                 Router.getOAuthModule().register(nickname, headimgurl, openid, "wechat", Optional.<String>empty(), Optional.of(mRereshToken), isNew -> {
                                     Toast.makeText(getApplicationContext(), getString(R.string.login_success), Toast.LENGTH_SHORT).show();
                                     AuthorInfo userInfo = new AuthorInfo();
-                                    userInfo.setUserName(nickname);
+//                                    userInfo.setUserName(nickname);
                                     userInfo.setUid(openid);
                                     userInfo.setToken(mRereshToken);
                                     userInfo.setPlatform("wechat");
@@ -135,6 +135,8 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
                                             userInfo.setHeadPath(avataUrl);
                                         }
                                     }
+                                    userInfo.setUserId(Router.getInstance().getCurrentUser().get().getIdentifier());
+                                    userInfo.setUserName(Router.getInstance().getCurrentUser().get().getNickName());
                                     PreferenceManager.getInstance(getApplicationContext()).saveThirdPartyLoginMsg(userInfo);
                                     Intent intent = new Intent(
                                             MessageDef.ACTION_GET_THIRD_PARTY_USER);
@@ -143,24 +145,6 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
                                     bundle.putString("head_url", userInfo.getHeadPath());
                                     intent.putExtra("userinfo", bundle);
                                     WXEntryActivity.this.sendBroadcast(intent);
-//                                    Router.getOAuthModule().login(openid, "wechat", Optional.empty(), Optional.of(mRereshToken), () -> {
-//                                        AuthorInfo userInfo = new AuthorInfo();
-//                                        userInfo.setUserName(nickname);
-//                                        userInfo.setUid(openid);
-//                                        userInfo.setToken(mRereshToken);
-//                                        userInfo.setPlatform("wechat");
-//                                        userInfo.setHeadPath(headimgurl);
-//                                        PreferenceManager.getInstance(getApplicationContext()).saveThirdPartyLoginMsg(userInfo);
-//                                        Intent intent = new Intent(
-//                                                MessageDef.ACTION_GET_THIRD_PARTY_USER);
-//                                        Bundle bundle = new Bundle();
-//                                        bundle.putString("name", nickname);
-//                                        bundle.putString("head_url", headimgurl);
-//                                        intent.putExtra("userinfo", bundle);
-//                                        WXEntryActivity.this.sendBroadcast(intent);
-//                                    }, errorMessage -> {
-//                                        Toast.makeText(getApplicationContext(), getResources().getString(R.string.notify_net2), Toast.LENGTH_SHORT).show();
-//                                    });
                                 }, errorMessage -> {
                                     Toast.makeText(getApplicationContext(), getResources().getString(R.string.notify_net2), Toast.LENGTH_SHORT).show();
                                 });

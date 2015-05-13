@@ -22,11 +22,18 @@ public class PictureFragment extends Fragment {
     private String mImageUrl;
     private Bitmap mBmp = null;
     private ImageView mImageView = null;
+    private boolean isLocalImage = false;
 
     @SuppressLint("ValidFragment")
     public PictureFragment(String imageUrl) {
-
+        super();
         this.mImageUrl = imageUrl;
+    }
+
+    //if the content image is at local
+    public PictureFragment setType(boolean bLocal) {
+        isLocalImage = bLocal;
+        return this;
     }
 
     @Override
@@ -41,7 +48,7 @@ public class PictureFragment extends Fragment {
 //        final ProgressBar progressbar = (ProgressBar) view
 //                .findViewById(R.id.big_image_progressbar);
         File image = new File(mImageUrl);
-        if (image.exists()) {
+        if (isLocalImage && image.exists()) {
             if (mBmp != null) {
                 mImageView.setImageBitmap(mBmp);
             } else {

@@ -31,10 +31,10 @@
 
             <ImageView
                 android:id="@+id/location_iv_current_location"
-                android:layout_height="match_parent"
-                android:layout_width="wrap_content"
-                android:scaleType="center"
-                android:src="@drawable/ic_launcher" />
+                android:layout_height="20dip"
+                android:layout_width="20dip"
+                android:layout_gravity="center"
+                android:src="@drawable/edit_gourmet_location" />
         </ViewSwitcher>
 
         <TextView

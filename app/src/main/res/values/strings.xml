@@ -59,7 +59,11 @@
     <string name="third_party_login">第三方账号登录</string>
     <string name="weibo">微博</string>
     <string name="weixin">微信</string>
+    <string name="weixin_friend">微信好友</string>
+    <string name="weixin_friend_circle">微信朋友圈</string>
     <string name="qq">QQ</string>
+    <string name="qq_friend">QQ好友</string>
+    <string name="qq_space">QQ空间</string>
     <string name="login">登录</string>
     <string name="confirm">确定</string>
     <string name="loading">加载中...</string>
@@ -115,11 +119,13 @@
     <string name="error_upload">上传出错，请重试。</string>
     <string name="error_read_file">文件读取出错</string>
     <string name="no_favor">我一向很有品位的\n暂时还没有我喜欢的美食</string>
+    <string name="no_recommendation">我一直都很矜持\n暂时没有向小伙伴们推荐美食</string>
     <string name="no_message">暂时还没有消息</string>
     <string name="current_position">目前支持城市·上海</string>
     <string name="register">注册</string>
     <string name="cancel">取消</string>
     <string name="favor_count">共喜欢了%d份美食</string>
+    <string name="recommend_count_title">共推荐了%d份美食</string>
     <string name="recommendation_count"> %d份推荐</string>
     <string name="splite_dot">·</string>
     <string name="month_day">%1$d月%2$d日</string>
@@ -127,6 +133,7 @@
     <string name="notify_delete_comment">是否删除评论</string>
     <string name="delete">删除</string>
     <string name="fail_delete_comment">删除失败</string>
+    <string name="success_delete_comment">删除成功</string>
     <string name="base_info">基本信息</string>
     <string name="crazy_experience">疯狂吃货经历</string>
     <string name="flavor_hobby">口味嗜好</string>
@@ -216,8 +223,14 @@
     <string name="comment">评论</string>
     <string name="already_read">已阅</string>
     <string name="label_count">%d个标签</string>
-    <string name="image_count_upper_limit">最多5张图片</string>
+    <string name="image_count_upper_limit">最多%d张图片</string>
     <string name="notify_add_gourmet_success">添加美食成功</string>
+    <string name="notify_add_gourmet_failed">添加失败，请检查你的网络</string>
+    <string name="notify_edit_gourmet_success">编辑美食成功</string>
+    <string name="notify_edit_gourmet_failed">编辑失败，请检查你的网络</string>
     <string name="notify_gourmet_name_empty">美食名称不能为空</string>
     <string name="notify_gourmet_description_empty">美食介绍不能为空</string>
+    <string name="year_old">%d岁</string>
+    <string name="whose_recommend">%s的推荐</string>
+    <string name="whose_favor">%s所收藏的</string>
 </resources>

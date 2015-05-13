@@ -41,18 +41,16 @@ public class EditPositionActivity extends BaseActivity {
     private ArrayList<String> mAutoSearchList = new ArrayList<>();
     private Handler mHandler = new Handler();
     private String mRestaurantName = null;
-    int i = 1;
     private Runnable mRun = () -> {
         Router.getCommonModule().restaurantSearch(mRestaurantName, 20, restaurants -> {
-//            mAutoSearchList.clear();
+            mAutoSearchList.clear();
             if (restaurants == null || restaurants.getRestaurants() == null) {
-                mAutoSearchList.add("result" + i++);
-                mAdapter.notifyDataSetChanged();
-                return;
+                //do nothing
+            } else for (Restaurant restaurant : restaurants.getRestaurants()) {
+                mAutoSearchList.add(restaurant.getAddress());
             }
-            for (Restaurant restaurant : restaurants.getRestaurants()) {
-//                         mAutoSearchList.add(restaurant.get) ;
-            }
+            mAdapter.notifyDataSetChanged();
+            return;
         }, errorMsg -> {
 
         });
@@ -101,10 +99,10 @@ public class EditPositionActivity extends BaseActivity {
     }
 
     private AdapterView.OnItemClickListener onItemClickListener = (AdapterView<?> parent, View view, int position, long id) -> {
-        setResultOk();
+        setResultOk(mAutoSearchList.get(position));
     };
     private View.OnClickListener mCreateListener = (View view) -> {
-        setResultOk();
+        setResultOk(mRestaurantName);
     };
 
     @Override
@@ -113,9 +111,9 @@ public class EditPositionActivity extends BaseActivity {
         mHandler.removeCallbacks(mRun);
     }
 
-    private void setResultOk() {
+    private void setResultOk(String name) {
         Intent intent = new Intent();
-        intent.putExtra("position", mRestaurantName);
+        intent.putExtra("position", name);
         setResult(RESULT_OK, intent);
         finish();
     }

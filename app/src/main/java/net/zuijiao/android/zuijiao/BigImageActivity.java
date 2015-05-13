@@ -26,16 +26,19 @@ public class BigImageActivity extends BaseActivity {
     @ViewInject(R.id.big_image_container)
     private MyViewPager mViewPager = null;
     private ViewPagerAdapter mAdapter = null;
-    private ArrayList<PictureFragment> contentFragment = null;
+    private ArrayList<PictureFragment> mFragmentList = null;
     private ArrayList<SimpleImage> mImages = null;
-    private int mCurrentImageIndex = 0;
+    private ArrayList<String> mImageUrls = null;
+    private int mFirstShowIndex = 0;
     @ViewInject(R.id.big_image_toolbar)
     private Toolbar mToolbar = null;
     private boolean mCanDelete = false;
+    private int mTotalCount = 0;
+
     private ViewPager.OnPageChangeListener mPageListener = new ViewPager.OnPageChangeListener() {
         @Override
         public void onPageSelected(int arg0) {
-            getSupportActionBar().setTitle((arg0 + 1) + File.separator + mImages.size());
+            getSupportActionBar().setTitle((arg0 + 1) + File.separator + mTotalCount);
         }
 
         @Override
@@ -72,19 +75,31 @@ public class BigImageActivity extends BaseActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.menu_big_image) {
             doDeleteOneImage();
+        } else if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
     //delete current image
-    private void doDeleteOneImage() {
-        int currentIndex = mViewPager.getCurrentItem();
-        contentFragment.remove(currentIndex);
-        mImages.remove(currentIndex);
-        if (contentFragment.size() == 0) {
-            finish();
-        } else {
-            mAdapter.notifyDataSetChanged();
+    private synchronized void doDeleteOneImage() {
+        try {
+            int currentIndex = mViewPager.getCurrentItem();
+            mFragmentList.remove(currentIndex);
+            if (currentIndex < mImageUrls.size()) {
+                mImageUrls.remove(currentIndex);
+            } else {
+                mImages.remove(currentIndex - mImageUrls.size());
+            }
+            --mTotalCount;
+            if (mTotalCount == 0) {
+                onBackPressed();
+            } else {
+                mAdapter.notifyDataSetChanged();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -98,43 +113,56 @@ public class BigImageActivity extends BaseActivity {
         }
         if (mTendIntent != null) {
             mImages = mTendIntent.getParcelableArrayListExtra("edit_images");
-            mCurrentImageIndex = mTendIntent.getIntExtra("current_image_index", 0);
+            mImageUrls = mTendIntent.getStringArrayListExtra("cloud_images");
+            mFirstShowIndex = mTendIntent.getIntExtra("current_image_index", 0);
             mCanDelete = mTendIntent.getBooleanExtra("can_delete", false);
         }
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle((mCurrentImageIndex + 1) + File.separator + mImages.size());
-        contentFragment = new ArrayList();
-        for (int i = 0; i < mImages.size(); i++) {
-            contentFragment.add(new PictureFragment(mImages.get(i).data));
+        mFragmentList = new ArrayList();
+        if (mImageUrls != null) {
+            for (String url : mImageUrls) {
+                mFragmentList.add(new PictureFragment(url).setType(false));
+            }
+            mTotalCount += mImageUrls.size();
         }
+        if (mImages != null) {
+            for (SimpleImage image : mImages) {
+                mFragmentList.add(new PictureFragment(image.data).setType(true));
+            }
+            mTotalCount += mImages.size();
+        }
+        getSupportActionBar().setTitle((mFirstShowIndex + 1) + File.separator + mTotalCount);
         mAdapter = new ViewPagerAdapter(
                 getSupportFragmentManager());
         mViewPager.setAdapter(mAdapter);
         mViewPager.setOnPageChangeListener(mPageListener);
-        mViewPager.setCurrentItem(mCurrentImageIndex);
+        mViewPager.setCurrentItem(mFirstShowIndex);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        for (PictureFragment f : contentFragment) {
+        for (PictureFragment f : mFragmentList) {
             try {
                 f.getBitmap().recycle();
             } catch (Throwable t) {
                 t.printStackTrace();
             }
         }
-
     }
 
     @Override
     public void onBackPressed() {
-        Intent intent = new Intent();
-        intent.putExtra("edit_images", mImages);
-        setResult(RESULT_OK, intent);
-//        super.onBackPressed();
-        finish();
+        if (mCanDelete) {
+            Intent intent = new Intent();
+            intent.putExtra("edit_images", mImages);
+            intent.putStringArrayListExtra("cloud_images", mImageUrls);
+            setResult(RESULT_OK, intent);
+            finish();
+        } else {
+            super.onBackPressed();
+        }
     }
 
     private class ViewPagerAdapter extends FragmentStatePagerAdapter {
@@ -152,10 +180,10 @@ public class BigImageActivity extends BaseActivity {
 
         @Override
         public Fragment getItem(int position) {
-            if (position >= contentFragment.size()) {
+            if (position >= mFragmentList.size()) {
                 return null;
             }
-            return contentFragment.get(position);
+            return mFragmentList.get(position);
         }
 
         @Override
@@ -165,7 +193,7 @@ public class BigImageActivity extends BaseActivity {
 
         @Override
         public int getCount() {
-            return contentFragment.size();
+            return mFragmentList.size();
         }
 
         @Override
@@ -179,7 +207,7 @@ public class BigImageActivity extends BaseActivity {
         @Override
         public void notifyDataSetChanged() {
             super.notifyDataSetChanged();
-            getSupportActionBar().setTitle((mViewPager.getCurrentItem() + 1) + File.separator + mImages.size());
+            getSupportActionBar().setTitle((mViewPager.getCurrentItem() + 1) + File.separator + mTotalCount);
         }
     }
 }

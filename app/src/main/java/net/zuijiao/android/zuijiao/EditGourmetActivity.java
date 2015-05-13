@@ -6,8 +6,6 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.widget.Toolbar;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,15 +22,17 @@ import android.widget.Toast;
 
 import com.lidroid.xutils.view.annotation.ContentView;
 import com.lidroid.xutils.view.annotation.ViewInject;
+import com.squareup.picasso.Picasso;
 import com.zuijiao.android.util.functional.LambdaExpression;
+import com.zuijiao.android.zuijiao.model.Gourmet;
 import com.zuijiao.android.zuijiao.network.Router;
+import com.zuijiao.controller.MessageDef;
 import com.zuijiao.entity.SimpleImage;
 import com.zuijiao.utils.MyTextWatcher;
 import com.zuijiao.utils.UpyunUploadTask;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by xiaqibo on 2015/4/29.
@@ -82,78 +82,19 @@ public class EditGourmetActivity extends BaseActivity implements View.OnClickLis
     private LinearLayout mLabelLayout = null;
     @ViewInject(R.id.edit_gourmet_location)
     private LinearLayout mLocationLayout = null;
-    private BaseAdapter mSelectedImageListAdapter = new BaseAdapter() {
-        @Override
-        public int getCount() {
-            return mImages.size() >= 5 ? 5 : mImages.size() + 1;
-//            return mSelectedImageList.size() + 1;
-        }
 
-        @Override
-        public Object getItem(int position) {
-            return position;
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return position;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            LinearLayout layout = new LinearLayout(mContext);
-            AbsListView.LayoutParams alp = new AbsListView.LayoutParams(AbsListView.LayoutParams.WRAP_CONTENT, AbsListView.LayoutParams.WRAP_CONTENT);
-            layout.setLayoutParams(alp);
-            ImageView contentView = new ImageView(mContext);
-            ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams((int) getResources().getDimension(R.dimen.edit_gourmet_image_size), (int) getResources().getDimension(R.dimen.edit_gourmet_image_size));
-//            contentView.setImageResource(R.drawable.shanghai);
-            contentView.setLayoutParams(lp);
-            layout.addView(contentView);
-            contentView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            if (position == mImages.size()) {
-                contentView.setImageResource(R.drawable.edit_gourmet_picture);
-            } else {
-                Bitmap bitmap = MediaStore.Images.Thumbnails.getThumbnail(
-                        mContext.getContentResolver(),
-                        Integer.parseInt(mImages.get(position).id),
-                        MediaStore.Images.Thumbnails.MICRO_KIND, null);
-                contentView.setImageBitmap(bitmap);
-            }
-            layout.setFocusable(false);
-            return layout;
-        }
-    };
+    private Gourmet mGourmet = null;
+    private Gourmet mEditGourmet = null;
     private String mEditName = null;
     private ArrayList<String> mEditLabels = new ArrayList<>();
     private String mEditDescription = null;
     //gourmet address ;
-    private String mEditAddress = null;
+    private String mEditLocation = null;
     private String mEditPrice = null;
-    private List<String> mImageUrls = null;
+    private ArrayList<String> mImageUrls = new ArrayList<>();
     private ArrayList<SimpleImage> mImages = new ArrayList<>();
-    //    private ArrayList<String> mImagePath = new ArrayList<>();
-//    private ArrayList<String> mSelectedImageId = new ArrayList<>();
-    private AdapterView.OnItemClickListener mGridListener = new AdapterView.OnItemClickListener() {
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            Intent intent = new Intent();
-            if (mImages.size() < 5 && position == mSelectedImageListAdapter.getCount() - 1) {
-                intent.setClass(mContext, MultiImageChooseActivity.class);
-                intent.putParcelableArrayListExtra("edit_images", mImages);
-//                intent.putStringArrayListExtra("selected_image_path", mImagePath);
-//                intent.putStringArrayListExtra("selected_image_id", mSelectedImageId);
-                startActivityForResult(intent, EDIT_IMAGE_REQ);
-            } else {
-                intent.setClass(mContext, BigImageActivity.class);
-                intent.putParcelableArrayListExtra("edit_images", mImages);
-                intent.putExtra("current_image_index", position);
-                intent.putExtra("can_delete", true);
-                startActivityForResult(intent, PREVIEW_IMAGE_REQ);
-            }
-        }
-    };
     //where i edit ;
-    private String mEditPosition = null;
+    private String mEditAddress = null;
     private int mProvinceId = 9;
     private int mCityId = 45055;
 
@@ -183,29 +124,60 @@ public class EditGourmetActivity extends BaseActivity implements View.OnClickLis
             }
             mEditPrice = mEtPrice.getText().toString().trim();
             if (mImages != null && mImages.size() != 0) {
-                mImageUrls = UpyunUploadTask.gourmetImagePaths(
-                        Router.getInstance().getCurrentUser().get().getIdentifier(), mEditName, mImages.size(), ".jpg");
+                mImageUrls.addAll(UpyunUploadTask.gourmetImagePaths(
+                        Router.getInstance().getCurrentUser().get().getIdentifier(), mEditName, mImages.size(), "jpg"));
                 uploadImageContinuously(mImages.get(0), () -> {
-                    addGourmet();
+                    if (mType == TYPE_CREATE_PERSONAL_GOURMET || mType == TYPE_CREATE_STORE_GOURMET) {
+                        addGourmet();
+                    } else {
+                        editGourmet();
+                    }
                 });
             } else {
-                addGourmet();
+                if (mType == TYPE_CREATE_PERSONAL_GOURMET || mType == TYPE_CREATE_STORE_GOURMET) {
+                    addGourmet();
+                } else {
+                    editGourmet();
+                }
             }
         }
         return super.onOptionsItemSelected(item);
     }
 
+    private void editGourmet() {
+        createDialog();
+        Router.getGourmetModule().updateGourmet(mGourmet.getIdentifier(),
+                mEditAddress, mEditPrice, mEditDescription,
+                mImageUrls, mEditLabels,
+                mType == TYPE_EDIT_PERSONAL_GOURMET, () -> {
+                    Toast.makeText(mContext, getString(R.string.notify_edit_gourmet_success), Toast.LENGTH_SHORT).show();
+                    System.out.println("EditGourmet" + " edit_success");
+                    Intent intent = new Intent();
+                    intent.setAction(MessageDef.ACTION_REFRESH_RECOMMENDATION);
+                    sendBroadcast(intent);
+                    finallizeDialog();
+                    finish();
+                }, () -> {
+                    Toast.makeText(mContext, getString(R.string.notify_edit_gourmet_failed), Toast.LENGTH_SHORT).show();
+                    System.out.println("EditGourmet" + " edit_failed");
+                    finallizeDialog();
+                });
+    }
+
     private void addGourmet() {
         createDialog();
-        Router.getGourmetModule().addGourmet(mEditName, mEditAddress,
+        Router.getGourmetModule().addGourmet(mEditName, mEditLocation,
                 mEditPrice, mEditDescription, mImageUrls,
                 mEditLabels, mProvinceId, mCityId,
                 mType == TYPE_CREATE_PERSONAL_GOURMET, () -> {
                     Toast.makeText(mContext, getString(R.string.notify_add_gourmet_success), Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent();
+                    intent.setAction(MessageDef.ACTION_REFRESH_RECOMMENDATION);
+                    sendBroadcast(intent);
                     finallizeDialog();
                     finish();
                 }, () -> {
-                    Toast.makeText(mContext, getString(R.string.notify_net2), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext, getString(R.string.notify_add_gourmet_failed), Toast.LENGTH_SHORT).show();
                     finallizeDialog();
                 });
     }
@@ -253,6 +225,7 @@ public class EditGourmetActivity extends BaseActivity implements View.OnClickLis
         }
         switch (mType) {
             case TYPE_EDIT_PERSONAL_GOURMET:
+                mGourmet = (Gourmet) mTendIntent.getSerializableExtra("gourmet");
                 getSupportActionBar().setTitle(getString(R.string.edit_personal_gourmet));
                 mPriceLayout.setVisibility(View.GONE);
                 mPositionLayout.setVisibility(View.GONE);
@@ -267,33 +240,36 @@ public class EditGourmetActivity extends BaseActivity implements View.OnClickLis
                 break;
             case TYPE_EDIT_STORE_GOURMET:
                 getSupportActionBar().setTitle(getString(R.string.edit_store_gourmet));
+                mGourmet = (Gourmet) mTendIntent.getSerializableExtra("gourmet");
                 break;
         }
         mTvGourmetNameListener.setText(String.format(getString(R.string.nick_name_watcher), 0, 15));
         mTvDescriptionListener.setText(String.format(getString(R.string.nick_name_watcher), 0, 100));
         mEtGourmetName.addTextChangedListener(new MyTextWatcher(mTvGourmetNameListener, 15, mContext));
         mEtGourmetDescription.addTextChangedListener(new MyTextWatcher(mTvDescriptionListener, 100, mContext));
+        if (mGourmet != null) {
+            try {
+                mEditGourmet = (Gourmet) mGourmet.clone();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            mEtGourmetName.setText(mGourmet.getName());
+            mEtGourmetDescription.setText(mGourmet.getDescription());
+            mImageUrls.addAll(mGourmet.getImageURLs());
+            mEditLabels.addAll(mGourmet.getTags());
+            mEditAddress = mGourmet.getAddress();
+            mPositionTitle.setText(mEditAddress);
+            if (!mGourmet.getPrice().equals("")) {
+                mEtPrice.setText(mGourmet.getPrice());
+            }
+        }
+        mLabelCount.setText(String.format(getString(R.string.label_count), mEditLabels.size()));
+        mLabelCount.setVisibility(mEditLabels.size() == 0 ? View.GONE : View.VISIBLE);
         mGdView.setAdapter(mSelectedImageListAdapter);
         mGdView.setOnItemClickListener(mGridListener);
         mLabelLayout.setOnClickListener(this);
         mLocationLayout.setOnClickListener(this);
         mPositionLayout.setOnClickListener(this);
-        mEtPrice.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                mEditPrice = s.toString();
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
     }
 
     public void onClick(View view) {
@@ -337,11 +313,11 @@ public class EditGourmetActivity extends BaseActivity implements View.OnClickLis
                 mCityId = bundle.getInt("city_id", 45055);
                 mProvinceId = bundle.getInt("province_id", 9);
                 if (mCityId == mProvinceId) {
-                    mEditPosition = bundle.getString("province");
+                    mEditLocation = bundle.getString("province");
                 } else {
-                    mEditPosition = bundle.getString("province") + bundle.getString("city");
+                    mEditLocation = bundle.getString("province") + bundle.getString("city");
                 }
-                mLocationTitle.setText(mEditPosition);
+                mLocationTitle.setText(mEditLocation);
                 break;
             case EDIT_IMAGE_REQ:
                 mImages = data.getParcelableArrayListExtra("edit_images");
@@ -351,9 +327,76 @@ public class EditGourmetActivity extends BaseActivity implements View.OnClickLis
                 break;
             case PREVIEW_IMAGE_REQ:
                 mImages = data.getParcelableArrayListExtra("edit_images");
+                mImageUrls = data.getStringArrayListExtra("cloud_images");
                 mSelectedImageListAdapter.notifyDataSetChanged();
                 break;
         }
-
     }
+
+    private BaseAdapter mSelectedImageListAdapter = new BaseAdapter() {
+        @Override
+        public int getCount() {
+            return (mImages.size() + mImageUrls.size()) >= 5 ? 5 : (mImages.size() + mImageUrls.size()) + 1;
+//            return mSelectedImageList.size() + 1;
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return position;
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            LinearLayout layout = new LinearLayout(mContext);
+            AbsListView.LayoutParams alp = new AbsListView.LayoutParams(AbsListView.LayoutParams.WRAP_CONTENT, AbsListView.LayoutParams.WRAP_CONTENT);
+            layout.setLayoutParams(alp);
+            ImageView contentView = new ImageView(mContext);
+            ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams((int) getResources().getDimension(R.dimen.edit_gourmet_image_size), (int) getResources().getDimension(R.dimen.edit_gourmet_image_size));
+//            contentView.setImageResource(R.drawable.shanghai);
+            contentView.setLayoutParams(lp);
+            layout.addView(contentView);
+            contentView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            if (position == mImages.size() + mImageUrls.size()) {
+                contentView.setImageResource(R.drawable.edit_gourmet_picture);
+            } else if (position < mImageUrls.size()) {
+                Picasso.with(mContext)
+                        .load(mImageUrls.get(position) + "!Thumbnails")
+                        .placeholder(R.drawable.empty_view_greeting)
+                        .into(contentView);
+            } else {
+                Bitmap bitmap = MediaStore.Images.Thumbnails.getThumbnail(
+                        mContext.getContentResolver(),
+                        Integer.parseInt(mImages.get(position - mImageUrls.size()).id),
+                        MediaStore.Images.Thumbnails.MICRO_KIND, null);
+                contentView.setImageBitmap(bitmap);
+            }
+            layout.setFocusable(false);
+            return layout;
+        }
+    };
+
+    private AdapterView.OnItemClickListener mGridListener = new AdapterView.OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            Intent intent = new Intent();
+            if ((mImages.size() + mImageUrls.size()) < 5 && position == mSelectedImageListAdapter.getCount() - 1) {
+                intent.setClass(mContext, MultiImageChooseActivity.class);
+                intent.putParcelableArrayListExtra("edit_images", mImages);
+                intent.putExtra("cloud_image_size", mImageUrls.size());
+                startActivityForResult(intent, EDIT_IMAGE_REQ);
+            } else {
+                intent.setClass(mContext, BigImageActivity.class);
+                intent.putStringArrayListExtra("cloud_images", mImageUrls);
+                intent.putParcelableArrayListExtra("edit_images", mImages);
+                intent.putExtra("current_image_index", position);
+                intent.putExtra("can_delete", true);
+                startActivityForResult(intent, PREVIEW_IMAGE_REQ);
+            }
+        }
+    };
 }

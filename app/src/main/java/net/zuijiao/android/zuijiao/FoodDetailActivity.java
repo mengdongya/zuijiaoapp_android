@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
@@ -17,6 +18,7 @@ import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -34,6 +36,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -48,7 +51,7 @@ import com.zuijiao.android.zuijiao.model.Gourmet;
 import com.zuijiao.android.zuijiao.model.user.WouldLikeToEatUser;
 import com.zuijiao.android.zuijiao.network.Router;
 import com.zuijiao.controller.FileManager;
-import com.zuijiao.entity.SimpleImage;
+import com.zuijiao.controller.MessageDef;
 import com.zuijiao.utils.StrUtil;
 import com.zuijiao.view.MeasuredTextView;
 import com.zuijiao.view.MyScrollView;
@@ -62,6 +65,13 @@ import java.util.List;
 @ContentView(R.layout.activity_food_detail)
 public class FoodDetailActivity extends BaseActivity implements
         OnScrollListener {
+
+    public static final int EDIT_GOURMET_REQ = 4001;
+    private static final int SHARE_TO_WEIBO = 0;
+    private static final int SHARE_TO_WECHAT = 1;
+    private static final int SHARE_TO_FRIEND_CIRCLE = 2;
+    private static final int SHARE_TO_QQ = 3;
+    private static final int SHARE_TO_QQ_SPACE = 4;
     @ViewInject(R.id.food_detail_toolbar)
     private Toolbar mToolbar;
     @ViewInject(R.id.food_detail_container)
@@ -95,18 +105,17 @@ public class FoodDetailActivity extends BaseActivity implements
     private TextView mGourmetMsgTitle = null;
     @ViewInject(R.id.food_detail_food_msg_splite)
     private View mGourmetMsgSpliteView = null;
+    ;
     @ViewInject(R.id.food_detail_food_msg_price)
     private TextView mFoodPrice = null;
     @ViewInject(R.id.food_detail_food_msg_location)
     private TextView mFoodLocation = null;
     @ViewInject(R.id.none_person_like)
     private TextView mNonePerson = null;
-
     @ViewInject(R.id.content_item_comment)
     private TextView mFoodDescription = null;
     @ViewInject(R.id.food_detail_food_like_title)
     private TextView mWouldLikeTitle = null;
-    ;
     @ViewInject(R.id.food_detail_food_comment_title)
     private TextView mCommentTitle = null;
     @ViewInject(R.id.none_comment_text)
@@ -119,12 +128,10 @@ public class FoodDetailActivity extends BaseActivity implements
     private LinearLayout mContentLayout = null;
     private boolean openEdit = false;
     private Gourmet gourmet = null;
-
     //private WouldLikeToEatUsers mUsers = null;
     private Comments mComments = null;
     //if comment false ,reply true ;
     private Integer mReplyId = null;
-
     private OnClickListener mCommentCommitListener = new OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -222,6 +229,13 @@ public class FoodDetailActivity extends BaseActivity implements
                 }
             }
         }
+    };
+
+    private OnClickListener userHeadListener = (View v) -> {
+        Intent intent = new Intent();
+        intent.setClass(mContext, UserInfoActivity.class);
+        intent.putExtra("tiny_user", gourmet.getUser());
+        startActivity(intent);
     };
     private OnClickListener favorListener = new OnClickListener() {
         @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
@@ -426,6 +440,38 @@ public class FoodDetailActivity extends BaseActivity implements
 
         }
     };
+    //    public List<ResolveInfo> getShareApps(Context context) {
+//        List<ResolveInfo> mApps = new ArrayList<ResolveInfo>();
+//        Intent intent = new Intent(Intent.ACTION_SEND, null);
+//        intent.addCategory(Intent.CATEGORY_DEFAULT);
+//        intent.setType("text/plain");
+////      intent.setType("*/*");
+//        PackageManager pManager = context.getPackageManager();
+//        mApps = pManager.queryIntentActivities(intent,
+//                PackageManager.COMPONENT_ENABLED_STATE_DEFAULT);
+//        return mApps;
+//    }
+//    private List<AppInfo> getShareAppList() {
+//        List<AppInfo> shareAppInfos = new ArrayList<AppInfo>();
+//        PackageManager packageManager = getPackageManager();
+//        List<ResolveInfo> resolveInfos = getShareApps(mContext);
+//        if (null == resolveInfos) {
+//            return null;
+//        } else {
+//            for (ResolveInfo resolveInfo : resolveInfos) {
+//                AppInfo appInfo = new AppInfo();
+//                appInfo.setAppPkgName(resolveInfo.activityInfo.packageName);
+////              showLog_I(TAG, "pkg>" + resolveInfo.activityInfo.packageName + ";name>" + resolveInfo.activityInfo.name);
+//                appInfo.setAppLauncherClassName(resolveInfo.activityInfo.name);
+//                appInfo.setAppName(resolveInfo.loadLabel(packageManager).toString());
+//                appInfo.setAppIcon(resolveInfo.loadIcon(packageManager));
+//                shareAppInfos.add(appInfo);
+//            }
+//        }
+//        return shareAppInfos;
+//    }
+    private int mShareImageRes[] = {R.drawable.share_weibo, R.drawable.share_weixin, R.drawable.share_friend_circle, R.drawable.share_qq, R.drawable.share_qq_space};
+    private int mShareTextRes[] = {R.string.weibo, R.string.weixin_friend, R.string.weixin_friend_circle, R.string.qq_friend, R.string.qq_space};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -436,7 +482,7 @@ public class FoodDetailActivity extends BaseActivity implements
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if (Router.getInstance().getCurrentUser().isPresent() && Router.getInstance().getCurrentUser().get().getIdentifier() == gourmet.getUser().getIdentifier()) {
+        if (Router.getInstance().getCurrentUser().isPresent() && Router.getInstance().getCurrentUser().get().getIdentifier().equals(gourmet.getUser().getIdentifier())) {
             getMenuInflater().inflate(R.menu.gourmet_detail, menu);
         } else {
             getMenuInflater().inflate(R.menu.gourmet_detail_simple, menu);
@@ -448,15 +494,123 @@ public class FoodDetailActivity extends BaseActivity implements
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.gourmet_detail_share:
+                createShareWindow();
                 break;
-            case R.id.gourmet_detail_refresh:
-                break;
+//            case R.id.gourmet_detail_refresh:
+//                refreshGourmet() ;
+//                break;
             case R.id.gourmet_detail_edit:
+                editGourmet();
                 break;
             case R.id.gourmet_detail_delete:
+                deleteGourmet();
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void createShareWindow() {
+        PopupWindow sharePopupWindow = null;
+        View view = null;
+        GridView shareList = null;
+        if (null == sharePopupWindow) {
+            view = LayoutInflater.from(mContext).inflate(R.layout.share_dialog, null);
+            shareList = (GridView) view.findViewById(R.id.gv_share_dialog);
+            shareList.setAdapter(new BaseAdapter() {
+                @Override
+                public int getCount() {
+                    return 5;
+                }
+
+                @Override
+                public Object getItem(int position) {
+                    return position;
+                }
+
+                @Override
+                public long getItemId(int position) {
+                    return position;
+                }
+
+                @Override
+                public View getView(int position, View convertView, ViewGroup parent) {
+                    View contentView = LayoutInflater.from(mContext).inflate(R.layout.share_item, null);
+                    TextView text = (TextView) contentView.findViewById(R.id.share_item_text);
+                    ImageView image = (ImageView) contentView.findViewById(R.id.share_item_image);
+                    text.setText(getString(mShareTextRes[position]));
+                    image.setImageResource(mShareImageRes[position]);
+                    return contentView;
+                }
+            });
+            shareList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view,
+                                        int position, long id) {
+                    distributeShareAction(position);
+                }
+            });
+            sharePopupWindow = new PopupWindow(view,
+                    LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT, true);
+        }
+        //使其聚焦
+        sharePopupWindow.setFocusable(false);
+        //设置允许在外点击消失
+        sharePopupWindow.setOutsideTouchable(true);
+        // 这个是为了点击“返回Back”也能使其消失，并且并不会影响你的背景
+        sharePopupWindow.setBackgroundDrawable(new BitmapDrawable());
+        //xoff,yoff基于anchor的左下角进行偏移。正数表示下方右边，负数表示（上方左边）
+        //showAsDropDown(parent, xPos, yPos);
+//        sharePopupWindow.showAsDropDown(parent, -5, 5);
+        sharePopupWindow.showAtLocation(rootView, Gravity.BOTTOM, 0, 0);
+    }
+
+    private void distributeShareAction(int action) {
+        switch (action) {
+            case SHARE_TO_WEIBO:
+                break;
+            case SHARE_TO_WECHAT:
+                break;
+            case SHARE_TO_FRIEND_CIRCLE:
+                break;
+            case SHARE_TO_QQ:
+                break;
+            case SHARE_TO_QQ_SPACE:
+                break;
+        }
+    }
+
+    private void refreshGourmet() {
+        createDialog();
+        Router.getGourmetModule().fetchGourmetInformation(gourmet.getIdentifier(), gourmet -> {
+            finallizeDialog();
+            FoodDetailActivity.this.gourmet = gourmet;
+            initViewByGourmet();
+        }, errorMsg -> {
+            Toast.makeText(mContext, getString(R.string.notify_net2), Toast.LENGTH_SHORT).show();
+        });
+    }
+
+    private void deleteGourmet() {
+        //TODO
+        Router.getGourmetModule().removeMyRecommendation(gourmet.getIdentifier(), () -> {
+            Toast.makeText(mContext, getString(R.string.success_delete_comment), Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent();
+            intent.setAction(MessageDef.ACTION_REFRESH_RECOMMENDATION);
+            sendBroadcast(intent);
+            finish();
+        }, () -> {
+            Toast.makeText(mContext, getString(R.string.fail_delete_comment) + "   " + getString(R.string.notify_net2), Toast.LENGTH_SHORT).show();
+        });
+    }
+
+    private void editGourmet() {
+        Intent intent = new Intent();
+        intent.setClass(mContext, EditGourmetActivity.class);
+        intent.putExtra("gourmet", gourmet);
+        int editType = gourmet.getIsPrivate() ? EditGourmetActivity.TYPE_EDIT_PERSONAL_GOURMET : EditGourmetActivity.TYPE_EDIT_STORE_GOURMET;
+        intent.putExtra("edit_gourmet_type", editType);
+        startActivityForResult(intent, EDIT_GOURMET_REQ);
     }
 
     @Override
@@ -464,31 +618,20 @@ public class FoodDetailActivity extends BaseActivity implements
 
     }
 
-    @SuppressLint("NewApi")
     @Override
-    protected void registerViews() {
-        try {
-//            int index = mTendIntent.getIntExtra("click_item_index", -1);
-//            boolean fromFavor = mTendIntent.getBooleanExtra("b_favor", false);
-//            if (index == -1 && fromFavor == false) {
-//                gourmet = FileManager.tmpMessageGourmet;
-//            } else {
-//                gourmet = mFileMng.getItem(fromFavor, index);
-//            }
-            gourmet = (Gourmet) mTendIntent.getSerializableExtra("selected_gourmet");
-        } catch (Exception e) {
-            e.printStackTrace();
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == EDIT_GOURMET_REQ && resultCode == RESULT_OK) {
+
         }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    private void initViewByGourmet() {
         if (gourmet == null) {
             this.finish();
             return;
         }
-//        mTestLayout.requestFocus() ;
-//        mTestLayout.requestFocusFromTouch() ;
-        mResource = getResources();
-        setSupportActionBar(mToolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        mInflater = LayoutInflater.from(this);
+        mLabelContainer.removeAllViews();
         for (int i = 0; i < gourmet.getTags().size(); i++) {
             TextView textview = new TextView(this);
             textview.setBackgroundResource(R.drawable.bg_label);
@@ -497,16 +640,6 @@ public class FoodDetailActivity extends BaseActivity implements
             textview.setText(gourmet.getTags().get(i));
             mLabelContainer.addView(textview);
         }
-        mScrollView.setOnScrollListener(this);
-        rootView.getViewTreeObserver().addOnGlobalLayoutListener(
-                () -> {
-                    if (openEdit) {
-                        mScrollView.moveToTop();
-                        openEdit = false;
-                    }
-                    onScroll(mScrollView.getScrollY());
-                    onTopChange(mScrollView.getTop());
-                });
         ArrayList<View> data = new ArrayList<View>();
         final ArrayList<String> imageUrls = (ArrayList) gourmet.getImageURLs();
         //5:image number
@@ -522,11 +655,7 @@ public class FoodDetailActivity extends BaseActivity implements
                 Intent intent = new Intent(FoodDetailActivity.this, BigImageActivity.class);
                 int currentImageIndex = mImagePager.getCurrentItem();
                 intent.putExtra("current_image_index", currentImageIndex);
-                ArrayList<SimpleImage> tmpList = new ArrayList<>();
-                for (String str : imageUrls) {
-                    tmpList.add(new SimpleImage("", "", str));
-                }
-                intent.putParcelableArrayListExtra("edit_images", tmpList);
+                intent.putStringArrayListExtra("cloud_images", imageUrls);
                 startActivity(intent);
             });
             Picasso.with(getApplicationContext())
@@ -538,18 +667,8 @@ public class FoodDetailActivity extends BaseActivity implements
         }
         initDots(imageUrls.size());
         mImagePager.setAdapter(new ViewPagerAdapter(data));
-        mImagePager.setOnPageChangeListener(mPageListener);
-
+//        mImagePager.setOnPageChangeListener(mPageListener);
         registerTopView();
-        mEtComment.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.i("my_scrollview", "start");
-                openEdit = true;
-                mReplyId = null;
-                mEtComment.setHint(getString(R.string.comment_hint));
-            }
-        });
         if (gourmet.getPrice() == null || gourmet.getPrice().equals("")) {
             mFoodPrice.setVisibility(View.GONE);
         } else {
@@ -565,11 +684,104 @@ public class FoodDetailActivity extends BaseActivity implements
             mGourmetMsgSpliteView.setVisibility(View.GONE);
         }
         mFoodDescription.setText(gourmet.getDescription());
+        fetchWouldLikeList();
+        fetchCommentList();
+    }
+
+    @SuppressLint("NewApi")
+    @Override
+    protected void registerViews() {
+        try {
+            gourmet = (Gourmet) mTendIntent.getSerializableExtra("selected_gourmet");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if (gourmet == null) {
+            this.finish();
+            return;
+        }
+        mResource = getResources();
+        setSupportActionBar(mToolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        mInflater = LayoutInflater.from(this);
+//        for (int i = 0; i < gourmet.getTags().size(); i++) {
+//            TextView textview = new TextView(this);
+//            textview.setBackgroundResource(R.drawable.bg_label);
+//            textview.setTextColor(mResource.getColor(R.color.white));
+//            textview.setTextSize(14);
+//            textview.setText(gourmet.getTags().get(i));
+//            mLabelContainer.addView(textview);
+//        }
+        mScrollView.setOnScrollListener(this);
+        rootView.getViewTreeObserver().addOnGlobalLayoutListener(
+                () -> {
+                    if (openEdit) {
+                        mScrollView.moveToTop();
+                        openEdit = false;
+                    }
+                    onScroll(mScrollView.getScrollY());
+                    onTopChange(mScrollView.getTop());
+                });
+//        ArrayList<View> data = new ArrayList<View>();
+//        final ArrayList<String> imageUrls = (ArrayList) gourmet.getImageURLs();
+//        //5:image number
+//        for (int i = 0; i < imageUrls.size(); i++) {
+//            ImageView image = new ImageView(this);
+//            image.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
+//                    LayoutParams.MATCH_PARENT));
+//            image.setScaleType(ImageView.ScaleType.CENTER_CROP);
+//            image.setOnClickListener((View view) -> {
+//                if (gourmet.getImageURLs().isEmpty()) {
+//                    return;
+//                }
+//                Intent intent = new Intent(FoodDetailActivity.this, BigImageActivity.class);
+//                int currentImageIndex = mImagePager.getCurrentItem();
+//                intent.putExtra("current_image_index", currentImageIndex);
+//                intent.putStringArrayListExtra("cloud_images" , imageUrls);
+//                startActivity(intent);
+//            });
+//            Picasso.with(getApplicationContext())
+//                    .load(imageUrls.get(i))
+//                    .placeholder(R.drawable.empty_view_greeting)
+//                    .error(R.drawable.empty_view_greeting)
+//                    .into(image);
+//            data.add(image);
+//        }
+//        initDots(imageUrls.size());
+//        mImagePager.setAdapter(new ViewPagerAdapter(data));
+        mImagePager.setOnPageChangeListener(mPageListener);
+
+//        registerTopView();
+        mEtComment.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.i("my_scrollview", "start");
+                openEdit = true;
+                mReplyId = null;
+                mEtComment.setHint(getString(R.string.comment_hint));
+            }
+        });
+//        if (gourmet.getPrice() == null || gourmet.getPrice().equals("")) {
+//            mFoodPrice.setVisibility(View.GONE);
+//        } else {
+//            mFoodPrice.setText(String.format(mResource.getString(R.string.format_price), gourmet.getPrice()));
+//        }
+//        if (gourmet.getAddress() == null || gourmet.getAddress().equals("")) {
+//            mFoodLocation.setVisibility(View.GONE);
+//        } else {
+//            mFoodLocation.setText(String.format(mResource.getString(R.string.format_location), gourmet.getAddress()));
+//        }
+//        if (mFoodLocation.getVisibility() == View.GONE && mFoodPrice.getVisibility() == View.GONE) {
+//            mGourmetMsgTitle.setVisibility(View.GONE);
+//            mGourmetMsgSpliteView.setVisibility(View.GONE);
+//        }
+//        mFoodDescription.setText(gourmet.getDescription());
         mGdView.setOnItemClickListener(mGvListener);
         mCommentList.setOnItemClickListener(mCommentListListener);
         mCommentCommit.setOnClickListener(mCommentCommitListener);
-        fetchWouldLikeList();
-        fetchCommentList();
+//        fetchWouldLikeList();
+//        fetchCommentList();
+        initViewByGourmet();
     }
 
     private void fetchWouldLikeList() {
@@ -642,6 +854,8 @@ public class FoodDetailActivity extends BaseActivity implements
         topHolder.mUserName1 = (TextView) mLayoutTop.findViewById(R.id.food_detail_user_name);
         floatHolder.mFavorBtn2.setOnClickListener(favorListener);
         topHolder.mFavorBtn2.setOnClickListener(favorListener);
+        topHolder.mUserHead1.setOnClickListener(userHeadListener);
+        floatHolder.mUserHead1.setOnClickListener(userHeadListener);
 //        floatHolder.mCreateTime1.setText(gourmet.getDate().toLocaleString());
 //        topHolder.mCreateTime1.setText(gourmet.getDate().toLocaleString());
         if (gourmet.getWasMarked()) {

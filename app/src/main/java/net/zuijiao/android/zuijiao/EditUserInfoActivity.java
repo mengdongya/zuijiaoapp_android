@@ -79,7 +79,7 @@ public class EditUserInfoActivity extends BaseActivity {
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            return LayoutInflater.from(mContext).inflate(R.layout.user_info_favor_item, null);
+            return LayoutInflater.from(mContext).inflate(R.layout.share_item, null);
         }
     };
     private OnItemClickListener mUserInfoItemListener = new OnItemClickListener() {
@@ -179,10 +179,13 @@ public class EditUserInfoActivity extends BaseActivity {
         }
     };
 
-    private View.OnClickListener mHeadListener = (View v) -> {
-        Intent intent = new Intent();
-        intent.setClass(mContext, ImageChooseActivity.class);
-        startActivityForResult(intent, CHOOSE_HEAD_IMAGE_REQ);
+    private View.OnClickListener mHeadListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Intent intent = new Intent();
+            intent.setClass(mContext, ImageChooseActivity.class);
+            startActivityForResult(intent, CHOOSE_HEAD_IMAGE_REQ);
+        }
     };
 
 

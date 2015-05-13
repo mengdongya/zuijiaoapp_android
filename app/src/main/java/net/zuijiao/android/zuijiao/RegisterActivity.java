@@ -76,6 +76,7 @@ public class RegisterActivity extends BaseActivity {
                         authorInfo.setPassword(mPwd);
                         authorInfo.setPlatform("");
                         authorInfo.setEmail(mEmail);
+                        authorInfo.setUserId(user.getIdentifier());
                         PreferenceManager.getInstance(getApplicationContext()).saveThirdPartyLoginMsg(authorInfo);
                         Intent intent = new Intent();
                         intent.setAction(MessageDef.ACTION_GET_THIRD_PARTY_USER);

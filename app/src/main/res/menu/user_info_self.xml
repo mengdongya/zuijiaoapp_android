@@ -6,8 +6,7 @@
     <item
         android:id="@+id/menu_edit_self_info"
         android:orderInCategory="80"
-        android:title="@string/follow"
-        android:icon="@drawable/ic_launcher"
+        android:title="@string/edit_info"
         android:textSize="20sp"
         app:showAsAction="always"
         android:menuCategory="system" />

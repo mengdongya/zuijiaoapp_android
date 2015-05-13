@@ -30,8 +30,6 @@ import java.util.Collections;
 @ContentView(R.layout.activity_location)
 public class LocationActivity extends BaseActivity {
     private static final int SELECT_CITY_REQ = 3001;
-
-
     @ViewInject(R.id.location_tv)
     public static TextView mCurrentLocationTv = null;
     @ViewInject(R.id.location_image_switcher)
@@ -195,8 +193,6 @@ public class LocationActivity extends BaseActivity {
             }
         });
     }
-
-
 
 
     private boolean isDirectCity(String str) {

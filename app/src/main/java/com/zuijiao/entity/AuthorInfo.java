@@ -9,6 +9,15 @@ public class AuthorInfo {
     private String mEmail = null;
     private String mPassword = null;
 
+    public int getUserId() {
+        return mUserId;
+    }
+
+    public void setUserId(int mUserId) {
+        this.mUserId = mUserId;
+    }
+
+    private int mUserId = -1;
 
     public String getEmail() {
         return mEmail;

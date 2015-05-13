@@ -156,4 +156,6 @@ public class Router {
         return RouterMessage.INSTANCE;
     }
 
+    public static RouterSocial getSocialModule() { return RouterSocial.INSTANCE; }
+
 }

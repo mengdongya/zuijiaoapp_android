@@ -171,6 +171,7 @@ public final class UserInfoActivity extends BaseActivity implements View.OnClick
                 startActivity(intent);
                 break;
             case R.id.menu_follow_someone:
+//                Router.getAccountModule().
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -178,7 +179,7 @@ public final class UserInfoActivity extends BaseActivity implements View.OnClick
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if (mTinyUser.getIdentifier().equals(Router.getInstance().getCurrentUser().get().getIdentifier()) || mTinyUser.getIdentifier() == -1) {
+        if (mTinyUser.getIdentifier().equals(mPreferMng.getStoredUserId()) || mTinyUser.getIdentifier() == -1) {
             getMenuInflater().inflate(R.menu.user_info_self, menu);
         } else {
             getMenuInflater().inflate(R.menu.user_info, menu);

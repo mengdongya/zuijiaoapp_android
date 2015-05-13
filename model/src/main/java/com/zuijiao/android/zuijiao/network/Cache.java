@@ -10,8 +10,8 @@ import java.util.List;
 public enum Cache {
     INSTANCE;
 
-    private List<TasteTag> tasteTags;
-    private List<String> gourmetTags;
+    public List<TasteTag> tasteTags;
+    public List<String> gourmetTags;
 
     public void setup() {
         Router.getCommonModule().gourmetTags((List<String> gourmetTags) -> this.gourmetTags = gourmetTags

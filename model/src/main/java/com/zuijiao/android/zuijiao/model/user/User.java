@@ -18,7 +18,7 @@ public class User implements Serializable {
     @SerializedName("imageUrl")
     private String avatarURL;
 
-    @SerializedName("profile")
+    @SerializedName("profiles")
     private Profile profile;
     @SerializedName("foods")
     private Food food;

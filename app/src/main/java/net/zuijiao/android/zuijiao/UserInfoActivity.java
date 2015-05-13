@@ -23,8 +23,10 @@ import android.widget.Toast;
 import com.lidroid.xutils.view.annotation.ContentView;
 import com.lidroid.xutils.view.annotation.ViewInject;
 import com.squareup.picasso.Picasso;
+import com.zuijiao.android.zuijiao.model.common.TasteTag;
 import com.zuijiao.android.zuijiao.model.user.TinyUser;
 import com.zuijiao.android.zuijiao.model.user.User;
+import com.zuijiao.android.zuijiao.network.Cache;
 import com.zuijiao.android.zuijiao.network.Router;
 import com.zuijiao.db.DBOpenHelper;
 import com.zuijiao.entity.SimpleImage;
@@ -66,7 +68,11 @@ public final class UserInfoActivity extends BaseActivity implements View.OnClick
     private BaseAdapter mFlavorAdapter = new BaseAdapter() {
         @Override
         public int getCount() {
-            return 1;
+            try {
+                return mFullUser.getProfile().getTasteTags().get().size();
+            } catch (Exception e) {
+                return 0;
+            }
         }
 
         @Override
@@ -81,7 +87,17 @@ public final class UserInfoActivity extends BaseActivity implements View.OnClick
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            return LayoutInflater.from(UserInfoActivity.this).inflate(R.layout.user_info_favor_item, null);
+            View contentView = LayoutInflater.from(UserInfoActivity.this).inflate(R.layout.user_info_favor_item, null);
+            ImageView image = (ImageView) contentView.findViewById(R.id.user_info_favor_item_image);
+            TextView text = (TextView) contentView.findViewById(R.id.user_info_favor_item_text);
+            if (Cache.INSTANCE.tasteTags != null)
+                for (TasteTag tasteTag : Cache.INSTANCE.tasteTags) {
+                    if (mFullUser.getProfile().getTasteTags().get().contains(tasteTag.getName())) {
+                        Picasso.with(mContext).load(tasteTag.getImageURL()).placeholder(R.drawable.default_user_head).into(image);
+                        text.setText(tasteTag.getName());
+                    }
+                }
+            return contentView;
         }
     };
     private AdapterView.OnItemClickListener mFlavorItemListener = new AdapterView.OnItemClickListener() {
@@ -101,10 +117,17 @@ public final class UserInfoActivity extends BaseActivity implements View.OnClick
             if (position == 0) {
                 title.setText(getString(R.string.base_info));
                 String basicInfo;
-                if (mFullUser != null) {
-                    String age = String.format(getString(R.string.year_old), new Date().getYear() - mFullUser.getBirthday().get().getYear());
+                if (mFullUser != null && mFullUser.getProfile() != null) {
+                    String age = "";
+                    if (mFullUser.getProfile().getBirthday().isPresent()) {
+                        age = String.format(getString(R.string.year_old), new Date().getYear() - mFullUser.getProfile().getBirthday().get().getYear());
+                    }
                     String address = DBOpenHelper.getmInstance(mContext).getLocationByIds(mFullUser.getProfile().getProvinceId(), mFullUser.getProfile().getCityId());
-                    basicInfo = mFullUser.getProfile().getGender() + age + address;
+                    String gender = mFullUser.getProfile().getGender();
+                    if (gender.equals("keepSecret")) {
+                        gender = getString(R.string.gender_keep_secret);
+                    }
+                    basicInfo = gender + age + address;
                 } else {
                     basicInfo = getString(R.string.no_base_info);
                 }
@@ -112,7 +135,7 @@ public final class UserInfoActivity extends BaseActivity implements View.OnClick
             } else if (position == 1) {
                 title.setText(getString(R.string.personal_introduction));
                 String intro;
-                if (mFullUser != null) {
+                if (mFullUser != null && mFullUser.getProfile() != null && mFullUser.getProfile().getSelfIntroduction().isPresent()) {
                     intro = mFullUser.getProfile().getSelfIntroduction().get();
                 } else {
                     intro = getString(R.string.no_experience);
@@ -120,18 +143,21 @@ public final class UserInfoActivity extends BaseActivity implements View.OnClick
                 content.setText(intro);
             } else if (position == 2) {
                 title.setText(getString(R.string.flavor_hobby));
-//                if (mFullUser.getProfile().getTasteTags().isPresent()) {
-//                    GridView gdView = (GridView) contentView.findViewById(R.id.gv_user_info_favor);
-//                    gdView.setVisibility(View.VISIBLE);
-//                    content.setVisibility(View.GONE);
-//                    gdView.setOnItemClickListener(mFlavorItemListener);
-//                    gdView.setFocusable(false);
-//                    gdView.setFocusableInTouchMode(false);
-//                    gdView.setAdapter(mFlavorAdapter);
-//                    setListViewHeightBasedOnChildren(gdView);
-//                } else {
-//                    content.setText(getString(R.string.no_hobby));
-//                }
+                if (mFullUser != null
+                        && mFullUser.getProfile() != null
+                        && mFullUser.getProfile().getTasteTags().isPresent()
+                        && mFullUser.getProfile().getTasteTags().get().size() != 0) {
+                    GridView gdView = (GridView) contentView.findViewById(R.id.gv_user_info_favor);
+                    gdView.setVisibility(View.VISIBLE);
+                    content.setVisibility(View.GONE);
+                    gdView.setOnItemClickListener(mFlavorItemListener);
+                    gdView.setFocusable(false);
+                    gdView.setFocusableInTouchMode(false);
+                    gdView.setAdapter(mFlavorAdapter);
+                    setListViewHeightBasedOnChildren(gdView);
+                } else {
+                    content.setText(getString(R.string.no_hobby));
+                }
             }
             return contentView;
         }
@@ -151,6 +177,7 @@ public final class UserInfoActivity extends BaseActivity implements View.OnClick
             return 3;
         }
     };
+    private MenuItem mMenuBtn = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -171,7 +198,28 @@ public final class UserInfoActivity extends BaseActivity implements View.OnClick
                 startActivity(intent);
                 break;
             case R.id.menu_follow_someone:
-//                Router.getAccountModule().
+                if (mFullUser != null && mFullUser.getFriendShip() != null && mFullUser.getFriendShip().isFollowing()) {
+                    Router.getSocialModule().unFollow(mTinyUser.getIdentifier(), () -> {
+                        Toast.makeText(mContext, getString(R.string.un_follow_success), Toast.LENGTH_SHORT).show();
+                        mMenuBtn.setTitle(getString(R.string.follow));
+                    }, errorMsg -> {
+                        Toast.makeText(mContext, R.string.notify_net2, Toast.LENGTH_SHORT).show();
+                    });
+                } else if (mFullUser != null && mFullUser.getFriendShip() != null && !mFullUser.getFriendShip().isFollowing()) {
+                    Router.getSocialModule().follow(mTinyUser.getIdentifier(), () -> {
+                        Toast.makeText(mContext, getString(R.string.follow_success), Toast.LENGTH_SHORT).show();
+                        mMenuBtn.setTitle(getString(R.string.un_follow));
+                    }, errorMsg -> {
+                        Toast.makeText(mContext, R.string.notify_net2, Toast.LENGTH_SHORT).show();
+                    });
+                } else {
+                    Router.getSocialModule().follow(mTinyUser.getIdentifier(), () -> {
+                        Toast.makeText(mContext, getString(R.string.follow_success), Toast.LENGTH_SHORT).show();
+                        mMenuBtn.setTitle(getString(R.string.un_follow));
+                    }, errorMsg -> {
+                        Toast.makeText(mContext, R.string.notify_net2, Toast.LENGTH_SHORT).show();
+                    });
+                }
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -183,6 +231,7 @@ public final class UserInfoActivity extends BaseActivity implements View.OnClick
             getMenuInflater().inflate(R.menu.user_info_self, menu);
         } else {
             getMenuInflater().inflate(R.menu.user_info, menu);
+            mMenuBtn = menu.findItem(R.id.menu_follow_someone);
         }
         return super.onCreateOptionsMenu(menu);
     }
@@ -192,10 +241,20 @@ public final class UserInfoActivity extends BaseActivity implements View.OnClick
             mFullUser = fullUser;
             Picasso.with(mContext).load(mFullUser.getAvatarURL().get()).placeholder(R.drawable.default_user_head).into(mUserHead);
             mUserName.setText(mFullUser.getNickname().get());
-            mBtnFans.setText(String.format(getString(R.string.fans_count), mFullUser.getFriendShip().getFollowerCount()));
-            mBtnFavor.setText(String.format(getString(R.string.favorite_count), mFullUser.getFood().getCollectionCount()));
-            mBtnFollow.setText(String.format(getString(R.string.follow_count), mFullUser.getFriendShip().getFollowingCount()));
-            mBtnRecommend.setText(String.format(getString(R.string.recommend_count), mFullUser.getFood().getRecommendationCount()));
+            int follower = 0, following = 0, recommendation = 0, favor = 0;
+            if (mFullUser.getFriendShip() != null) {
+                follower = mFullUser.getFriendShip().getFollowerCount() == null ? 0 : mFullUser.getFriendShip().getFollowerCount();
+                following = mFullUser.getFriendShip().getFollowingCount() == null ? 0 : mFullUser.getFriendShip().getFollowingCount();
+                mMenuBtn.setTitle(mFullUser.getFriendShip().isFollowing() ? getString(R.string.un_follow) : getString(R.string.follow));
+            }
+            if (mFullUser.getFood() != null) {
+                recommendation = mFullUser.getFood().getRecommendationCount() == null ? 0 : mFullUser.getFood().getRecommendationCount();
+                favor = mFullUser.getFood().getCollectionCount() == null ? 0 : mFullUser.getFood().getCollectionCount();
+            }
+            mBtnFans.setText(String.format(getString(R.string.fans_count), follower));
+            mBtnFavor.setText(String.format(getString(R.string.favorite_count), favor));
+            mBtnFollow.setText(String.format(getString(R.string.follow_count), following));
+            mBtnRecommend.setText(String.format(getString(R.string.recommend_count), recommendation));
             mInfoAdapter.notifyDataSetChanged();
         }, errorMsg -> {
             Toast.makeText(mContext, getString(R.string.notify_net2), Toast.LENGTH_SHORT).show();

@@ -21,8 +21,8 @@ android {
     }
     buildTypes {
         debug {
-            buildConfigField "String", "Base_Url", "\"http://api.zuijiaodev.com\""
-//            buildConfigField "String", "Base_Url", "\"xielingyu2.zuijiaodev.com\""
+//            buildConfigField "String", "Base_Url", "\"http://api.zuijiaodev.com\""
+            buildConfigField "String", "Base_Url", "\"http://xielingyu2.zuijiaodev.com\""
             buildConfigField "String", "Avatar_Base_Url", "\"/debug/Avatar\""
             buildConfigField "String", "Gourmet_Base_Url", "\"/debug/Gourmet\""
             buildConfigField "String", "Request_Key", "\"zuijiaoapp\""
@@ -32,8 +32,8 @@ android {
         release {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            buildConfigField "String", "Base_Url", "\"http://api.zuijiao.net\""
-//            buildConfigField "String", "Base_Url", "\"xielingyu2.zuijiaodev.com\""
+//            buildConfigField "String", "Base_Url", "\"http://api.zuijiao.net\""
+            buildConfigField "String", "Base_Url", "\"http://xielingyu2.zuijiaodev.com\""
             buildConfigField "String", "Avatar_Base_Url", "\"/Avatar\""
             buildConfigField "String", "Gourmet_Base_Url", "\"/Gourmet\""
             buildConfigField "String", "Request_Key", "\"zuijiaoapp\""

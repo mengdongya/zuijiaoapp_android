@@ -157,6 +157,7 @@
     <string name="birthday">出生年月</string>
     <string name="residence">现居地</string>
     <string name="add">添加</string>
+    <string name="taste_tag_default_name">标签</string>
     <string name="save">保存</string>
     <string name="nick_name_null">昵称不能为空</string>
     <string name="nick_name_hint">输入新的昵称</string>
@@ -233,4 +234,8 @@
     <string name="year_old">%d岁</string>
     <string name="whose_recommend">%s的推荐</string>
     <string name="whose_favor">%s所收藏的</string>
+    <string name="gender_keep_secret">保密</string>
+    <string name="follow_success">关注成功</string>
+    <string name="un_follow">取消关注</string>
+    <string name="un_follow_success">已经取消关注</string>
 </resources>

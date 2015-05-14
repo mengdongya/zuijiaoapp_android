@@ -10,132 +10,139 @@
 
         layout="@layout/toolbar"
         android:elevation="0dip"/>-->
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/user_info_toolbar"
+    <LinearLayout
+        android:layout_height="248dip"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/toolbar_height"
-        colorControlNormal="@color/white"
-        android:background="?attr/colorPrimary"
-        android:minHeight="?attr/actionBarSize" />
+        android:background="@drawable/bg_user_center"
+        android:elevation="10dip"
+        android:orientation="vertical">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="160dip"
-        android:layout_gravity="center_horizontal"
-        android:elevation="5dip"
-        android:background="@color/toolbar">
-
-        <LinearLayout
-            android:id="@+id/container_user_info_detail"
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/user_info_toolbar"
             android:layout_width="match_parent"
-            android:layout_height="120dip"
-            android:gravity="center"
-            android:orientation="vertical">
-
-            <com.zuijiao.view.RoundImageView
-                android:id="@+id/user_info_user_head"
-                myattr:border_thickness="1dip"
-                myattr:border_outside_color="#eeeeee"
-                myattr:border_inside_color="#eeeeee"
-                android:padding="2dip"
-                android:layout_width="66dip"
-                android:layout_height="66dip"
-                android:layout_gravity="center"
-                android:src="@drawable/default_user_head" />
-
-            <TextView
-                android:id="@+id/tv_user_name_detail"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="15dip"
-                android:text="Jordan"
-                android:textColor="@color/white"
-                android:textSize="18sp" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/container_user_info"
+            android:layout_height="@dimen/toolbar_height"
+            colorControlNormal="@color/white"
+            android:background="@color/transparent"
+            android:minHeight="?attr/actionBarSize" />
+        <!--android:background="?attr/colorPrimary"-->
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@+id/container_user_info_detail"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:layout_gravity="center_horizontal"
+            android:elevation="5dip">
 
-            <Button
-                android:id="@+id/user_info_recommend"
-                android:layout_width="0dip"
-                android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:layout_weight="1"
-                android:typeface="serif"
-                android:background="@drawable/test_bg"
+            <LinearLayout
+                android:id="@+id/container_user_info_detail"
+                android:layout_width="match_parent"
+                android:layout_height="120dip"
                 android:gravity="center"
-                android:text="Jordan"
-                android:textSize="13sp"
-                android:textColor="@color/white" />
+                android:orientation="vertical">
 
-            <View
-                android:layout_width="1dip"
-                android:layout_marginBottom="10dip"
-                android:layout_marginTop="10dip"
-                android:layout_height="match_parent"
-                android:background="@color/bg_light_gray" />
+                <com.zuijiao.view.RoundImageView
+                    android:id="@+id/user_info_user_head"
+                    myattr:border_thickness="1dip"
+                    myattr:border_outside_color="#eeeeee"
+                    myattr:border_inside_color="#eeeeee"
+                    android:padding="2dip"
+                    android:layout_width="66dip"
+                    android:layout_height="66dip"
+                    android:layout_gravity="center"
+                    android:src="@drawable/default_user_head" />
 
-            <Button
-                android:typeface="serif"
-                android:id="@+id/user_info_wish"
-                android:layout_width="0dip"
-                android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:layout_weight="1"
-                android:background="@drawable/test_bg"
-                android:textSize="13sp"
-                android:gravity="center"
-                android:text="Jordan"
-                android:textColor="@color/white" />
+                <TextView
+                    android:id="@+id/tv_user_name_detail"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="15dip"
+                    android:text="Jordan"
+                    android:textColor="@color/white"
+                    android:textSize="18sp" />
+            </LinearLayout>
 
-            <View
-                android:layout_width="1dip"
-                android:layout_marginBottom="10dip"
-                android:layout_marginTop="10dip"
-                android:layout_height="match_parent"
-                android:background="@color/bg_light_gray" />
+            <LinearLayout
+                android:id="@+id/container_user_info"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
-            <Button
-                android:typeface="serif"
-                android:id="@+id/user_info_follow"
-                android:layout_width="0dip"
-                android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:layout_weight="1"
-                android:textSize="13sp"
-                android:background="@drawable/test_bg"
-                android:gravity="center"
-                android:text="Jordan"
-                android:textColor="@color/white" />
+                <Button
+                    android:id="@+id/user_info_recommend"
+                    android:layout_width="0dip"
+                    android:layout_height="30dip"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:typeface="serif"
+                    android:background="@drawable/test_bg"
+                    android:gravity="center"
+                    android:text="Jordan"
+                    android:textSize="13sp"
+                    android:textColor="@color/white" />
 
-            <View
-                android:layout_width="1dip"
-                android:layout_marginBottom="10dip"
-                android:layout_marginTop="10dip"
-                android:layout_height="match_parent"
-                android:background="@color/bg_light_gray" />
+                <View
+                    android:layout_width="1dip"
+                    android:layout_marginBottom="10dip"
+                    android:layout_marginTop="10dip"
+                    android:layout_height="30dip"
+                    android:background="@color/bg_light_gray" />
 
-            <Button
-                android:typeface="serif"
-                android:id="@+id/user_info_fans"
-                android:layout_width="0dip"
-                android:background="@drawable/test_bg"
-                android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:layout_weight="1"
-                android:textSize="13sp"
-                android:gravity="center"
-                android:text="@string/follow"
-                android:textColor="@color/white" />
-        </LinearLayout>
-    </RelativeLayout>
+                <Button
+                    android:typeface="serif"
+                    android:id="@+id/user_info_wish"
+                    android:layout_width="0dip"
+                    android:layout_height="30dip"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:background="@drawable/test_bg"
+                    android:textSize="13sp"
+                    android:gravity="center"
+                    android:text="Jordan"
+                    android:textColor="@color/white" />
+
+                <View
+                    android:layout_width="1dip"
+                    android:layout_marginBottom="10dip"
+                    android:layout_marginTop="10dip"
+                    android:layout_height="30dip"
+                    android:background="@color/bg_light_gray" />
+
+                <Button
+                    android:typeface="serif"
+                    android:id="@+id/user_info_follow"
+                    android:layout_width="0dip"
+                    android:layout_height="30dip"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:textSize="13sp"
+                    android:background="@drawable/test_bg"
+                    android:gravity="center"
+                    android:text="Jordan"
+                    android:textColor="@color/white" />
+
+                <View
+                    android:layout_width="1dip"
+                    android:layout_marginBottom="10dip"
+                    android:layout_marginTop="10dip"
+                    android:layout_height="30dip"
+                    android:background="@color/bg_light_gray" />
+
+                <Button
+                    android:typeface="serif"
+                    android:id="@+id/user_info_fans"
+                    android:layout_width="0dip"
+                    android:background="@drawable/test_bg"
+                    android:layout_height="30dip"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:textSize="13sp"
+                    android:gravity="center"
+                    android:text="@string/follow"
+                    android:textColor="@color/white" />
+            </LinearLayout>
+        </RelativeLayout>
+    </LinearLayout>
 
     <ListView
         android:id="@+id/user_info_list"

@@ -1,6 +1,8 @@
 package net.zuijiao.android.zuijiao;
 
 import android.content.Intent;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -70,7 +72,9 @@ public class VerifyPhoneNumActivity extends BaseActivity {
             public void onClick(View v) {
                 mSendBtn.setEnabled(false);
                 Router.getCommonModule().requestSecurityCode(mPhoneNumEditor.getText().toString().trim(), () -> {
-                    mSendBtn.setEnabled(true);
+                    Message msg = Message.obtain();
+                    msg.arg1 = 60;
+                    mHandler.sendMessage(msg);
                     mSendBtn.setText(getString(R.string.re_send_verification_code));
                     securityCodeSent = true;
                 }, () -> {
@@ -80,6 +84,21 @@ public class VerifyPhoneNumActivity extends BaseActivity {
         });
     }
 
+    private Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            int second = msg.arg1;
+            if (second == 0) {
+                mSendBtn.setText(getString(R.string.re_send_verification_code));
+                mSendBtn.setEnabled(true);
+                return;
+            }
+            mSendBtn.setText(String.format(getString(R.string.re_send_verification_code_delayed), msg.arg1));
+            msg.arg1 = --second;
+            mHandler.sendMessageDelayed(msg, 1000);
+        }
+    };
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

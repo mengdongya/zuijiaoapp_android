@@ -8,7 +8,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
@@ -553,15 +552,8 @@ public class FoodDetailActivity extends BaseActivity implements
             sharePopupWindow = new PopupWindow(view,
                     LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT, true);
         }
-        //使其聚焦
-        sharePopupWindow.setFocusable(false);
-        //设置允许在外点击消失
+        sharePopupWindow.setTouchable(true);
         sharePopupWindow.setOutsideTouchable(true);
-        // 这个是为了点击“返回Back”也能使其消失，并且并不会影响你的背景
-        sharePopupWindow.setBackgroundDrawable(new BitmapDrawable());
-        //xoff,yoff基于anchor的左下角进行偏移。正数表示下方右边，负数表示（上方左边）
-        //showAsDropDown(parent, xPos, yPos);
-//        sharePopupWindow.showAsDropDown(parent, -5, 5);
         sharePopupWindow.showAtLocation(rootView, Gravity.BOTTOM, 0, 0);
     }
 

@@ -10,6 +10,11 @@ public class FriendShip implements Cloneable {
     private Integer followerCount;
     @SerializedName("followingCount")
     private Integer followingCount;
+
+    public void setIsFollowing(Boolean isFollowing) {
+        this.isFollowing = isFollowing;
+    }
+
     @SerializedName("isFollowing")
     private Boolean isFollowing;
     @SerializedName("isFollower")

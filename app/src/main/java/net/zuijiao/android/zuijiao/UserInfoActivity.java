@@ -10,7 +10,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.GridView;
@@ -25,6 +24,7 @@ import com.lidroid.xutils.view.annotation.ViewInject;
 import com.squareup.picasso.Picasso;
 import com.zuijiao.android.util.functional.OneParameterExpression;
 import com.zuijiao.android.zuijiao.model.common.TasteTag;
+import com.zuijiao.android.zuijiao.model.user.FriendShip;
 import com.zuijiao.android.zuijiao.model.user.TinyUser;
 import com.zuijiao.android.zuijiao.model.user.User;
 import com.zuijiao.android.zuijiao.network.Cache;
@@ -102,12 +102,6 @@ public final class UserInfoActivity extends BaseActivity implements View.OnClick
             return contentView;
         }
     };
-    private AdapterView.OnItemClickListener mFlavorItemListener = new AdapterView.OnItemClickListener() {
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            Toast.makeText(getApplicationContext(), position + "", Toast.LENGTH_SHORT).show();
-        }
-    };
     private BaseAdapter mInfoAdapter = new BaseAdapter() {
 
         @Override
@@ -163,7 +157,6 @@ public final class UserInfoActivity extends BaseActivity implements View.OnClick
                     GridView gdView = (GridView) contentView.findViewById(R.id.gv_user_info_favor);
                     gdView.setVisibility(View.VISIBLE);
                     content.setVisibility(View.GONE);
-                    gdView.setOnItemClickListener(mFlavorItemListener);
                     gdView.setFocusable(false);
                     gdView.setFocusableInTouchMode(false);
                     gdView.setAdapter(mFlavorAdapter);
@@ -222,6 +215,7 @@ public final class UserInfoActivity extends BaseActivity implements View.OnClick
             case R.id.menu_follow_someone:
                 if (mFullUser != null && mFullUser.getFriendShip() != null && mFullUser.getFriendShip().isFollowing()) {
                     Router.getSocialModule().unFollow(mTinyUser.getIdentifier(), () -> {
+                        mFullUser.getFriendShip().setIsFollowing(false);
                         Toast.makeText(mContext, getString(R.string.un_follow_success), Toast.LENGTH_SHORT).show();
                         mMenuBtn.setTitle(getString(R.string.follow));
                     }, errorMsg -> {
@@ -229,6 +223,7 @@ public final class UserInfoActivity extends BaseActivity implements View.OnClick
                     });
                 } else if (mFullUser != null && mFullUser.getFriendShip() != null && !mFullUser.getFriendShip().isFollowing()) {
                     Router.getSocialModule().follow(mTinyUser.getIdentifier(), () -> {
+                        mFullUser.getFriendShip().setIsFollowing(true);
                         Toast.makeText(mContext, getString(R.string.follow_success), Toast.LENGTH_SHORT).show();
                         mMenuBtn.setTitle(getString(R.string.un_follow));
                     }, errorMsg -> {
@@ -236,6 +231,11 @@ public final class UserInfoActivity extends BaseActivity implements View.OnClick
                     });
                 } else {
                     Router.getSocialModule().follow(mTinyUser.getIdentifier(), () -> {
+                        if (mFullUser != null && mFullUser.getFriendShip() == null) {
+                            mFullUser.setFriendShip(new FriendShip());
+                        }
+                        mFullUser.getFriendShip().setIsFollowing(true);
+                        mFullUser.getFriendShip().setIsFollowing(true);
                         Toast.makeText(mContext, getString(R.string.follow_success), Toast.LENGTH_SHORT).show();
                         mMenuBtn.setTitle(getString(R.string.un_follow));
                     }, errorMsg -> {
@@ -281,6 +281,7 @@ public final class UserInfoActivity extends BaseActivity implements View.OnClick
         mBtnRecommend.setText(String.format(getString(R.string.recommend_count), recommendation));
         mInfoAdapter.notifyDataSetChanged();
     }
+
     private void getUserInfo() {
         OneParameterExpression<User> successExpression = fullUser -> {
             mFullUser = fullUser;
@@ -346,10 +347,12 @@ public final class UserInfoActivity extends BaseActivity implements View.OnClick
             case R.id.user_info_fans:
                 intent.setClass(UserInfoActivity.this, FriendActivity.class);
                 intent.putExtra("friend_index", 1);
+                intent.putExtra("tiny_user", mTinyUser);
                 break;
             case R.id.user_info_follow:
                 intent.setClass(UserInfoActivity.this, FriendActivity.class);
                 intent.putExtra("friend_index", 0);
+                intent.putExtra("tiny_user", mTinyUser);
                 break;
             case R.id.user_info_wish:
                 intent.setClass(UserInfoActivity.this, RecommendAndFavorActivity.class);

@@ -22,6 +22,8 @@ public class User implements Serializable, Cloneable {
     private Profile profile;
     @SerializedName("foods")
     private Food food;
+
+
     @SerializedName("friendships")
     private FriendShip friendShip;
 
@@ -168,6 +170,10 @@ public class User implements Serializable, Cloneable {
     @Deprecated
     public void setProvinceAndCity(Integer provinceId, Integer cityId) {
         profile.setProvinceAndCity(provinceId, cityId);
+    }
+
+    public void setFriendShip(FriendShip friendShip) {
+        this.friendShip = friendShip;
     }
 
     public void setContactInfo(ContactInfo contactInfo) {

@@ -218,7 +218,8 @@
     <string name="language">语言</string>
     <string name="input_email">输入邮箱</string>
     <string name="send_verification_code">获取验证码</string>
-    <string name="re_send_verification_code">重新获取验证码</string>
+    <string name="re_send_verification_code">重新获取</string>
+    <string name="re_send_verification_code_delayed">%d秒后重新获取</string>
     <string name="input_telephone">输入手机号</string>
     <string name="input_verification_num">输入验证码</string>
     <string name="my_language">擅长语言</string>
@@ -243,4 +244,6 @@
     <string name="un_follow">取消关注</string>
     <string name="un_follow_success">已经取消关注</string>
     <string name="taste_count_upper_limit">最多5个口味标签</string>
+    <string name="check_new_version">检查新版本</string>
+    <string name="no_update_avaliable">已经是最新版本</string>
 </resources>

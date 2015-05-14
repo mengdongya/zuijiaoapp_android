@@ -11,6 +11,7 @@ import android.util.TypedValue;
 
 import com.lidroid.xutils.view.annotation.ContentView;
 import com.lidroid.xutils.view.annotation.ViewInject;
+import com.zuijiao.android.zuijiao.model.user.TinyUser;
 import com.zuijiao.view.PagerSlidingTab;
 
 /**
@@ -27,6 +28,7 @@ public class FriendActivity extends BaseActivity {
     private int mFirstShow = 0;
     private int mFollowCount = 10;
     private int mFansCount = 20;
+    private TinyUser mTinyUser = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,7 +98,7 @@ public class FriendActivity extends BaseActivity {
 
         @Override
         public Fragment getItem(int position) {
-            return FriendFragment.newInstance(position);
+            return FriendFragment.newInstance(position, mTinyUser);
         }
 
     }

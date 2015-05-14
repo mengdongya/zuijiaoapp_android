@@ -28,7 +28,7 @@ public interface IRouterAccount {
             , @Field("year") Integer year
             , @Field("month") Integer month
             , @Field("day") Integer day
-            , @Field("tasteTags") String tags
+            , @Field("tags") String tags
             , @Field("education") String education
             , @Field("career") String career
             , @Field("languages") String languages

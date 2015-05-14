@@ -96,7 +96,9 @@ public class TestClass {
         Router.setup("http://xielingyu2.zuijiaodev.com", null, null, null, "yyyy-MM-dd'T'HH:mm:ssXXX");
         testOp(() -> {
 
-            Router.getAccountModule().fetchMyInfo(user -> System.out.println(user), null);
+            Router.getSocialModule().getFollowingsOfUserId(239, null, 20, socialEntities -> {
+                System.out.print(socialEntities);
+            }, null);
 
         });
     }

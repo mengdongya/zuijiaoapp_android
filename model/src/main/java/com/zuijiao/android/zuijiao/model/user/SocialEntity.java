@@ -5,9 +5,7 @@ import com.google.gson.annotations.SerializedName;
 /**
  * Created by user on 4/28/15.
  */
-public class SocialEntity {
-    @SerializedName("items")
-    private TinyUser user;
+public class SocialEntity extends TinyUser {
 
     @SerializedName("isFollower")
     private Boolean isFollower;
@@ -23,10 +21,6 @@ public class SocialEntity {
 
     @SerializedName("cuisineCount")
     private Integer recommendationGourmetCount;
-
-    public TinyUser getUser() {
-        return user;
-    }
 
     public Boolean isFollower() {
         return isFollower;

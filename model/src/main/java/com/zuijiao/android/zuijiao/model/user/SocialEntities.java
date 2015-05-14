@@ -11,8 +11,14 @@ public class SocialEntities {
 
     @SerializedName("items")
     private List<SocialEntity> entities;
+    @SerializedName("itemCount")
+    private Integer count;
 
     public List<SocialEntity> getUsers() {
         return entities;
+    }
+
+    public Integer getCount() {
+        return count;
     }
 }

@@ -19,11 +19,11 @@ import retrofit.http.Query;
 public interface IRouterSocial {
     final String RootURL = "/friendships/v1";
 
-    @GET(RootURL + "/followers")
-    void getFollowers(@Query("maxID") Integer thresholdID, @Query("count") Integer count, Callback<SocialEntities> callback);
-
-    @GET(RootURL + "/followings")
-    void getFollowings(@Query("maxID") Integer thresholdID, @Query("count") Integer count, Callback<SocialEntities> callback);
+//    @GET(RootURL + "/followers")
+//    void getFollowers(@Query("maxID") Integer thresholdID, @Query("count") Integer count, Callback<SocialEntities> callback);
+//
+//    @GET(RootURL + "/followings")
+//    void getFollowings(@Query("maxID") Integer thresholdID, @Query("count") Integer count, Callback<SocialEntities> callback);
 
     @GET(RootURL + "/user/{userId}/followings")
     void getFollowingsOfUserId(@Path("userId") Integer userId

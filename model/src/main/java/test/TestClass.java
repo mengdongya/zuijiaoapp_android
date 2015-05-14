@@ -8,6 +8,7 @@ import com.zuijiao.android.util.Optional;
 import com.zuijiao.android.util.functional.LambdaExpression;
 import com.zuijiao.android.zuijiao.model.Gourmet;
 import com.zuijiao.android.zuijiao.model.Gourmets;
+import com.zuijiao.android.zuijiao.model.user.User;
 import com.zuijiao.android.zuijiao.network.Router;
 import com.zuijiao.android.zuijiao.network.RouterGourmet;
 import com.zuijiao.android.zuijiao.network.RouterOAuth;
@@ -15,6 +16,7 @@ import com.zuijiao.android.zuijiao.network.RouterOAuth;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -93,22 +95,8 @@ public class TestClass {
     public static void main(String[] args) throws NoSuchAlgorithmException {
         Router.setup("http://xielingyu2.zuijiaodev.com", null, null, null, "yyyy-MM-dd'T'HH:mm:ssXXX");
         testOp(() -> {
-//            Router.getGourmetModule().fetchOurChoice(null, null, 20, gourmets -> {
-//                for (Gourmet g : gourmets.getGourmets()) {
-//                    System.out.println("id: " + g.getIdentifier() + "\t" + g);
-//                }
-//
-//                Router.getGourmetModule().fetchGourmetInformation(5
-//                        , g -> { System.out.println("id: " + g.getIdentifier() + "\t" + g.getUser().getAvatarURL()); }
-//                        , null);
-//            }, null);
 
-
-//            Router.getAccountModule().fetchMyInfo(user -> System.out.println(user), err);
-
-            Router.getAccountModule().fetchUserInfoById(276, user -> {
-                System.out.println(user);
-            }, null);
+            Router.getAccountModule().fetchMyInfo(user -> System.out.println(user), null);
 
         });
     }

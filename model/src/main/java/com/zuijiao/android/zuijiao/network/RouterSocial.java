@@ -12,21 +12,21 @@ public enum RouterSocial {
 
     private IRouterSocial service = Router.getInstance().restAdapter.create(IRouterSocial.class);
 
-    public void getFollowers(Integer count
-            , Integer toUserId
-            , OneParameterExpression<SocialEntities> successCallback
-            , OneParameterExpression<String> failureCallback)
-    {
-        service.getFollowers(toUserId, count, CallbackFactory.getInstance().callback(successCallback, failureCallback));
-    }
-
-    public void getFollowings(Integer count
-            , Integer toUserId
-            , OneParameterExpression<SocialEntities> successCallback
-            , OneParameterExpression<String> failureCallback)
-    {
-        service.getFollowings(toUserId, count, CallbackFactory.getInstance().callback(successCallback, failureCallback));
-    }
+//    public void getFollowers(Integer count
+//            , Integer toUserId
+//            , OneParameterExpression<SocialEntities> successCallback
+//            , OneParameterExpression<String> failureCallback)
+//    {
+//        service.getFollowers(toUserId, count, CallbackFactory.getInstance().callback(successCallback, failureCallback));
+//    }
+//
+//    public void getFollowings(Integer count
+//            , Integer toUserId
+//            , OneParameterExpression<SocialEntities> successCallback
+//            , OneParameterExpression<String> failureCallback)
+//    {
+//        service.getFollowings(toUserId, count, CallbackFactory.getInstance().callback(successCallback, failureCallback));
+//    }
 
     public void getFollowingsOfUserId(Integer userId
     , Integer toUserId

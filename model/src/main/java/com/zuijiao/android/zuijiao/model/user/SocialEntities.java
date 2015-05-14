@@ -10,9 +10,9 @@ import java.util.List;
 public class SocialEntities {
 
     @SerializedName("items")
-    private List<TinyUser> users;
+    private List<SocialEntity> entities;
 
-    public List<TinyUser> getUsers() {
-        return users;
+    public List<SocialEntity> getUsers() {
+        return entities;
     }
 }

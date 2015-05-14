@@ -10,9 +10,15 @@ import java.util.List;
 public class SocialEntities {
 
     @SerializedName("items")
-    private List<TinyUser> users;
+    private List<SocialEntity> entities;
+    @SerializedName("itemCount")
+    private Integer count;
 
-    public List<TinyUser> getUsers() {
-        return users;
+    public List<SocialEntity> getUsers() {
+        return entities;
+    }
+
+    public Integer getCount() {
+        return count;
     }
 }

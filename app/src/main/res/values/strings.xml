@@ -159,6 +159,7 @@
     <string name="add">添加</string>
     <string name="taste_tag_default_name">标签</string>
     <string name="save">保存</string>
+    <string name="save_error_check_network">保存失败，请检查你的网络</string>
     <string name="nick_name_null">昵称不能为空</string>
     <string name="nick_name_hint">输入新的昵称</string>
     <string name="introduction_hint">你的个人介绍</string>
@@ -216,7 +217,8 @@
     <string name="education_hint">输入所受教育</string>
     <string name="language">语言</string>
     <string name="input_email">输入邮箱</string>
-    <string name="send_verification_code">发送验证码</string>
+    <string name="send_verification_code">获取验证码</string>
+    <string name="re_send_verification_code">重新获取验证码</string>
     <string name="input_telephone">输入手机号</string>
     <string name="input_verification_num">输入验证码</string>
     <string name="my_language">擅长语言</string>
@@ -235,7 +237,10 @@
     <string name="whose_recommend">%s的推荐</string>
     <string name="whose_favor">%s所收藏的</string>
     <string name="gender_keep_secret">保密</string>
+    <string name="gender_male">男</string>
+    <string name="gender_female">女</string>
     <string name="follow_success">关注成功</string>
     <string name="un_follow">取消关注</string>
     <string name="un_follow_success">已经取消关注</string>
+    <string name="taste_count_upper_limit">最多5个口味标签</string>
 </resources>

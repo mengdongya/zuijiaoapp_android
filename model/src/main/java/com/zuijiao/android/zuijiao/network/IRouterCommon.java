@@ -1,18 +1,18 @@
 package com.zuijiao.android.zuijiao.network;
 
+import com.squareup.okhttp.Response;
 import com.zuijiao.android.zuijiao.model.common.GourmetTags;
 import com.zuijiao.android.zuijiao.model.common.Restaurants;
 import com.zuijiao.android.zuijiao.model.common.TasteTags;
 
-import java.util.List;
-
 import retrofit.Callback;
-import retrofit.client.Response;
 import retrofit.http.Field;
 import retrofit.http.FormUrlEncoded;
 import retrofit.http.GET;
 import retrofit.http.POST;
 import retrofit.http.Query;
+
+//import retrofit.client.Response;
 
 /**
  * Created by Chen Hao on 3/30/15.

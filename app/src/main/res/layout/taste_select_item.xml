@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal"
+    android:background="@color/transparent"
+    android:orientation="vertical">
+
+    <FrameLayout
+        android:layout_height="60dip"
+        android:layout_width="60dip">
+
+        <com.zuijiao.view.RoundImageView
+            android:scaleType="center"
+            android:id="@+id/taste_item_image"
+            android:background="@drawable/bg_round_gray"
+            android:layout_width="60dip"
+            android:layout_height="60dip"
+            android:src="@drawable/shanghai" />
+
+        <ImageView
+            android:id="@+id/taste_item_shadow"
+            android:layout_height="60dip"
+            android:layout_width="60dip"
+            android:background="@drawable/bg_taste_item_selected"
+            android:src="@drawable/hook" />
+    </FrameLayout>
+
+
+    <TextView
+        android:textColor="@color/tv_deep_gray"
+        android:id="@+id/taste_item_text"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_marginBottom="10dip"
+        android:text="@string/taste_tag_default_name" />
+</LinearLayout>

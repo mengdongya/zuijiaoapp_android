@@ -170,6 +170,9 @@ public abstract class BaseActivity extends ActionBarActivity {
     }
 
     private void saveAuthInfo(AuthorInfo auth) {
+        if (!Router.getInstance().getCurrentUser().isPresent()) {
+            return;
+        }
         TinyUser user = Router.getInstance().getCurrentUser().get();
         AuthorInfo authFromUser = new AuthorInfo();
         authFromUser.setHeadPath(user.getAvatarURL().orElse("placeholder"));

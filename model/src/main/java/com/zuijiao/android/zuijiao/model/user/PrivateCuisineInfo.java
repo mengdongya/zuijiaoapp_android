@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 /**
  * Created by Chen Hao on 4/28/15.
  */
-public class PrivateCuisineInfo {
+public class PrivateCuisineInfo implements Cloneable {
     @SerializedName("attendCount")
     private Integer attendCount;
     @SerializedName("hostCount")
@@ -17,5 +17,10 @@ public class PrivateCuisineInfo {
 
     public Integer getHostCount() {
         return hostCount;
+    }
+
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        return super.clone();
     }
 }

@@ -23,6 +23,7 @@ import android.widget.Toast;
 import com.lidroid.xutils.view.annotation.ContentView;
 import com.lidroid.xutils.view.annotation.ViewInject;
 import com.squareup.picasso.Picasso;
+import com.zuijiao.android.util.functional.OneParameterExpression;
 import com.zuijiao.android.zuijiao.model.common.TasteTag;
 import com.zuijiao.android.zuijiao.model.user.TinyUser;
 import com.zuijiao.android.zuijiao.model.user.User;
@@ -36,6 +37,7 @@ import java.util.Date;
 
 @ContentView(R.layout.activity_user_info)
 public final class UserInfoActivity extends BaseActivity implements View.OnClickListener {
+    private static final int EDIT_USER_INFO_REQ = 5001;
     @ViewInject(R.id.user_info_list)
     private ListView mInfoList;
     @ViewInject(R.id.user_info_toolbar)
@@ -59,12 +61,12 @@ public final class UserInfoActivity extends BaseActivity implements View.OnClick
 //    private ParcelableUser mParcelableUser = null ;
 
     //    private boolean bSelf = false;
-    private AdapterView.OnItemClickListener mUserInfoItemListener = new AdapterView.OnItemClickListener() {
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            Toast.makeText(getApplicationContext(), "parent" + position, Toast.LENGTH_SHORT).show();
-        }
-    };
+//    private AdapterView.OnItemClickListener mUserInfoItemListener = new AdapterView.OnItemClickListener() {
+//        @Override
+//        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//            Toast.makeText(getApplicationContext(), "parent" + position, Toast.LENGTH_SHORT).show();
+//        }
+//    };
     private BaseAdapter mFlavorAdapter = new BaseAdapter() {
         @Override
         public int getCount() {
@@ -90,13 +92,13 @@ public final class UserInfoActivity extends BaseActivity implements View.OnClick
             View contentView = LayoutInflater.from(UserInfoActivity.this).inflate(R.layout.user_info_favor_item, null);
             ImageView image = (ImageView) contentView.findViewById(R.id.user_info_favor_item_image);
             TextView text = (TextView) contentView.findViewById(R.id.user_info_favor_item_text);
-            if (Cache.INSTANCE.tasteTags != null)
-                for (TasteTag tasteTag : Cache.INSTANCE.tasteTags) {
-                    if (mFullUser.getProfile().getTasteTags().get().contains(tasteTag.getName())) {
-                        Picasso.with(mContext).load(tasteTag.getImageURL()).placeholder(R.drawable.default_user_head).into(image);
-                        text.setText(tasteTag.getName());
-                    }
+            text.setText(mFullUser.getProfile().getTasteTags().get().get(position));
+            for (TasteTag tasteTag : Cache.INSTANCE.tasteTags) {
+                if (mFullUser.getProfile().getTasteTags().get().get(position).equals(tasteTag.getName())) {
+                    Picasso.with(mContext).load(tasteTag.getImageURL()).placeholder(R.drawable.default_user_head).into(image);
+                    break;
                 }
+            }
             return contentView;
         }
     };
@@ -119,15 +121,26 @@ public final class UserInfoActivity extends BaseActivity implements View.OnClick
                 String basicInfo;
                 if (mFullUser != null && mFullUser.getProfile() != null) {
                     String age = "";
-                    if (mFullUser.getProfile().getBirthday().isPresent()) {
-                        age = String.format(getString(R.string.year_old), new Date().getYear() - mFullUser.getProfile().getBirthday().get().getYear());
+                    try {
+//                        int now = new Date().getYear() ;
+//                        int birth =  mFullUser.getProfile().getBirthday().get().getYear() ;
+                        age = String.format(getString(R.string.year_old), new Date().getYear() + 1900 - mFullUser.getProfile().getBirthday().get().getYear());
+                    } catch (Throwable t) {
+                        t.printStackTrace();
                     }
+//                    if (mFullUser.getProfile().getBirthday().isPresent()) {
+//                        age = String.format(getString(R.string.year_old), new Date().getYear() - mFullUser.getProfile().getBirthday().get().getYear());
+//                    }
                     String address = DBOpenHelper.getmInstance(mContext).getLocationByIds(mFullUser.getProfile().getProvinceId(), mFullUser.getProfile().getCityId());
                     String gender = mFullUser.getProfile().getGender();
                     if (gender.equals("keepSecret")) {
                         gender = getString(R.string.gender_keep_secret);
+                    } else if (gender.equals("female")) {
+                        gender = getString(R.string.gender_female);
+                    } else if (gender.equals("male")) {
+                        gender = getString(R.string.gender_male);
                     }
-                    basicInfo = gender + age + address;
+                    basicInfo = gender + "      " + age + "     " + address;
                 } else {
                     basicInfo = getString(R.string.no_base_info);
                 }
@@ -190,12 +203,21 @@ public final class UserInfoActivity extends BaseActivity implements View.OnClick
     }
 
     @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == EDIT_USER_INFO_REQ && resultCode == RESULT_OK) {
+            mFullUser = mFileMng.getFullUser();
+            registerViewByFullUser();
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_edit_self_info:
                 Intent intent = new Intent();
                 intent.setClass(mContext, EditUserInfoActivity.class);
-                startActivity(intent);
+                startActivityForResult(intent, EDIT_USER_INFO_REQ);
                 break;
             case R.id.menu_follow_someone:
                 if (mFullUser != null && mFullUser.getFriendShip() != null && mFullUser.getFriendShip().isFollowing()) {
@@ -236,29 +258,42 @@ public final class UserInfoActivity extends BaseActivity implements View.OnClick
         return super.onCreateOptionsMenu(menu);
     }
 
-    private void getUserInfo() {
-        Router.getAccountModule().fetchUserInfoById(mTinyUser.getIdentifier(), fullUser -> {
-            mFullUser = fullUser;
-            Picasso.with(mContext).load(mFullUser.getAvatarURL().get()).placeholder(R.drawable.default_user_head).into(mUserHead);
-            mUserName.setText(mFullUser.getNickname().get());
-            int follower = 0, following = 0, recommendation = 0, favor = 0;
-            if (mFullUser.getFriendShip() != null) {
-                follower = mFullUser.getFriendShip().getFollowerCount() == null ? 0 : mFullUser.getFriendShip().getFollowerCount();
-                following = mFullUser.getFriendShip().getFollowingCount() == null ? 0 : mFullUser.getFriendShip().getFollowingCount();
+    private void registerViewByFullUser() {
+        if (mFullUser.getIdentifier().equals(mPreferMng.getStoredUserId())) {
+            mFileMng.setFullUser(mFullUser);
+        }
+        Picasso.with(mContext).load(mFullUser.getAvatarURL().get()).placeholder(R.drawable.default_user_head).into(mUserHead);
+        mUserName.setText(mFullUser.getNickname().get());
+        int follower = 0, following = 0, recommendation = 0, favor = 0;
+        if (mFullUser.getFriendShip() != null) {
+            follower = mFullUser.getFriendShip().getFollowerCount() == null ? 0 : mFullUser.getFriendShip().getFollowerCount();
+            following = mFullUser.getFriendShip().getFollowingCount() == null ? 0 : mFullUser.getFriendShip().getFollowingCount();
+            if (!mTinyUser.getIdentifier().equals(mPreferMng.getStoredUserId()))
                 mMenuBtn.setTitle(mFullUser.getFriendShip().isFollowing() ? getString(R.string.un_follow) : getString(R.string.follow));
-            }
-            if (mFullUser.getFood() != null) {
-                recommendation = mFullUser.getFood().getRecommendationCount() == null ? 0 : mFullUser.getFood().getRecommendationCount();
-                favor = mFullUser.getFood().getCollectionCount() == null ? 0 : mFullUser.getFood().getCollectionCount();
-            }
-            mBtnFans.setText(String.format(getString(R.string.fans_count), follower));
-            mBtnFavor.setText(String.format(getString(R.string.favorite_count), favor));
-            mBtnFollow.setText(String.format(getString(R.string.follow_count), following));
-            mBtnRecommend.setText(String.format(getString(R.string.recommend_count), recommendation));
-            mInfoAdapter.notifyDataSetChanged();
-        }, errorMsg -> {
+        }
+        if (mFullUser.getFood() != null) {
+            recommendation = mFullUser.getFood().getRecommendationCount() == null ? 0 : mFullUser.getFood().getRecommendationCount();
+            favor = mFullUser.getFood().getCollectionCount() == null ? 0 : mFullUser.getFood().getCollectionCount();
+        }
+        mBtnFans.setText(String.format(getString(R.string.fans_count), follower));
+        mBtnFavor.setText(String.format(getString(R.string.favorite_count), favor));
+        mBtnFollow.setText(String.format(getString(R.string.follow_count), following));
+        mBtnRecommend.setText(String.format(getString(R.string.recommend_count), recommendation));
+        mInfoAdapter.notifyDataSetChanged();
+    }
+    private void getUserInfo() {
+        OneParameterExpression<User> successExpression = fullUser -> {
+            mFullUser = fullUser;
+            registerViewByFullUser();
+        };
+        OneParameterExpression<String> failExpression = errorMsg -> {
             Toast.makeText(mContext, getString(R.string.notify_net2), Toast.LENGTH_SHORT).show();
-        });
+        };
+        if ((mTinyUser.getIdentifier().equals(mPreferMng.getStoredUserId()) || mTinyUser.getIdentifier() == -1)) {
+            Router.getAccountModule().fetchMyInfo(successExpression, failExpression);
+        } else {
+            Router.getAccountModule().fetchUserInfoById(mTinyUser.getIdentifier(), successExpression, failExpression);
+        }
     }
 
     @Override
@@ -281,7 +316,8 @@ public final class UserInfoActivity extends BaseActivity implements View.OnClick
                 getUserInfo();
             }
         }
-        Picasso.with(mContext).load(mTinyUser.getAvatarURL().get()).placeholder(R.drawable.default_user_head).into(mUserHead);
+        if (mTinyUser.getAvatarURL().isPresent())
+            Picasso.with(mContext).load(mTinyUser.getAvatarURL().get()).placeholder(R.drawable.default_user_head).into(mUserHead);
         mUserName.setText(mTinyUser.getNickName());
         mBtnFans.setText(String.format(getString(R.string.fans_count), 0));
         mBtnFavor.setText(String.format(getString(R.string.favorite_count), 0));
@@ -294,7 +330,7 @@ public final class UserInfoActivity extends BaseActivity implements View.OnClick
         mUserHead.setOnClickListener(this);
         mInfoList.setAdapter(mInfoAdapter);
         mInfoList.setItemsCanFocus(true);
-        mInfoList.setOnItemClickListener(mUserInfoItemListener);
+//        mInfoList.setOnItemClickListener(mUserInfoItemListener);
     }
 
 

@@ -2,28 +2,30 @@ package com.zuijiao.android.zuijiao.model.user;
 
 import com.google.gson.annotations.SerializedName;
 import com.zuijiao.android.util.Optional;
+import com.zuijiao.android.zuijiao.network.Router;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 /**
  * Created by Chen Hao on 3/13/15.
  */
-public class User implements Serializable {
+public class User implements Serializable, Cloneable {
     @SerializedName("ID")
     private Integer identifier;
     @SerializedName("nickname")
     private String nickname;
     @SerializedName("imageUrl")
     private String avatarURL;
-
     @SerializedName("profiles")
     private Profile profile;
     @SerializedName("foods")
     private Food food;
     @SerializedName("friendships")
     private FriendShip friendShip;
+
+
     // Optional only avialabel for self
     @SerializedName("contracts")
     private ContactInfo contactInfo;
@@ -38,8 +40,24 @@ public class User implements Serializable {
         return Optional.ofNullable(nickname);
     }
 
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
     public Optional<String> getAvatarURL() {
-        return Optional.ofNullable(avatarURL);
+//        return Optional.ofNullable(avatarURL);
+        if (avatarURL != null) {
+            if (avatarURL.length() > 0 && avatarURL.startsWith("http"))
+                return Optional.ofNullable(avatarURL);
+            else {
+                return Optional.of(Router.PicBaseUrl + avatarURL);
+            }
+        }
+        return Optional.empty();
+    }
+
+    public void setAvatarURL(String avatarURL) {
+        this.avatarURL = avatarURL;
     }
 
     /**
@@ -51,8 +69,18 @@ public class User implements Serializable {
     }
 
     @Deprecated
+    public void setGender(String gender) {
+        profile.setGender(gender);
+    }
+
+    @Deprecated
     public Optional<Date> getBirthday() {
         return profile.getBirthday();
+    }
+
+    @Deprecated
+    public void setBirthday(Date birthday) {
+        profile.setBirthday(birthday);
     }
 
     @Deprecated
@@ -71,10 +99,19 @@ public class User implements Serializable {
     }
 
     @Deprecated
-    public Optional<List<String>> getTasteTags() {
+    public void setStory(String story) {
+        profile.setStory(story);
+    }
+
+    @Deprecated
+    public Optional<ArrayList<String>> getTasteTags() {
         return profile.getTasteTags();
     }
 
+    @Deprecated
+    public void setTasteTags(ArrayList<String> tasteTags) {
+        profile.setTasteTags(tasteTags);
+    }
 
     @Deprecated
     public Integer getCollectionCount() {
@@ -101,6 +138,8 @@ public class User implements Serializable {
         return friendShip.isFollowing();
     }
 
+    // update methods
+
     @Deprecated
     public Boolean getIsFollower() {
         return friendShip.isFollower();
@@ -126,39 +165,39 @@ public class User implements Serializable {
         return Optional.ofNullable(privateCuisineInfo);
     }
 
-    // update methods
-
-    public void setNickname(String nickname) {
-        this.nickname = nickname;
-    }
-
-    public void setAvatarURL(String avatarURL) {
-        this.avatarURL = avatarURL;
-    }
-
-    @Deprecated
-    public void setGender(String gender) {
-        profile.setGender(gender);
-    }
-
-    @Deprecated
-    public void setBirthday(Date birthday) {
-        profile.setBirthday(birthday);
-    }
-
     @Deprecated
     public void setProvinceAndCity(Integer provinceId, Integer cityId) {
         profile.setProvinceAndCity(provinceId, cityId);
     }
 
-    @Deprecated
-    public void setStory(String story) {
-        profile.setStory(story);
+    public void setContactInfo(ContactInfo contactInfo) {
+        this.contactInfo = contactInfo;
     }
 
-    @Deprecated
-    public void setTasteTags(List<String> tasteTags) {
-        profile.setTasteTags(tasteTags);
+    @Override
+    public User clone() {
+        try {
+            User user = null;
+            user = (User) super.clone();
+            if (this.profile != null) {
+                user.profile = (Profile) profile.clone();
+            }
+            if (this.food != null) {
+                user.food = (Food) food.clone();
+            }
+            if (this.friendShip != null) {
+                user.friendShip = (FriendShip) friendShip.clone();
+            }
+            if (this.contactInfo != null) {
+                user.contactInfo = (ContactInfo) contactInfo.clone();
+            }
+            if (this.privateCuisineInfo != null) {
+                user.privateCuisineInfo = (PrivateCuisineInfo) privateCuisineInfo.clone();
+            }
+            return user;
+        } catch (Exception e) {
+            return this;
+        }
     }
 
 }

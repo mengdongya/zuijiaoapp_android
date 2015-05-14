@@ -41,7 +41,7 @@ public interface IRouterAccount {
     );
 
     @FormUrlEncoded
-    @POST("account/v2/contract/mobile/update")
+    @POST("/account/v2/contract/mobile/update")
     void updatePhoneNumber(@Field("mobile") String phoneNumber, @Field("code") String securityCode, Callback<Response> callback);
 
     @GET("/users/v2/person/{id}")

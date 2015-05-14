@@ -71,6 +71,10 @@
             android:label="@string/setting"
             android:screenOrientation="portrait" />
         <activity
+            android:name="net.zuijiao.android.zuijiao.TasteActivity"
+            android:label="@string/flavor_hobby"
+            android:screenOrientation="portrait" />
+        <activity
             android:name="net.zuijiao.android.zuijiao.VerifyPhoneNumActivity"
             android:label="@string/mobile_phone"
             android:screenOrientation="portrait" />

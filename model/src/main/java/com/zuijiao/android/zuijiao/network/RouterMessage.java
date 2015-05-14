@@ -15,8 +15,6 @@ public enum RouterMessage {
     private IRouterMessage service = Router.getInstance().restAdapter.create(IRouterMessage.class);
 
     /**
-     * 获取用户分组新消息信息
-     *
      * @param successCallback
      * @param failureCallback
      */
@@ -28,12 +26,6 @@ public enum RouterMessage {
     }
 
     /**
-     * 获取指定分组下的所有消息列表
-     *
-     * @param type            分组类型
-     * @param sinceID         从几开始
-     * @param toID            到几结束
-     * @param count           拿多少条
      * @param successCallback
      * @param failureCallback
      */
@@ -48,9 +40,6 @@ public enum RouterMessage {
     }
 
     /**
-     * 标记指定类型为已读
-     *
-     * @param type            分组类型
      * @param successCallback
      * @param failureCallback
      */
@@ -62,8 +51,6 @@ public enum RouterMessage {
     }
 
     /**
-     * 标记所有信息为已读
-     *
      * @param successCallback
      * @param failureCallback
      */

@@ -7,6 +7,7 @@ import android.provider.MediaStore;
 
 import com.zuijiao.android.util.Optional;
 import com.zuijiao.android.zuijiao.model.Gourmet;
+import com.zuijiao.android.zuijiao.model.user.User;
 import com.zuijiao.android.zuijiao.model.user.WouldLikeToEatUsers;
 import com.zuijiao.entity.SimpleImage;
 
@@ -34,6 +35,18 @@ public class FileManager {
     //
     public static Optional<List<Gourmet>> recommendList = Optional.empty();
     public static Gourmet tmpMessageGourmet = null;
+
+    public User getFullUser() {
+        return mFullUser;
+    }
+
+    public void setFullUser(User mFullUser) {
+        this.mFullUser = mFullUser;
+    }
+
+    //current login user ; for edit user info
+    private User mFullUser = null;
+
     private static FileManager mInstance = null;
     private Context mContext = null;
     private static final String[] STORE_IMAGES = {

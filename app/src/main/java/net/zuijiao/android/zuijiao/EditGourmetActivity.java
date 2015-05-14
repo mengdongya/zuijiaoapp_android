@@ -125,7 +125,7 @@ public class EditGourmetActivity extends BaseActivity implements View.OnClickLis
             mEditPrice = mEtPrice.getText().toString().trim();
             if (mImages != null && mImages.size() != 0) {
                 mImageUrls.addAll(UpyunUploadTask.gourmetImagePaths(
-                        Router.getInstance().getCurrentUser().get().getIdentifier(), mEditName, mImages.size(), "jpg"));
+                        mPreferMng.getStoredUserId(), mEditName, mImages.size(), "jpg"));
                 uploadImageContinuously(mImages.get(0), () -> {
                     if (mType == TYPE_CREATE_PERSONAL_GOURMET || mType == TYPE_CREATE_STORE_GOURMET) {
                         addGourmet();

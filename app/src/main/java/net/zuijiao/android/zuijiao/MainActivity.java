@@ -40,6 +40,7 @@ import com.squareup.picasso.Picasso;
 import com.umeng.update.UmengUpdateAgent;
 import com.umeng.update.UmengUpdateListener;
 import com.umeng.update.UpdateResponse;
+import com.zuijiao.android.util.Optional;
 import com.zuijiao.android.zuijiao.model.user.TinyUser;
 import com.zuijiao.android.zuijiao.network.Router;
 import com.zuijiao.controller.ActivityTask;
@@ -162,15 +163,15 @@ public final class MainActivity extends BaseActivity implements MainFragment.Mai
         public void onClick(View v) {
             Intent intent = new Intent();
             intent.setClass(MainActivity.this, UserInfoActivity.class);
-            TinyUser user = Router.getInstance().getCurrentUser().get();
-            if (user == null) {
-                user = new TinyUser();
+            Optional<TinyUser> user = Router.getInstance().getCurrentUser();
+            if (!user.isPresent()) {
+                user = Optional.of(new TinyUser());
                 AuthorInfo authInfo = PreferenceManager.getInstance(mContext).getThirdPartyLoginMsg();
-                user.setNickName(authInfo.getUserName());
-                user.setAvatarURL(authInfo.getHeadPath());
-                user.setIdentifier(authInfo.getUserId());
+                user.get().setNickName(authInfo.getUserName());
+                user.get().setAvatarURL(authInfo.getHeadPath());
+                user.get().setIdentifier(authInfo.getUserId());
             }
-            intent.putExtra("tiny_user", user);
+            intent.putExtra("tiny_user", user.get());
             startActivity(intent);
         }
     };

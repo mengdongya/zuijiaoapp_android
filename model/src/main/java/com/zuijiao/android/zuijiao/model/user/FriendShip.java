@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 /**
  * Created by Chen Hao on 4/28/15.
  */
-public class FriendShip {
+public class FriendShip implements Cloneable {
     @SerializedName("followerCount")
     private Integer followerCount;
     @SerializedName("followingCount")
@@ -29,5 +29,10 @@ public class FriendShip {
 
     public Boolean isFollower() {
         return isFollower == null ? false : isFollower;
+    }
+
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        return super.clone();
     }
 }

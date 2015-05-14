@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 /**
  * Created by Chen Hao on 4/28/15.
  */
-public class Food {
+public class Food implements Cloneable {
     @SerializedName("collectionCount")
     private Integer collectionCount;
     @SerializedName("cuisineCount")
@@ -17,5 +17,10 @@ public class Food {
 
     public Integer getRecommendationCount() {
         return recommendationCount;
+    }
+
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        return super.clone();
     }
 }

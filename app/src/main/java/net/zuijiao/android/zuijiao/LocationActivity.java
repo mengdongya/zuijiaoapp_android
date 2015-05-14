@@ -98,13 +98,13 @@ public class LocationActivity extends BaseActivity {
             SimpleLocation location = locations.get(position);
             Intent intent = new Intent();
             Bundle bundle = new Bundle();
-            if (mProvinceId != -1) {
+            if (mProvinceId != -1) {//city list case
                 bundle.putInt("city_id", location.getId());
                 bundle.putString("city_name", location.getName());
                 intent.putExtra("location", bundle);
                 setResult(RESULT_OK, intent);
                 finish();
-            } else if (isDirectCity(location.getName())) {
+            } else if (isDirectCity(location.getName())) {//direct city case
                 bundle.putInt("province_id", location.getId());
                 bundle.putString("province", location.getName());
                 bundle.putInt("city_id", location.getId());
@@ -112,11 +112,12 @@ public class LocationActivity extends BaseActivity {
                 intent.putExtra("location", bundle);
                 setResult(RESULT_OK, intent);
                 finish();
-            } else {
+            } else {//province case
                 intent.setClass(LocationActivity.this, LocationActivity.class);
                 intent.putExtra("province_id", location.getId());
                 intent.putExtra("province_name", location.getName());
-                mProvinceId = location.getP_id();
+//                mProvinceId = location.getP_id();
+                mProvinceId = location.getId();
                 mProvinceName = location.getName();
                 startActivityForResult(intent, SELECT_CITY_REQ);
             }

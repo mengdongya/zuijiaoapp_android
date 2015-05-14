@@ -99,31 +99,33 @@ public class ThirdPartySDKManager implements AbsSDK.LoginListener {
         this.mThirdPartyUser = ThirdPartyUser;
     }
 
-    public void onLoginFinish(AuthorInfo user) {
+    public void onLoginFinish(AuthorInfo authInfo) {
         Intent in = new Intent();
         in.setAction(MessageDef.ACTION_LOGIN_FINISH);
         mContext.sendBroadcast(in);
-        String userName = user.getUserName();
-        String openid = user.getUid();
-        String imageurl = user.getHeadPath();
-        String platsform = user.getPlatform();
-        String token = user.getToken();
+        String userName = authInfo.getUserName();
+        String openid = authInfo.getUid();
+        String imageurl = authInfo.getHeadPath();
+        String platsform = authInfo.getPlatform();
+        String token = authInfo.getToken();
         Router.getOAuthModule().register(userName, imageurl, openid, platsform, Optional.<String>empty(), Optional.of(token), isNew -> {
                     Toast.makeText(mContext, mContext.getString(R.string.login_success), Toast.LENGTH_SHORT).show();
                     if (!isNew) {
                         String avataUrl = null;
                         if (Router.getInstance().getCurrentUser().get().getAvatarURL().isPresent()) {
                             avataUrl = Router.getInstance().getCurrentUser().get().getAvatarURL().get();
-                            user.setHeadPath(avataUrl);
+                            authInfo.setHeadPath(avataUrl);
                         }
+                        authInfo.setUserName(Router.getInstance().getCurrentUser().get().getNickName());
                     }
-                    PreferenceManager.getInstance(mContext).saveThirdPartyLoginMsg(user);
+                    authInfo.setUserId(Router.getInstance().getCurrentUser().get().getIdentifier());
+                    PreferenceManager.getInstance(mContext).saveThirdPartyLoginMsg(authInfo);
                     Intent intent = new Intent(
                             MessageDef.ACTION_GET_THIRD_PARTY_USER);
                     Bundle bundle = new Bundle();
                     bundle.putBoolean("result", true);
-                    bundle.putString("name", userName);
-                    bundle.putString("head_url", user.getHeadPath());
+                    bundle.putString("name", Router.getInstance().getCurrentUser().get().getNickName());
+                    bundle.putString("head_url", authInfo.getHeadPath());
                     intent.putExtra("userinfo", bundle);
                     mContext.sendBroadcast(intent);
                 }

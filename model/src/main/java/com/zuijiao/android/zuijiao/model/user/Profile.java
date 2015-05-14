@@ -5,13 +5,14 @@ import com.zuijiao.android.util.Optional;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 /**
  * Created by Chen Hao on 4/28/15.
  */
-public class Profile {
+public class Profile implements Cloneable {
     @SerializedName("gender")
     private String gender;
     @SerializedName("birthday")
@@ -23,14 +24,28 @@ public class Profile {
     @SerializedName("story")
     private String story;
     @SerializedName("tasteTags")
-    private List<String> tasteTags;
+    private ArrayList<String> tasteTags;
+
+    public void setEducationBackground(String educationBackground) {
+        this.educationBackground = educationBackground;
+    }
 
     @SerializedName("education")
     private String educationBackground;
+
+    public void setCareer(String career) {
+        this.career = career;
+    }
+
     @SerializedName("career")
     private String career;
     @SerializedName("introduce")
     private String selfIntroduction;
+
+    public void setHobby(String hobby) {
+        this.hobby = hobby;
+    }
+
     @SerializedName("interest")
     private String hobby;
     @SerializedName("languages")
@@ -46,6 +61,8 @@ public class Profile {
         try {
             birthday = sdf.parse(this.birthday);
         } catch (ParseException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return Optional.ofNullable(birthday);
@@ -63,7 +80,7 @@ public class Profile {
         return Optional.ofNullable(story);
     }
 
-    public Optional<List<String>> getTasteTags() {
+    public Optional<ArrayList<String>> getTasteTags() {
         return Optional.ofNullable(tasteTags);
     }
 
@@ -77,6 +94,10 @@ public class Profile {
 
     public Optional<String> getSelfIntroduction() {
         return Optional.ofNullable(selfIntroduction);
+    }
+
+    public void setSelfIntroduction(String selfIntroduction) {
+        this.selfIntroduction = selfIntroduction;
     }
 
     public Optional<String> getHobby() {
@@ -109,7 +130,12 @@ public class Profile {
         this.story = story;
     }
 
-    public void setTasteTags(List<String> tasteTags) {
+    public void setTasteTags(ArrayList<String> tasteTags) {
         this.tasteTags = tasteTags;
+    }
+
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        return super.clone();
     }
 }

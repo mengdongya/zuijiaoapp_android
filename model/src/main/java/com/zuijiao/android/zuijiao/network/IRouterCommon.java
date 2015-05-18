@@ -1,5 +1,6 @@
 package com.zuijiao.android.zuijiao.network;
 
+import com.google.gson.JsonElement;
 import com.squareup.okhttp.Response;
 import com.zuijiao.android.zuijiao.model.common.GourmetTags;
 import com.zuijiao.android.zuijiao.model.common.Restaurants;
@@ -32,4 +33,11 @@ public interface IRouterCommon {
     @FormUrlEncoded
     @POST("/service/v1/captcha/code/create")
     void requestSecurityCode(@Field("mobile") String phoneNumber, Callback<Response> callback);
+
+    @GET("/account/v1/ios/settings")
+    void currentSetting(Callback<JsonElement> callback);
+
+    @FormUrlEncoded
+    @POST("/account/v1/setting/update")
+    void updateConfiguration(@Field("item") String option, @Field("value") Integer setTo, Callback<Response> callback);
 }

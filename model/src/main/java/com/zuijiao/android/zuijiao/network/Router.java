@@ -129,7 +129,7 @@ public class Router {
                 bodyString = buffer.readUtf8();
             }
             String checksum = RequestChecksumGenerator.generateCheckSum(bodyString);
-            builder.addHeader("X-Request-Checksum", checksum);
+            builder.addHeader("X-Request-Checksum", checksum.toUpperCase());
 
             return chain.proceed(builder.build());
         };

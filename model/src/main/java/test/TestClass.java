@@ -1,5 +1,6 @@
 package test;
 
+import com.google.gson.JsonParser;
 import com.squareup.okhttp.Route;
 import com.zuijiao.android.util.DateUtil;
 import com.zuijiao.android.util.HanyuPinyinHelper;
@@ -8,6 +9,7 @@ import com.zuijiao.android.util.Optional;
 import com.zuijiao.android.util.functional.LambdaExpression;
 import com.zuijiao.android.zuijiao.model.Gourmet;
 import com.zuijiao.android.zuijiao.model.Gourmets;
+import com.zuijiao.android.zuijiao.model.common.ConfigurationType;
 import com.zuijiao.android.zuijiao.model.user.User;
 import com.zuijiao.android.zuijiao.network.Router;
 import com.zuijiao.android.zuijiao.network.RouterGourmet;
@@ -83,8 +85,8 @@ public class TestClass {
     }
 
     static void testOp(LambdaExpression expression) {
-        RouterOAuth.INSTANCE.loginEmailRoutine("2",
-                "c81e728d9d4c2f636f067f89cc14862c",
+        RouterOAuth.INSTANCE.loginEmailRoutine("1@1.1",
+                "c4ca4238a0b923820dcc509a6f75849b",
                 Optional.empty(),
                 Optional.empty(),
                 () -> expression.action(),
@@ -96,7 +98,9 @@ public class TestClass {
         Router.setup("http://xielingyu2.zuijiaodev.com", null, null, null, "yyyy-MM-dd'T'HH:mm:ssXXX");
         testOp(() -> {
 
-            Router.getAccountModule().fetchMyInfo(user -> System.out.println(user.getContactInfo().get().getIsEmailBound()), null);
+            Router.getCommonModule().updateConfiguration(ConfigurationType.Like, true, () -> {
+                Router.getCommonModule().currentConfiguration(configuration -> System.out.print(configuration), null);
+            }, null);
 
         });
     }

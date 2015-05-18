@@ -13,7 +13,7 @@ public class ContactInfo implements Cloneable {
     @SerializedName("email")
     private String email;
     @SerializedName("isEmailBind")
-    private String isEmailBound;
+    private Boolean isEmailBound;
 
     public String getPhoneNumber() {
         return phoneNumber;
@@ -31,11 +31,11 @@ public class ContactInfo implements Cloneable {
         this.email = email;
     }
 
-    public String getIsEmailBound() {
+    public Boolean getIsEmailBound() {
         return isEmailBound;
     }
 
-    public void setIsEmailBound(String isEmailBound) {
+    public void setIsEmailBound(Boolean isEmailBound) {
         this.isEmailBound = isEmailBound;
     }
 

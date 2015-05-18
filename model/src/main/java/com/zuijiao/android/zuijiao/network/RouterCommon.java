@@ -1,7 +1,11 @@
 package com.zuijiao.android.zuijiao.network;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.zuijiao.android.util.functional.LambdaExpression;
 import com.zuijiao.android.util.functional.OneParameterExpression;
+import com.zuijiao.android.zuijiao.model.common.Configuration;
+import com.zuijiao.android.zuijiao.model.common.ConfigurationType;
 import com.zuijiao.android.zuijiao.model.common.GourmetTags;
 import com.zuijiao.android.zuijiao.model.common.Restaurants;
 import com.zuijiao.android.zuijiao.model.common.TasteTags;
@@ -41,5 +45,28 @@ public enum RouterCommon {
             , final LambdaExpression successCallback
             , final LambdaExpression failureCallback) {
         service.requestSecurityCode(phoneNumber, CallbackFactory.getInstance().callback(successCallback, failureCallback));
+    }
+
+    public void currentConfiguration(final OneParameterExpression<Configuration> successCallback
+            , final OneParameterExpression<String> failureCallback) {
+
+        OneParameterExpression<JsonElement> configParser = jsonElement -> {
+            JsonObject rawDictionary = jsonElement.getAsJsonObject().get("items")
+                    .getAsJsonObject().get("push").getAsJsonObject();
+            boolean notifyComment = rawDictionary.get("3").getAsInt() != 0;
+            boolean notifyLike = rawDictionary.get("2").getAsInt() != 0;
+            boolean notifyFollowed = rawDictionary.get("1").getAsInt() != 0;
+            Configuration configuration = new Configuration(notifyFollowed, notifyLike, notifyComment);
+            successCallback.action(configuration);
+        };
+
+        service.currentSetting(CallbackFactory.getInstance().callback(configParser, failureCallback));
+    }
+
+    public void updateConfiguration(final ConfigurationType type
+            , final Boolean v
+            , final LambdaExpression successCallback
+            , final OneParameterExpression<String> failureCallback) {
+        service.updateConfiguration(type.toString(), v ? 1 : 0, CallbackFactory.getInstance().callback(successCallback, failureCallback));
     }
 }

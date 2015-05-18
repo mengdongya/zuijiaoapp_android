@@ -8,7 +8,7 @@
         android:id="@+id/login"
         android:orderInCategory="80"
         android:title="@string/confirm"
-        android:textSize="20sp"
+        android:textSize="30sp"
         app:showAsAction="always"
         android:menuCategory="system" />
 

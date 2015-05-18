@@ -56,10 +56,19 @@
         <item name="editTextColor">?android:attr/textColorPrimary</item>
     </style>
 
-    <style name="MenuTextStyle" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Menu">
+    <style name="MenuTextStyle">
         <item name="android:textColor">@android:color/white</item>
-        <item name="android:textSize">22sp</item>
+        <item name="android:textSize">18sp</item>
     </style>
+    <!--<style name="MenuTextStyle" parent="Base.TextAppearance.AppCompat.Widget.ActionBar.Menu">-->
+    <!--<item name="android:textSize">22sp</item>-->
+    <!--<item name="android:textStyle">bold</item>-->
+    <!--<item name="android:textColor">@color/white</item>-->
+    <!--</style>-->
+    <!--<style name="MenuTextStyle" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Menu">-->
+    <!--<item name="android:textColor">@android:color/white</item>-->
+    <!--<item name="android:textSize">22sp</item>-->
+    <!--</style>-->
 
     <!--<style name="AppTheme.ActionBarStyle" parent="Widget.AppCompat.ActionBar.Solid" type="text/css">-->
     <!--<item name="android:titleTextStyle">@style/AppTheme.ActionBar.TitleTextStyle</item>-->

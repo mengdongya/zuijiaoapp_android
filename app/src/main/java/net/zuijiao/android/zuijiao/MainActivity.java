@@ -53,7 +53,8 @@ import java.util.ArrayList;
 
 @ContentView(R.layout.activity_main)
 public final class MainActivity extends BaseActivity implements MainFragment.MainFragmentDataListener {
-
+    private static final int SETTING_REQ = 6001;
+    public static final int LOGOUT_RESULT = 60001;
     // main activity layout widget ,including slide menu
     @ViewInject(R.id.drawer)
     private DrawerLayout mDrawerLayout;
@@ -71,25 +72,16 @@ public final class MainActivity extends BaseActivity implements MainFragment.Mai
     private TextView mThirdPartyUserName = null;
     @ViewInject(R.id.iv_user_head)
     private ImageView mThirdPartyUserHead = null;
-    // content view in main
-    // @ViewInject(R.id.content_items)
-    // private ListView mContentList = null;
-    // float add button
-    // @ViewInject(R.id.iv_add_one)
-    // private ImageButton mIbAdd = null;
-    // instead of actionbar
     @ViewInject(R.id.main_toolbar)
     private Toolbar mToolBar = null;
     @ViewInject(R.id.container_user_info)
     private LinearLayout mUserInfoArea = null;
     @ViewInject(R.id.lv_drawe_items2)
     private ListView mSettingList = null;
-    //    private String[] settingStr;
     private ArrayList<Fragment> mFragmentList = null;
     private MainFragment mMainFragment = null;
     private MainFragment mRecommendFragment = null;
     private MainFragment mFavorFragment = null;
-    //    private MessageFragment mMsgFragment = null;
     private NotificationFragment mNotifyFragment = null;
     private Fragment mCurrentFragment = null;
     private FragmentManager mFragmentMng = null;
@@ -122,12 +114,13 @@ public final class MainActivity extends BaseActivity implements MainFragment.Mai
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     mToolBar.setElevation(0);
                 }
-                mToolBar.getMenu().add(0, R.id.action_already_read, 1, getString(R.string.already_read))
-                        .setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS)
-                        .setOnMenuItemClickListener((MenuItem item) -> {
-                            Toast.makeText(mContext, "hao", Toast.LENGTH_SHORT).show();
-                            return false;
-                        });
+                if (!mToolBar.getMenu().hasVisibleItems())
+                    mToolBar.getMenu().add(0, R.id.action_already_read, 1, getString(R.string.already_read))
+                            .setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS)
+                            .setOnMenuItemClickListener((MenuItem item) -> {
+                                Toast.makeText(mContext, "hao", Toast.LENGTH_SHORT).show();
+                                return false;
+                            });
             } else {
                 mToolBar.getMenu().removeItem(R.id.action_already_read);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -266,7 +259,7 @@ public final class MainActivity extends BaseActivity implements MainFragment.Mai
                 startActivity(feedBackIntent);
             } else if (position == 2) {
                 Intent settingIntent = new Intent(mContext, SettingActivity.class);
-                startActivity(settingIntent);
+                startActivityForResult(settingIntent, SETTING_REQ);
             }
         }
     };
@@ -525,6 +518,21 @@ public final class MainActivity extends BaseActivity implements MainFragment.Mai
                 }).setPositiveButton(R.string.dialog_no, null);
         if (!isFinishing())
             updateAlertDialog.show();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == SETTING_REQ && resultCode == LOGOUT_RESULT) {
+            mFavorFragment.clearFavorData();
+            mNotifyFragment.clearMessage();
+            Toast.makeText(mContext, getString(R.string.logout_msg), Toast.LENGTH_SHORT).show();
+            mBtnLogin.setVisibility(View.VISIBLE);
+            mThirdPartyUserName.setVisibility(View.GONE);
+            mThirdPartyUserHead.setVisibility(View.GONE);
+            mSettingArray = getResources().getStringArray(R.array.settings2);
+            mSettingList.setAdapter(mSettingAdapter);
+        }
     }
 
     @Override

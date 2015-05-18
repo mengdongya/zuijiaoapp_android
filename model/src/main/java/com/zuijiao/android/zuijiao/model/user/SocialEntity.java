@@ -10,6 +10,10 @@ public class SocialEntity extends TinyUser {
     @SerializedName("isFollower")
     private Boolean isFollower;
 
+    public void setIsFollowing(Boolean isFollowing) {
+        this.isFollowing = isFollowing;
+    }
+
     @SerializedName("isFollowing")
     private Boolean isFollowing;
 

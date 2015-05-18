@@ -13,6 +13,7 @@ import com.tencent.mm.sdk.modelbase.BaseResp;
 import com.tencent.mm.sdk.modelmsg.SendAuth.Resp;
 import com.tencent.mm.sdk.openapi.IWXAPI;
 import com.tencent.mm.sdk.openapi.IWXAPIEventHandler;
+import com.tencent.mm.sdk.openapi.WXAPIFactory;
 import com.umeng.analytics.MobclickAgent;
 import com.zuijiao.android.util.Optional;
 import com.zuijiao.android.zuijiao.network.Router;
@@ -50,8 +51,12 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
         super.onCreate(savedInstanceState);
         mApi = WeixinApi.mWeiXinApi;
         Intent i = getIntent();
-        mApi.handleIntent(i, this);
-
+        if (mApi != null) {
+            mApi.handleIntent(i, this);
+//            mApi = WXAPIFactory.createWXAPI(this, WEIXIN_ID, false);
+        } else {
+            WXAPIFactory.createWXAPI(this, WEIXIN_ID, false).handleIntent(i, this);
+        }
     }
 
     @Override
@@ -75,6 +80,10 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
     @Override
     public void onResp(BaseResp resp) {
         Log.i(Tag, "onResp");
+        if (mApi == null) {
+            finish();
+            return;
+        }
         switch (resp.errCode) {
             case BaseResp.ErrCode.ERR_OK:
                 Bundle bundle = new Bundle();

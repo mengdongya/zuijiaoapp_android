@@ -9,12 +9,14 @@ import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
-import com.umeng.analytics.MobclickAgent;
+import com.umeng.message.PushAgent;
+import com.umeng.message.UmengRegistrar;
 import com.zuijiao.android.util.Optional;
 import com.zuijiao.android.util.functional.LambdaExpression;
 import com.zuijiao.android.util.functional.OneParameterExpression;
@@ -85,17 +87,20 @@ public abstract class BaseActivity extends ActionBarActivity {
         filter.addAction(MessageDef.ACTION_GET_THIRD_PARTY_USER);
         filter.addAction(MessageDef.ACTION_REFRESH_RECOMMENDATION);
         registerReceiver(mReceiver, filter);
+        PushAgent.getInstance(mContext).onAppStart();
+        String device_token = UmengRegistrar.getRegistrationId(mContext);
+        Log.e("device_token", device_token);
         ActivityTask.getInstance().addActivity(this);
     }
 
     public void onResume() {
         super.onResume();
-        MobclickAgent.onResume(this);
+//        MobclickAgent.onResume(this);
     }
 
     public void onPause() {
         super.onPause();
-        MobclickAgent.onPause(this);
+//        MobclickAgent.onPause(this);
     }
 
     protected void onLoginFinish() {
@@ -126,6 +131,10 @@ public abstract class BaseActivity extends ActionBarActivity {
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
+    }
+
+    private void initController() {
+
     }
 
     @Override

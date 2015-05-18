@@ -97,4 +97,11 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:padding">10dp</item>
     </style>
+
+
+    <style name="popwin_anim_style">
+        <item name="android:windowEnterAnimation">@anim/share_dialog_show</item>
+        <item name="android:windowExitAnimation">@anim/share_dialog_hide</item>
+    </style>
+
 </resources>

@@ -294,15 +294,19 @@ public class DBOpenHelper extends SQLiteOpenHelper {
 
 
     public boolean insertGourmets(Gourmets gourmets) {
-        for (Gourmet gourmet : gourmets.getGourmets()) {
-            if (!insertGourmet(gourmet)) {
-                return false;
-            } else {
-                insertUserInfo(gourmet.getUser());
-                insertImageUrl(gourmet.getIdentifier(), gourmet.getImageURLs());
-                continue;
+        new Thread(() -> {
+            synchronized (gourmets) {
+                for (Gourmet gourmet : gourmets.getGourmets()) {
+                    if (!insertGourmet(gourmet)) {
+                        break;
+                    } else {
+                        insertUserInfo(gourmet.getUser());
+                        insertImageUrl(gourmet.getIdentifier(), gourmet.getImageURLs());
+                        continue;
+                    }
+                }
             }
-        }
+        }).start();
         return true;
     }
 

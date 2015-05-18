@@ -145,6 +145,9 @@
     <string name="follow_count">%d&#160;&#160;&#160;关注</string>
     <string name="fans_count">%d&#160;&#160;&#160;粉丝</string>
     <string name="follow">关注</string>
+    <string name="followed">已关注</string>
+    <string name="followed_each">互相关注</string>
+    <string name="un_follow">取消关注</string>
     <string name="friend">好友</string>
     <string name="no_follow">我是独行侠，没有关注任何人</string>
     <string name="no_fans">我很低调，暂时还没有粉丝</string>
@@ -241,9 +244,10 @@
     <string name="gender_male">男</string>
     <string name="gender_female">女</string>
     <string name="follow_success">关注成功</string>
-    <string name="un_follow">取消关注</string>
     <string name="un_follow_success">已经取消关注</string>
     <string name="taste_count_upper_limit">最多5个口味标签</string>
     <string name="check_new_version">检查新版本</string>
     <string name="no_update_avaliable">已经是最新版本</string>
+    <string name="share_content">嘴角美食 %s</string>
+    <string name="friend_title">%s的好友</string>
 </resources>

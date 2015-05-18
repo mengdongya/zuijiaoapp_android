@@ -57,7 +57,7 @@
     <color name="almost_transparent">#aa222222</color>
     <color name="user_btn_unpressed">#33373737</color>
     <color name="user_btn_pressed">#99373737</color>
-
+    <color name="test">#ffdb8f</color>
 
     <color name="black_semi_transparent">#B2000000</color>
     <color name="background">#e5e5e5</color>
@@ -67,4 +67,6 @@
     <color name="pink_pressed">#ec407a</color>
     <color name="blue_semi_transparent">#805677fc</color>
     <color name="blue_semi_transparent_pressed">#80738ffe</color>
+    <color name="logout_btn_normal">#ccc91919</color>
+    <color name="logout_btn_pressed">#ff999999</color>
 </resources>

@@ -11,6 +11,7 @@ import android.widget.ProgressBar;
 
 import com.lidroid.xutils.view.annotation.ContentView;
 import com.lidroid.xutils.view.annotation.ViewInject;
+import com.umeng.message.PushAgent;
 import com.zuijiao.android.util.Optional;
 import com.zuijiao.android.zuijiao.model.Gourmet;
 import com.zuijiao.controller.FileManager;
@@ -32,6 +33,8 @@ public class SplashActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        PushAgent mPushAgent = PushAgent.getInstance(getApplicationContext());
+        mPushAgent.enable();
         super.onCreate(savedInstanceState);
         if (mPreferInfo.isAppFirstLaunch()) {
             goToGuide();

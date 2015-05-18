@@ -30,8 +30,11 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.squareup.picasso.Picasso;
+import com.zuijiao.android.zuijiao.model.user.SocialEntity;
 import com.zuijiao.android.zuijiao.model.user.TinyUser;
 import com.zuijiao.android.zuijiao.network.Router;
+import com.zuijiao.db.DBOpenHelper;
 
 import java.util.List;
 
@@ -47,14 +50,15 @@ public class FriendFragment extends Fragment {
     private ListView mListView = null;
     private Activity mActivity = null;
     private static TinyUser mTinyUser = null;
-    private List<TinyUser> data;
+    private List<SocialEntity> data;
+
     private AdapterView.OnItemClickListener mListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
         }
     };
-    private BaseAdapter mAdapter = new BaseAdapter() {
+    public BaseAdapter mAdapter = new BaseAdapter() {
         @Override
         public int getCount() {
             if (data != null) {
@@ -87,12 +91,56 @@ public class FriendFragment extends Fragment {
             } else {
                 holder = (FriendViewHolder) convertView.getTag();
             }
+            SocialEntity user = data.get(position);
+            holder.userName.setText(user.getNickName());
+            Picasso.with(mActivity.getApplicationContext()).load(user.getAvatarURL().get()).placeholder(R.drawable.default_user_head).into(holder.headView);
+            String location = DBOpenHelper.getmInstance(mActivity.getApplicationContext()).getLocationByIds(user.getProvinceId(), user.getCityId());
+            if (location == null || location.equals("")) {
+                location = "";
+            }
+            int recommendationCount = user.getRecommendationGourmetCount();
+            String locationAndRecommendCount = location;
+            if (recommendationCount > 0) {
+                if (!location.equals("")) {
+                    location = location + getString(R.string.splite_dot);
+                }
+                locationAndRecommendCount = location + String.format(getString(R.string.recommendation_count), recommendationCount);
+            }
+            holder.userInfo.setText(locationAndRecommendCount);
+            if (user.isFollowing() && user.isFollower()) {
+                holder.follow.setText(getString(R.string.followed_each));
+            } else if (user.isFollowing() && !user.isFollower()) {
+                holder.follow.setText(getString(R.string.followed));
+            } else {
+                holder.follow.setText(getString(R.string.follow));
+            }
             holder.follow.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Toast.makeText(getActivity().getApplicationContext(), "follow", Toast.LENGTH_SHORT).show();
+                    if (user.isFollowing()) {
+                        Router.getSocialModule().unFollow(user.getIdentifier(), () -> {
+                            if (mTinyUser.getIdentifier() == Router.getInstance().getCurrentUser().get().getIdentifier() && position == FOLLOWING) {
+                                data.remove(user);
+                            }
+                            user.setIsFollowing(false);
+                            mAdapter.notifyDataSetChanged();
+                        }, (error) -> {
+                            Toast.makeText(mActivity, getString(R.string.notify_net2), Toast.LENGTH_SHORT).show();
+                        });
+                    } else {
+                        Router.getSocialModule().unFollow(user.getIdentifier(), () -> {
+//                            if(mTinyUser.getIdentifier() == Router.getInstance().getCurrentUser().get().getIdentifier()){
+//                                mAdapter.notifyDataSetChanged();
+//                            }
+                            user.setIsFollowing(true);
+                            mAdapter.notifyDataSetChanged();
+                        }, (error) -> {
+                            Toast.makeText(mActivity, getString(R.string.notify_net2), Toast.LENGTH_SHORT).show();
+                        });
+                    }
                 }
             });
+
             holder.follow.setFocusable(false);
             return convertView;
         }
@@ -135,16 +183,19 @@ public class FriendFragment extends Fragment {
 
     private void fetchFriendShip() {
         if (position == FOLLOWER) {
-            Router.getSocialModule().getFollowers(null, mTinyUser.getIdentifier(), social -> {
-                if (social.getUsers() != null) {
-
-                    mAdapter.notifyDataSetChanged();
-                }
+            Router.getSocialModule().getFollowersOfUserId(mTinyUser.getIdentifier(), null, 500, socialEntities -> {
+                data = socialEntities.getUsers();
+                mAdapter.notifyDataSetChanged();
             }, errorMsg -> {
-
+                Toast.makeText(mActivity, getString(R.string.notify_net2), Toast.LENGTH_SHORT).show();
             });
         } else if (position == FOLLOWING) {
-
+            Router.getSocialModule().getFollowingsOfUserId(mTinyUser.getIdentifier(), null, 500, socialEntities -> {
+                data = socialEntities.getUsers();
+                mAdapter.notifyDataSetChanged();
+            }, errorMsg -> {
+                Toast.makeText(mActivity, getString(R.string.notify_net2), Toast.LENGTH_SHORT).show();
+            });
         }
     }
 
@@ -154,5 +205,6 @@ public class FriendFragment extends Fragment {
         TextView userInfo;
         Button follow;
     }
+
 
 }

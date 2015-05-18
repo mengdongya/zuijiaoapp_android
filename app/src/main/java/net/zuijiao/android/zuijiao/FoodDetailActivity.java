@@ -7,7 +7,9 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
@@ -42,7 +44,21 @@ import android.widget.Toast;
 
 import com.lidroid.xutils.view.annotation.ContentView;
 import com.lidroid.xutils.view.annotation.ViewInject;
+import com.sina.weibo.sdk.auth.AuthInfo;
+import com.sina.weibo.sdk.auth.sso.SsoHandler;
 import com.squareup.picasso.Picasso;
+import com.umeng.socialize.bean.SHARE_MEDIA;
+import com.umeng.socialize.bean.SocializeEntity;
+import com.umeng.socialize.bean.StatusCode;
+import com.umeng.socialize.controller.UMServiceFactory;
+import com.umeng.socialize.controller.UMSocialService;
+import com.umeng.socialize.controller.listener.SocializeListeners;
+import com.umeng.socialize.media.UMImage;
+import com.umeng.socialize.sso.QZoneSsoHandler;
+import com.umeng.socialize.sso.SinaSsoHandler;
+import com.umeng.socialize.sso.UMQQSsoHandler;
+import com.umeng.socialize.sso.UMSsoHandler;
+import com.umeng.socialize.weixin.controller.UMWXHandler;
 import com.zuijiao.android.util.Optional;
 import com.zuijiao.android.zuijiao.model.Comment;
 import com.zuijiao.android.zuijiao.model.Comments;
@@ -66,11 +82,15 @@ public class FoodDetailActivity extends BaseActivity implements
         OnScrollListener {
 
     public static final int EDIT_GOURMET_REQ = 4001;
+    public static final String SCOPE = "all";
+    protected static final String REDIRECT_URL = "https://api.weibo.com/oauth2/default.html";
     private static final int SHARE_TO_WEIBO = 0;
     private static final int SHARE_TO_WECHAT = 1;
     private static final int SHARE_TO_FRIEND_CIRCLE = 2;
     private static final int SHARE_TO_QQ = 3;
     private static final int SHARE_TO_QQ_SPACE = 4;
+    protected final String WEIBO_ID = "2632486726";// key
+    final UMSocialService mController = UMServiceFactory.getUMSocialService("com.umeng.share");
     @ViewInject(R.id.food_detail_toolbar)
     private Toolbar mToolbar;
     @ViewInject(R.id.food_detail_container)
@@ -98,13 +118,13 @@ public class FoodDetailActivity extends BaseActivity implements
     private View mLayoutTopFloat = null;
     @ViewInject(R.id.food_detail_image_dots)
     private LinearLayout mImageIndex = null;
+    ;
     private TopViewHolder floatHolder = null;
     private TopViewHolder topHolder = null;
     @ViewInject(R.id.food_detail_food_msg_title)
     private TextView mGourmetMsgTitle = null;
     @ViewInject(R.id.food_detail_food_msg_splite)
     private View mGourmetMsgSpliteView = null;
-    ;
     @ViewInject(R.id.food_detail_food_msg_price)
     private TextView mFoodPrice = null;
     @ViewInject(R.id.food_detail_food_msg_location)
@@ -229,7 +249,6 @@ public class FoodDetailActivity extends BaseActivity implements
             }
         }
     };
-
     private OnClickListener userHeadListener = (View v) -> {
         Intent intent = new Intent();
         intent.setClass(mContext, UserInfoActivity.class);
@@ -471,12 +490,16 @@ public class FoodDetailActivity extends BaseActivity implements
 //    }
     private int mShareImageRes[] = {R.drawable.share_weibo, R.drawable.share_weixin, R.drawable.share_friend_circle, R.drawable.share_qq, R.drawable.share_qq_space};
     private int mShareTextRes[] = {R.string.weibo, R.string.weixin_friend, R.string.weixin_friend_circle, R.string.qq_friend, R.string.qq_space};
+    private AuthInfo mAuthInfo = null;
+    private SsoHandler mSsoHandler;
+    boolean b = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-
+//        mWeiboShareAPI =  WeiboShareSDK.createWeiboAPI(this, "07bb6cb0e7a3db40fbb98ac8d2cf43d5");
+//          b =  mWeiboShareAPI.registerApp();
     }
 
     @Override
@@ -509,67 +532,117 @@ public class FoodDetailActivity extends BaseActivity implements
     }
 
     private void createShareWindow() {
-        PopupWindow sharePopupWindow = null;
+
         View view = null;
         GridView shareList = null;
-        if (null == sharePopupWindow) {
-            view = LayoutInflater.from(mContext).inflate(R.layout.share_dialog, null);
-            shareList = (GridView) view.findViewById(R.id.gv_share_dialog);
-            shareList.setAdapter(new BaseAdapter() {
-                @Override
-                public int getCount() {
-                    return 5;
-                }
+        view = LayoutInflater.from(mContext).inflate(R.layout.share_dialog, null);
+        shareList = (GridView) view.findViewById(R.id.gv_share_dialog);
+        shareList.setAdapter(new BaseAdapter() {
+            @Override
+            public int getCount() {
+                return 5;
+            }
 
-                @Override
-                public Object getItem(int position) {
-                    return position;
-                }
+            @Override
+            public Object getItem(int position) {
+                return position;
+            }
 
-                @Override
-                public long getItemId(int position) {
-                    return position;
-                }
+            @Override
+            public long getItemId(int position) {
+                return position;
+            }
 
-                @Override
-                public View getView(int position, View convertView, ViewGroup parent) {
-                    View contentView = LayoutInflater.from(mContext).inflate(R.layout.share_item, null);
-                    TextView text = (TextView) contentView.findViewById(R.id.share_item_text);
-                    ImageView image = (ImageView) contentView.findViewById(R.id.share_item_image);
-                    text.setText(getString(mShareTextRes[position]));
-                    image.setImageResource(mShareImageRes[position]);
-                    return contentView;
-                }
-            });
-            shareList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+                View contentView = LayoutInflater.from(mContext).inflate(R.layout.share_item, null);
+                TextView text = (TextView) contentView.findViewById(R.id.share_item_text);
+                ImageView image = (ImageView) contentView.findViewById(R.id.share_item_image);
+                text.setText(getString(mShareTextRes[position]));
+                image.setImageResource(mShareImageRes[position]);
+                return contentView;
+            }
+        });
 
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view,
-                                        int position, long id) {
-                    distributeShareAction(position);
-                }
-            });
-            sharePopupWindow = new PopupWindow(view,
-                    LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT, true);
-        }
+        final PopupWindow sharePopupWindow = new PopupWindow(view,
+                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT, true);
+        shareList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view,
+                                    int position, long id) {
+                sharePopupWindow.dismiss();
+                distributeShareAction(position);
+            }
+        });
+        sharePopupWindow.setAnimationStyle(R.style.popwin_anim_style);
         sharePopupWindow.setTouchable(true);
+        sharePopupWindow.setBackgroundDrawable(new BitmapDrawable(getResources(), (Bitmap) null));
+//        sharePopupWindow.setBackgroundDrawable(new BitmapDrawable());
         sharePopupWindow.setOutsideTouchable(true);
         sharePopupWindow.showAtLocation(rootView, Gravity.BOTTOM, 0, 0);
     }
 
+    private String mShareUrl = "/zuijiao/share/cuisine?id=";
+
     private void distributeShareAction(int action) {
+        mController.setShareContent(String.format(getString(R.string.share_content), gourmet.getName()));
+        mController.setShareImage(new UMImage(mContext, R.drawable.shanghai));
+//        mController.setShareImage(new UMImage(mContext ,gourmet.getImageURLs().get(0)));
+        mController.setShareMedia(new UMImage(mContext,
+                BuildConfig.Base_Url + mShareUrl + gourmet.getIdentifier()));
         switch (action) {
             case SHARE_TO_WEIBO:
+                mController.getConfig().setSsoHandler(new SinaSsoHandler());
+                mController.getConfig().setSinaCallbackUrl("https://api.weibo.com/oauth2/default.html");
+                performShare(SHARE_MEDIA.SINA);
                 break;
             case SHARE_TO_WECHAT:
+                UMWXHandler wxHandler = new UMWXHandler(this, "wx908961ddfd5cade9", "b04cac11c4477cf5e07ecffd6ca6bf86");
+                wxHandler.addToSocialSDK();
+                performShare(SHARE_MEDIA.WEIXIN);
                 break;
             case SHARE_TO_FRIEND_CIRCLE:
+                UMWXHandler wxCircleHandler = new UMWXHandler(this, "wx908961ddfd5cade9", "b04cac11c4477cf5e07ecffd6ca6bf86");
+                wxCircleHandler.setToCircle(true);
+                wxCircleHandler.addToSocialSDK();
+                performShare(SHARE_MEDIA.WEIXIN_CIRCLE);
                 break;
             case SHARE_TO_QQ:
+                UMQQSsoHandler qqSsoHandler = new UMQQSsoHandler(this,
+                        "1103495820", "NlMKnzZYdhg4TmwE");
+                qqSsoHandler.setTargetUrl("http://www.umeng.com/social");
+                qqSsoHandler.addToSocialSDK();
+                performShare(SHARE_MEDIA.QQ);
                 break;
             case SHARE_TO_QQ_SPACE:
+                QZoneSsoHandler qZoneSsoHandler = new QZoneSsoHandler(this,
+                        "1103495820", "NlMKnzZYdhg4TmwE");
+                qZoneSsoHandler.addToSocialSDK();
+                performShare(SHARE_MEDIA.QZONE);
                 break;
         }
+    }
+
+
+    private void performShare(SHARE_MEDIA platform) {
+        mController.postShare(this, platform, new SocializeListeners.SnsPostListener() {
+
+            @Override
+            public void onStart() {
+            }
+
+            @Override
+            public void onComplete(SHARE_MEDIA platform, int eCode, SocializeEntity entity) {
+                String showText = platform.toString();
+                if (eCode == StatusCode.ST_CODE_SUCCESSED) {
+                    showText += "success!";
+                } else {
+                    showText += "failed";
+                }
+                //Toast.makeText(mContext, showText, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void refreshGourmet() {
@@ -614,6 +687,10 @@ public class FoodDetailActivity extends BaseActivity implements
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == EDIT_GOURMET_REQ && resultCode == RESULT_OK) {
 
+        }
+        UMSsoHandler ssoHandler = mController.getConfig().getSsoHandler(requestCode);
+        if (ssoHandler != null) {
+            ssoHandler.authorizeCallBack(requestCode, resultCode, data);
         }
         super.onActivityResult(requestCode, resultCode, data);
     }

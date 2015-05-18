@@ -102,6 +102,7 @@ public class MainFragment extends Fragment implements FragmentDataListener,
     public void setType(int type) {
         this.mContentType = type;
     }
+
     public void setUser(TinyUser user) {
         mDisplayUser = user;
         bSelf = displaySelfInfo();
@@ -119,14 +120,16 @@ public class MainFragment extends Fragment implements FragmentDataListener,
             }
         }
         bSelf = displaySelfInfo();
-        mAdapter = new MainAdapter();
-        mListView.setAdapter(mAdapter);
+        if (mAdapter == null) {
+            mAdapter = new MainAdapter();
+            mListView.setAdapter(mAdapter);
+        }
         if (mAdapter.getCount() < 20) {
             mListView.setPullLoadEnable(false);
         } else {
             mListView.setPullLoadEnable(true);
         }
-        if (mContentType == FAVOR_PAGE && mAdapter.getCount() != 0) {
+        if (mContentType == FAVOR_PAGE || mContentType == RECOMMEND_PAGE && mAdapter.getCount() != 0) {
             mFavorCount.setVisibility(View.VISIBLE);
             mFavorCount.setText(String.format(getString(R.string.favor_count), mAdapter.getCount()));
         } else {
@@ -571,6 +574,7 @@ public class MainFragment extends Fragment implements FragmentDataListener,
         }
         return mDisplayUser.getIdentifier().equals(PreferenceManager.getInstance(mContext).getStoredUserId());
     }
+
     private class MainAdapter extends BaseAdapter {
         Optional<List<Gourmet>> gourmets;
 

@@ -208,9 +208,13 @@ public final class UserInfoActivity extends BaseActivity implements View.OnClick
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_edit_self_info:
-                Intent intent = new Intent();
-                intent.setClass(mContext, EditUserInfoActivity.class);
-                startActivityForResult(intent, EDIT_USER_INFO_REQ);
+                if (mFullUser == null) {
+                    getUserInfo();
+                } else {
+                    Intent intent = new Intent();
+                    intent.setClass(mContext, EditUserInfoActivity.class);
+                    startActivityForResult(intent, EDIT_USER_INFO_REQ);
+                }
                 break;
             case R.id.menu_follow_someone:
                 if (mFullUser != null && mFullUser.getFriendShip() != null && mFullUser.getFriendShip().isFollowing()) {
@@ -291,7 +295,15 @@ public final class UserInfoActivity extends BaseActivity implements View.OnClick
             Toast.makeText(mContext, getString(R.string.notify_net2), Toast.LENGTH_SHORT).show();
         };
         if ((mTinyUser.getIdentifier().equals(mPreferMng.getStoredUserId()) || mTinyUser.getIdentifier() == -1)) {
-            Router.getAccountModule().fetchMyInfo(successExpression, failExpression);
+            if (Router.getInstance().getCurrentUser().isPresent()) {
+                Router.getAccountModule().fetchMyInfo(successExpression, failExpression);
+            } else {
+                tryLoginFirst(() -> {
+                    getUserInfo();
+                }, errorMsg -> {
+                    Toast.makeText(mContext, getString(R.string.notify_net2), Toast.LENGTH_SHORT).show();
+                });
+            }
         } else {
             Router.getAccountModule().fetchUserInfoById(mTinyUser.getIdentifier(), successExpression, failExpression);
         }
@@ -347,11 +359,19 @@ public final class UserInfoActivity extends BaseActivity implements View.OnClick
             case R.id.user_info_fans:
                 intent.setClass(UserInfoActivity.this, FriendActivity.class);
                 intent.putExtra("friend_index", 1);
+                if (mFullUser != null && mFullUser.getFriendShip() != null) {
+                    intent.putExtra("follow_count", mFullUser.getFriendShip().getFollowingCount());
+                    intent.putExtra("fans_conut", mFullUser.getFriendShip().getFollowerCount());
+                }
                 intent.putExtra("tiny_user", mTinyUser);
                 break;
             case R.id.user_info_follow:
                 intent.setClass(UserInfoActivity.this, FriendActivity.class);
                 intent.putExtra("friend_index", 0);
+                if (mFullUser != null && mFullUser.getFriendShip() != null) {
+                    intent.putExtra("follow_count", mFullUser.getFriendShip().getFollowingCount());
+                    intent.putExtra("fans_conut", mFullUser.getFriendShip().getFollowerCount());
+                }
                 intent.putExtra("tiny_user", mTinyUser);
                 break;
             case R.id.user_info_wish:

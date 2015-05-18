@@ -189,7 +189,7 @@ public class FileManager {
             image.name = displayname;
             image.id = id;
             image.data = data;
-            list.add(image);
+            list.add(0, image);
         }
         cursor.close();
         return list;

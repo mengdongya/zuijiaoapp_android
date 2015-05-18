@@ -29,7 +29,7 @@ public class WeiboApi extends AbsSDK {
     private AuthorInfo userInfo;
     protected final String WEIBO_ID = "2632486726";// key
     public static final String SCOPE = "all";
-    protected static final String REDIRECT_URL = "https://api.weibo.com/oauth2/default.html";
+    public static final String REDIRECT_URL = "https://api.weibo.com/oauth2/default.html";
     private LoginListener mListener;
     private Weibo mWeibo = null;
 

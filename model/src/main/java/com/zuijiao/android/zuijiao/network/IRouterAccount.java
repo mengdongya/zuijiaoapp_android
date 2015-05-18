@@ -47,7 +47,8 @@ public interface IRouterAccount {
     @GET("/users/v2/person/{id}")
     void fetchUserInfoByIdentifier(@Path("id") Integer identifier, Callback<User> callback);
 
-    @GET("/account/v2/mobile/info")
+    // FIXME: should use /account/v2/mobile/info
+    @GET("/account/v2/info")
     void fetchMyInfo(Callback<User> callback);
 
 }

@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 
 import com.sina.weibo.sdk.auth.Oauth2AccessToken;
+import com.zuijiao.android.zuijiao.model.common.Configuration;
 import com.zuijiao.entity.AuthorInfo;
 
 import java.util.Date;
@@ -16,6 +17,7 @@ public class PreferenceManager {
     private static PreferenceManager mPreferenceMng = null;
     private static Context mContext = null;
     private static AuthorInfo authInfo = null;
+    private Configuration configs;
 
     private PreferenceManager() {
 
@@ -36,6 +38,10 @@ public class PreferenceManager {
      * @return
      */
 
+    public static AuthorInfo getAuthInfo() {
+        return authInfo;
+    }
+
     /**
      * init from shared_preference
      *
@@ -55,40 +61,25 @@ public class PreferenceManager {
         return mPreferInfo;
     }
 
-    /**
-     * setting items
-     *
-     * @author Bobo
-     */
-    public class PreferenceInfo {
-        private boolean isAppFirstLaunch = true;
-        private String userKey = "";
-        private String userId = "";
+    public Configuration getConfigs() {
+        SharedPreferences sp = mContext.getSharedPreferences(PreferencesDef.FILE_NAME, Activity.MODE_PRIVATE);
+        boolean notifyFollowed = sp.getBoolean("notify_followed", true);
+        boolean notifyLike = sp.getBoolean("notify_like", true);
+        boolean notifyComment = sp.getBoolean("notify_comment", true);
+        return new Configuration(notifyFollowed, notifyLike, notifyComment);
+    }
 
-        public String getUserKey() {
-            return userKey;
-        }
+    public void saveConfig(Configuration config) {
+        Editor editor = mContext.getSharedPreferences(PreferencesDef.FILE_NAME, Activity.MODE_PRIVATE).edit();
+        editor.putBoolean("notify_followed", config.isNotifyFollowed());
+        editor.putBoolean("notify_like", config.isNotifyLike());
+        editor.putBoolean("notify_comment", config.isNotifyComment());
+        ;
+        editor.commit();
+    }
 
-        public void setUserKey(String userKey) {
-            this.userKey = userKey;
-        }
-
-        public boolean isAppFirstLaunch() {
-            return isAppFirstLaunch;
-        }
-
-        public void setAppFirstLaunch(boolean isAppFirstLaunch) {
-            this.isAppFirstLaunch = isAppFirstLaunch;
-        }
-
-        public String getUserId() {
-            return userId;
-        }
-
-        public void setUserId(String userId) {
-            this.userId = userId;
-        }
-
+    public PreferenceInfo getPreferInfo() {
+        return mPreferInfo;
     }
 
     /**
@@ -98,17 +89,6 @@ public class PreferenceManager {
      */
     public void setPreferInfo(PreferenceInfo mPreferInfo) {
         PreferenceManager.mPreferInfo = mPreferInfo;
-    }
-
-    public PreferenceInfo getPreferInfo() {
-        return mPreferInfo;
-    }
-
-    public interface PreferencesDef {
-        public static final String FILE_NAME = "settings";
-        public static final String IS_APP_FIRST_LAUNCH = "boolean_first_launch";
-        public static final String USER_KEY = "str_user_key";
-        public static final String USER_ID = "str_user_id";
     }
 
     public void saveFirstLaunch() {
@@ -196,15 +176,15 @@ public class PreferenceManager {
         return sp.getInt("user_id", -1);
     }
 
-    public static AuthorInfo getAuthInfo() {
-        return authInfo;
+    public String getStoredBindEmail() {
+        SharedPreferences sp = mContext.getSharedPreferences(PreferencesDef.FILE_NAME, Activity.MODE_PRIVATE);
+        return sp.getString("email", "");
     }
 
     public void saveMainLastRefreshTime(Long time) {
         SharedPreferences sp = mContext.getSharedPreferences(PreferencesDef.FILE_NAME, Activity.MODE_PRIVATE);
         sp.edit().putLong("main_refresh_time", time).commit();
     }
-
 
     public void saveFavorLastRefreshTime(Long time) {
         SharedPreferences sp = mContext.getSharedPreferences(PreferencesDef.FILE_NAME, Activity.MODE_PRIVATE);
@@ -229,5 +209,48 @@ public class PreferenceManager {
     public long getMsgLastRefreshTime() {
         SharedPreferences sp = mContext.getSharedPreferences(PreferencesDef.FILE_NAME, Activity.MODE_PRIVATE);
         return sp.getLong("msg_refresh_time", new Date().getTime());
+    }
+
+    public interface PreferencesDef {
+        public static final String FILE_NAME = "settings";
+        public static final String IS_APP_FIRST_LAUNCH = "boolean_first_launch";
+        public static final String USER_KEY = "str_user_key";
+        public static final String USER_ID = "str_user_id";
+    }
+
+    /**
+     * setting items
+     *
+     * @author Bobo
+     */
+    public class PreferenceInfo {
+        private boolean isAppFirstLaunch = true;
+        private String userKey = "";
+        private String userId = "";
+
+        public String getUserKey() {
+            return userKey;
+        }
+
+        public void setUserKey(String userKey) {
+            this.userKey = userKey;
+        }
+
+        public boolean isAppFirstLaunch() {
+            return isAppFirstLaunch;
+        }
+
+        public void setAppFirstLaunch(boolean isAppFirstLaunch) {
+            this.isAppFirstLaunch = isAppFirstLaunch;
+        }
+
+        public String getUserId() {
+            return userId;
+        }
+
+        public void setUserId(String userId) {
+            this.userId = userId;
+        }
+
     }
 }

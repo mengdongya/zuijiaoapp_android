@@ -69,6 +69,7 @@
             android:layout_gravity="center"
             android:singleLine="false"
             android:text="食物名称"
+            android:gravity="center"
             android:textColor="@color/white"
             android:textSize="12sp" />
 

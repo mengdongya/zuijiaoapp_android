@@ -17,17 +17,21 @@ import com.zuijiao.view.PagerSlidingTab;
 /**
  * Created by xiaqibo on 2015/5/5.
  */
-public class NotificationFragment extends Fragment {
+public class NotificationFragment extends Fragment implements MessageFragment.OnMessageFetch {
     private ViewPager mViewPager = null;
     private PagerSlidingTab mTabs = null;
     private MessageFragment mMsgFragment = null;
     private MessageFragment mNotifyFragment = null;
+    private FriendPagerAdapter mPagerAdapter = null;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View contentView = inflater.inflate(R.layout.fragment_notification, null);
         mViewPager = (ViewPager) contentView.findViewById(R.id.notification_view_pager);
-        mViewPager.setAdapter(new FriendPagerAdapter(getActivity().getSupportFragmentManager()));
+        if (mPagerAdapter == null) {
+            mPagerAdapter = new FriendPagerAdapter(getActivity().getSupportFragmentManager());
+        }
+        mViewPager.setAdapter(mPagerAdapter);
         mTabs = (PagerSlidingTab) contentView.findViewById(R.id.notification_tabs);
         initTabsValue();
         mTabs.setViewPager(mViewPager);
@@ -73,6 +77,16 @@ public class NotificationFragment extends Fragment {
         mTabs.setTextColor(Color.parseColor("#eeeeee"));
     }
 
+    public void setAllRead() {
+        if (mMsgFragment != null) {
+            mMsgFragment.markRead();
+        }
+        if (mNotifyFragment != null) {
+            mNotifyFragment.markRead();
+        }
+    }
+
+
     public class FriendPagerAdapter extends FragmentPagerAdapter {
 
 
@@ -82,9 +96,9 @@ public class NotificationFragment extends Fragment {
 
         @Override
         public CharSequence getPageTitle(int position) {
-            if (position == 0) {
+            if (position == 1) {
                 return getString(R.string.comment);
-            } else if (position == 1) {
+            } else if (position == 0) {
                 return getString(R.string.notification);
             }
             return "!";
@@ -97,8 +111,27 @@ public class NotificationFragment extends Fragment {
 
         @Override
         public Fragment getItem(int position) {
-            return new MessageFragment(getActivity().getApplicationContext());
+            if (mNotifyFragment == null) {
+                mNotifyFragment = new MessageFragment(getActivity().getApplicationContext(), NotificationFragment.this, 0);
+            }
+            if (mMsgFragment == null) {
+                mMsgFragment = new MessageFragment(getActivity().getApplicationContext(), NotificationFragment.this, 1);
+            }
+            if (position == 0) {
+                return mNotifyFragment;
+            } else if (position == 1) {
+                return mMsgFragment;
+            } else {
+                return new MessageFragment(getActivity().getApplicationContext(), NotificationFragment.this);
+            }
 //            return FriendFragment.newInstance(position);
         }
+    }
+
+
+    @Override
+    public void onFetch() {
+        mTabs.setTabText(0, String.format(getString(R.string.notification_with_count), mNotifyFragment.getSize()));
+        mTabs.setTabText(1, String.format(getString(R.string.comment_with_count), mMsgFragment.getSize()));
     }
 }

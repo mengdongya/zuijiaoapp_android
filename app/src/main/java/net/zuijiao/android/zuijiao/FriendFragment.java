@@ -17,6 +17,7 @@
 package net.zuijiao.android.zuijiao;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -55,7 +56,10 @@ public class FriendFragment extends Fragment {
     private AdapterView.OnItemClickListener mListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
+            Intent intent = new Intent();
+            intent.setClass(getActivity(), UserInfoActivity.class);
+            intent.putExtra("tiny_user", data.get(position));
+            startActivity(intent);
         }
     };
     public BaseAdapter mAdapter = new BaseAdapter() {

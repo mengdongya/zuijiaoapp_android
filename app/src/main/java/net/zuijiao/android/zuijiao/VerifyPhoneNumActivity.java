@@ -95,8 +95,9 @@ public class VerifyPhoneNumActivity extends BaseActivity {
                 return;
             }
             mSendBtn.setText(String.format(getString(R.string.re_send_verification_code_delayed), msg.arg1));
-            msg.arg1 = --second;
-            mHandler.sendMessageDelayed(msg, 1000);
+            Message msg1 = Message.obtain();
+            msg1.arg1 = --second;
+            mHandler.sendMessageDelayed(msg1, 1000);
         }
     };
 

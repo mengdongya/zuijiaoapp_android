@@ -118,7 +118,13 @@ public final class MainActivity extends BaseActivity implements MainFragment.Mai
                     mToolBar.getMenu().add(0, R.id.action_already_read, 1, getString(R.string.already_read))
                             .setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS)
                             .setOnMenuItemClickListener((MenuItem item) -> {
-                                Toast.makeText(mContext, "hao", Toast.LENGTH_SHORT).show();
+                                Router.getMessageModule().markAsRead(() -> {
+                                    if (mNotifyFragment != null) {
+                                        mNotifyFragment.setAllRead();
+                                    }
+                                }, () -> {
+                                    Toast.makeText(mContext, getString(R.string.notify_net2), Toast.LENGTH_SHORT).show();
+                                });
                                 return false;
                             });
             } else {

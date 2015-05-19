@@ -66,6 +66,10 @@
             android:name="net.zuijiao.android.zuijiao.MainActivity"
             android:screenOrientation="portrait" />
         <activity
+            android:label="@string/bind_email"
+            android:name="net.zuijiao.android.zuijiao.BindEmailActivity"
+            android:screenOrientation="portrait" />
+        <activity
             android:label="@string/favor_label"
             android:name="net.zuijiao.android.zuijiao.FavorPersonListActivity"
             android:screenOrientation="portrait" />

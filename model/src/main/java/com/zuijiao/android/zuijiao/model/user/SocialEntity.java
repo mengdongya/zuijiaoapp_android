@@ -2,10 +2,12 @@ package com.zuijiao.android.zuijiao.model.user;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
+
 /**
  * Created by user on 4/28/15.
  */
-public class SocialEntity extends TinyUser {
+public class SocialEntity extends TinyUser implements Serializable {
 
     @SerializedName("isFollower")
     private Boolean isFollower;

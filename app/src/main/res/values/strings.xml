@@ -79,6 +79,7 @@
     <string name="favor_label">%s人喜欢</string>
     <string name="comment_hint">写下你的评论</string>
     <string name="notify_net2">请检查你的网络</string>
+    <string name="notify_net3">无法同步设置，请检查你的网络</string>
     <string name="today">今天</string>
     <string name="yesterday">昨天</string>
     <string name="beforeyesterday">前天</string>
@@ -224,10 +225,12 @@
     <string name="re_send_verification_code">重新获取</string>
     <string name="re_send_verification_code_delayed">%d秒后重新获取</string>
     <string name="input_telephone">输入手机号</string>
-    <string name="input_verification_num">输入验证码</string>
+    <string name="input_verification_num">输入验证码(4位)</string>
     <string name="my_language">擅长语言</string>
     <string name="notification">通知</string>
     <string name="comment">评论</string>
+    <string name="notification_with_count">通知&#160;&#160;&#160;&#160;%s</string>
+    <string name="comment_with_count">评论&#160;&#160;&#160;&#160;%s</string>
     <string name="already_read">已阅</string>
     <string name="label_count">%d个标签</string>
     <string name="image_count_upper_limit">最多%d张图片</string>
@@ -250,4 +253,10 @@
     <string name="no_update_avaliable">已经是最新版本</string>
     <string name="share_content">嘴角美食 %s</string>
     <string name="friend_title">%s的好友</string>
+    <string name="email_bound">已经绑定邮箱不可修改</string>
+    <string name="bind_email">绑定邮箱</string>
+    <string name="favor_your_recommendation">喜欢了你推荐的&#160;&#160;%s</string>
+    <string name="follow_you">关注了你</string>
+    <string name="no_gourmet_related">抱歉，没有找到相关美食</string>
+    <string name="no_user_related">抱歉，没有找到此人</string>
 </resources>

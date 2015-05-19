@@ -144,6 +144,9 @@ public class MainFragment extends Fragment implements FragmentDataListener,
                              Bundle savedInstanceState) {
         this.mInflater = inflater;
         mActivity = getActivity();
+        if (mContext == null) {
+            mContext = mActivity.getApplicationContext();
+        }
         mContentView = inflater.inflate(R.layout.fragment_main, null);
         mLayout = (LinearLayout) mContentView.findViewById(R.id.main_empty_content);
         mListView = (RefreshAndInitListView) mContentView

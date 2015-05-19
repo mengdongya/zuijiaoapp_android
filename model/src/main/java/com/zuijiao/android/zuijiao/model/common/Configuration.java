@@ -5,26 +5,39 @@ package com.zuijiao.android.zuijiao.model.common;
  */
 public class Configuration {
 
+
     private Boolean notifyFollowed;
     private Boolean notifyLike;
     private Boolean notifyComment;
 
-    public Configuration (Boolean notifyFollowed, Boolean notifyLike, Boolean notifyComment) {
+    public Configuration(Boolean notifyFollowed, Boolean notifyLike, Boolean notifyComment) {
         this.notifyComment = notifyComment;
         this.notifyFollowed = notifyFollowed;
         this.notifyLike = notifyLike;
     }
 
-    public Boolean isNotifyFollowed () {
+    public Boolean isNotifyFollowed() {
         return notifyFollowed;
     }
 
-    public Boolean isNotifyLike () {
+    public Boolean isNotifyLike() {
         return notifyLike;
     }
 
-    public Boolean isNotifyComment () {
+    public Boolean isNotifyComment() {
         return notifyComment;
+    }
+
+    public void setNotifyFollowed(Boolean notifyFollowed) {
+        this.notifyFollowed = notifyFollowed;
+    }
+
+    public void setNotifyLike(Boolean notifyLike) {
+        this.notifyLike = notifyLike;
+    }
+
+    public void setNotifyComment(Boolean notifyComment) {
+        this.notifyComment = notifyComment;
     }
 
     @Override

@@ -20,6 +20,7 @@
             android:layout_width="match_parent"
             android:layout_alignParentBottom="true"
             android:textSize="18sp"
+            android:maxLength="15"
             android:inputType="number"
             android:hint="@string/input_telephone"
             android:id="@+id/verify_number_et_number" />
@@ -44,6 +45,7 @@
         android:textColorHint="@color/tv_light_gray"
         android:layout_width="match_parent"
         android:textSize="18sp"
+        android:maxLength="4"
         android:inputType="number"
         android:layout_alignBottom="@+id/verify_number_btn_send"
         android:hint="@string/input_verification_num"

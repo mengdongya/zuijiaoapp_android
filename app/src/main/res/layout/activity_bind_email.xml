@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <include
+        android:id="@+id/bind_email_toolbar"
+        layout="@layout/toolbar" />
+
+    <com.zuijiao.view.MyEditText
+        android:id="@+id/bind_email_et_email"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dip"
+        android:layout_marginRight="10dip"
+        android:layout_marginBottom="10dip"
+        android:layout_marginTop="20dip"
+        android:drawableBottom="@drawable/single_line"
+        android:hint="@string/email"
+        android:inputType="textEmailAddress"
+        android:singleLine="true"
+        android:textColor="@color/black" />
+
+    <com.zuijiao.view.MyEditText
+        android:id="@+id/bind_email_et_password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dip"
+        android:layout_marginTop="10dip"
+        android:drawableBottom="@drawable/single_line"
+        android:hint="@string/password"
+        android:inputType="textPassword"
+        android:singleLine="true"
+        android:textColor="@color/black" />
+
+    <com.zuijiao.view.MyEditText
+        android:id="@+id/bind_email_password_confirm"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dip"
+        android:layout_marginTop="10dip"
+        android:drawableBottom="@drawable/single_line"
+        android:hint="@string/password_confirm"
+        android:inputType="textPassword"
+        android:singleLine="true"
+        android:textColor="@color/black" />
+</LinearLayout>

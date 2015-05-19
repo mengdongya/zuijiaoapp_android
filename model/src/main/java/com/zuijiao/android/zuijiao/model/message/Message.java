@@ -42,6 +42,10 @@ public class Message {
         return isRead;
     }
 
+    public void setIsRead(boolean isRead) {
+        this.isRead = isRead;
+    }
+
     public Date getCreateTime() {
         return createTime;
     }

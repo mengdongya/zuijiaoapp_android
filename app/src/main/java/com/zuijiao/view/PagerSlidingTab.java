@@ -85,7 +85,7 @@ public class PagerSlidingTab extends HorizontalScrollView {
     private int tabPadding = 24;
     private int dividerWidth = 1;
 
-    private int tabTextSize = 12;
+    private int tabTextSize = 16;
     private int tabTextColor = 0xFF666666;
     private int selectedTabTextColor = 0xFF666666;
     private Typeface tabTypeface = null;
@@ -503,6 +503,11 @@ public class PagerSlidingTab extends HorizontalScrollView {
     public void setTextColorResource(int resId) {
         this.tabTextColor = getResources().getColor(resId);
         updateTabStyles();
+    }
+
+
+    public void setTabText(int index, String text) {
+        ((TextView) tabsContainer.getChildAt(index)).setText(text);
     }
 
     public int getTextColor() {

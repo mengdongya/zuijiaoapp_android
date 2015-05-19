@@ -3,6 +3,7 @@ package net.zuijiao.android.zuijiao;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
@@ -11,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -18,10 +20,12 @@ import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 import com.zuijiao.android.util.Optional;
+import com.zuijiao.android.zuijiao.model.Gourmet;
 import com.zuijiao.android.zuijiao.model.message.Message;
+import com.zuijiao.android.zuijiao.model.message.Messages;
 import com.zuijiao.android.zuijiao.model.message.News;
+import com.zuijiao.android.zuijiao.model.user.TinyUser;
 import com.zuijiao.android.zuijiao.network.Router;
-import com.zuijiao.controller.FileManager;
 import com.zuijiao.controller.PreferenceManager;
 import com.zuijiao.utils.StrUtil;
 import com.zuijiao.view.RefreshAndInitListView;
@@ -33,29 +37,63 @@ import java.util.List;
 
 public class MessageFragment extends Fragment implements FragmentDataListener,
         MyListViewListener {
-    private View mContentView = null;
     public RefreshAndInitListView mListView = null;
     public MessageAdapter mAdapter = null;
+    private View mContentView = null;
     private LayoutInflater mInflater = null;
     private Context mContext;
     private AdapterView.OnItemClickListener mItemClickListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            FileManager.tmpMessageGourmet = mAdapter.getItem(position - 1).getGourmet().get();
-            Intent intent = new Intent(mContext, FoodDetailActivity.class);
-            startActivity(intent);
+//            FileManager.tmpMessageGourmet = mAdapter.getItem(position - 1).getGourmet().get();
+//            Intent intent = new Intent(mContext, FoodDetailActivity.class);
+//            startActivity(intent);
+            Message msg = mAdapter.getItem(position - 1);
+            if (msg.getType() == Message.Type.Favorite || msg.getType() == Message.Type.Comment) {
+                if (msg.getGourmet().isPresent()) {
+                    Gourmet gourmet = msg.getGourmet().get();
+                    Intent intent = new Intent();
+                    intent.putExtra("selected_gourmet", gourmet);
+                    intent.setClass(mContext, FoodDetailActivity.class);
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(mContext, getString(R.string.no_gourmet_related), Toast.LENGTH_SHORT).show();
+                }
+            } else if (msg.getType() == Message.Type.Follower) {
+                if (msg.getFromUser() != null) {
+                    TinyUser user = msg.getFromUser();
+                    Intent intent = new Intent();
+                    intent.setClass(mContext, UserInfoActivity.class);
+                    intent.putExtra("tiny_user", user);
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(mContext, getString(R.string.no_user_related), Toast.LENGTH_SHORT).show();
+                }
+            } else {
+
+            }
         }
     };
+    private int mType = 0;
     private LinearLayout mLayout = null;
     private Activity mActivity = null;
+    private OnMessageFetch messageListener;
 
     public MessageFragment() {
         super();
     }
 
-    public MessageFragment(Context context) {
+    public MessageFragment(Context context, OnMessageFetch messageListener) {
         super();
         this.mContext = context;
+        this.messageListener = messageListener;
+    }
+
+    public MessageFragment(Context context, OnMessageFetch messageListener, int type) {
+        super();
+        this.mContext = context;
+        this.messageListener = messageListener;
+        this.mType = type;
     }
 
     @Override
@@ -64,20 +102,11 @@ public class MessageFragment extends Fragment implements FragmentDataListener,
         if (mContentView == null) {
             mContentView = inflater.inflate(R.layout.fragment_message, null);
         }
-//        mContentView = inflater.inflate(R.layout.fragment_message, null);
         this.mInflater = inflater;
         mActivity = getActivity();
         mListView = (RefreshAndInitListView) mContentView
                 .findViewById(R.id.lv_msg);
-//        mTextView = (TextView) mContentView.findViewById(R.id.tv_main_fm_blank);
         mLayout = (LinearLayout) mContentView.findViewById(R.id.message_empty_content);
-//        mAdapter = new MesssageAdapter();
-//        mListView.setAdapter(mAdapter);
-//        mListView.setListViewListener(this);
-//        mListView.setOnItemClickListener(mItemClickListener);
-//        mListView.setPullLoadEnable(true);
-//        mListView.autoResetHeadView();
-
         mAdapter = new MessageAdapter();
         mListView.setAdapter(mAdapter);
         mListView.setOnItemClickListener(mItemClickListener);
@@ -135,6 +164,10 @@ public class MessageFragment extends Fragment implements FragmentDataListener,
 
     }
 
+    public String getSize() {
+        if (mAdapter == null) return "";
+        return mAdapter.getCount() + "";
+    }
     private void networkStep(boolean bRefresh) {
         if (Router.getInstance().getCurrentUser().equals(Optional.empty())) {
             ((BaseActivity) getActivity()).tryLoginFirst(() -> {
@@ -168,47 +201,14 @@ public class MessageFragment extends Fragment implements FragmentDataListener,
             Message theLatestOne = tmpMessages.get(tmpMessages.size() - 1);
             theLastOneIdentifier = theLatestOne.getIdentifier();
         }
-        Router.getMessageModule().message(News.NotificationType.Comment, theLastOneIdentifier, null, 20, msg -> {
-            if (bRefresh) {
-                if (!msg.getAllMessage().isEmpty()) {
-                    mLayout.setVisibility(View.GONE);
-                    List<Message> msgList = msg.getAllMessage();
-                    if (mAdapter == null) {
-                        mAdapter = new MessageAdapter();
-                    }
-                    mAdapter.setData(msgList);
-                    mListView.setAdapter(mAdapter);
-                    if (msg.getAllMessage().size() < 20) {
-                        mListView.setPullLoadEnable(false);
-                    } else {
-                        mListView.setPullLoadEnable(true);
-                    }
-                } else {
-                    mListView.setPullLoadEnable(false);
-                    mAdapter.setData(new ArrayList<Message>());
-                    mAdapter.notifyDataSetChanged();
-                    mLayout.setVisibility(View.VISIBLE);
-                }
-                mListView.stopRefresh();
-            } else {
-                if (!msg.getAllMessage().isEmpty()) {
-                    if (mAdapter.mData == null) {
-                        mAdapter.mData = new ArrayList<Message>();
-                    }
-                    mAdapter.mData.addAll(msg.getAllMessage());
-                    mAdapter.notifyDataSetChanged();
-                    if (msg.getAllMessage().size() < 20) {
-                        mListView.setPullLoadEnable(false);
-                    } else {
-                        mListView.setPullLoadEnable(true);
-                    }
-                } else {
-                    mListView.setPullLoadEnable(false);
-                    Toast.makeText(mContext, getString(R.string.no_more), Toast.LENGTH_SHORT).show();
-                }
-                mListView.stopLoadMore();
-            }
-            PreferenceManager.getInstance(mContext).saveMsgLastRefreshTime(new Date().getTime());
+        News.NotificationType type = News.NotificationType.Empty;
+        if (mType == 0) {
+            type = News.NotificationType.Notice;
+        } else if (mType == 1) {
+            type = News.NotificationType.Comment;
+        }
+        Router.getMessageModule().message(type, theLastOneIdentifier, null, 500, msg -> {
+            onMessageFetchSuccess(bRefresh, msg);
         }, errorMsg -> {
             Toast.makeText(mContext, getString(R.string.notify_net), Toast.LENGTH_LONG).show();
             mListView.stopRefresh();
@@ -216,6 +216,49 @@ public class MessageFragment extends Fragment implements FragmentDataListener,
         });
     }
 
+    private void onMessageFetchSuccess(boolean bRefresh, Messages msg) {
+        if (bRefresh) {
+            if (!msg.getAllMessage().isEmpty()) {
+                mLayout.setVisibility(View.GONE);
+                List<Message> msgList = msg.getAllMessage();
+                if (mAdapter == null) {
+                    mAdapter = new MessageAdapter();
+                }
+                mAdapter.setMessage(msgList);
+                mListView.setAdapter(mAdapter);
+                if (msg.getAllMessage().size() < 20) {
+                    mListView.setPullLoadEnable(false);
+                } else {
+                    mListView.setPullLoadEnable(true);
+                }
+            } else {
+                mListView.setPullLoadEnable(false);
+                mAdapter.setMessage(new ArrayList<Message>());
+                mAdapter.notifyDataSetChanged();
+                mLayout.setVisibility(View.VISIBLE);
+            }
+            mListView.stopRefresh();
+        } else {
+            if (!msg.getAllMessage().isEmpty()) {
+                if (mAdapter.mData == null) {
+                    mAdapter.mData = new ArrayList<Message>();
+                }
+                mAdapter.mData.addAll(msg.getAllMessage());
+                mAdapter.notifyDataSetChanged();
+                if (msg.getAllMessage().size() < 20) {
+                    mListView.setPullLoadEnable(false);
+                } else {
+                    mListView.setPullLoadEnable(true);
+                }
+            } else {
+                mListView.setPullLoadEnable(false);
+                Toast.makeText(mContext, getString(R.string.no_more), Toast.LENGTH_SHORT).show();
+            }
+            mListView.stopLoadMore();
+        }
+        if (messageListener != null) messageListener.onFetch();
+        PreferenceManager.getInstance(mContext).saveMsgLastRefreshTime(new Date().getTime());
+    }
     public void clearMessage() {
         try {
             mAdapter.mData.clear();
@@ -223,13 +266,23 @@ public class MessageFragment extends Fragment implements FragmentDataListener,
             mListView.setPullLoadEnable(false);
         } catch (Throwable t) {
             System.err.println("no message");
-            ;
         }
     }
 
+    public void markRead() {
+        for (Message msg : mAdapter.mData) {
+            msg.setIsRead(true);
+        }
+        mAdapter.notifyDataSetChanged();
+    }
+
+    public interface OnMessageFetch {
+        public void onFetch();
+    }
+
+    //    public List<Message> mData = new ArrayList<>();
     private class MessageAdapter extends BaseAdapter {
         public List<Message> mData = new ArrayList<>();
-
         @Override
         public int getCount() {
             if (mData == null) {
@@ -245,8 +298,7 @@ public class MessageFragment extends Fragment implements FragmentDataListener,
 
         @Override
         public long getItemId(int position) {
-            // TODO Auto-generated method stub
-            return 0;
+            return position;
         }
 
         @Override
@@ -261,6 +313,7 @@ public class MessageFragment extends Fragment implements FragmentDataListener,
                 holder.time = (TextView) convertView.findViewById(R.id.msg_item_date);
                 holder.userhead = (ImageView) convertView.findViewById(R.id.msg_item_user_head);
                 holder.userName = (TextView) convertView.findViewById(R.id.msg_item_user_name);
+                holder.nameOrPic = (FrameLayout) convertView.findViewById(R.id.msg_item_food);
                 convertView.setTag(holder);
             } else {
                 holder = (ViewHolder) convertView.getTag();
@@ -272,31 +325,43 @@ public class MessageFragment extends Fragment implements FragmentDataListener,
                         .load(msg.getFromUser().getAvatarURL().get())
                         .placeholder(R.drawable.default_user_head)
                         .into(holder.userhead);
-            holder.time.setText(StrUtil.formatTime(msg.getCreateTime(), mContext));
-            if (msg.getGourmet().get().getImageURLs() != null && msg.getGourmet().get().getImageURLs().size() != 0) {
-                Optional<String> gourmetImage = Optional.of(msg.getGourmet().get().getImageURLs().get(0) + "!Thumbnails");
-                Picasso.with(parent.getContext())
-                        .load(gourmetImage.get())
-                        .placeholder(R.drawable.empty_view_greeting)
-                        .into(holder.gourmetPic);
-                holder.gourmetName.setVisibility(View.GONE);
-                holder.gourmetPic.setVisibility(View.VISIBLE);
-            } else {
-                holder.gourmetName.setText(msg.getGourmet().get().getName());
-                holder.gourmetName.setVisibility(View.VISIBLE);
-                holder.gourmetPic.setVisibility(View.GONE);
+            if (mType == 1)
+                holder.comment.setText(msg.getDescription());
+            else {
+                String description = null;
+                if (msg.getType() == Message.Type.Favorite) {
+                    description = String.format(getString(R.string.favor_your_recommendation), msg.getGourmet().isPresent() ? msg.getGourmet().get().getName() : "");
+                } else if (msg.getType() == Message.Type.Follower) {
+                    description = getString(R.string.follow_you);
+                }
+                holder.comment.setText(description);
             }
-
-//            if (gourmetImage.isPresent()) {
-//
-//            } else {
-//
-//            }
-            holder.comment.setText(msg.getDescription());
+            if (msg.getIsRead())
+                holder.comment.setTextColor(Color.GRAY);
+            else
+                holder.comment.setTextColor(Color.BLACK);
+            holder.time.setText(StrUtil.formatTime(msg.getCreateTime(), mContext));
+            if (mType == 0) {
+                holder.nameOrPic.setVisibility(View.GONE);
+            } else {
+                if (msg.getGourmet().get().getImageURLs() != null && msg.getGourmet().get().getImageURLs().size() != 0) {
+                    Optional<String> gourmetImage = Optional.of(msg.getGourmet().get().getImageURLs().get(0) + "!Thumbnails");
+                    Picasso.with(parent.getContext())
+                            .load(gourmetImage.get())
+                            .placeholder(R.drawable.empty_view_greeting)
+                            .into(holder.gourmetPic);
+                    holder.gourmetName.setVisibility(View.GONE);
+                    holder.gourmetPic.setVisibility(View.VISIBLE);
+                } else {
+                    holder.gourmetName.setText(msg.getGourmet().get().getName());
+                    holder.gourmetName.setVisibility(View.VISIBLE);
+                    holder.gourmetPic.setVisibility(View.GONE);
+                }
+            }
             return convertView;
         }
 
-        public void setData(List<Message> list) {
+        public void setMessage(List<Message> list) {
             mData = list;
             notifyDataSetChanged();
         }
@@ -308,6 +373,7 @@ public class MessageFragment extends Fragment implements FragmentDataListener,
             TextView gourmetName;
             ImageView userhead;
             ImageView gourmetPic;
+            FrameLayout nameOrPic;
         }
     }
 }

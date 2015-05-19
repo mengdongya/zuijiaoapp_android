@@ -116,8 +116,8 @@ public final class UserInfoActivity extends BaseActivity implements View.OnClick
                 if (mFullUser != null && mFullUser.getProfile() != null) {
                     String age = "";
                     try {
-//                        int now = new Date().getYear() ;
-//                        int birth =  mFullUser.getProfile().getBirthday().get().getYear() ;
+                        int now = new Date().getYear();
+                        int birth = mFullUser.getProfile().getBirthday().get().getYear();
                         age = String.format(getString(R.string.year_old), new Date().getYear() + 1900 - mFullUser.getProfile().getBirthday().get().getYear());
                     } catch (Throwable t) {
                         t.printStackTrace();
@@ -325,9 +325,7 @@ public final class UserInfoActivity extends BaseActivity implements View.OnClick
                 }, errorMsg -> {
                     Toast.makeText(mContext, getString(R.string.notify_net2), Toast.LENGTH_SHORT).show();
                 });
-            } else {
-                getUserInfo();
-            }
+            } else getUserInfo();
         }
         if (mTinyUser.getAvatarURL().isPresent())
             Picasso.with(mContext).load(mTinyUser.getAvatarURL().get()).placeholder(R.drawable.default_user_head).into(mUserHead);

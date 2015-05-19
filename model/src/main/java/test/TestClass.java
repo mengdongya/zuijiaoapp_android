@@ -98,9 +98,7 @@ public class TestClass {
         Router.setup("http://xielingyu2.zuijiaodev.com", null, null, null, "yyyy-MM-dd'T'HH:mm:ssXXX");
         testOp(() -> {
 
-            Router.getCommonModule().updateConfiguration(ConfigurationType.Like, true, () -> {
-                Router.getCommonModule().currentConfiguration(configuration -> System.out.print(configuration), null);
-            }, null);
+            Router.getAccountModule().fetchMyInfo(null, null);
 
         });
     }

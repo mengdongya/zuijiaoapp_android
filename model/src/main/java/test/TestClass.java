@@ -98,7 +98,7 @@ public class TestClass {
         Router.setup("http://xielingyu2.zuijiaodev.com", null, null, null, "yyyy-MM-dd'T'HH:mm:ssXXX");
         testOp(() -> {
 
-            Router.getAccountModule().fetchMyInfo(null, null);
+            Router.getMessageModule().markAsRead(() -> System.out.println("succ"), () ->  System.out.println("failed"));
 
         });
     }

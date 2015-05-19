@@ -23,7 +23,7 @@ public class RequestChecksumGenerator {
         key = key == null ? random : key;
         try {
             hash = MD5.crypt(key);
-        } catch (NoSuchAlgorithmException e) {
+        } catch (NoSuchAlgorithmException | IllegalArgumentException e) {
             e.printStackTrace();
             hash = "42b90196b487c54069097a68fe98ab6f";
         }

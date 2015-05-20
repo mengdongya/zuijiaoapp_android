@@ -30,6 +30,9 @@ public interface IRouterCommon {
     @GET(RootURL + "/restaurant/search")
     void restaurantSearch(@Query("key") String key, @Query("count") Integer count, Callback<Restaurants> restaurantsCallback);
 
+    @GET(RootURL + "languages")
+    void languages(Callback<Restaurants> restaurantsCallback);
+
     @FormUrlEncoded
     @POST("/service/v1/captcha/code/create")
     void requestSecurityCode(@Field("mobile") String phoneNumber, Callback<Response> callback);

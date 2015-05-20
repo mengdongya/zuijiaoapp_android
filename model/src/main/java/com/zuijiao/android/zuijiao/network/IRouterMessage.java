@@ -31,7 +31,6 @@ public interface IRouterMessage {
     @POST(RootURL + "/ios/notifications/read")
     void markAsRead(@Field("showGroupID") Integer groupID, Callback<Response> callback);
 
-    @FormUrlEncoded
     @POST(RootURL + "/notifications/read")
     void markAsRead(Callback<Response> callback);
 

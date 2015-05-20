@@ -1,16 +1,28 @@
 package test;
 
+import com.google.gson.JsonParser;
+import com.squareup.okhttp.Route;
+import com.zuijiao.android.util.DateUtil;
+import com.zuijiao.android.util.HanyuPinyinHelper;
+import com.zuijiao.android.util.MD5;
 import com.zuijiao.android.util.Optional;
 import com.zuijiao.android.util.functional.LambdaExpression;
 import com.zuijiao.android.zuijiao.model.Gourmet;
 import com.zuijiao.android.zuijiao.model.Gourmets;
 import com.zuijiao.android.zuijiao.model.common.ConfigurationType;
+import com.zuijiao.android.zuijiao.model.user.User;
 import com.zuijiao.android.zuijiao.network.Router;
 import com.zuijiao.android.zuijiao.network.RouterGourmet;
 import com.zuijiao.android.zuijiao.network.RouterOAuth;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.zip.CRC32;
 
 import javax.xml.bind.DatatypeConverter;
 
@@ -86,9 +98,7 @@ public class TestClass {
         Router.setup("http://xielingyu2.zuijiaodev.com", null, null, null, "yyyy-MM-dd'T'HH:mm:ssXXX");
         testOp(() -> {
 
-            Router.getCommonModule().updateConfiguration(ConfigurationType.Like, false, () -> {
-                Router.getCommonModule().currentConfiguration(configuration -> System.out.print(configuration), null);
-            }, null);
+            Router.getMessageModule().markAsRead(() -> System.out.println("succ"), () ->  System.out.println("failed"));
 
         });
     }

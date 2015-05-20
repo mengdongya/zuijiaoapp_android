@@ -44,10 +44,10 @@ public interface IRouterAccount {
     @POST("/account/v2/contract/mobile/update")
     void updatePhoneNumber(@Field("mobile") String phoneNumber, @Field("code") String securityCode, Callback<Response> callback);
 
-    @GET("/users/v2/person/{id}")
+    @GET("/users/v2/mobile/person/{id}")
     void fetchUserInfoByIdentifier(@Path("id") Integer identifier, Callback<User> callback);
 
-    @GET("/account/v2/info")
+    @GET("/account/v2/mobile/info")
     void fetchMyInfo(Callback<User> callback);
 
 }

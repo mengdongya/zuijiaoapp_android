@@ -3,6 +3,7 @@ package com.zuijiao.android.zuijiao.network;
 import com.google.gson.JsonElement;
 import com.squareup.okhttp.Response;
 import com.zuijiao.android.zuijiao.model.common.GourmetTags;
+import com.zuijiao.android.zuijiao.model.common.Languages;
 import com.zuijiao.android.zuijiao.model.common.Restaurants;
 import com.zuijiao.android.zuijiao.model.common.TasteTags;
 
@@ -30,8 +31,8 @@ public interface IRouterCommon {
     @GET(RootURL + "/restaurant/search")
     void restaurantSearch(@Query("key") String key, @Query("count") Integer count, Callback<Restaurants> restaurantsCallback);
 
-    @GET(RootURL + "languages")
-    void languages(Callback<Restaurants> restaurantsCallback);
+    @GET(RootURL + "/languages")
+    void languages(Callback<Languages> restaurantsCallback);
 
     @FormUrlEncoded
     @POST("/service/v1/captcha/code/create")

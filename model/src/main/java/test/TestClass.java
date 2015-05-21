@@ -10,7 +10,9 @@ import com.zuijiao.android.util.functional.LambdaExpression;
 import com.zuijiao.android.zuijiao.model.Gourmet;
 import com.zuijiao.android.zuijiao.model.Gourmets;
 import com.zuijiao.android.zuijiao.model.common.ConfigurationType;
+import com.zuijiao.android.zuijiao.model.message.News;
 import com.zuijiao.android.zuijiao.model.user.User;
+import com.zuijiao.android.zuijiao.network.Cache;
 import com.zuijiao.android.zuijiao.network.Router;
 import com.zuijiao.android.zuijiao.network.RouterGourmet;
 import com.zuijiao.android.zuijiao.network.RouterOAuth;
@@ -98,7 +100,11 @@ public class TestClass {
         Router.setup("http://xielingyu2.zuijiaodev.com", null, null, null, "yyyy-MM-dd'T'HH:mm:ssXXX");
         testOp(() -> {
 
-            Router.getMessageModule().markAsRead(() -> System.out.println("succ"), () ->  System.out.println("failed"));
+//            Router.getGourmetModule().addGourmet("pri", "add", "20", "desc", null, null, 1, 1, true, null, null);
+
+            Router.getGourmetModule().fetchMyRecommendationList(null, 20, null, null);
+
+//            Router.getMessageModule().markAsRead(() -> System.out.println("succ"), () -> System.out.println("failed"));
 
         });
     }

@@ -128,7 +128,7 @@ public enum RouterGourmet {
                 , tagsJson
                 , provinceId
                 , cityId
-                , isPrivate ? 0 : 1
+                , isPrivate ? 1 : 0
                 , CallbackFactory.getInstance().callback(successCallback, failureCallback));
     }
 
@@ -151,7 +151,7 @@ public enum RouterGourmet {
                 , description
                 , imagesUrlJson
                 , tagsJson
-                , isPrivate ? 0 : 1
+                , isPrivate ? 1 : 0
                 , CallbackFactory.getInstance().callback(successCallback, failureCallback));
     }
 

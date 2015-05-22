@@ -241,10 +241,13 @@ public class EditUserInfoActivity extends BaseActivity {
         editText.requestFocus();
         AlertDialog alertDialog = new AlertDialog.Builder(EditUserInfoActivity.this).setView(contentView).setTitle(title).setPositiveButton(getString(R.string.save), finishListener).create();
         alertDialog.show();
-        new Handler().postDelayed(() -> {
-            InputMethodManager inputManager =
-                    (InputMethodManager) editText.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-            inputManager.showSoftInput(editText, 0);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                InputMethodManager inputManager =
+                        (InputMethodManager) editText.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                inputManager.showSoftInput(editText, 0);
+            }
         }, 200);
     }
 
@@ -260,6 +263,9 @@ public class EditUserInfoActivity extends BaseActivity {
         createDialog();
         Router.getAccountModule().update(mTmpFullUser, () -> {
             bAnyInfoChanged = true;
+            if (!mFullUser.getNickname().equals(mTmpFullUser.getNickname())) {
+                mPreferMng.saveNickname(mTmpFullUser.getNickname().get());
+            }
             mFullUser = mTmpFullUser.clone();
             mBaseInfoAdapter.notifyDataSetChanged();
             mContactInfoAdapter.notifyDataSetChanged();

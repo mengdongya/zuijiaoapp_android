@@ -157,6 +157,12 @@ public class PreferenceManager {
         boolean b = sp.edit().putString("headurl", avatarPath).commit();
     }
 
+
+    public void saveNickname(String nickname) {
+        SharedPreferences sp = mContext.getSharedPreferences(PreferencesDef.FILE_NAME, Activity.MODE_PRIVATE);
+        boolean b = sp.edit().putString("nickname", nickname).commit();
+    }
+
     public AuthorInfo getThirdPartyLoginMsg() {
         SharedPreferences sp = mContext.getSharedPreferences(PreferencesDef.FILE_NAME, Activity.MODE_PRIVATE);
         authInfo = new AuthorInfo();

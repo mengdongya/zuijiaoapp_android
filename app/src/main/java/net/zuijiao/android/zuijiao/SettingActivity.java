@@ -15,10 +15,12 @@ import android.widget.Toast;
 import com.kyleduo.switchbutton.SwitchButton;
 import com.lidroid.xutils.view.annotation.ContentView;
 import com.lidroid.xutils.view.annotation.ViewInject;
+import com.zuijiao.android.util.Optional;
 import com.zuijiao.android.util.functional.LambdaExpression;
 import com.zuijiao.android.zuijiao.model.common.Configuration;
 import com.zuijiao.android.zuijiao.model.common.ConfigurationType;
 import com.zuijiao.android.zuijiao.network.Router;
+import com.zuijiao.controller.FileManager;
 import com.zuijiao.controller.PreferenceManager;
 import com.zuijiao.controller.ThirdPartySDKManager;
 
@@ -101,9 +103,15 @@ public class SettingActivity extends BaseActivity {
             createDialog();
             ThirdPartySDKManager.getInstance(mContext).logout(mContext);
             PreferenceManager.getInstance(mContext).clearThirdPartyLoginMsg();
+            try {
+                FileManager.recommendList.get().clear();
+                FileManager.favorGourmets.get().clear();
+            } catch (Exception e) {
+            }
             Router.getOAuthModule().visitor(() -> {
                 backToMain();
             }, errorMessage -> {
+                Router.getInstance().setCurrentUser(Optional.empty());
                 backToMain();
             });
         });

@@ -57,7 +57,7 @@
                 android:paddingLeft="20dip"
                 android:paddingRight="20dip"
                 android:id="@+id/edit_info_base_info_lv"
-                android:divider="@color/bg_light_gray"
+                android:divider="@color/bg_gray_white"
                 android:dividerHeight="1dip" />
 
             <TextView
@@ -112,7 +112,7 @@
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 android:id="@+id/edit_info_contact_lv"
-                android:divider="@color/bg_light_gray"
+                android:divider="@color/bg_gray_white"
                 android:dividerHeight="1dip" />
 
             <TextView
@@ -139,7 +139,7 @@
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 android:id="@+id/edit_info_detail_lv"
-                android:divider="@color/bg_light_gray"
+                android:divider="@color/bg_gray_white"
                 android:dividerHeight="1dip" />
         </LinearLayout>
     </ScrollView>

@@ -30,6 +30,8 @@ public class Router {
 
     RestAdapter restAdapter;
     Optional<String> accessToken = Optional.empty();
+
+
     Optional<TinyUser> currentUser = Optional.empty();
 
 
@@ -100,6 +102,10 @@ public class Router {
         return currentUser;
     }
 
+    public void setCurrentUser(Optional<TinyUser> currentUser) {
+        this.currentUser = currentUser;
+    }
+
     static String convertJsonFromList(List l) {
         if (l == null) return "[]";
 
@@ -156,6 +162,8 @@ public class Router {
         return RouterMessage.INSTANCE;
     }
 
-    public static RouterSocial getSocialModule() { return RouterSocial.INSTANCE; }
+    public static RouterSocial getSocialModule() {
+        return RouterSocial.INSTANCE;
+    }
 
 }

@@ -18,9 +18,9 @@ public class Profile implements Cloneable {
     @SerializedName("birthday")
     private String birthday;
     @SerializedName("provinceID")
-    private Integer provinceId;
+    private Integer provinceId = 0;
     @SerializedName("cityID")
-    private Integer cityId;
+    private Integer cityId = 0;
     @SerializedName("story")
     private String story;
     @SerializedName("tasteTags")
@@ -102,6 +102,10 @@ public class Profile implements Cloneable {
 
     public Optional<String> getHobby() {
         return Optional.ofNullable(hobby);
+    }
+
+    public void setLanguages(List<String> languages) {
+        this.languages = languages;
     }
 
     public Optional<List<String>> getLanguages() {

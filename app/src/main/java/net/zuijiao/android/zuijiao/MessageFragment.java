@@ -45,9 +45,6 @@ public class MessageFragment extends Fragment implements FragmentDataListener,
     private AdapterView.OnItemClickListener mItemClickListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//            FileManager.tmpMessageGourmet = mAdapter.getItem(position - 1).getGourmet().get();
-//            Intent intent = new Intent(mContext, FoodDetailActivity.class);
-//            startActivity(intent);
             Message msg = mAdapter.getItem(position - 1);
             if (msg.getType() == Message.Type.Favorite || msg.getType() == Message.Type.Comment) {
                 if (msg.getGourmet().isPresent()) {
@@ -72,6 +69,7 @@ public class MessageFragment extends Fragment implements FragmentDataListener,
             } else {
 
             }
+//            Router.getMessageModule().markAsRead();
         }
     };
     private int mType = 0;
@@ -168,6 +166,7 @@ public class MessageFragment extends Fragment implements FragmentDataListener,
         if (mAdapter == null) return "";
         return mAdapter.getCount() + "";
     }
+
     private void networkStep(boolean bRefresh) {
         if (Router.getInstance().getCurrentUser().equals(Optional.empty())) {
             ((BaseActivity) getActivity()).tryLoginFirst(() -> {
@@ -259,6 +258,7 @@ public class MessageFragment extends Fragment implements FragmentDataListener,
         if (messageListener != null) messageListener.onFetch();
         PreferenceManager.getInstance(mContext).saveMsgLastRefreshTime(new Date().getTime());
     }
+
     public void clearMessage() {
         try {
             mAdapter.mData.clear();
@@ -283,6 +283,7 @@ public class MessageFragment extends Fragment implements FragmentDataListener,
     //    public List<Message> mData = new ArrayList<>();
     private class MessageAdapter extends BaseAdapter {
         public List<Message> mData = new ArrayList<>();
+
         @Override
         public int getCount() {
             if (mData == null) {

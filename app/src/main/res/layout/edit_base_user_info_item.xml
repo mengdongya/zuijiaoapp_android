@@ -11,7 +11,7 @@
         android:gravity="left|center_vertical"
         android:singleLine="true"
         android:layout_weight="1"
-        android:textColor="@color/tv_light_gray"
+        android:textColor="@color/black"
         android:paddingBottom="15dip"
         android:paddingTop="15dip"
         android:textSize="15sp"
@@ -20,6 +20,7 @@
     <TextView
         android:layout_height="wrap_content"
         android:layout_width="0dip"
+        android:textColor="@color/black"
         android:gravity="right|center_vertical"
         android:paddingBottom="15dip"
         android:paddingTop="15dip"
@@ -27,7 +28,6 @@
         android:singleLine="true"
         android:id="@+id/edit_base_info_item_value"
         android:textSize="15sp"
-        android:textColor="@color/black"
         android:padding="10dip"
         android:text="@string/default_user_name" />
 

@@ -31,6 +31,7 @@
         android:layout_centerVertical="true"
         android:gravity="center_vertical"
         android:text="3"
+        android:layout_marginRight="20dip"
         android:textColor="@color/tv_orange_red"
         android:textSize="14sp" />
 

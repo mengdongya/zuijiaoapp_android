@@ -18,7 +18,7 @@ public class User implements Serializable, Cloneable {
     private String nickname;
     @SerializedName("imageUrl")
     private String avatarURL;
-    @SerializedName("profiles")
+    @SerializedName("profile")
     private Profile profile;
     @SerializedName("foods")
     private Food food;

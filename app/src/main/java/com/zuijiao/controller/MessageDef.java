@@ -7,5 +7,6 @@ public interface MessageDef {
     public static final String ACTION_GET_THIRD_PARTY_USER = "net.zuijiao.android.thirdparty.userinfo";
 
     public static final String ACTION_REFRESH_RECOMMENDATION = "net.zuijiao.android.refresh_recommendation";
+    public static final String ACTION_PUSH_RECEIVED = "net.zuijiao.android.push_received";
 
 }

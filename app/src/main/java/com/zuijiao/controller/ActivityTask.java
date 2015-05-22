@@ -8,6 +8,7 @@ import android.app.Application;
 import android.content.ComponentName;
 import android.content.Context;
 import android.graphics.Typeface;
+import android.widget.Toast;
 
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
@@ -16,6 +17,9 @@ import com.baidu.location.LocationClient;
 import com.facebook.stetho.Stetho;
 import com.facebook.stetho.okhttp.StethoInterceptor;
 import com.squareup.okhttp.Interceptor;
+import com.umeng.message.PushAgent;
+import com.umeng.message.UmengNotificationClickHandler;
+import com.umeng.message.entity.UMessage;
 import com.zuijiao.android.zuijiao.network.Router;
 import com.zuijiao.utils.OSUtil;
 
@@ -60,7 +64,37 @@ public class ActivityTask extends Application {
                             .build());
         }
         Router.setup(BuildConfig.Base_Url, BuildConfig.Request_Key, cacheDirectory, interceptor);
+        PushAgent mPushAgent = PushAgent.getInstance(getApplicationContext());
+        UmengNotificationClickHandler notificationClickHandler = new UmengNotificationClickHandler() {
+            @Override
+            public void dealWithCustomAction(Context context, UMessage msg) {
+                System.out.println(msg.toString());
+                Toast.makeText(context, "dealWithCustomAction", Toast.LENGTH_LONG).show();
+            }
 
+            @Override
+            public void openActivity(Context context, UMessage uMessage) {
+
+                super.openActivity(context, uMessage);
+                System.out.println(uMessage.toString());
+                Toast.makeText(context, "openActivity", Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void openUrl(Context context, UMessage uMessage) {
+                super.openUrl(context, uMessage);
+                System.out.println(uMessage.toString());
+                Toast.makeText(context, "openUrl", Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void launchApp(Context context, UMessage uMessage) {
+                super.launchApp(context, uMessage);
+                System.out.println(uMessage.toString());
+                Toast.makeText(context, "launchApp", Toast.LENGTH_LONG).show();
+            }
+        };
+        mPushAgent.setNotificationClickHandler(notificationClickHandler);
     }
 
     public static ActivityTask getInstance() {

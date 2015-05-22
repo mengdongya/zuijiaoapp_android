@@ -22,6 +22,7 @@ import android.widget.Toast;
 import com.lidroid.xutils.view.annotation.ContentView;
 import com.lidroid.xutils.view.annotation.ViewInject;
 import com.squareup.picasso.Picasso;
+import com.zuijiao.android.util.functional.LambdaExpression;
 import com.zuijiao.android.util.functional.OneParameterExpression;
 import com.zuijiao.android.zuijiao.model.common.TasteTag;
 import com.zuijiao.android.zuijiao.model.user.FriendShip;
@@ -29,6 +30,7 @@ import com.zuijiao.android.zuijiao.model.user.TinyUser;
 import com.zuijiao.android.zuijiao.model.user.User;
 import com.zuijiao.android.zuijiao.network.Cache;
 import com.zuijiao.android.zuijiao.network.Router;
+import com.zuijiao.controller.MessageDef;
 import com.zuijiao.db.DBOpenHelper;
 import com.zuijiao.entity.SimpleImage;
 
@@ -200,6 +202,8 @@ public final class UserInfoActivity extends BaseActivity implements View.OnClick
         if (requestCode == EDIT_USER_INFO_REQ && resultCode == RESULT_OK) {
             mFullUser = mFileMng.getFullUser();
             registerViewByFullUser();
+            Intent intent = new Intent(MessageDef.ACTION_GET_THIRD_PARTY_USER);
+            sendBroadcast(intent);
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
@@ -209,7 +213,11 @@ public final class UserInfoActivity extends BaseActivity implements View.OnClick
         switch (item.getItemId()) {
             case R.id.menu_edit_self_info:
                 if (mFullUser == null) {
-                    getUserInfo();
+                    getUserInfo(() -> {
+                        Intent intent = new Intent();
+                        intent.setClass(mContext, EditUserInfoActivity.class);
+                        startActivityForResult(intent, EDIT_USER_INFO_REQ);
+                    });
                 } else {
                     Intent intent = new Intent();
                     intent.setClass(mContext, EditUserInfoActivity.class);
@@ -266,6 +274,7 @@ public final class UserInfoActivity extends BaseActivity implements View.OnClick
         if (mFullUser.getIdentifier().equals(mPreferMng.getStoredUserId())) {
             mFileMng.setFullUser(mFullUser);
         }
+        if (mFullUser.getAvatarURL().isPresent())
         Picasso.with(mContext).load(mFullUser.getAvatarURL().get()).placeholder(R.drawable.default_user_head).into(mUserHead);
         mUserName.setText(mFullUser.getNickname().get());
         int follower = 0, following = 0, recommendation = 0, favor = 0;
@@ -286,10 +295,12 @@ public final class UserInfoActivity extends BaseActivity implements View.OnClick
         mInfoAdapter.notifyDataSetChanged();
     }
 
-    private void getUserInfo() {
+    private void getUserInfo(final LambdaExpression expression) {
         OneParameterExpression<User> successExpression = fullUser -> {
             mFullUser = fullUser;
             registerViewByFullUser();
+            if (expression != null)
+                expression.action();
         };
         OneParameterExpression<String> failExpression = errorMsg -> {
             Toast.makeText(mContext, getString(R.string.notify_net2), Toast.LENGTH_SHORT).show();
@@ -299,7 +310,7 @@ public final class UserInfoActivity extends BaseActivity implements View.OnClick
                 Router.getAccountModule().fetchMyInfo(successExpression, failExpression);
             } else {
                 tryLoginFirst(() -> {
-                    getUserInfo();
+                    getUserInfo(null);
                 }, errorMsg -> {
                     Toast.makeText(mContext, getString(R.string.notify_net2), Toast.LENGTH_SHORT).show();
                 });
@@ -321,11 +332,11 @@ public final class UserInfoActivity extends BaseActivity implements View.OnClick
             int id = mTinyUser.getIdentifier();
             if (id == -1) {
                 tryLoginFirst(() -> {
-                    getUserInfo();
+                    getUserInfo(null);
                 }, errorMsg -> {
                     Toast.makeText(mContext, getString(R.string.notify_net2), Toast.LENGTH_SHORT).show();
                 });
-            } else getUserInfo();
+            } else getUserInfo(null);
         }
         if (mTinyUser.getAvatarURL().isPresent())
             Picasso.with(mContext).load(mTinyUser.getAvatarURL().get()).placeholder(R.drawable.default_user_head).into(mUserHead);
@@ -381,10 +392,19 @@ public final class UserInfoActivity extends BaseActivity implements View.OnClick
                 intent.setClass(UserInfoActivity.this, BigImageActivity.class);
                 ArrayList<SimpleImage> avatarUrls = new ArrayList<>();
                 String avatarUrl = null;
-                if (mFullUser != null) {
-                    avatarUrl = mFullUser.getAvatarURL().get();
-                } else {
-                    avatarUrl = mTinyUser.getAvatarURL().get();
+                try {
+
+                    if (mFullUser != null) {
+                        avatarUrl = mFullUser.getAvatarURL().get();
+                    } else {
+                        avatarUrl = mTinyUser.getAvatarURL().get();
+                    }
+                } catch (Exception e) {
+                    System.out.print("no avatar url");
+                }
+                if (avatarUrl == null || avatarUrl.equals("")) {
+                    Toast.makeText(mContext, getString(R.string.no_avatar), Toast.LENGTH_SHORT).show();
+                    return;
                 }
                 avatarUrls.add(new SimpleImage("", "", avatarUrl));
                 intent.putParcelableArrayListExtra("edit_images", avatarUrls);

@@ -60,7 +60,7 @@ public class NotificationFragment extends Fragment implements MessageFragment.On
 
     private void initTabsValue() {
         //cursor color
-        mTabs.setIndicatorColor(Color.parseColor("#a72232"));
+        mTabs.setIndicatorColor(Color.WHITE);
         //tab divider color
         mTabs.setDividerColor(Color.parseColor("#373737"));
         //tab background
@@ -78,14 +78,21 @@ public class NotificationFragment extends Fragment implements MessageFragment.On
     }
 
     public void setAllRead() {
+        messageRead();
+        notificationRead();
+    }
+
+    public void messageRead() {
         if (mMsgFragment != null) {
             mMsgFragment.markRead();
         }
+    }
+
+    public void notificationRead() {
         if (mNotifyFragment != null) {
             mNotifyFragment.markRead();
         }
     }
-
 
     public class FriendPagerAdapter extends FragmentPagerAdapter {
 

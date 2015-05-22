@@ -48,6 +48,9 @@ public class TasteActivity extends BaseActivity {
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         mUserTaste = mTendIntent.getStringArrayListExtra("my_taste_tag");
+        if (mUserTaste == null) {
+            mUserTaste = new ArrayList<>();
+        }
         mGdView.setAdapter(mAdapter);
         mGdView.setOnItemClickListener(mListener);
     }

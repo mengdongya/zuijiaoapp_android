@@ -155,6 +155,7 @@ public class EditUserInfoActivity extends BaseActivity {
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             Intent intent = new Intent();
             intent.setClass(mContext, TasteActivity.class);
+            if (mTmpFullUser.getProfile().getTasteTags().isPresent())
             intent.putStringArrayListExtra("my_taste_tag", (ArrayList) mTmpFullUser.getProfile().getTasteTags().get());
             startActivityForResult(intent, TASTE_TAG_REQ);
         }
@@ -162,7 +163,7 @@ public class EditUserInfoActivity extends BaseActivity {
     private BaseAdapter mFavorAdapter = new BaseAdapter() {
         @Override
         public int getCount() {
-            if (mFullUser.getProfile().getTasteTags().isPresent() && mFullUser.getProfile().getTasteTags().get().size() != 0) {
+            if (mFullUser.getProfile() != null && mFullUser.getProfile().getTasteTags().isPresent() && mFullUser.getProfile().getTasteTags().get().size() != 0) {
                 return mFullUser.getProfile().getTasteTags().get().size() + 1;
             }
             return 1;
@@ -313,10 +314,18 @@ public class EditUserInfoActivity extends BaseActivity {
         if (mFullUser.getProfile().getBirthday().isPresent()) {
             birthDate = mFullUser.getProfile().getBirthday().get();
         }
+        int year;
+        int month;
+        int date;
         if (birthDate == null) {
             birthDate = new Date();
+            year = birthDate.getYear() + 1900;
+        } else {
+            year = birthDate.getYear();
         }
-        datePicker.init(birthDate.getYear(), birthDate.getMonth(), birthDate.getDate(), new DatePicker.OnDateChangedListener() {
+        month = birthDate.getMonth();
+        date = birthDate.getDate();
+        datePicker.init(year, month, date, new DatePicker.OnDateChangedListener() {
             @Override
             public void onDateChanged(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                 etBirth = new Date(year, monthOfYear, dayOfMonth);
@@ -436,6 +445,10 @@ public class EditUserInfoActivity extends BaseActivity {
             etTasteTag = data.getStringArrayListExtra("my_taste_tag");
             mTmpFullUser.getProfile().setTasteTags(etTasteTag);
             updateUserInfo();
+        } else if (requestCode == LANGUAGE_CHOOSE_REQ && resultCode == RESULT_OK) {
+            etLanguage = data.getStringArrayListExtra("selected_language");
+            mTmpFullUser.getProfile().setLanguages(etLanguage);
+            updateUserInfo();
         }
     }
 
@@ -454,14 +467,14 @@ public class EditUserInfoActivity extends BaseActivity {
                     bAnyInfoChanged = true;
                     if (Router.getInstance().getCurrentUser().isPresent()) {
                         Router.getInstance().getCurrentUser().get().setAvatarURL(etAvatar);
-                    }
-                    mPreferMng.saveAvatarPath(Router.getInstance().getCurrentUser().get().getAvatarURL().get());
-                    mFullUser.setAvatarURL(Router.getInstance().getCurrentUser().get().getAvatarURL().get());
+                        mPreferMng.saveAvatarPath(Router.getInstance().getCurrentUser().get().getAvatarURL().get());
+                        mFullUser.setAvatarURL(Router.getInstance().getCurrentUser().get().getAvatarURL().get());
 //                    mPreferMng.saveAvatarPath(UpyunUploadTask.avatarPath(etAvatar));
-                    Picasso.with(mContext)
-                            .load(Router.getInstance().getCurrentUser().get().getAvatarURL().get())
-                            .placeholder(R.drawable.default_user_head)
-                            .into(mUserHead);
+                        Picasso.with(mContext)
+                                .load(Router.getInstance().getCurrentUser().get().getAvatarURL().get())
+                                .placeholder(R.drawable.default_user_head)
+                                .into(mUserHead);
+                    }
                     Intent intent = new Intent();
                     intent.setAction(MessageDef.ACTION_GET_THIRD_PARTY_USER);
                     sendBroadcast(intent);
@@ -683,6 +696,9 @@ public class EditUserInfoActivity extends BaseActivity {
                     break;
 
             }
+            if (valueText.getText().toString().equals(getString(R.string.un_setting))) {
+                valueText.setTextColor(getResources().getColor(R.color.bg_light_gray));
+            }
             return convertView;
         }
     }
@@ -795,6 +811,18 @@ public class EditUserInfoActivity extends BaseActivity {
                 case 3:
                     Intent intent = new Intent();
                     intent.setClass(mContext, LanguagesChooseActivity.class);
+
+                    ArrayList<String> languageCode = new ArrayList<>();
+                    try {
+                        for (String str : mTmpFullUser.getProfile().getLanguages().get()) {
+                            languageCode.add(str);
+                        }
+                    } catch (Exception e) {
+
+                    }
+                    if (languageCode != null && languageCode.size() != 0) {
+                        intent.putExtra("selected_language", languageCode);
+                    }
                     startActivityForResult(intent, LANGUAGE_CHOOSE_REQ);
                     break;
                 default:

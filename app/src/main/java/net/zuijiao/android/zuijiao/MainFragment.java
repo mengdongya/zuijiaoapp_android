@@ -21,8 +21,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.getbase.floatingactionbutton.FloatingActionButton;
-import com.getbase.floatingactionbutton.FloatingActionsMenu;
+import com.github.clans.fab.FloatingActionButton;
+import com.github.clans.fab.FloatingActionMenu;
 import com.squareup.picasso.Picasso;
 import com.zuijiao.android.util.Optional;
 import com.zuijiao.android.zuijiao.model.Gourmet;
@@ -56,14 +56,12 @@ public class MainFragment extends Fragment implements FragmentDataListener,
                                 long id) {
             Intent intent = new Intent(getActivity(), FoodDetailActivity.class);
             intent.putExtra("selected_gourmet", mAdapter.getItem(position - 1));
-//            intent.putExtra("click_item_index", position - 1);
-//            intent.putExtra("b_favor", mContentType == FAVOR_PAGE);
             startActivity(intent);
         }
     };
     private View mContentView = null;
     private RefreshAndInitListView mListView = null;
-    private FloatingActionsMenu mAddMenu = null;
+    private FloatingActionMenu mAddMenu = null;
     private FloatingActionButton mFloatButtonA = null;
     private FloatingActionButton mFloatButtonB = null;
     private LayoutInflater mInflater = null;
@@ -74,9 +72,10 @@ public class MainFragment extends Fragment implements FragmentDataListener,
     private boolean bLogin = false;
     private Activity mActivity = null;
     private boolean bFirstInit = true;
-    private TinyUser mDisplayUser = null;
+    public TinyUser mDisplayUser = null;
     private Date tmpDate = null;
     private boolean bSelf = false;
+    private int mPreviousVisibleItem;
     private View.OnClickListener mFloatBtnListener = new View.OnClickListener() {
 
         @Override
@@ -131,7 +130,10 @@ public class MainFragment extends Fragment implements FragmentDataListener,
         }
         if (mContentType == FAVOR_PAGE || mContentType == RECOMMEND_PAGE && mAdapter.getCount() != 0) {
             mFavorCount.setVisibility(View.VISIBLE);
-            mFavorCount.setText(String.format(getString(R.string.favor_count), mAdapter.getCount()));
+            if (mContentType == RECOMMEND_PAGE)
+                mFavorCount.setText(String.format(getString(R.string.recommend_count_title), mAdapter.getCount()));
+            else
+                mFavorCount.setText(String.format(getString(R.string.favor_count), mAdapter.getCount()));
         } else {
             mFavorCount.setVisibility(View.GONE);
         }
@@ -152,9 +154,8 @@ public class MainFragment extends Fragment implements FragmentDataListener,
         mListView = (RefreshAndInitListView) mContentView
                 .findViewById(R.id.content_items);
         mFavorCount = (TextView) mContentView.findViewById(R.id.tv_show_favor_count);
-//        mFloatButton.attachToListView(mListView);
         if (mContentType == MAIN_PAGE) {
-            mAddMenu = (FloatingActionsMenu) mContentView.findViewById(R.id.multiple_actions);
+            mAddMenu = (FloatingActionMenu) mContentView.findViewById(R.id.multiple_actions);
             mAddMenu.setVisibility(View.VISIBLE);
             mFloatButtonA = (FloatingActionButton) mContentView.findViewById(R.id.action_a);
             mFloatButtonB = (FloatingActionButton) mContentView.findViewById(R.id.action_b);
@@ -247,12 +248,12 @@ public class MainFragment extends Fragment implements FragmentDataListener,
     }
 
     public void onTouchDown() {
-        if (mAddMenu != null && mAddMenu.isExpanded()) {
-            mAddMenu.collapse();
+        if (mAddMenu != null && mAddMenu.isOpened()) {
+            mAddMenu.close(true);
         }
     }
 
-    public void clearFavorData() {
+    public void clearPersonalData() {
         try {
             mAdapter.gourmets.get().clear();
             mAdapter.notifyDataSetChanged();
@@ -262,6 +263,7 @@ public class MainFragment extends Fragment implements FragmentDataListener,
             System.err.println("no favor");
         }
     }
+
 
     private void fetchRecommendData(boolean isRefresh) {
         if (mDisplayUser == null) {
@@ -528,23 +530,39 @@ public class MainFragment extends Fragment implements FragmentDataListener,
         public void onDataChanged();
     }
 
+    private void goToEditGourmet(View selectedView) {
+        Intent intent = new Intent();
+        intent.setClass(mContext, EditGourmetActivity.class);
+        switch (selectedView.getId()) {
+            case R.id.action_a:
+                intent.putExtra("edit_gourmet_type", EditGourmetActivity.TYPE_CREATE_PERSONAL_GOURMET);
+                break;
+            case R.id.action_b:
+                intent.putExtra("edit_gourmet_type", EditGourmetActivity.TYPE_CREATE_STORE_GOURMET);
+                break;
+            default:
+                break;
+        }
+        startActivity(intent);
+    }
+
     private class FloatButtonListener implements View.OnClickListener {
         @Override
         public void onClick(View v) {
-            mAddMenu.collapse();
-            Intent intent = new Intent();
-            intent.setClass(mContext, EditGourmetActivity.class);
-            switch (v.getId()) {
-                case R.id.action_a:
-                    intent.putExtra("edit_gourmet_type", EditGourmetActivity.TYPE_CREATE_PERSONAL_GOURMET);
-                    break;
-                case R.id.action_b:
-                    intent.putExtra("edit_gourmet_type", EditGourmetActivity.TYPE_CREATE_STORE_GOURMET);
-                    break;
-                default:
-                    break;
+            if (Router.getInstance().getCurrentUser().isPresent()) {
+                goToEditGourmet(v);
+            } else {
+                ((BaseActivity) mActivity).tryLoginFirst(() -> {
+                    if (Router.getInstance().getCurrentUser().isPresent()) {
+                        goToEditGourmet(v);
+                    } else {
+                        ((BaseActivity) mActivity).notifyLogin(null);
+                    }
+                }, errorMsg -> {
+                    Toast.makeText(getActivity(), getString(R.string.notify_net2), Toast.LENGTH_SHORT).show();
+                });
             }
-            startActivity(intent);
+            mAddMenu.close(false);
         }
     }
 

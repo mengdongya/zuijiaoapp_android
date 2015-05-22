@@ -1,11 +1,15 @@
 package net.zuijiao.android.zuijiao;
 
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,6 +21,7 @@ import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -88,13 +93,11 @@ public class EditGourmetActivity extends BaseActivity implements View.OnClickLis
     private String mEditName = null;
     private ArrayList<String> mEditLabels = new ArrayList<>();
     private String mEditDescription = null;
-    //gourmet address ;
-    private String mEditLocation = null;
-    private String mEditPrice = null;
+    private String mEditLocation = "";
+    private String mEditPrice = "";
     private ArrayList<String> mImageUrls = new ArrayList<>();
     private ArrayList<SimpleImage> mImages = new ArrayList<>();
-    //where i edit ;
-    private String mEditAddress = null;
+    private String mEditAddress = "";
     private int mProvinceId = 9;
     private int mCityId = 45055;
 
@@ -146,6 +149,8 @@ public class EditGourmetActivity extends BaseActivity implements View.OnClickLis
 
     private void editGourmet() {
         createDialog();
+        mEditAddress = filterNullStr(mEditAddress);
+        mEditPrice = filterNullStr(mEditPrice);
         Router.getGourmetModule().updateGourmet(mGourmet.getIdentifier(),
                 mEditAddress, mEditPrice, mEditDescription,
                 mImageUrls, mEditLabels,
@@ -164,9 +169,17 @@ public class EditGourmetActivity extends BaseActivity implements View.OnClickLis
                 });
     }
 
+    private String filterNullStr(String str) {
+        if (str == null)
+            return "";
+        return str;
+    }
+
     private void addGourmet() {
         createDialog();
-        Router.getGourmetModule().addGourmet(mEditName, mEditLocation,
+        mEditAddress = filterNullStr(mEditAddress);
+        mEditPrice = filterNullStr(mEditPrice);
+        Router.getGourmetModule().addGourmet(mEditName, mEditAddress,
                 mEditPrice, mEditDescription, mImageUrls,
                 mEditLabels, mProvinceId, mCityId,
                 mType == TYPE_CREATE_PERSONAL_GOURMET, () -> {
@@ -281,9 +294,14 @@ public class EditGourmetActivity extends BaseActivity implements View.OnClickLis
                 startActivityForResult(intent, EDIT_LABEL_REQ);
                 break;
             case R.id.edit_gourmet_location:
-                Intent intent3 = new Intent();
-                intent3.setClass(mContext, LocationActivity.class);
-                startActivityForResult(intent3, EDIT_LOCATION_REQ);
+                View contentView = LayoutInflater.from(getApplicationContext()).inflate(
+                        R.layout.location_choose_layout, null);
+                AlertDialog.Builder builder = new AlertDialog.Builder(
+                        EditGourmetActivity.this);
+                builder.setView(contentView).create().show();
+//                Intent intent3 = new Intent();
+//                intent3.setClass(mContext, LocationActivity.class);
+//                startActivityForResult(intent3, EDIT_LOCATION_REQ);
                 break;
             case R.id.edit_gourmet_position:
                 Intent intent2 = new Intent();
@@ -352,7 +370,7 @@ public class EditGourmetActivity extends BaseActivity implements View.OnClickLis
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            LinearLayout layout = new LinearLayout(mContext);
+            RelativeLayout layout = new RelativeLayout(mContext);
             AbsListView.LayoutParams alp = new AbsListView.LayoutParams(AbsListView.LayoutParams.WRAP_CONTENT, AbsListView.LayoutParams.WRAP_CONTENT);
             layout.setLayoutParams(alp);
             ImageView contentView = new ImageView(mContext);
@@ -374,6 +392,17 @@ public class EditGourmetActivity extends BaseActivity implements View.OnClickLis
                         Integer.parseInt(mImages.get(position - mImageUrls.size()).id),
                         MediaStore.Images.Thumbnails.MICRO_KIND, null);
                 contentView.setImageBitmap(bitmap);
+            }
+            if (position == 0 && mImages.size() + mImageUrls.size() != 0) {
+                TextView textView = new TextView(mContext);
+                textView.setText(getString(R.string.cover));
+                textView.setTextColor(Color.WHITE);
+                textView.setBackgroundColor(Color.parseColor("#66222222"));
+                textView.setTextSize(15);
+                textView.setGravity(Gravity.CENTER);
+                RelativeLayout.LayoutParams tlp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                tlp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+                layout.addView(textView, tlp);
             }
             layout.setFocusable(false);
             return layout;

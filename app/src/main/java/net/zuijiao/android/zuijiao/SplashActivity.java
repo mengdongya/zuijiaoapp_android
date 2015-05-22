@@ -34,6 +34,7 @@ public class SplashActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         PushAgent mPushAgent = PushAgent.getInstance(getApplicationContext());
+        mPushAgent.setPushIntentServiceClass(UmengAgentPushService.class);
         mPushAgent.enable();
         super.onCreate(savedInstanceState);
         if (mPreferInfo.isAppFirstLaunch()) {

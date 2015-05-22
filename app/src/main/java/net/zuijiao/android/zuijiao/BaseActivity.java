@@ -44,6 +44,7 @@ public abstract class BaseActivity extends ActionBarActivity {
     protected Intent mTendIntent = null;
     protected ProgressDialog mDialog = null;
     protected Context mContext = null;
+
     protected BroadcastReceiver mReceiver = new BroadcastReceiver() {
 
         @Override
@@ -54,9 +55,15 @@ public abstract class BaseActivity extends ActionBarActivity {
                 onUserInfoGot(true);
             } else if (intent.getAction().equals(MessageDef.ACTION_REFRESH_RECOMMENDATION)) {
                 onRecommendationChanged();
+            } else if (intent.getAction().equals(MessageDef.ACTION_PUSH_RECEIVED)) {
+                onPushReceived();
             }
         }
     };
+
+    protected void onPushReceived() {
+
+    }
 
     protected void onRecommendationChanged() {
 
@@ -86,6 +93,7 @@ public abstract class BaseActivity extends ActionBarActivity {
         filter.addAction(MessageDef.ACTION_LOGIN_FINISH);
         filter.addAction(MessageDef.ACTION_GET_THIRD_PARTY_USER);
         filter.addAction(MessageDef.ACTION_REFRESH_RECOMMENDATION);
+        filter.addAction(MessageDef.ACTION_PUSH_RECEIVED);
         registerReceiver(mReceiver, filter);
         PushAgent.getInstance(mContext).onAppStart();
         String device_token = UmengRegistrar.getRegistrationId(mContext);
@@ -258,6 +266,7 @@ public abstract class BaseActivity extends ActionBarActivity {
             case LOGIN_FOR_FETCH_FAVOR:
             case LOGIN_FOR_FETCH_COMMON:
             case LOGIN_FOR_FETCH_MESSAGE:
+                if (mLoginCallBack != null)
                 mLoginCallBack.action();
                 break;
         }

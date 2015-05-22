@@ -57,7 +57,6 @@ public class RegisterActivity extends BaseActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.login:
-                mDialog = ProgressDialog.show(RegisterActivity.this, null, getString(R.string.on_loading));
                 if (checkInputState()) {
                     try {
                         mPwd = MD5.crypt(mPwd);

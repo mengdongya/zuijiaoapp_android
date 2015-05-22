@@ -41,6 +41,8 @@ import com.umeng.update.UmengUpdateAgent;
 import com.umeng.update.UmengUpdateListener;
 import com.umeng.update.UpdateResponse;
 import com.zuijiao.android.util.Optional;
+import com.zuijiao.android.zuijiao.model.message.News;
+import com.zuijiao.android.zuijiao.model.message.NewsList;
 import com.zuijiao.android.zuijiao.model.user.TinyUser;
 import com.zuijiao.android.zuijiao.network.Router;
 import com.zuijiao.controller.ActivityTask;
@@ -111,6 +113,7 @@ public final class MainActivity extends BaseActivity implements MainFragment.Mai
             mCurrentFragment = mFragmentList.get(position);
             mToolBar.setTitle(titles[position]);
             if (position == 3) {
+                removeBadgeView();
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     mToolBar.setElevation(0);
                 }
@@ -119,11 +122,19 @@ public final class MainActivity extends BaseActivity implements MainFragment.Mai
                             .setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS)
                             .setOnMenuItemClickListener((MenuItem item) -> {
                                 Router.getMessageModule().markAsRead(() -> {
+                                }, () -> {
+                                });
+                                Router.getMessageModule().markAsRead(News.NotificationType.Notice, () -> {
                                     if (mNotifyFragment != null) {
-                                        mNotifyFragment.setAllRead();
+                                        mNotifyFragment.notificationRead();
                                     }
                                 }, () -> {
-                                    Toast.makeText(mContext, getString(R.string.notify_net2), Toast.LENGTH_SHORT).show();
+                                });
+                                Router.getMessageModule().markAsRead(News.NotificationType.Comment, () -> {
+                                    if (mNotifyFragment != null) {
+                                        mNotifyFragment.messageRead();
+                                    }
+                                }, () -> {
                                 });
                                 return false;
                             });
@@ -185,6 +196,7 @@ public final class MainActivity extends BaseActivity implements MainFragment.Mai
             startActivity(intent);
         }
     };
+    private NewsList mNewsList = null;
     private ArrayList<String> mLabelData = new ArrayList<String>();
     private BaseAdapter mTabTitleAdapter = new BaseAdapter() {
         private ArrayList<String> data = new ArrayList<String>();
@@ -202,6 +214,10 @@ public final class MainActivity extends BaseActivity implements MainFragment.Mai
             image.setImageResource(mTabImages[position]);
             textView.setText(getString(mTabTitles[position]));
             textMsg.setVisibility(View.GONE);
+            if (position == 3 && mNewsList != null && mNewsList.getNews() != null && mNewsList.getNews().size() != 0) {
+                textMsg.setText(mNewsList.getNews().size() + "");
+                textMsg.setVisibility(View.VISIBLE);
+            }
             return contentView;
         }
 
@@ -282,7 +298,8 @@ public final class MainActivity extends BaseActivity implements MainFragment.Mai
             createDialog();
             ThirdPartySDKManager.getInstance(mContext).logout(mContext);
             PreferenceManager.getInstance(mContext).clearThirdPartyLoginMsg();
-            mFavorFragment.clearFavorData();
+            mFavorFragment.clearPersonalData();
+            mRecommendFragment.clearPersonalData();
             mNotifyFragment.clearMessage();
             Router.getOAuthModule().visitor(() -> {
                 Toast.makeText(mContext, getString(R.string.logout_msg), Toast.LENGTH_SHORT).show();
@@ -387,6 +404,15 @@ public final class MainActivity extends BaseActivity implements MainFragment.Mai
         mFragmentTransaction.commit();
         mToolBar.setTitle(titles[0]);
         checkVersion();
+        Router.getMessageModule().notifications(newsList -> {
+            if (newsList != null && newsList.getNews() != null && newsList.getNews().size() != 0) {
+                showBadgeView();
+            }
+            mNewsList = newsList;
+            mTabTitleAdapter.notifyDataSetChanged();
+        }, errorMsg -> {
+
+        });
     }
 
     private BadgeView initBadgeView() {
@@ -405,7 +431,7 @@ public final class MainActivity extends BaseActivity implements MainFragment.Mai
         badgeParent.measure(width, height);
         height = badgeParent.getMeasuredHeight();
         width = badgeParent.getMeasuredWidth();
-        badgeView.setBadgeMargin(width * 2 / 5, height / 3);
+        badgeView.setBadgeMargin(width / 3, height / 4);
         badgeView.setFocusable(false);
         return badgeView;
     }
@@ -458,6 +484,17 @@ public final class MainActivity extends BaseActivity implements MainFragment.Mai
     protected void onDestroy() {
         super.onDestroy();
         ActivityTask.getInstance().exit();
+    }
+
+    @Override
+    protected void onPushReceived() {
+        showBadgeView();
+        Router.getMessageModule().notifications(newsList -> {
+            mNewsList = newsList;
+            mTabTitleAdapter.notifyDataSetChanged();
+        }, errorMsg -> {
+
+        });
     }
 
     @Override
@@ -530,8 +567,11 @@ public final class MainActivity extends BaseActivity implements MainFragment.Mai
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == SETTING_REQ && resultCode == LOGOUT_RESULT) {
-            mFavorFragment.clearFavorData();
+            mFavorFragment.clearPersonalData();
+            mRecommendFragment.clearPersonalData();
             mNotifyFragment.clearMessage();
+            mFavorFragment.mDisplayUser = null;
+            mRecommendFragment.mDisplayUser = null;
             Toast.makeText(mContext, getString(R.string.logout_msg), Toast.LENGTH_SHORT).show();
             mBtnLogin.setVisibility(View.VISIBLE);
             mThirdPartyUserName.setVisibility(View.GONE);

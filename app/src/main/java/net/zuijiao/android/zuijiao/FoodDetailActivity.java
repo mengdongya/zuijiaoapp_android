@@ -26,6 +26,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
@@ -151,6 +152,7 @@ public class FoodDetailActivity extends BaseActivity implements
     private Comments mComments = null;
     //if comment false ,reply true ;
     private Integer mReplyId = null;
+    private String mShareUrl = "/zuijiao/share/cuisine?id=";
     private OnClickListener mCommentCommitListener = new OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -458,36 +460,6 @@ public class FoodDetailActivity extends BaseActivity implements
 
         }
     };
-    //    public List<ResolveInfo> getShareApps(Context context) {
-//        List<ResolveInfo> mApps = new ArrayList<ResolveInfo>();
-//        Intent intent = new Intent(Intent.ACTION_SEND, null);
-//        intent.addCategory(Intent.CATEGORY_DEFAULT);
-//        intent.setType("text/plain");
-////      intent.setType("*/*");
-//        PackageManager pManager = context.getPackageManager();
-//        mApps = pManager.queryIntentActivities(intent,
-//                PackageManager.COMPONENT_ENABLED_STATE_DEFAULT);
-//        return mApps;
-//    }
-//    private List<AppInfo> getShareAppList() {
-//        List<AppInfo> shareAppInfos = new ArrayList<AppInfo>();
-//        PackageManager packageManager = getPackageManager();
-//        List<ResolveInfo> resolveInfos = getShareApps(mContext);
-//        if (null == resolveInfos) {
-//            return null;
-//        } else {
-//            for (ResolveInfo resolveInfo : resolveInfos) {
-//                AppInfo appInfo = new AppInfo();
-//                appInfo.setAppPkgName(resolveInfo.activityInfo.packageName);
-////              showLog_I(TAG, "pkg>" + resolveInfo.activityInfo.packageName + ";name>" + resolveInfo.activityInfo.name);
-//                appInfo.setAppLauncherClassName(resolveInfo.activityInfo.name);
-//                appInfo.setAppName(resolveInfo.loadLabel(packageManager).toString());
-//                appInfo.setAppIcon(resolveInfo.loadIcon(packageManager));
-//                shareAppInfos.add(appInfo);
-//            }
-//        }
-//        return shareAppInfos;
-//    }
     private int mShareImageRes[] = {R.drawable.share_weibo, R.drawable.share_weixin, R.drawable.share_friend_circle, R.drawable.share_qq, R.drawable.share_qq_space};
     private int mShareTextRes[] = {R.string.weibo, R.string.weixin_friend, R.string.weixin_friend_circle, R.string.qq_friend, R.string.qq_space};
     private AuthInfo mAuthInfo = null;
@@ -498,8 +470,6 @@ public class FoodDetailActivity extends BaseActivity implements
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-//        mWeiboShareAPI =  WeiboShareSDK.createWeiboAPI(this, "07bb6cb0e7a3db40fbb98ac8d2cf43d5");
-//          b =  mWeiboShareAPI.registerApp();
     }
 
     @Override
@@ -578,12 +548,25 @@ public class FoodDetailActivity extends BaseActivity implements
         sharePopupWindow.setAnimationStyle(R.style.popwin_anim_style);
         sharePopupWindow.setTouchable(true);
         sharePopupWindow.setBackgroundDrawable(new BitmapDrawable(getResources(), (Bitmap) null));
-//        sharePopupWindow.setBackgroundDrawable(new BitmapDrawable());
+        sharePopupWindow.setOnDismissListener(new poponDismissListener());
         sharePopupWindow.setOutsideTouchable(true);
         sharePopupWindow.showAtLocation(rootView, Gravity.BOTTOM, 0, 0);
+        backgroundAlpha(0.1f);
     }
 
-    private String mShareUrl = "/zuijiao/share/cuisine?id=";
+    public void backgroundAlpha(float bgAlpha) {
+        WindowManager.LayoutParams lp = getWindow().getAttributes();
+        lp.alpha = bgAlpha; //0.0-1.0
+        getWindow().setAttributes(lp);
+    }
+
+    class poponDismissListener implements PopupWindow.OnDismissListener {
+        @Override
+        public void onDismiss() {
+            backgroundAlpha(1f);
+        }
+    }
+
 
     private void distributeShareAction(int action) {
         mController.setShareContent(String.format(getString(R.string.share_content), gourmet.getName()));
@@ -709,36 +692,42 @@ public class FoodDetailActivity extends BaseActivity implements
             textview.setText(gourmet.getTags().get(i));
             mLabelContainer.addView(textview);
         }
-        ArrayList<View> data = new ArrayList<View>();
-        final ArrayList<String> imageUrls = (ArrayList) gourmet.getImageURLs();
-        //5:image number
-        for (int i = 0; i < imageUrls.size(); i++) {
-            ImageView image = new ImageView(this);
-            image.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
-                    LayoutParams.MATCH_PARENT));
-            image.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            image.setOnClickListener((View view) -> {
-                if (gourmet.getImageURLs().isEmpty()) {
-                    return;
-                }
-                Intent intent = new Intent(FoodDetailActivity.this, BigImageActivity.class);
-                int currentImageIndex = mImagePager.getCurrentItem();
-                intent.putExtra("current_image_index", currentImageIndex);
-                intent.putStringArrayListExtra("cloud_images", imageUrls);
-                startActivity(intent);
-            });
-            Picasso.with(getApplicationContext())
-                    .load(imageUrls.get(i))
-                    .placeholder(R.drawable.empty_view_greeting)
-                    .error(R.drawable.empty_view_greeting)
-                    .into(image);
-            data.add(image);
+        if (gourmet.getImageURLs().size() == 0) {
+            mImageContainer.setVisibility(View.GONE);
+        } else {
+
+
+            ArrayList<View> data = new ArrayList<View>();
+            final ArrayList<String> imageUrls = (ArrayList) gourmet.getImageURLs();
+            //5:image number
+            for (int i = 0; i < imageUrls.size(); i++) {
+                ImageView image = new ImageView(this);
+                image.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
+                        LayoutParams.MATCH_PARENT));
+                image.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                image.setOnClickListener((View view) -> {
+                    if (gourmet.getImageURLs().isEmpty()) {
+                        return;
+                    }
+                    Intent intent = new Intent(FoodDetailActivity.this, BigImageActivity.class);
+                    int currentImageIndex = mImagePager.getCurrentItem();
+                    intent.putExtra("current_image_index", currentImageIndex);
+                    intent.putStringArrayListExtra("cloud_images", imageUrls);
+                    startActivity(intent);
+                });
+                Picasso.with(getApplicationContext())
+                        .load(imageUrls.get(i))
+                        .placeholder(R.drawable.empty_view_greeting)
+                        .error(R.drawable.empty_view_greeting)
+                        .into(image);
+                data.add(image);
+            }
+            initDots(imageUrls.size());
+            mImagePager.setAdapter(new ViewPagerAdapter(data));
         }
-        initDots(imageUrls.size());
-        mImagePager.setAdapter(new ViewPagerAdapter(data));
 //        mImagePager.setOnPageChangeListener(mPageListener);
         registerTopView();
-        if (gourmet.getPrice() == null || gourmet.getPrice().equals("")) {
+        if (gourmet.getPrice() == null || gourmet.getPrice().equals("") || gourmet.getPrice().equals("0")) {
             mFoodPrice.setVisibility(View.GONE);
         } else {
             mFoodPrice.setText(String.format(mResource.getString(R.string.format_price), gourmet.getPrice()));
@@ -935,19 +924,21 @@ public class FoodDetailActivity extends BaseActivity implements
         }
         floatHolder.mFoodName1.setText(gourmet.getName());
         floatHolder.mPrivateText1.setVisibility(gourmet.getIsPrivate() ? View.VISIBLE : View.GONE);
-        Picasso.with(getApplicationContext())
-                .load(gourmet.getUser().getAvatarURL().get())
-                .placeholder(R.drawable.default_user_head)
-                .into(floatHolder.mUserHead1);
+        if (gourmet.getUser().getAvatarURL().isPresent())
+            Picasso.with(getApplicationContext())
+                    .load(gourmet.getUser().getAvatarURL().get())
+                    .placeholder(R.drawable.default_user_head)
+                    .into(floatHolder.mUserHead1);
         floatHolder.mUserName1.setText(gourmet.getUser().getNickName());
         topHolder.mCreateTime1.setText(String.format(getString(R.string.format_create_time), StrUtil.formatTime(gourmet.getDate(), getApplicationContext())));
         floatHolder.mCreateTime1.setText(String.format(getString(R.string.format_create_time), StrUtil.formatTime(gourmet.getDate(), getApplicationContext())));
         topHolder.mFoodName1.setText(gourmet.getName());
         topHolder.mPrivateText1.setVisibility(gourmet.getIsPrivate() ? View.VISIBLE : View.GONE);
-        Picasso.with(getApplicationContext())
-                .load(gourmet.getUser().getAvatarURL().get())
-                .placeholder(R.drawable.default_user_head)
-                .into(topHolder.mUserHead1);
+        if (gourmet.getUser().getAvatarURL().isPresent())
+            Picasso.with(getApplicationContext())
+                    .load(gourmet.getUser().getAvatarURL().get())
+                    .placeholder(R.drawable.default_user_head)
+                    .into(topHolder.mUserHead1);
         topHolder.mUserName1.setText(gourmet.getUser().getNickName());
     }
 

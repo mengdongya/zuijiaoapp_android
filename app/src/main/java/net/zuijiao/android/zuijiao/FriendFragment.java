@@ -121,6 +121,10 @@ public class FriendFragment extends Fragment {
             holder.follow.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    if (!Router.getInstance().getCurrentUser().isPresent()) {
+                        ((BaseActivity) mActivity).notifyLogin(null);
+                        return;
+                    }
                     if (user.isFollowing()) {
                         Router.getSocialModule().unFollow(user.getIdentifier(), () -> {
                             if (mTinyUser.getIdentifier() == Router.getInstance().getCurrentUser().get().getIdentifier() && position == FOLLOWING) {

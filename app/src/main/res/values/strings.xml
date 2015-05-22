@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <string name="app_name">嘴角</string>
     <string name="welcome_word">发现最美的味道</string>
     <string name="hello_world">Hello world!</string>
@@ -21,7 +20,7 @@
     <string name="login_weichat">微信登录</string>
     <string name="login_weibo">微博登录</string>
     <string name="login_qq">QQ登录</string>
-    <string name="main_page">首页</string>
+    <string name="main_page">嘴角精选</string>
     <string name="recommend_page">我推荐的</string>
     <string name="favor_page">我喜欢的</string>
     <string name="msg_page">消息</string>
@@ -139,7 +138,7 @@
     <string name="crazy_experience">疯狂吃货经历</string>
     <string name="flavor_hobby">口味嗜好</string>
     <string name="no_base_info">我很害羞，没有留下任何信息</string>
-    <string name="no_experience">我还不是一枚出色的吃货，我经历可言</string>
+    <string name="no_experience">我只是一名低调的吃货，懒得写介绍</string>
     <string name="no_hobby">我不挑食，给口吃的就行</string>
     <string name="recommend_count">%d&#160;&#160;&#160;推荐</string>
     <string name="favorite_count">%d&#160;&#160;&#160;喜欢</string>
@@ -229,8 +228,8 @@
     <string name="my_language">擅长语言</string>
     <string name="notification">通知</string>
     <string name="comment">评论</string>
-    <string name="notification_with_count">通知&#160;&#160;&#160;&#160;%s</string>
-    <string name="comment_with_count">评论&#160;&#160;&#160;&#160;%s</string>
+    <string name="notification_with_count">通知&#160;&#160;&#160;&#160;(%s)</string>
+    <string name="comment_with_count">评论&#160;&#160;&#160;&#160;(%s)</string>
     <string name="already_read">已阅</string>
     <string name="label_count">%d个标签</string>
     <string name="image_count_upper_limit">最多%d张图片</string>
@@ -241,8 +240,8 @@
     <string name="notify_gourmet_name_empty">美食名称不能为空</string>
     <string name="notify_gourmet_description_empty">美食介绍不能为空</string>
     <string name="year_old">%d岁</string>
-    <string name="whose_recommend">%s的推荐</string>
-    <string name="whose_favor">%s所收藏的</string>
+    <string name="whose_recommend">%s推荐的</string>
+    <string name="whose_favor">%s喜欢的</string>
     <string name="gender_keep_secret">保密</string>
     <string name="gender_male">男</string>
     <string name="gender_female">女</string>
@@ -259,4 +258,6 @@
     <string name="follow_you">关注了你</string>
     <string name="no_gourmet_related">抱歉，没有找到相关美食</string>
     <string name="no_user_related">抱歉，没有找到此人</string>
+    <string name="cover">封面</string>
+    <string name="no_avatar">还未设置头像</string>
 </resources>

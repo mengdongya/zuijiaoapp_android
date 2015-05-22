@@ -20,7 +20,7 @@ public interface IRouterAccount {
     void updateAvatar(@Field("imageUrl") String avatarUrl, Callback<Response> callback);
 
     @FormUrlEncoded
-    @POST("/account/v2/web/profiles/update")
+    @POST("/account/v2/profiles/update")
     void update(@Field("gender") String gender
             , @Field("provinceID") Integer provinceId
             , @Field("cityId") Integer cityId

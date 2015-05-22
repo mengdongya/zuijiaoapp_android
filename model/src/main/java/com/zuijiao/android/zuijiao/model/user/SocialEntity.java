@@ -10,14 +10,14 @@ import java.io.Serializable;
 public class SocialEntity extends TinyUser implements Serializable {
 
     @SerializedName("isFollower")
-    private Boolean isFollower;
+    private Boolean isFollower = false;
 
     public void setIsFollowing(Boolean isFollowing) {
         this.isFollowing = isFollowing;
     }
 
     @SerializedName("isFollowing")
-    private Boolean isFollowing;
+    private Boolean isFollowing = false;
 
     @SerializedName("provinceID")
     private Integer provinceId;
@@ -29,11 +29,11 @@ public class SocialEntity extends TinyUser implements Serializable {
     private Integer recommendationGourmetCount;
 
     public Boolean isFollower() {
-        return isFollower;
+        return isFollower == null ? false : isFollower;
     }
 
     public Boolean isFollowing() {
-        return isFollowing;
+        return isFollowing == null ? false : isFollowing;
     }
 
     public Integer getProvinceId() {

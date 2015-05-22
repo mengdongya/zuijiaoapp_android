@@ -34,5 +34,4 @@
 -dontwarn java.lang.invoke**
 -dontwarn javax.xml.bind.DatatypeConverter
 -dontwarn android.test.**
-
 -dontwarn com.sina.weibo.sdk.widget**

@@ -71,7 +71,7 @@ public class FriendActivity extends BaseActivity {
 
     private void initTabsValue() {
         //cursor color
-        mTabs.setIndicatorColor(Color.parseColor("#a72232"));
+        mTabs.setIndicatorColor(Color.WHITE);
         //tab divider color
         mTabs.setDividerColor(Color.parseColor("#373737"));
         //tab background

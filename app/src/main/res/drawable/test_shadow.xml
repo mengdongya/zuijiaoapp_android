@@ -13,12 +13,12 @@
             <!--android:startColor="#ffdb8f" android:endColor="#ffdb8f"-->
             <gradient
                 android:useLevel="true"
-                android:startColor="#cccccc"
+                android:startColor="#dddddddd"
                 android:endColor="@color/transparent"
                 android:angle="90" />
             <padding
                 android:left="0dp"
-                android:top="10dip"
+                android:top="0dip"
                 android:right="0dp"
                 android:bottom="0dp" />
             <corners android:radius="0dp" />

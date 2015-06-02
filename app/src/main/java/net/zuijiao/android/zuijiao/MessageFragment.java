@@ -157,10 +157,6 @@ public class MessageFragment extends Fragment implements FragmentDataListener,
         networkStep(false);
     }
 
-    @Override
-    public void onTouchDown() {
-
-    }
 
     public String getSize() {
         if (mAdapter == null) return "";
@@ -345,7 +341,7 @@ public class MessageFragment extends Fragment implements FragmentDataListener,
             if (mType == 0) {
                 holder.nameOrPic.setVisibility(View.GONE);
             } else {
-                if (msg.getGourmet().get().getImageURLs() != null && msg.getGourmet().get().getImageURLs().size() != 0) {
+                if (msg.getGourmet().isPresent() && msg.getGourmet().get().getImageURLs() != null && msg.getGourmet().get().getImageURLs().size() != 0) {
                     Optional<String> gourmetImage = Optional.of(msg.getGourmet().get().getImageURLs().get(0) + "!Thumbnails");
                     Picasso.with(parent.getContext())
                             .load(gourmetImage.get())
@@ -354,7 +350,8 @@ public class MessageFragment extends Fragment implements FragmentDataListener,
                     holder.gourmetName.setVisibility(View.GONE);
                     holder.gourmetPic.setVisibility(View.VISIBLE);
                 } else {
-                    holder.gourmetName.setText(msg.getGourmet().get().getName());
+                    if (msg.getGourmet().isPresent())
+                        holder.gourmetName.setText(msg.getGourmet().get().getName());
                     holder.gourmetName.setVisibility(View.VISIBLE);
                     holder.gourmetPic.setVisibility(View.GONE);
                 }

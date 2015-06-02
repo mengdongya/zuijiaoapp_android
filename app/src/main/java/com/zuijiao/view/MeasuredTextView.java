@@ -14,6 +14,7 @@ import net.zuijiao.android.zuijiao.R;
 public class MeasuredTextView extends TextView {
     private Context context = null;
     private TextPaint mPaint = null;
+    private static int screenW = -1;
 
     public MeasuredTextView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -48,8 +49,9 @@ public class MeasuredTextView extends TextView {
 
     private float getMaxLineHeight(String str) {
         float height = 0.0f;
-        float screenW = ((Activity) context).getWindowManager()
-                .getDefaultDisplay().getWidth();
+        if (screenW == -1)
+            screenW = ((Activity) context).getWindowManager()
+                    .getDefaultDisplay().getWidth();
         float paddingLeft = ((RelativeLayout) this.getParent()).getPaddingLeft();
         float paddingReft = ((RelativeLayout) this.getParent()).getPaddingRight();
         int line = (int) Math.ceil((this.getPaint().measureText(str) / (screenW

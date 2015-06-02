@@ -52,7 +52,7 @@ public class FriendFragment extends Fragment {
     private Activity mActivity = null;
     private static TinyUser mTinyUser = null;
     private List<SocialEntity> data;
-
+    private View mEmptyView = null;
     private AdapterView.OnItemClickListener mListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -182,10 +182,10 @@ public class FriendFragment extends Fragment {
         mActivity = getActivity();
         mContentView = inflater.inflate(R.layout.fragment_friend, null);
         mListView = (ListView) mContentView.findViewById(R.id.friend_list);
+        mEmptyView = mContentView.findViewById(R.id.friend_empty_content);
         mListView.setAdapter(mAdapter);
         mListView.setOnItemClickListener(mListener);
         fetchFriendShip();
-
         return mContentView;
     }
 
@@ -193,14 +193,26 @@ public class FriendFragment extends Fragment {
         if (position == FOLLOWER) {
             Router.getSocialModule().getFollowersOfUserId(mTinyUser.getIdentifier(), null, 500, socialEntities -> {
                 data = socialEntities.getUsers();
-                mAdapter.notifyDataSetChanged();
+                if (data == null || data.size() == 0) {
+                    mListView.setVisibility(View.GONE);
+                    mEmptyView.setVisibility(View.VISIBLE);
+                    ((TextView) mEmptyView.findViewById(R.id.fragment_friend_no_content_text_view)).setText(getString(R.string.no_fans));
+                } else {
+                    mAdapter.notifyDataSetChanged();
+                }
             }, errorMsg -> {
                 Toast.makeText(mActivity, getString(R.string.notify_net2), Toast.LENGTH_SHORT).show();
             });
         } else if (position == FOLLOWING) {
             Router.getSocialModule().getFollowingsOfUserId(mTinyUser.getIdentifier(), null, 500, socialEntities -> {
                 data = socialEntities.getUsers();
-                mAdapter.notifyDataSetChanged();
+                if (data == null || data.size() == 0) {
+                    mListView.setVisibility(View.GONE);
+                    mEmptyView.setVisibility(View.VISIBLE);
+                    ((TextView) mEmptyView.findViewById(R.id.fragment_friend_no_content_text_view)).setText(getString(R.string.no_follow));
+                } else {
+                    mAdapter.notifyDataSetChanged();
+                }
             }, errorMsg -> {
                 Toast.makeText(mActivity, getString(R.string.notify_net2), Toast.LENGTH_SHORT).show();
             });

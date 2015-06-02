@@ -51,8 +51,6 @@ public class WordWrapView extends ViewGroup {
         }
     }
 
-    ;
-
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int x = 0;

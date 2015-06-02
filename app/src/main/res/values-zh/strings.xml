@@ -2,6 +2,7 @@
 <resources>
     <string name="tb_munion_tip_download_prefix">正在下载:</string>
     <string name="app_name">嘴角</string>
+    <string name="current_version_code">1.1.0</string>
     <string name="welcome_word">发现最美的味道</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
@@ -243,7 +244,7 @@
     <string name="notify_gourmet_name_empty">美食名称不能为空</string>
     <string name="notify_gourmet_description_empty">美食介绍不能为空</string>
     <string name="year_old">%d岁</string>
-    <string name="whose_recommend">%推荐的</string>
+    <string name="whose_recommend">%s推荐的</string>
     <string name="whose_favor">%s喜欢的</string>
     <string name="gender_keep_secret">保密</string>
     <string name="gender_male">男</string>
@@ -261,8 +262,12 @@
     <string name="follow_you">关注了你</string>
     <string name="no_gourmet_related">抱歉，没有找到相关美食</string>
     <string name="no_user_related">抱歉，没有找到此人</string>
-
-
+    <string name="cover">封面</string>
+    <string name="no_avatar">还未设置头像</string>
+    <string name="confirm_delete_gourmet">是否删除美食%s</string>
+    <string name="language_count">%d种语言</string>
+    <string name="recommend_gourmet">推荐美食</string>
+    <string name="more_comment">更多评论</string>
     <!-- umeng socialize strings begin-->
     <!--<string name="pull_to_refresh_pull_label" translatable="false">向下拉动可以刷新</string>-->
     <!--<string name="pull_to_refresh_release_label" translatable="false">松开可以刷新</string>-->

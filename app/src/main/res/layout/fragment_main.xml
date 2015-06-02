@@ -32,6 +32,7 @@
             android:src="@drawable/empty_information" />
     </LinearLayout>
 
+
     <LinearLayout
         android:layout_height="match_parent"
         android:layout_width="match_parent"
@@ -49,30 +50,39 @@
             android:paddingBottom="5dip"
             android:paddingTop="5dip" />
 
-        <com.zuijiao.view.RefreshAndInitListView
-            android:id="@+id/content_items"
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/main_fragment_swipe_refresh"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:divider="@null"></com.zuijiao.view.RefreshAndInitListView>
+            android:orientation="vertical">
+
+            <com.zuijiao.view.RefreshAndInitListView
+                android:id="@+id/content_items"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:divider="@null" />
+        </android.support.v4.widget.SwipeRefreshLayout>
     </LinearLayout>
 
+
     <com.github.clans.fab.FloatingActionMenu
-        android:id="@+id/multiple_actions"
         android:visibility="gone"
+        android:id="@+id/multiple_actions"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:paddingRight="16dip"
+        android:focusable="true"
         android:paddingBottom="16dip"
-        fab:fab_shadowRadius="2dip"
+        fab:fab_shadowRadius="1dip"
         fab:menu_showShadow="true"
         fab:menu_labels_style="@style/MenuLabelsStyle"
         fab:menu_labels_showAnimation="@anim/jump_from_down"
         fab:menu_labels_hideAnimation="@anim/jump_to_down"
         fab:menu_animationDelayPerItem="0"
-        fab:menu_shadowColor="#444"
+        fab:menu_shadowColor="#999999"
         fab:menu_colorNormal="@color/main_label"
         fab:menu_buttonSpacing="20dp"
         fab:menu_backgroundColor="#bb222222"
@@ -95,6 +105,18 @@
 
     </com.github.clans.fab.FloatingActionMenu>
 
+    <TextView
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:id="@+id/add_gourmet_indicator"
+        android:layout_gravity="center_horizontal|bottom"
+        android:layout_marginBottom="40dip"
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:visibility="gone"
+        android:layout_marginLeft="45dip"
+        android:textSize="18sp"
+        android:text="@string/recommend_gourmet" />
     <!--<RelativeLayout-->
     <!--android:layout_height="wrap_content"-->
     <!--android:layout_width="wrap_content"-->

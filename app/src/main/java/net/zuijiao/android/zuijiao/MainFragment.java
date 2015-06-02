@@ -8,33 +8,32 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.TranslateAnimation;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
-import com.squareup.picasso.Picasso;
+import com.zuijiao.adapter.GourmetMainAdapter;
 import com.zuijiao.android.util.Optional;
 import com.zuijiao.android.zuijiao.model.Gourmet;
 import com.zuijiao.android.zuijiao.model.user.TinyUser;
 import com.zuijiao.android.zuijiao.network.Router;
-import com.zuijiao.controller.ActivityTask;
 import com.zuijiao.controller.FileManager;
 import com.zuijiao.controller.PreferenceManager;
 import com.zuijiao.db.DBOpenHelper;
 import com.zuijiao.view.RefreshAndInitListView;
 import com.zuijiao.view.RefreshAndInitListView.MyListViewListener;
-import com.zuijiao.view.WordWrapView;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -42,46 +41,43 @@ import java.util.List;
 
 import static android.view.View.OnLongClickListener;
 
-public class MainFragment extends Fragment implements FragmentDataListener,
-        MyListViewListener {
+public class MainFragment extends Fragment
+        implements MyListViewListener {
     public static final int UNDEFINE_PAGE = 0;
     public static final int MAIN_PAGE = 1;
     public static final int FAVOR_PAGE = 2;
     public static final int RECOMMEND_PAGE = 3;
     private int mContentType = UNDEFINE_PAGE;
-    private OnItemClickListener mItemClickListener = new OnItemClickListener() {
-
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position,
-                                long id) {
-            Intent intent = new Intent(getActivity(), FoodDetailActivity.class);
-            intent.putExtra("selected_gourmet", mAdapter.getItem(position - 1));
-            startActivity(intent);
-        }
-    };
     private View mContentView = null;
     private RefreshAndInitListView mListView = null;
     private FloatingActionMenu mAddMenu = null;
     private FloatingActionButton mFloatButtonA = null;
     private FloatingActionButton mFloatButtonB = null;
     private LayoutInflater mInflater = null;
-    private MainAdapter mAdapter = null;
+    private GourmetMainAdapter mAdapter = null;
     private Context mContext = null;
-    private LinearLayout mLayout = null;
+    private LinearLayout mPlaceHolder = null;
     private TextView mFavorCount = null;
     private boolean bLogin = false;
-    private Activity mActivity = null;
+    private BaseActivity mActivity = null;
     private boolean bFirstInit = true;
-    public TinyUser mDisplayUser = null;
+    public Optional<TinyUser> mDisplayUser = Optional.empty();
     private Date tmpDate = null;
     private boolean bSelf = false;
     private int mPreviousVisibleItem;
-    private View.OnClickListener mFloatBtnListener = new View.OnClickListener() {
-
-        @Override
-        public void onClick(View v) {
-
-        }
+    private TextView mAddTextView = null;
+    private SwipeRefreshLayout mSwipeRefreshLayout = null;
+    private TranslateAnimation mShowAction = new TranslateAnimation(Animation.RELATIVE_TO_SELF, 0.5f,
+            Animation.RELATIVE_TO_SELF, -0.1f, Animation.RELATIVE_TO_SELF,
+            0.0f, Animation.RELATIVE_TO_SELF, 0.0f);
+    private TranslateAnimation mHiddenAction = new TranslateAnimation(Animation.RELATIVE_TO_SELF,
+            0.0f, Animation.RELATIVE_TO_SELF, 0.5f,
+            Animation.RELATIVE_TO_SELF, 0.0f, Animation.RELATIVE_TO_SELF,
+            0.0f);
+    private OnItemClickListener mItemClickListener = (AdapterView<?> parent, View view, int position, long id) -> {
+        Intent intent = new Intent(getActivity(), FoodDetailActivity.class);
+        intent.putExtra("selected_gourmet", mAdapter.getItem(position));
+        startActivity(intent);
     };
 
     public MainFragment() {
@@ -93,19 +89,13 @@ public class MainFragment extends Fragment implements FragmentDataListener,
         super();
         this.mContentType = Type;
         this.mContext = context;
-        if (Router.getInstance().getCurrentUser().isPresent()) {
-            mDisplayUser = Router.getInstance().getCurrentUser().get();
-        }
+        mDisplayUser = Router.getInstance().getCurrentUser();
     }
 
     public void setType(int type) {
         this.mContentType = type;
     }
 
-    public void setUser(TinyUser user) {
-        mDisplayUser = user;
-        bSelf = displaySelfInfo();
-    }
 
     @Override
     public void onStart() {
@@ -120,13 +110,8 @@ public class MainFragment extends Fragment implements FragmentDataListener,
         }
         bSelf = displaySelfInfo();
         if (mAdapter == null) {
-            mAdapter = new MainAdapter();
+            mAdapter = new GourmetMainAdapter(mContentType, mContext);
             mListView.setAdapter(mAdapter);
-        }
-        if (mAdapter.getCount() < 20) {
-            mListView.setPullLoadEnable(false);
-        } else {
-            mListView.setPullLoadEnable(true);
         }
         if (mContentType == FAVOR_PAGE || mContentType == RECOMMEND_PAGE && mAdapter.getCount() != 0) {
             mFavorCount.setVisibility(View.VISIBLE);
@@ -137,35 +122,22 @@ public class MainFragment extends Fragment implements FragmentDataListener,
         } else {
             mFavorCount.setVisibility(View.GONE);
         }
-        if (bFirstInit)
-            firstInit();
     }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         this.mInflater = inflater;
-        mActivity = getActivity();
-        if (mContext == null) {
-            mContext = mActivity.getApplicationContext();
-        }
         mContentView = inflater.inflate(R.layout.fragment_main, null);
-        mLayout = (LinearLayout) mContentView.findViewById(R.id.main_empty_content);
-        mListView = (RefreshAndInitListView) mContentView
-                .findViewById(R.id.content_items);
-        mFavorCount = (TextView) mContentView.findViewById(R.id.tv_show_favor_count);
+        mActivity = (BaseActivity) getActivity();
+        mContext = mActivity.getApplicationContext();
+        findViews();
         if (mContentType == MAIN_PAGE) {
-            mAddMenu = (FloatingActionMenu) mContentView.findViewById(R.id.multiple_actions);
-            mAddMenu.setVisibility(View.VISIBLE);
-            mFloatButtonA = (FloatingActionButton) mContentView.findViewById(R.id.action_a);
-            mFloatButtonB = (FloatingActionButton) mContentView.findViewById(R.id.action_b);
-            mFloatButtonA.setOnClickListener(new FloatButtonListener());
-            mFloatButtonB.setOnClickListener(new FloatButtonListener());
-            mFloatButtonA.setOnLongClickListener(new FloatButtonIndicator(getString(R.string.personal_gourmet)));
-            mFloatButtonB.setOnLongClickListener(new FloatButtonIndicator(getString(R.string.store_gourmet)));
+            initFloatButton();
         }
-        mListView.setOnItemClickListener(mItemClickListener);
-        mListView.setListViewListener(this);
+        if (bFirstInit)
+            firstInit();
         return mContentView;
     }
 
@@ -199,23 +171,44 @@ public class MainFragment extends Fragment implements FragmentDataListener,
         super.onSaveInstanceState(outState);
     }
 
-    @Override
-    public ArrayList<Object> initCache(int type) {
-        return null;
+    private void findViews() {
+        mPlaceHolder = (LinearLayout) mContentView.findViewById(R.id.main_empty_content);
+        mListView = (RefreshAndInitListView) mContentView.findViewById(R.id.content_items);
+        mListView.setPullRefreshEnable(false);
+        mListView.setPullLoadEnable(false);
+        mListView.setListViewListener(this);
+        mSwipeRefreshLayout = (SwipeRefreshLayout) mContentView.findViewById(R.id.main_fragment_swipe_refresh);
+        mSwipeRefreshLayout.setOnRefreshListener(() -> {
+            onRefresh();
+        });
+        mListView.setOnItemClickListener(mItemClickListener);
+        mFavorCount = (TextView) mContentView.findViewById(R.id.tv_show_favor_count);
     }
 
-    @Override
-    public ArrayList<Object> getContentFromNetWork(String Url) {
-        return null;
+    private void initFloatButton() {
+        mAddTextView = (TextView) mContentView.findViewById(R.id.add_gourmet_indicator);
+        mAddMenu = (FloatingActionMenu) mContentView.findViewById(R.id.multiple_actions);
+        mAddMenu.setVisibility(View.VISIBLE);
+        mAddMenu.setClosedOnTouchOutside(true);
+        mFloatButtonA = (FloatingActionButton) mContentView.findViewById(R.id.action_a);
+        mFloatButtonB = (FloatingActionButton) mContentView.findViewById(R.id.action_b);
+        mFloatButtonA.setOnClickListener(new FloatButtonListener());
+        mFloatButtonB.setOnClickListener(new FloatButtonListener());
+        mFloatButtonA.setOnLongClickListener(new FloatButtonIndicator(getString(R.string.personal_gourmet)));
+        mFloatButtonB.setOnLongClickListener(new FloatButtonIndicator(getString(R.string.store_gourmet)));
+        mAddMenu.setOnMenuToggleListener((boolean b) -> {
+            if (b) {
+                mShowAction.setDuration(300);
+                mAddTextView.startAnimation(mShowAction);
+                mAddTextView.setVisibility(View.VISIBLE);
+            } else {
+                mAddTextView.setVisibility(View.GONE);
+            }
+        });
     }
 
-    @Override
-    public void NotifyData() {
-
-    }
 
     public void firstInit() {
-        mListView.autoResetHeadView();
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -225,7 +218,6 @@ public class MainFragment extends Fragment implements FragmentDataListener,
     }
 
 
-    @Override
     public void onRefresh() {
         if (mContentType == MAIN_PAGE) {
             fetchCommonData(true);
@@ -236,7 +228,6 @@ public class MainFragment extends Fragment implements FragmentDataListener,
         }
     }
 
-    @Override
     public void onLoadMore() {
         if (mContentType == MAIN_PAGE) {
             fetchCommonData(false);
@@ -247,39 +238,33 @@ public class MainFragment extends Fragment implements FragmentDataListener,
         }
     }
 
-    public void onTouchDown() {
-        if (mAddMenu != null && mAddMenu.isOpened()) {
-            mAddMenu.close(true);
-        }
-    }
+
+//    public void onTouchDown() {
+//        if (mAddMenu != null && mAddMenu.isOpened()) {
+//            mAddMenu.close(true);
+//        }
+//    }
 
     public void clearPersonalData() {
         try {
-            mAdapter.gourmets.get().clear();
+            mAdapter.getData().clear();
             mAdapter.notifyDataSetChanged();
-            mListView.setPullLoadEnable(false);
             mFavorCount.setVisibility(View.GONE);
         } catch (Throwable t) {
             System.err.println("no favor");
         }
     }
 
-
     private void fetchRecommendData(boolean isRefresh) {
-        if (mDisplayUser == null) {
-            if (Router.getInstance().getCurrentUser().isPresent()) {
-                mDisplayUser = Router.getInstance().getCurrentUser().get();
-            }
-            if (mDisplayUser == null) {
+        if (!mDisplayUser.isPresent()) {
+            mDisplayUser = Router.getInstance().getCurrentUser();
+            if (!mDisplayUser.isPresent()) {
                 ((BaseActivity) getActivity()).tryLoginFirst(() -> {
                     if (!Router.getInstance().getCurrentUser().isPresent()) {
-                        if (mAdapter.gourmets.isPresent())
-                            mAdapter.gourmets.get().clear();
+                        if (mAdapter.getData() != null)
+                            mAdapter.getData().clear();
                         mAdapter.notifyDataSetChanged();
-                        mListView.setPullLoadEnable(false);
                         mFavorCount.setVisibility(View.GONE);
-                        mListView.stopRefresh();
-                        mListView.stopLoadMore();
                         ((BaseActivity) getActivity()).notifyLogin(() -> {
                             if (Router.getInstance().getCurrentUser().isPresent()) {
                                 fetchRecommendData(isRefresh);
@@ -292,55 +277,52 @@ public class MainFragment extends Fragment implements FragmentDataListener,
                     }
                 }, error -> {
                     Toast.makeText(mActivity, getResources().getString(R.string.notify_net2), Toast.LENGTH_LONG).show();
-                    mListView.stopRefresh();
-                    mListView.stopLoadMore();
                 });
             } else {
                 fetchRecommendData(isRefresh);
             }
             return;
         }
-        List<Gourmet> tmpGourmets = mAdapter.gourmets.orElse(new ArrayList<>());
+        List<Gourmet> tmpGourmets = mAdapter.getData() == null ? new ArrayList<>() : mAdapter.getData();
         Integer theLastOneIdentifier = null;
         if (!isRefresh) {
             Gourmet theLatestOne = tmpGourmets.get(tmpGourmets.size() - 1);
             theLastOneIdentifier = theLatestOne.getIdentifier();
         }
-        if (bSelf) {
-            mListView.setRefreshTime(new Date(PreferenceManager.getInstance(mContext).getFavorLastRefreshTime()).toLocaleString());
-        } else if (tmpDate != null) {
-            mListView.setRefreshTime(tmpDate.toLocaleString());
-        }
-        Router.getGourmetModule().fetchRecommendationListByUserId(mDisplayUser.getIdentifier(), theLastOneIdentifier, null, 20
+        Router.getGourmetModule().fetchRecommendationListByUserId(mDisplayUser.get().getIdentifier(), theLastOneIdentifier, null, 20
                 , gourmets ->
         {
             if (isRefresh) {
                 tmpGourmets.clear();
                 if (gourmets.getTotalCount() == 0) {
                     mFavorCount.setVisibility(View.GONE);
-                    mLayout.setVisibility(View.VISIBLE);
+                    mPlaceHolder.setVisibility(View.VISIBLE);
                     ((TextView) mContentView.findViewById(R.id.fragment_main_no_content_text_view)).setText(getString(R.string.no_recommendation));
                     mListView.setPullLoadEnable(false);
                 } else {
+                    if (gourmets.getGourmets().size() < 20) {
+                        mListView.setPullLoadEnable(false);
+                    } else
+                        mListView.setPullLoadEnable(true);
                     mFavorCount.setVisibility(View.VISIBLE);
                     mFavorCount.setText(String.format(getString(R.string.recommend_count_title), gourmets.getTotalCount()));
+                    mPlaceHolder.setVisibility(View.GONE);
+                }
+            } else {
+                if (gourmets.getGourmets().size() == 0) {
+                    Toast.makeText(mContext, getString(R.string.no_more), Toast.LENGTH_SHORT).show();
+                    mListView.setPullLoadEnable(false);
+                } else {
                     if (gourmets.getGourmets().size() < 20) {
                         mListView.setPullLoadEnable(false);
                     } else {
                         mListView.setPullLoadEnable(true);
                     }
-                    mLayout.setVisibility(View.GONE);
-                }
-            } else {
-                if (gourmets.getGourmets().size() == 0) {
-                    mListView.setPullLoadEnable(false);
-                    Toast.makeText(mContext, getString(R.string.no_more), Toast.LENGTH_SHORT).show();
-                } else {
                     mFavorCount.setText(String.format(getString(R.string.recommend_count_title), tmpGourmets.size() + gourmets.getTotalCount()));
                 }
             }
             tmpGourmets.addAll(gourmets.getGourmets());
-            mAdapter.gourmets = Optional.of(tmpGourmets);
+            mAdapter.setData(Optional.of(tmpGourmets));
             mAdapter.notifyDataSetChanged();
 //            DBOpenHelper.getmInstance(mContext).insertGourmets(gourmets);
             if (bSelf) {
@@ -349,9 +331,8 @@ public class MainFragment extends Fragment implements FragmentDataListener,
             } else {
                 tmpDate = new Date();
             }
-            mListView.stopRefresh();
-            mListView.stopLoadMore();
             bFirstInit = false;
+            mSwipeRefreshLayout.setRefreshing(false);
         }
                 , errorMessage ->
         {
@@ -360,32 +341,26 @@ public class MainFragment extends Fragment implements FragmentDataListener,
                     fetchCommonData(isRefresh);
                 }, error -> {
                     Toast.makeText(mActivity, getResources().getString(R.string.notify_net2), Toast.LENGTH_LONG).show();
-                    mListView.stopRefresh();
-                    mListView.stopLoadMore();
                 });
             } else {
                 Toast.makeText(mActivity, getResources().getString(R.string.notify_net2), Toast.LENGTH_LONG).show();
-                mListView.stopRefresh();
-                mListView.stopLoadMore();
             }
+            mSwipeRefreshLayout.setRefreshing(false);
         });
     }
 
     private void fetchFavorData(Boolean isRefresh) {
-        if (mDisplayUser == null) {
-            if (Router.getInstance().getCurrentUser().isPresent()) {
-                mDisplayUser = Router.getInstance().getCurrentUser().get();
-            }
-            if (mDisplayUser == null) {
+        if (!mDisplayUser.isPresent()) {
+//            if (Router.getInstance().getCurrentUser().isPresent()) {
+            mDisplayUser = Router.getInstance().getCurrentUser();
+//            }
+            if (!mDisplayUser.isPresent()) {
                 ((BaseActivity) getActivity()).tryLoginFirst(() -> {
                     if (!Router.getInstance().getCurrentUser().isPresent()) {
-                        if (mAdapter.gourmets.isPresent())
-                            mAdapter.gourmets.get().clear();
+                        if (mAdapter.getData() != null)
+                            mAdapter.getData().clear();
                         mAdapter.notifyDataSetChanged();
-                        mListView.setPullLoadEnable(false);
                         mFavorCount.setVisibility(View.GONE);
-                        mListView.stopRefresh();
-                        mListView.stopLoadMore();
                         ((BaseActivity) getActivity()).notifyLogin(() -> {
                             if (Router.getInstance().getCurrentUser().isPresent()) {
                                 fetchFavorData(isRefresh);
@@ -398,8 +373,6 @@ public class MainFragment extends Fragment implements FragmentDataListener,
                     }
                 }, error -> {
                     Toast.makeText(mActivity, getResources().getString(R.string.notify_net2), Toast.LENGTH_LONG).show();
-                    mListView.stopRefresh();
-                    mListView.stopLoadMore();
                 });
             } else {
                 fetchFavorData(isRefresh);
@@ -408,44 +381,44 @@ public class MainFragment extends Fragment implements FragmentDataListener,
             return;
         }
         // TinyUser user = Router.getInstance().getCurrentUser().get();
-        List<Gourmet> tmpGourmets = mAdapter.gourmets.orElse(new ArrayList<>());
+        List<Gourmet> tmpGourmets = mAdapter.getData() == null ? new ArrayList<>() : mAdapter.getData();
         Integer theLastOneIdentifier = null;
         if (!isRefresh) {
             Gourmet theLatestOne = tmpGourmets.get(tmpGourmets.size() - 1);
             theLastOneIdentifier = theLatestOne.getIdentifier();
         }
-        mListView.setRefreshTime(new Date(PreferenceManager.getInstance(mContext).getFavorLastRefreshTime()).toLocaleString());
-        Router.getGourmetModule().fetchFavoritesByUserId(mDisplayUser.getIdentifier(), theLastOneIdentifier, null, 20
+        Router.getGourmetModule().fetchFavoritesByUserId(mDisplayUser.get().getIdentifier(), theLastOneIdentifier, null, 20
                 , gourmets ->
         {
             if (isRefresh) {
                 tmpGourmets.clear();
                 if (gourmets.getTotalCount() == 0) {
                     mFavorCount.setVisibility(View.GONE);
-                    mLayout.setVisibility(View.VISIBLE);
+                    mPlaceHolder.setVisibility(View.VISIBLE);
                     mListView.setPullLoadEnable(false);
                 } else {
-                    mFavorCount.setVisibility(View.VISIBLE);
-                    int count = gourmets.getTotalCount();
-                    mFavorCount.setText(String.format(getString(R.string.favor_count), gourmets.getTotalCount()));
                     if (gourmets.getGourmets().size() < 20) {
                         mListView.setPullLoadEnable(false);
                     } else {
                         mListView.setPullLoadEnable(true);
                     }
-                    mLayout.setVisibility(View.GONE);
+                    mFavorCount.setVisibility(View.VISIBLE);
+                    int count = gourmets.getTotalCount();
+                    mFavorCount.setText(String.format(getString(R.string.favor_count), gourmets.getTotalCount()));
+                    mPlaceHolder.setVisibility(View.GONE);
                 }
             } else {
                 if (gourmets.getGourmets().size() == 0) {
-                    mListView.setPullLoadEnable(false);
                     Toast.makeText(mContext, getString(R.string.no_more), Toast.LENGTH_SHORT).show();
+                    mListView.setPullLoadEnable(false);
                 } else {
                     mFavorCount.setText(String.format(getString(R.string.favor_count), gourmets.getTotalCount()));
+                    mListView.setPullLoadEnable(true);
                 }
             }
             tmpGourmets.addAll(gourmets.getGourmets());
 
-            mAdapter.gourmets = Optional.of(tmpGourmets);
+            mAdapter.setData(Optional.of(tmpGourmets));
             mAdapter.notifyDataSetChanged();
 //            DBOpenHelper.getmInstance(mContext).insertGourmets(gourmets);
             if (bSelf) {
@@ -454,9 +427,8 @@ public class MainFragment extends Fragment implements FragmentDataListener,
             } else {
                 tmpDate = new Date();
             }
-            mListView.stopRefresh();
-            mListView.stopLoadMore();
             bFirstInit = false;
+            mSwipeRefreshLayout.setRefreshing(false);
         }
                 , errorMessage ->
         {
@@ -465,25 +437,21 @@ public class MainFragment extends Fragment implements FragmentDataListener,
                     fetchCommonData(isRefresh);
                 }, error -> {
                     Toast.makeText(mActivity, getResources().getString(R.string.notify_net2), Toast.LENGTH_LONG).show();
-                    mListView.stopRefresh();
-                    mListView.stopLoadMore();
                 });
             } else {
                 Toast.makeText(mActivity, getResources().getString(R.string.notify_net2), Toast.LENGTH_LONG).show();
-                mListView.stopRefresh();
-                mListView.stopLoadMore();
             }
+            mSwipeRefreshLayout.setRefreshing(false);
         });
     }
 
     private void fetchCommonData(Boolean isRefresh) {
-        List<Gourmet> tmpGourmets = mAdapter.gourmets.orElse(new ArrayList<>());
+        List<Gourmet> tmpGourmets = mAdapter.getData() == null ? new ArrayList<>() : mAdapter.getData();
         Integer theLastOneIdentifier = null;
         if (!isRefresh) {
             Gourmet theLatestOne = tmpGourmets.get(tmpGourmets.size() - 1);
             theLastOneIdentifier = theLatestOne.getIdentifier();
         }
-        mListView.setRefreshTime(new Date(PreferenceManager.getInstance(getActivity()).getMainLastRefreshTime()).toLocaleString());
         Router.getGourmetModule().fetchOurChoice(theLastOneIdentifier
                 , null
                 , 20
@@ -491,22 +459,24 @@ public class MainFragment extends Fragment implements FragmentDataListener,
         {
             if (isRefresh) {
                 tmpGourmets.clear();
-                mListView.setPullLoadEnable(true);
             } else {
                 if (gourmets.getGourmets().size() == 0) {
-                    mListView.setPullLoadEnable(false);
                     Toast.makeText(mContext, getString(R.string.no_more), Toast.LENGTH_SHORT).show();
                 }
             }
+            if (gourmets.getGourmets().size() < 20) {
+                mListView.setPullLoadEnable(false);
+            } else {
+                mListView.setPullLoadEnable(true);
+            }
             tmpGourmets.addAll(gourmets.getGourmets());
-            mAdapter.gourmets = Optional.of(tmpGourmets);
+            mAdapter.setData(Optional.of(tmpGourmets));
             FileManager.setGourmets(mContentType, Optional.of(tmpGourmets));
             mAdapter.notifyDataSetChanged();
             DBOpenHelper.getmInstance(mContext).insertGourmets(gourmets);
             PreferenceManager.getInstance(mContext).saveMainLastRefreshTime(new Date().getTime());
-            mListView.stopRefresh();
-            mListView.stopLoadMore();
             bFirstInit = false;
+            mSwipeRefreshLayout.setRefreshing(false);
         }
                 , errorMessage ->
         {
@@ -515,20 +485,14 @@ public class MainFragment extends Fragment implements FragmentDataListener,
                     fetchCommonData(isRefresh);
                 }, error -> {
                     Toast.makeText(mActivity, getResources().getString(R.string.notify_net2), Toast.LENGTH_LONG).show();
-                    mListView.stopRefresh();
-                    mListView.stopLoadMore();
                 });
             } else {
                 Toast.makeText(mActivity, getResources().getString(R.string.notify_net2), Toast.LENGTH_LONG).show();
-                mListView.stopRefresh();
-                mListView.stopLoadMore();
             }
+            mSwipeRefreshLayout.setRefreshing(false);
         });
     }
 
-    protected interface MainFragmentDataListener {
-        public void onDataChanged();
-    }
 
     private void goToEditGourmet(View selectedView) {
         Intent intent = new Intent();
@@ -562,7 +526,7 @@ public class MainFragment extends Fragment implements FragmentDataListener,
                     Toast.makeText(getActivity(), getString(R.string.notify_net2), Toast.LENGTH_SHORT).show();
                 });
             }
-            mAddMenu.close(false);
+            mAddMenu.close(true);
         }
     }
 
@@ -590,127 +554,24 @@ public class MainFragment extends Fragment implements FragmentDataListener,
     }
 
     private boolean displaySelfInfo() {
-        if (mDisplayUser == null) {
-            return false;
-        }
-        return mDisplayUser.getIdentifier().equals(PreferenceManager.getInstance(mContext).getStoredUserId());
+        if (mDisplayUser.isPresent())
+            return mDisplayUser.get().getIdentifier().
+                    equals(PreferenceManager.getInstance(mContext).getStoredUserId());
+        return false;
     }
 
-    private class MainAdapter extends BaseAdapter {
-        Optional<List<Gourmet>> gourmets;
 
-        public MainAdapter() {
-            super();
-            if (mContentType == MAIN_PAGE) {
-                gourmets = FileManager.mainGourmet;
-            } else if (mContentType == FAVOR_PAGE && bSelf) {
-                gourmets = FileManager.favorGourmets;
-            } else if (mContentType == RECOMMEND_PAGE && bSelf) {
-                gourmets = FileManager.recommendList;
-            } else {
-                gourmets = Optional.empty();
-            }
+    public boolean holdBackEvent() {
+        if (mAddMenu != null && mAddMenu.isOpened()) {
+            return true;
         }
-
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            ViewHolder holder = null;
-            if (convertView == null) {
-                convertView = mInflater.inflate(R.layout.main_content_item, null);
-                holder = new ViewHolder();
-                holder.image_food = (ImageView) convertView
-                        .findViewById(R.id.content_item_image);
-                holder.image_user_head = (ImageView) convertView
-                        .findViewById(R.id.content_item_user_head);
-                holder.label = (WordWrapView) convertView
-                        .findViewById(R.id.view_wordwrap);
-                holder.text1_food_name = (TextView) convertView
-                        .findViewById(R.id.content_item_title);
-                holder.text1_food_name.setTypeface(ActivityTask.getTypeFace(mContext));
-                holder.text2_personal = (TextView) convertView
-                        .findViewById(R.id.content_item_personal_tip);
-                holder.text4_user_name = (TextView) convertView
-                        .findViewById(R.id.content_item_user_name);
-                holder.text_intro = (TextView) convertView
-                        .findViewById(R.id.content_item_comment);
-                holder.user = convertView.findViewById(R.id.content_item_user);
-                convertView.setTag(holder);
-            } else {
-                holder = (ViewHolder) convertView.getTag();
-            }
-
-            if (gourmets.isPresent()) {
-                Gourmet gourmet = gourmets.get().get(position);
-                holder.text1_food_name.setText("\u200B" + gourmet.getName());
-                holder.text4_user_name.setText(gourmet.getUser().getNickName());
-                holder.text_intro.setText(gourmet.getDescription());
-                holder.text2_personal.setVisibility(gourmet.getIsPrivate() ? View.VISIBLE : View.GONE);
-                if (gourmet.getImageURLs().size() > 0) {
-                    holder.image_food.setVisibility(View.VISIBLE);
-                    Picasso.with(parent.getContext())
-                            .load(gourmet.getImageURLs().get(0) + "!Thumbnails")
-                            .placeholder(R.drawable.empty_view_greeting)
-                            .into(holder.image_food);
-                } else if (gourmet.getImageURLs().size() == 0) {
-                    holder.image_food.setVisibility(View.GONE);
-                }
-                if (gourmet.getUser().getAvatarURL().isPresent() && gourmet.getUser().getAvatarURL().get().length() > 5) {
-                    Picasso.with(parent.getContext())
-                            .load(gourmet.getUser().getAvatarURL().get())
-                            .placeholder(R.drawable.default_user_head)
-                            .into(holder.image_user_head);
-                }
-                holder.user.setOnClickListener((View v) -> {
-                    Intent intent = new Intent();
-                    intent.setClass(mContext, UserInfoActivity.class);
-                    intent.putExtra("tiny_user", gourmet.getUser());
-                    startActivity(intent);
-                });
-                holder.label.removeAllViews();
-                for (String tag : gourmet.getTags()) {
-                    TextView textview = new TextView(getActivity());
-                    textview.setBackgroundResource(R.drawable.bg_label);
-                    textview.setTextColor(getResources().getColor(R.color.white));
-                    textview.setTextSize(14);
-                    textview.setText(tag);
-                    holder.label.addView(textview);
-                }
-            } else {
-            }
-
-            return convertView;
-        }
-
-
-        @Override
-        public long getItemId(int position) {
-            return position;
-        }
-
-        @Override
-        public Gourmet getItem(int position) {
-//            return position;
-            if (gourmets.isPresent()) {
-                return gourmets.get().get(position);
-            }
-            return null;
-        }
-
-        @Override
-        public int getCount() {
-            return gourmets.isPresent() ? gourmets.get().size() : 0;
-        }
+        return false;
     }
 
-    private class ViewHolder {
-        public ImageView image_food;
-        public TextView text1_food_name;
-        public TextView text2_personal;
-        public WordWrapView label;
-        public TextView text_intro;
-        public ImageView image_user_head;
-        public TextView text4_user_name;
-        private View user;
+    public void closeFloatMenu() {
+        if (mAddMenu != null)
+            mAddMenu.close(true);
     }
+
+
 }

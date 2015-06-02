@@ -8,7 +8,6 @@ import android.app.Application;
 import android.content.ComponentName;
 import android.content.Context;
 import android.graphics.Typeface;
-import android.widget.Toast;
 
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
@@ -17,9 +16,6 @@ import com.baidu.location.LocationClient;
 import com.facebook.stetho.Stetho;
 import com.facebook.stetho.okhttp.StethoInterceptor;
 import com.squareup.okhttp.Interceptor;
-import com.umeng.message.PushAgent;
-import com.umeng.message.UmengNotificationClickHandler;
-import com.umeng.message.entity.UMessage;
 import com.zuijiao.android.zuijiao.network.Router;
 import com.zuijiao.utils.OSUtil;
 
@@ -27,6 +23,7 @@ import net.zuijiao.android.zuijiao.BuildConfig;
 import net.zuijiao.android.zuijiao.LocationActivity;
 
 import java.io.File;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -44,8 +41,7 @@ public class ActivityTask extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-//        FontsOverride.setDefaultFont(this, "DEFAULT", "fonts/NotoSansHans-Light.otf");
-//
+        System.out.println(new Date().getTime());
         mLocationClient = new LocationClient(this.getApplicationContext());
         mMyLocationListener = new MyLocationListener();
         mLocationClient.registerLocationListener(mMyLocationListener);
@@ -64,37 +60,7 @@ public class ActivityTask extends Application {
                             .build());
         }
         Router.setup(BuildConfig.Base_Url, BuildConfig.Request_Key, cacheDirectory, interceptor);
-        PushAgent mPushAgent = PushAgent.getInstance(getApplicationContext());
-        UmengNotificationClickHandler notificationClickHandler = new UmengNotificationClickHandler() {
-            @Override
-            public void dealWithCustomAction(Context context, UMessage msg) {
-                System.out.println(msg.toString());
-                Toast.makeText(context, "dealWithCustomAction", Toast.LENGTH_LONG).show();
-            }
-
-            @Override
-            public void openActivity(Context context, UMessage uMessage) {
-
-                super.openActivity(context, uMessage);
-                System.out.println(uMessage.toString());
-                Toast.makeText(context, "openActivity", Toast.LENGTH_LONG).show();
-            }
-
-            @Override
-            public void openUrl(Context context, UMessage uMessage) {
-                super.openUrl(context, uMessage);
-                System.out.println(uMessage.toString());
-                Toast.makeText(context, "openUrl", Toast.LENGTH_LONG).show();
-            }
-
-            @Override
-            public void launchApp(Context context, UMessage uMessage) {
-                super.launchApp(context, uMessage);
-                System.out.println(uMessage.toString());
-                Toast.makeText(context, "launchApp", Toast.LENGTH_LONG).show();
-            }
-        };
-        mPushAgent.setNotificationClickHandler(notificationClickHandler);
+        System.out.println(new Date().getTime());
     }
 
     public static ActivityTask getInstance() {

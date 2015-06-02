@@ -5,8 +5,14 @@
     android:layout_height="wrap_content">
 
     <View
+        android:id="@+id/input_diviver"
         android:layout_width="match_parent"
-        style="@style/share_dialog_bg" />
+        android:layout_height="15dip"
+        android:layout_above="@+id/food_detail_input"
+        android:background="@drawable/bg_input_diviver" />
+    <!--<View-->
+    <!--android:layout_width="match_parent"-->
+    <!--style="@style/share_dialog_bg" />-->
 
     <GridView
         android:background="@color/white"

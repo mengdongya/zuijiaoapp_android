@@ -1,7 +1,10 @@
 package net.zuijiao.android.zuijiao;
 
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -41,7 +44,6 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
     private ImageButton mBtnWebo = null;
     @ViewInject(R.id.iv_qq)
     private ImageButton mBtnQQ = null;
-    private ThirdPartySDKManager mCloudMng = null;
     private int mLoginType = ThirdPartySDKManager.CLOUD_TYPE_NONE;
     private ProgressDialog mDialog = null;
     @ViewInject(R.id.login_toolbar)
@@ -57,18 +59,39 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
     private String mEmail = null;
     private String mPassword = null;
 
+    protected BroadcastReceiver mReceiver = new BroadcastReceiver() {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals(MessageDef.ACTION_LOGIN_FINISH)) {
+                onLoginFinish();
+            } else if (intent.getAction().equals(MessageDef.ACTION_GET_THIRD_PARTY_USER)) {
+                onUserInfoGot(true);
+            }
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        mCloudMng = ThirdPartySDKManager.getInstance(LoginActivity.this);
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(MessageDef.ACTION_LOGIN_FINISH);
+        filter.addAction(MessageDef.ACTION_GET_THIRD_PARTY_USER);
+        registerReceiver(mReceiver, filter);
     }
 
     @Override
     protected void findViews() {
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(mReceiver);
     }
 
     @Override
@@ -173,8 +196,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
                 break;
         }
         if (mLoginType != ThirdPartySDKManager.CLOUD_TYPE_NONE) {
-            mCloudMng = ThirdPartySDKManager.getInstance(LoginActivity.this);
-            mCloudMng.login(mLoginType);
+            authMng.login(mLoginType);
         }
     }
 
@@ -194,7 +216,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        mCloudMng.onLoginResult(requestCode, resultCode, data);
+        authMng.onLoginResult(requestCode, resultCode, data);
     }
 
     @Override
@@ -202,9 +224,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
         super.onResume();
     }
 
-    @Override
     protected void onUserInfoGot(boolean bSuccess) {
-        super.onUserInfoGot(bSuccess);
         if (mDialog != null) {
             mDialog.dismiss();
             mDialog = null;
@@ -214,8 +234,8 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
         }
     }
 
-    protected void onLoginFinish() {
-        super.onLoginFinish();
+    private void onLoginFinish() {
+//        super.onLoginFinish();
         if (mLoginType != ThirdPartySDKManager.CLOUD_TYPE_WEIXIN) {
             mDialog = ProgressDialog.show(LoginActivity.this, null, getResources().getString(R.string.on_loading));
         }

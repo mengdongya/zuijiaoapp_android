@@ -8,7 +8,6 @@ import android.provider.MediaStore;
 import com.zuijiao.android.util.Optional;
 import com.zuijiao.android.zuijiao.model.Gourmet;
 import com.zuijiao.android.zuijiao.model.user.User;
-import com.zuijiao.android.zuijiao.model.user.WouldLikeToEatUsers;
 import com.zuijiao.entity.SimpleImage;
 
 import net.zuijiao.android.zuijiao.MainFragment;
@@ -31,8 +30,6 @@ public class FileManager {
     public static Optional<List<Gourmet>> mainGourmet = Optional.empty();
     //my favor fragment data
     public static Optional<List<Gourmet>> favorGourmets = Optional.empty();
-    public static Optional<WouldLikeToEatUsers> tmpWouldLikeList = Optional.empty();
-    //
     public static Optional<List<Gourmet>> recommendList = Optional.empty();
     public static Gourmet tmpMessageGourmet = null;
 
@@ -50,7 +47,7 @@ public class FileManager {
     private static FileManager mInstance = null;
     private Context mContext = null;
     private static final String[] STORE_IMAGES = {
-            MediaStore.Images.Media.DISPLAY_NAME, MediaStore.Images.Media._ID, MediaStore.Images.ImageColumns.DATA};
+            MediaStore.Images.Media.DISPLAY_NAME, MediaStore.Images.Media._ID, MediaStore.Images.ImageColumns.DATA, MediaStore.Images.Media.SIZE};
 
     private FileManager(Context context) {
         this.mContext = context;
@@ -185,6 +182,10 @@ public class FileManager {
             String id = cursor.getString(1);
             String displayname = cursor.getString(0);
             String data = cursor.getString(2);
+            long size = cursor.getLong(3);
+            if (size < 10000) {
+                continue;
+            }
             image = new SimpleImage();
             image.name = displayname;
             image.id = id;

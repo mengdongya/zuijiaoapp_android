@@ -17,7 +17,7 @@ import com.lidroid.xutils.view.annotation.ViewInject;
 import com.squareup.picasso.Picasso;
 import com.zuijiao.android.zuijiao.model.user.TinyUser;
 import com.zuijiao.android.zuijiao.model.user.WouldLikeToEatUser;
-import com.zuijiao.controller.FileManager;
+import com.zuijiao.android.zuijiao.model.user.WouldLikeToEatUsers;
 import com.zuijiao.db.DBOpenHelper;
 import com.zuijiao.utils.StrUtil;
 
@@ -31,13 +31,21 @@ public class FavorPersonListActivity extends BaseActivity {
     @ViewInject(R.id.lv_favor_person)
     private ListView mList = null;
     private LayoutInflater mInflater = null;
+    private WouldLikeToEatUsers mWouldLikeToEatList = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle(String.format(getResources().getString(R.string.favor_label), FileManager.tmpWouldLikeList.get().getCount() + ""));
+        try {
+            mWouldLikeToEatList = (WouldLikeToEatUsers) mTendIntent.getSerializableExtra("would_like_list");
+            if (mWouldLikeToEatList == null || mWouldLikeToEatList.getCount() == 0)
+                finish();
+        } catch (Throwable t) {
+            finish();
+        }
+        getSupportActionBar().setTitle(String.format(getResources().getString(R.string.favor_label), mWouldLikeToEatList.getCount() + ""));
         mList.setAdapter(mAdapter);
         mList.setOnItemClickListener(mListener);
         mInflater = LayoutInflater.from(this);
@@ -46,7 +54,7 @@ public class FavorPersonListActivity extends BaseActivity {
     private AdapterView.OnItemClickListener mListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            TinyUser user = FileManager.tmpWouldLikeList.get().getUsers().get(position);
+            TinyUser user = mWouldLikeToEatList.getUsers().get(position);
             Intent intent = new Intent();
             intent.setClass(mContext, UserInfoActivity.class);
             intent.putExtra("tiny_user", user);
@@ -56,7 +64,7 @@ public class FavorPersonListActivity extends BaseActivity {
     private BaseAdapter mAdapter = new BaseAdapter() {
         @Override
         public int getCount() {
-            return FileManager.tmpWouldLikeList.get().getCount();
+            return mWouldLikeToEatList.getCount();
         }
 
         @Override
@@ -71,7 +79,7 @@ public class FavorPersonListActivity extends BaseActivity {
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            WouldLikeToEatUser user = FileManager.tmpWouldLikeList.get().getUsers().get(position);
+            WouldLikeToEatUser user = mWouldLikeToEatList.getUsers().get(position);
             ViewHolder holder = null;
             if (convertView == null) {
                 convertView = mInflater.inflate(R.layout.favor_person_item, null);

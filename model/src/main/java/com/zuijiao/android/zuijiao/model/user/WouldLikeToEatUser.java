@@ -2,6 +2,7 @@ package com.zuijiao.android.zuijiao.model.user;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -9,7 +10,7 @@ import java.util.Date;
  * <p>
  * 喜欢某菜品的用户信息
  */
-final public class WouldLikeToEatUser extends TinyUser {
+final public class WouldLikeToEatUser extends TinyUser implements Serializable {
 
     @SerializedName("createdAt")
     private Date date;

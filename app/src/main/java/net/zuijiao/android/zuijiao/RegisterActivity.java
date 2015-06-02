@@ -82,32 +82,20 @@ public class RegisterActivity extends BaseActivity {
                         sendBroadcast(intent);
                         intent.setClass(RegisterActivity.this, MainActivity.class);
                         startActivity(intent);
-                        finallizeDialog();
-//                        }, errorMessage -> {
-//                            finallizeDialog();
-//                            Toast.makeText(getApplicationContext(), getString(R.string.notify_net2), Toast.LENGTH_SHORT).show();
-//                            //login failed !
-//                        });
+                        finalizeDialog();
                     }, errorMessage -> {
-                        finallizeDialog();
+                        finalizeDialog();
                         Toast.makeText(getApplicationContext(), getString(R.string.notify_net2), Toast.LENGTH_SHORT).show();
                         /// register failed !
                     });
                 } else {
                     Toast.makeText(getApplicationContext(), mErrorCode, Toast.LENGTH_SHORT).show();
-                    finallizeDialog();
+                    finalizeDialog();
                 }
                 break;
         }
         return super.onOptionsItemSelected(item);
     }
-
-//    private void finallizeDialog() {
-//        if (mDialog != null) {
-//            mDialog.dismiss();
-//            mDialog = null;
-//        }
-//    }
 
     private boolean checkInputState() {
         mNickName = mEtNickName.getText().toString().trim();

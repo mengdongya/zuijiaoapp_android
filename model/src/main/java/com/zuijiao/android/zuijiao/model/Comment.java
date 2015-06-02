@@ -4,12 +4,13 @@ import com.google.gson.annotations.SerializedName;
 import com.zuijiao.android.util.Optional;
 import com.zuijiao.android.zuijiao.model.user.TinyUser;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
  * Created by Chen Hao on 3/23/15.
  */
-public class Comment {
+public class Comment implements Serializable {
 
     @SerializedName("user")
     private TinyUser user;

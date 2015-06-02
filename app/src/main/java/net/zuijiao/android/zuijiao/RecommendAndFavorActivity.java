@@ -5,6 +5,7 @@ import android.support.v7.widget.Toolbar;
 
 import com.lidroid.xutils.view.annotation.ContentView;
 import com.lidroid.xutils.view.annotation.ViewInject;
+import com.zuijiao.android.util.Optional;
 import com.zuijiao.android.zuijiao.model.user.TinyUser;
 
 /**
@@ -14,7 +15,7 @@ import com.zuijiao.android.zuijiao.model.user.TinyUser;
 public class RecommendAndFavorActivity extends BaseActivity {
 
     protected int mContentType = MainFragment.RECOMMEND_PAGE;
-    protected TinyUser mCurrentUser = null;
+    protected Optional<TinyUser> mCurrentUser = null;
     @ViewInject(R.id.recommend_and_favor_fragment)
     private MainFragment mFragment = null;
     @ViewInject(R.id.recommend_and_favor_toolbar)
@@ -36,11 +37,11 @@ public class RecommendAndFavorActivity extends BaseActivity {
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         mContentType = mTendIntent.getIntExtra("content_type", MainFragment.FAVOR_PAGE);
-        mCurrentUser = (TinyUser) mTendIntent.getSerializableExtra("tiny_user");
+        mCurrentUser = Optional.of((TinyUser) mTendIntent.getSerializableExtra("tiny_user"));
         if (mContentType == MainFragment.FAVOR_PAGE) {
-            getSupportActionBar().setTitle(String.format(getString(R.string.whose_favor), mCurrentUser.getNickName()));
+            getSupportActionBar().setTitle(String.format(getString(R.string.whose_favor), mCurrentUser.get().getNickName()));
         } else if (mContentType == MainFragment.RECOMMEND_PAGE) {
-            getSupportActionBar().setTitle(String.format(getString(R.string.whose_recommend), mCurrentUser.getNickName()));
+            getSupportActionBar().setTitle(String.format(getString(R.string.whose_recommend), mCurrentUser.get().getNickName()));
         }
         mFragment = (MainFragment) getSupportFragmentManager().findFragmentById(R.id.recommend_and_favor_fragment);
     }

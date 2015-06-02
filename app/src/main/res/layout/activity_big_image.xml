@@ -17,5 +17,6 @@
         android:layout_height="@dimen/toolbar_height"
         android:minHeight="?attr/actionBarSize"
         android:id="@+id/big_image_toolbar"
-        android:background="@drawable/transparent_gradient" />
+        android:background="@color/transparent" />
+    <!--    android:background="@drawable/transparent_gradient"-->
 </FrameLayout>

@@ -120,7 +120,7 @@ public final class UserInfoActivity extends BaseActivity implements View.OnClick
                     try {
                         int now = new Date().getYear();
                         int birth = mFullUser.getProfile().getBirthday().get().getYear();
-                        age = String.format(getString(R.string.year_old), new Date().getYear() + 1900 - mFullUser.getProfile().getBirthday().get().getYear());
+                        age = String.format(getString(R.string.year_old), new Date().getYear() - mFullUser.getProfile().getBirthday().get().getYear());
                     } catch (Throwable t) {
                         t.printStackTrace();
                     }

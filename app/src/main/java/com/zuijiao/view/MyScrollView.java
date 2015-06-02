@@ -23,22 +23,57 @@ public class MyScrollView extends ScrollView {
                 MyScrollView.this.layout(MyScrollView.this.getLeft(), desY,
                         MyScrollView.this.getRight(),
                         MyScrollView.this.getBottom());
+                currentY = (int) desY;
                 onScrollListener.onTopChange(MyScrollView.this.getTop());
             }
             super.handleMessage(msg);
         }
 
     };
-    public boolean keepState = false;
-    public int tmpScrollY = 0;
     private OnScrollListener onScrollListener;
-    private float bottomY = 450;
+
+    public void setImageHeight(float imageHeight) {
+        this.imageHeight = imageHeight;
+        invalidate();
+    }
+
+    public float getImageHeight() {
+        return imageHeight;
+    }
+
+    public float getTopY() {
+        return topY;
+    }
+
+    public void setTopY(float topY) {
+        this.topY = topY;
+    }
+
+    private float imageHeight = 450;
+
+
+    private float bottomY = 0;
     private float topY = 170;
     private String log = "my_scrollview";
     private boolean onScrollChanged = false;
     private float downY = 0;
     private float tempY = 0;
     private boolean bRecorded = false;
+
+    public int getCurrentY() {
+        return currentY;
+    }
+
+    public float getBottomY() {
+        return bottomY;
+    }
+
+    public void setCurrentY(int currentY) {
+        this.currentY = currentY;
+    }
+
+    private int currentY = 450;
+
 
     public MyScrollView(Context context) {
         this(context, null);
@@ -76,8 +111,10 @@ public class MyScrollView extends ScrollView {
     }
 
     private void initViewAttr(Context context) {
-        bottomY = context.getResources().getDimension(R.dimen.food_detail_image_height);
+        imageHeight = context.getResources().getDimension(R.dimen.food_detail_image_height);
+        bottomY = context.getResources().getDimension(R.dimen.scroll_view_bottom);
         topY = context.getResources().getDimension(R.dimen.toolbar_height);
+        currentY = (int) bottomY;
     }
 
     public void setOnScrollListener(OnScrollListener onScrollListener) {
@@ -116,9 +153,12 @@ public class MyScrollView extends ScrollView {
                 tempY = ev.getY();
                 float top = this.getTop();
                 float gapY = tempY - downY;
+                if (top > bottomY && gapY > 0) {
+                    gapY = gapY / (top - bottomY);
+                }
                 if (bRecorded) {
-                    if ((gapY < 0 && top >= topY) || (gapY > 0 && top < bottomY)) {
-                        changePositionByTouch((int) (tempY - downY));
+                    if ((gapY < 0 && top >= topY) || (gapY > 0 && top < imageHeight)) {
+                        changePositionByTouch((int) gapY);
                         return true;
                     }
                 }
@@ -126,9 +166,46 @@ public class MyScrollView extends ScrollView {
             case MotionEvent.ACTION_UP:
                 downY = 0;
                 bRecorded = false;
+                if (this.getTop() > bottomY)
+                    kickBack();
+                else if (this.getTop() < topY * 4 / 3)
+                    scrollToTop();
                 break;
         }
         return super.onTouchEvent(ev);
+    }
+
+    private void scrollToTop() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                int top = MyScrollView.this.getTop();
+                try {
+                    Thread.currentThread().sleep(20);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+//                int distanceY = (int) ((top - bottomY ) / 5);
+                while (top > topY) {
+
+                    int desY = (int) (top - topY / 10);
+//                    if(distanceY > 10)
+//                        distanceY -= 5;
+                    Message msg = new Message();
+                    msg.what = CHANGE_TOP;
+                    msg.arg1 = desY;
+                    handler.sendMessage(msg);
+                    try {
+                        Thread.currentThread().sleep(20);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    top = MyScrollView.this.getTop();
+                }
+            }
+        }) {
+
+        }.start();
     }
 
     @Override
@@ -142,14 +219,46 @@ public class MyScrollView extends ScrollView {
 
     private void changePositionByTouch(int y) {
         float desY = this.getTop() + y;
-        if (desY > bottomY) {
-            desY = bottomY;
+        if (desY > imageHeight) {
+            desY = imageHeight;
         } else if (desY < topY) {
             desY = topY - 10;
         }
         this.layout(this.getLeft(), (int) desY, this.getRight(),
                 this.getBottom());
+        currentY = (int) desY;
         onScrollListener.onTopChange(this.getTop());
+    }
+
+    private void kickBack() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                int top = MyScrollView.this.getTop();
+                try {
+                    Thread.currentThread().sleep(20);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                int distanceY = (int) ((top - bottomY) / 5);
+                while (top > bottomY) {
+
+                    int desY = top - distanceY;
+                    if (distanceY > 10)
+                        distanceY -= 5;
+                    Message msg = new Message();
+                    msg.what = CHANGE_TOP;
+                    msg.arg1 = desY;
+                    handler.sendMessage(msg);
+                    try {
+                        Thread.currentThread().sleep(20);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    top = MyScrollView.this.getTop();
+                }
+            }
+        }).start();
     }
 
     public void moveToTop() {
@@ -189,12 +298,6 @@ public class MyScrollView extends ScrollView {
     @Override
     public void draw(Canvas canvas) {
         super.draw(canvas);
-        if (keepState) {
-            int height = this.getHeight();
-            this.layout(0, tmpScrollY, this.getRight(), (int) (height + bottomY));
-            onScrollListener.onTopChange(this.getTop());
-            keepState = false;
-        }
     }
 
     public interface OnScrollListener {

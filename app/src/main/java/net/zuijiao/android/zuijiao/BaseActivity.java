@@ -2,21 +2,17 @@ package net.zuijiao.android.zuijiao;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.umeng.analytics.MobclickAgent;
 import com.umeng.message.PushAgent;
-import com.umeng.message.UmengRegistrar;
 import com.zuijiao.android.util.Optional;
 import com.zuijiao.android.util.functional.LambdaExpression;
 import com.zuijiao.android.util.functional.OneParameterExpression;
@@ -26,7 +22,6 @@ import com.zuijiao.android.zuijiao.network.Router;
 import com.zuijiao.android.zuijiao.network.RouterOAuth;
 import com.zuijiao.controller.ActivityTask;
 import com.zuijiao.controller.FileManager;
-import com.zuijiao.controller.MessageDef;
 import com.zuijiao.controller.PreferenceManager;
 import com.zuijiao.controller.PreferenceManager.PreferenceInfo;
 import com.zuijiao.controller.ThirdPartySDKManager;
@@ -34,9 +29,7 @@ import com.zuijiao.db.DBOpenHelper;
 import com.zuijiao.entity.AuthorInfo;
 
 public abstract class BaseActivity extends ActionBarActivity {
-    public static final int LOGIN_FOR_FETCH_FAVOR = 0;
-    public static final int LOGIN_FOR_FETCH_COMMON = 1;
-    public static final int LOGIN_FOR_FETCH_MESSAGE = 2;
+    public static final int LOGIN_REQ = 10001;
     protected PreferenceManager mPreferMng = null;
     protected PreferenceInfo mPreferenceInfo = null;
     protected FileManager mFileMng = null;
@@ -44,148 +37,69 @@ public abstract class BaseActivity extends ActionBarActivity {
     protected Intent mTendIntent = null;
     protected ProgressDialog mDialog = null;
     protected Context mContext = null;
-
-    protected BroadcastReceiver mReceiver = new BroadcastReceiver() {
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (intent.getAction().equals(MessageDef.ACTION_LOGIN_FINISH)) {
-                onLoginFinish();
-            } else if (intent.getAction().equals(MessageDef.ACTION_GET_THIRD_PARTY_USER)) {
-                onUserInfoGot(true);
-            } else if (intent.getAction().equals(MessageDef.ACTION_REFRESH_RECOMMENDATION)) {
-                onRecommendationChanged();
-            } else if (intent.getAction().equals(MessageDef.ACTION_PUSH_RECEIVED)) {
-                onPushReceived();
-            }
-        }
-    };
-
-    protected void onPushReceived() {
-
-    }
-
-    protected void onRecommendationChanged() {
-
-    }
-
+    protected ThirdPartySDKManager authMng = null;
     private LambdaExpression mLoginCallBack;
     private AlertDialog mNotifyLoginDialog = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        findViews();
         com.lidroid.xutils.ViewUtils.inject(this);
         mContext = getApplicationContext();
-        mPreferMng = PreferenceManager.getInstance(getApplicationContext());
-        if (mPreferMng.getPreferInfo() == null) {
-            mPreferMng.initPreferenceInfo();
-        }
-        mPreferenceInfo = mPreferMng.getPreferInfo();
-        mFileMng = FileManager.getInstance(getApplicationContext());
-        dbMng = DBOpenHelper.getmInstance(getApplicationContext());
+        mPreferMng = PreferenceManager.getInstance(mContext);
+        mFileMng = FileManager.getInstance(mContext);
+        dbMng = DBOpenHelper.getmInstance(mContext);
+        authMng = ThirdPartySDKManager.getInstance(this);
         if (savedInstanceState == null) {
             mTendIntent = getIntent();
         }
         registerViews();
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(MessageDef.ACTION_LOGIN_FINISH);
-        filter.addAction(MessageDef.ACTION_GET_THIRD_PARTY_USER);
-        filter.addAction(MessageDef.ACTION_REFRESH_RECOMMENDATION);
-        filter.addAction(MessageDef.ACTION_PUSH_RECEIVED);
-        registerReceiver(mReceiver, filter);
         PushAgent.getInstance(mContext).onAppStart();
-        String device_token = UmengRegistrar.getRegistrationId(mContext);
-        Log.e("device_token", device_token);
         ActivityTask.getInstance().addActivity(this);
     }
 
     public void onResume() {
         super.onResume();
-//        MobclickAgent.onResume(this);
+        MobclickAgent.onResume(this);
     }
 
     public void onPause() {
         super.onPause();
-//        MobclickAgent.onPause(this);
+        MobclickAgent.onPause(this);
     }
 
-    protected void onLoginFinish() {
-
-    }
-
-    protected void onUserInfoGot(boolean bSuccess) {
-
-    }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        unregisterReceiver(mReceiver);
         ActivityTask.getInstance().removeActivity(this);
     }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-    }
-
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-    }
-
-    private void initController() {
-
-    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            finish();
-            return true;
-        }
+        if (item.getItemId() == android.R.id.home)
+            onBackPressed();
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
+    protected void createDialog(String message) {
+        if (mDialog != null)
+            mDialog.dismiss();
+        mDialog = ProgressDialog.show(this, "", message);
     }
 
     protected void createDialog() {
-        if (mDialog != null && mDialog.isShowing()) {
-            return;
-        }
-        mDialog = ProgressDialog.show(this, "", getString(R.string.on_loading));
+//        if (mDialog != null && mDialog.isShowing()) return ;
+//        mDialog = ProgressDialog.show(this, "", getString(R.string.on_loading));
     }
 
-    protected void finallizeDialog() {
-        if (mDialog == null) {
-            return;
-        }
+    protected void finalizeDialog() {
+        if (mDialog == null) return;
         mDialog.dismiss();
         mDialog = null;
     }
 
-    protected void forwardTo(Class activityName) {
-        Intent intent = new Intent();
-        intent.setClass(mContext, activityName);
-        startActivity(intent);
-    }
-
-    protected void forwardToWithBundle(Class activityName, Bundle b) {
-        Intent intent = new Intent();
-        intent.putExtra("", b);
-        intent.setClass(getApplicationContext(), activityName);
-        startActivity(intent);
-    }
 
     private void saveAuthInfo(AuthorInfo auth) {
         if (!Router.getInstance().getCurrentUser().isPresent()) {
@@ -251,9 +165,9 @@ public abstract class BaseActivity extends ActionBarActivity {
             mNotifyLoginDialog = new AlertDialog.Builder(this).setView(contentView).create();
             tv.setOnClickListener((View v) -> {
                 Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-                startActivityForResult(intent, LOGIN_FOR_FETCH_FAVOR);
+                startActivityForResult(intent, LOGIN_REQ);
                 mNotifyLoginDialog.dismiss();
-                finallizeDialog();
+                finalizeDialog();
             });
             mNotifyLoginDialog.show();
         }
@@ -262,18 +176,13 @@ public abstract class BaseActivity extends ActionBarActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        switch (requestCode) {
-            case LOGIN_FOR_FETCH_FAVOR:
-            case LOGIN_FOR_FETCH_COMMON:
-            case LOGIN_FOR_FETCH_MESSAGE:
-                if (mLoginCallBack != null)
-                mLoginCallBack.action();
-                break;
-        }
+        if (LOGIN_REQ == requestCode && mLoginCallBack != null)
+            mLoginCallBack.action();
     }
 
-    @Deprecated
-    protected abstract void findViews();
+    protected void findViews() {
+
+    }
 
     protected abstract void registerViews();
 }

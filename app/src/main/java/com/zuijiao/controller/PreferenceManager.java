@@ -28,8 +28,10 @@ public class PreferenceManager {
             mContext = context;
             mPreferenceMng = new PreferenceManager();
         }
+        if (mPreferInfo == null) {
+            mPreferInfo = initPreferenceInfo();
+        }
         return mPreferenceMng;
-
     }
 
     /**
@@ -47,7 +49,7 @@ public class PreferenceManager {
      *
      * @return
      */
-    public PreferenceInfo initPreferenceInfo() {
+    public static PreferenceInfo initPreferenceInfo() {
         SharedPreferences sp = mContext.getSharedPreferences(
                 PreferencesDef.FILE_NAME, Activity.MODE_PRIVATE);
         boolean bFirstLaunch = sp.getBoolean(
@@ -229,7 +231,7 @@ public class PreferenceManager {
      *
      * @author Bobo
      */
-    public class PreferenceInfo {
+    public static class PreferenceInfo {
         private boolean isAppFirstLaunch = true;
         private String userKey = "";
         private String userId = "";

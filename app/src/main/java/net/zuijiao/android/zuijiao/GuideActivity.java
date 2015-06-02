@@ -152,7 +152,7 @@ public class GuideActivity extends BaseActivity {
             mPb.setVisibility(View.VISIBLE);
             mBtn.setVisibility(View.GONE);
 //                openHome();
-            mPreferenceInfo.setAppFirstLaunch(false);
+            mPreferMng.getPreferInfo().setAppFirstLaunch(false);
             mPreferMng.saveFirstLaunch();
             if (!mBCallByUser) {
                 firstInit();

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">嘴角</string>
+    <string name="current_version_code">1.1.0</string>
     <string name="welcome_word">发现最美的味道</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
@@ -119,6 +120,8 @@
     <string name="error_upload">上传出错，请重试。</string>
     <string name="error_read_file">文件读取出错</string>
     <string name="no_favor">我一向很有品位的\n暂时还没有我喜欢的美食</string>
+    <string name="no_follow">我是独行侠\n暂时还没有关注任何人</string>
+    <string name="no_fans">我很低调\n暂时还没有粉丝</string>
     <string name="no_recommendation">我一直都很矜持\n暂时没有向小伙伴们推荐美食</string>
     <string name="no_message">暂时还没有消息</string>
     <string name="current_position">目前支持城市·上海</string>
@@ -149,8 +152,6 @@
     <string name="followed_each">互相关注</string>
     <string name="un_follow">取消关注</string>
     <string name="friend">好友</string>
-    <string name="no_follow">我是独行侠，没有关注任何人</string>
-    <string name="no_fans">我很低调，暂时还没有粉丝</string>
     <string name="favor">喜欢</string>
     <string name="recommend">推荐</string>
     <string name="edit_info">编辑资料</string>
@@ -260,4 +261,8 @@
     <string name="no_user_related">抱歉，没有找到此人</string>
     <string name="cover">封面</string>
     <string name="no_avatar">还未设置头像</string>
+    <string name="confirm_delete_gourmet">是否删除美食%s</string>
+    <string name="language_count">%d种语言</string>
+    <string name="recommend_gourmet">推荐美食</string>
+    <string name="more_comment">更多评论</string>
 </resources>

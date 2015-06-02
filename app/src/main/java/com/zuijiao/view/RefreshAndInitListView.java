@@ -101,7 +101,7 @@ public class RefreshAndInitListView extends ListView implements
 
         // init footer view
         mFooterView = new XListViewFooter(context);
-
+        addFooterView(mFooterView);
         // init header height
         mHeaderView.getViewTreeObserver().addOnGlobalLayoutListener(
                 new OnGlobalLayoutListener() {
@@ -117,13 +117,13 @@ public class RefreshAndInitListView extends ListView implements
     @Override
     public void setAdapter(ListAdapter adapter) {
         // make sure XListViewFooter is the last footer view, and only add once.
-        if (mIsFooterReady == false && adapter.getCount() != 0) {
-            mIsFooterReady = true;
-            addFooterView(mFooterView);
-        } else if (adapter.getCount() == 0) {
-            removeFooterView(mFooterView);
-            mIsFooterReady = false;
-        }
+//        if (mIsFooterReady == false && adapter.getCount() != 0) {
+//            mIsFooterReady = true;
+//            addFooterView(mFooterView);
+//        } else if (adapter.getCount() == 0) {
+//            removeFooterView(mFooterView);
+//            mIsFooterReady = false;
+//        }
         super.setAdapter(adapter);
     }
 
@@ -290,7 +290,6 @@ public class RefreshAndInitListView extends ListView implements
         switch (ev.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 mLastY = ev.getRawY();
-                mListViewListener.onTouchDown();
                 break;
             case MotionEvent.ACTION_MOVE:
                 final float deltaY = ev.getRawY() - mLastY;
@@ -390,7 +389,6 @@ public class RefreshAndInitListView extends ListView implements
 
         public void onLoadMore();
 
-        public void onTouchDown();
     }
 
     public class XListViewFooter extends LinearLayout {

@@ -116,6 +116,7 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
                                 String mRereshToken = jsonObject1
                                         .getString("refresh_token");
                                 String openid = jsonObject1.getString("openid");
+                                String unionId = jsonObject1.getString("unionid");
                                 url = "https://api.weixin.qq.com/sns/userinfo?access_token="
                                         + mAccessToken
                                         + "&openid="
@@ -129,11 +130,11 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
                                 String nickname = new String(jsonObject1.getString("nickname").getBytes(), "utf-8");
                                 String headimgurl = jsonObject1
                                         .getString("headimgurl");
-                                Router.getOAuthModule().register(nickname, headimgurl, openid, "wechat", Optional.<String>empty(), Optional.of(mRereshToken), isNew -> {
+                                Router.getOAuthModule().register(nickname, headimgurl, unionId, "wechat", Optional.<String>empty(), Optional.of(mRereshToken), isNew -> {
                                     Toast.makeText(getApplicationContext(), getString(R.string.login_success), Toast.LENGTH_SHORT).show();
                                     AuthorInfo userInfo = new AuthorInfo();
 //                                    userInfo.setUserName(nickname);
-                                    userInfo.setUid(openid);
+                                    userInfo.setUid(unionId);
                                     userInfo.setToken(mRereshToken);
                                     userInfo.setPlatform("wechat");
                                     userInfo.setHeadPath(headimgurl);

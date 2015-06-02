@@ -1,8 +1,11 @@
 package net.zuijiao.android.zuijiao;
 
 import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -46,15 +49,15 @@ import com.zuijiao.android.zuijiao.model.message.NewsList;
 import com.zuijiao.android.zuijiao.model.user.TinyUser;
 import com.zuijiao.android.zuijiao.network.Router;
 import com.zuijiao.controller.ActivityTask;
+import com.zuijiao.controller.MessageDef;
 import com.zuijiao.controller.PreferenceManager;
-import com.zuijiao.controller.ThirdPartySDKManager;
 import com.zuijiao.entity.AuthorInfo;
 
 import java.io.File;
 import java.util.ArrayList;
 
 @ContentView(R.layout.activity_main)
-public final class MainActivity extends BaseActivity implements MainFragment.MainFragmentDataListener {
+public final class MainActivity extends BaseActivity {
     private static final int SETTING_REQ = 6001;
     public static final int LOGOUT_RESULT = 60001;
     // main activity layout widget ,including slide menu
@@ -95,14 +98,8 @@ public final class MainActivity extends BaseActivity implements MainFragment.Mai
         public void onItemClick(AdapterView<?> parent, View view, int position,
                                 long id) {
             mFragmentTransaction = mFragmentMng.beginTransaction();
-//            mFragmentTransaction.replace(R.id.main_content_container,
-//                    mFragmentList.get(position));
             if (!mFragmentList.get(position).isAdded()) {
-//                if(mFragmentList.indexOf(mCurrentFragment) == 0){
-//                    mFragmentTransaction.hide(mCurrentFragment).addToBackStack("main_fragment").add(R.id.main_content_container ,mFragmentList.get(position)).commit();
-//                }else {
                 mFragmentTransaction.hide(mCurrentFragment).add(R.id.main_content_container, mFragmentList.get(position)).commit();
-//                }
             } else {
 //                if(mFragmentList.indexOf(mCurrentFragment) == 0){
 //                    mFragmentTransaction.hide(mCurrentFragment).addToBackStack("main_fragment").show(mFragmentList.get(position)).commit();
@@ -286,41 +283,28 @@ public final class MainActivity extends BaseActivity implements MainFragment.Mai
         }
     };
 
-    private void logout() {
-        View logoutView = LayoutInflater.from(getApplicationContext()).inflate(
-                R.layout.logout_dialog, null);
-        AlertDialog dialog = new AlertDialog.Builder(MainActivity.this).setView(logoutView).create();
-        logoutView.findViewById(R.id.logout_btn_cancel).setOnClickListener((View v) -> {
-            dialog.dismiss();
-        });
-        logoutView.findViewById(R.id.logout_btn_confirm).setOnClickListener((View v) -> {
-            dialog.dismiss();
-            createDialog();
-            ThirdPartySDKManager.getInstance(mContext).logout(mContext);
-            PreferenceManager.getInstance(mContext).clearThirdPartyLoginMsg();
-            mFavorFragment.clearPersonalData();
-            mRecommendFragment.clearPersonalData();
-            mNotifyFragment.clearMessage();
-            Router.getOAuthModule().visitor(() -> {
-                Toast.makeText(mContext, getString(R.string.logout_msg), Toast.LENGTH_SHORT).show();
-                mBtnLogin.setVisibility(View.VISIBLE);
-                mThirdPartyUserName.setVisibility(View.GONE);
-                mThirdPartyUserHead.setVisibility(View.GONE);
-                mSettingArray = getResources().getStringArray(R.array.settings2);
-                mSettingList.setAdapter(mSettingAdapter);
-                finallizeDialog();
-            }, errorMessage -> {
-                finallizeDialog();
-            });
-        });
-        dialog.show();
+    protected BroadcastReceiver mReceiver = new BroadcastReceiver() {
 
-    }
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals(MessageDef.ACTION_GET_THIRD_PARTY_USER)) {
+                onUserInfoGot();
+            } else if (intent.getAction().equals(MessageDef.ACTION_REFRESH_RECOMMENDATION)) {
+                onRecommendationChanged();
+            } else if (intent.getAction().equals(MessageDef.ACTION_PUSH_RECEIVED)) {
+                onPushReceived();
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(MessageDef.ACTION_GET_THIRD_PARTY_USER);
+        filter.addAction(MessageDef.ACTION_REFRESH_RECOMMENDATION);
+        filter.addAction(MessageDef.ACTION_PUSH_RECEIVED);
+        registerReceiver(mReceiver, filter);
     }
 
     @Override
@@ -392,8 +376,6 @@ public final class MainActivity extends BaseActivity implements MainFragment.Mai
         mFragmentList.add(mRecommendFragment);
         mFavorFragment = new MainFragment(MainFragment.FAVOR_PAGE, mContext);
         mFragmentList.add(mFavorFragment);
-//        mMsgFragment = new NotificationFragment();
-//        mFragmentList.add(mMsgFragment);
         mNotifyFragment = new NotificationFragment();
         mFragmentList.add(mNotifyFragment);
         mFragmentMng = getSupportFragmentManager();
@@ -451,8 +433,6 @@ public final class MainActivity extends BaseActivity implements MainFragment.Mai
         }
     }
 
-    ;
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         return super.onOptionsItemSelected(item);
@@ -461,6 +441,16 @@ public final class MainActivity extends BaseActivity implements MainFragment.Mai
     public void onBackPressed() {
         if (mDrawerLayout.isDrawerOpen(Gravity.LEFT)) {
             mDrawerLayout.closeDrawer(Gravity.LEFT);
+            return;
+        }
+        if (mFragmentList.indexOf(mCurrentFragment) == 0 && mMainFragment.holdBackEvent()) {
+            mMainFragment.closeFloatMenu();
+            return;
+        }
+        if (mFragmentList.indexOf(mCurrentFragment) != 0) {
+            mTabsListener.onItemClick(mMainTabsTitle, null, 0, 0);
+//            mFragmentMng.beginTransaction().hide(mCurrentFragment).show(mFragmentList.get(0)).commit();
+//            mCurrentFragment =mFragmentList.get(0) ;
             return;
         }
         super.onBackPressed();
@@ -483,10 +473,10 @@ public final class MainActivity extends BaseActivity implements MainFragment.Mai
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        unregisterReceiver(mReceiver);
         ActivityTask.getInstance().exit();
     }
 
-    @Override
     protected void onPushReceived() {
         showBadgeView();
         Router.getMessageModule().notifications(newsList -> {
@@ -497,27 +487,23 @@ public final class MainActivity extends BaseActivity implements MainFragment.Mai
         });
     }
 
-    @Override
-    protected void onUserInfoGot(boolean bSucces) {
-        super.onUserInfoGot(bSucces);
-        if (bSucces) {
-            AuthorInfo auth = mPreferMng.getThirdPartyLoginMsg();
-            mThirdPartyUserName.setText(auth.getUserName());
-            if (auth.getHeadPath() == null || auth.getHeadPath().equals("")) {
-                mThirdPartyUserHead.setImageResource(R.drawable.default_user_head);
-            } else
-                Picasso.with(getApplicationContext())
-                        .load(auth.getHeadPath())
-                        .placeholder(R.drawable.default_user_head)
-                        .into(mThirdPartyUserHead);
-            mBtnLogin.setVisibility(View.GONE);
-            mThirdPartyUserHead.setVisibility(View.VISIBLE);
-            mThirdPartyUserName.setVisibility(View.VISIBLE);
-            mSettingArray = getResources()
-                    .getStringArray(
-                            R.array.settings1);
-            mSettingList.setAdapter(mSettingAdapter);
-        }
+    protected void onUserInfoGot() {
+        AuthorInfo auth = mPreferMng.getThirdPartyLoginMsg();
+        mThirdPartyUserName.setText(auth.getUserName());
+        if (auth.getHeadPath() == null || auth.getHeadPath().equals("")) {
+            mThirdPartyUserHead.setImageResource(R.drawable.default_user_head);
+        } else
+            Picasso.with(getApplicationContext())
+                    .load(auth.getHeadPath())
+                    .placeholder(R.drawable.default_user_head)
+                    .into(mThirdPartyUserHead);
+        mBtnLogin.setVisibility(View.GONE);
+        mThirdPartyUserHead.setVisibility(View.VISIBLE);
+        mThirdPartyUserName.setVisibility(View.VISIBLE);
+        mSettingArray = getResources()
+                .getStringArray(
+                        R.array.settings1);
+        mSettingList.setAdapter(mSettingAdapter);
     }
 
     private void checkVersion() {
@@ -581,9 +567,7 @@ public final class MainActivity extends BaseActivity implements MainFragment.Mai
         }
     }
 
-    @Override
     protected void onRecommendationChanged() {
-        super.onRecommendationChanged();
         try {
             mRecommendFragment.firstInit();
         } catch (Exception r) {
@@ -605,7 +589,4 @@ public final class MainActivity extends BaseActivity implements MainFragment.Mai
         boolean b = file.renameTo(file2);
     }
 
-    public void onDataChanged() {
-
-    }
 }

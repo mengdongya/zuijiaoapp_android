@@ -119,7 +119,7 @@ public class SettingActivity extends BaseActivity {
     }
 
     private void backToMain() {
-        finallizeDialog();
+        finalizeDialog();
         setResult(MainActivity.LOGOUT_RESULT);
         finish();
     }

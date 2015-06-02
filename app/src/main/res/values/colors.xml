@@ -33,6 +33,14 @@
     <color name="white1">#dddddd</color>
     <color name="white_trans">#66ffffff</color>
     <color name="toolbar">#373737</color>
+    <color name="toolbar1">#11373737</color>
+    <color name="toolbar2">#19373737</color>
+    <color name="toolbar3">#22373737</color>
+    <color name="toolbar4">#2a373737</color>
+    <color name="toolbar5">#66373737</color>
+    <color name="toolbar6">#88373737</color>
+    <color name="toolbar7">#cc373737</color>
+    <color name="toolbar8">#ee373737</color>
     <color name="half_toolbar">#66575757</color>
     <color name="system_bar">#272727</color>
     <color name="toolbar_text">#eeeeee</color>

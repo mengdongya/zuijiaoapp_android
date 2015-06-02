@@ -2,6 +2,8 @@ package com.zuijiao.android.zuijiao.model.user;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -9,9 +11,9 @@ import java.util.List;
  * <p>
  * 喜欢菜品用户列表
  */
-public class WouldLikeToEatUsers {
+public class WouldLikeToEatUsers implements Serializable {
     @SerializedName("items")
-    private List<WouldLikeToEatUser> users;
+    private ArrayList<WouldLikeToEatUser> users;
     @SerializedName("itemTotalCount")
     private Integer count;
 

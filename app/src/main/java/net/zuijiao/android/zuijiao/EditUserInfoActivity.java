@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.widget.Toolbar;
@@ -104,7 +105,7 @@ public class EditUserInfoActivity extends BaseActivity {
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             switch (position) {
                 case 0:
-                    createGeneralEditTextDialog(getString(R.string.nick_name), getString(R.string.nick_name_hint), 1, 15, new DialogInterface.OnClickListener() {
+                    createGeneralEditTextDialog(mFullUser.getNickname().get(), getString(R.string.nick_name), getString(R.string.nick_name_hint), 1, 15, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
@@ -128,7 +129,10 @@ public class EditUserInfoActivity extends BaseActivity {
                     startActivityForResult(intent, LOCATION_CHOOSE_REQ);
                     break;
                 case 4:
-                    createGeneralEditTextDialog(getString(R.string.personal_introduction), getString(R.string.introduction_hint), 5, 100, new DialogInterface.OnClickListener() {
+                    String introduction = null;
+                    if (mFullUser.getProfile().getSelfIntroduction().isPresent())
+                        introduction = mFullUser.getProfile().getSelfIntroduction().get();
+                    createGeneralEditTextDialog(introduction, getString(R.string.personal_introduction), getString(R.string.introduction_hint), 5, 100, new DialogInterface.OnClickListener() {
 
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
@@ -198,6 +202,7 @@ public class EditUserInfoActivity extends BaseActivity {
                 text.setText(taste);
             } else {
                 image.setImageResource(R.drawable.add_taste);
+                image.setBackgroundColor(Color.TRANSPARENT);
                 text.setText(getString(R.string.add));
             }
             return contentView;
@@ -205,7 +210,7 @@ public class EditUserInfoActivity extends BaseActivity {
     };
     private int mGenderCheckItem = 0;
 
-    private void createGeneralEditTextDialog(String title, String etHint, int lineNum, int maxText, DialogInterface.OnClickListener finishListener) {
+    private void createGeneralEditTextDialog(String message, String title, String etHint, int lineNum, int maxText, DialogInterface.OnClickListener finishListener) {
         View contentView = LayoutInflater.from(mContext).inflate(R.layout.nick_name_input_dialog, null);
         TextView textView = (TextView) contentView.findViewById(R.id.tv_et_watcher);
         EditText editText = (EditText) contentView.findViewById(R.id.et_nick_name_input);
@@ -236,6 +241,10 @@ public class EditUserInfoActivity extends BaseActivity {
         }
 //        editText.setLines(lineNum);
         editText.setHint(etHint);
+        if (message != null && !message.equals("")) {
+            editText.setText(message);
+            editText.setSelection(0, message.length());
+        }
         editText.setFocusable(true);
         editText.setFocusableInTouchMode(true);
         editText.requestFocus();
@@ -271,11 +280,12 @@ public class EditUserInfoActivity extends BaseActivity {
             mContactInfoAdapter.notifyDataSetChanged();
             mDetailInfoAdapter.notifyDataSetChanged();
             mFavorAdapter.notifyDataSetChanged();
-            finallizeDialog();
+            setListViewHeightBasedOnChildren(mFavorGridView);
+            finalizeDialog();
         }, () -> {
             mTmpFullUser = mFullUser.clone();
             Toast.makeText(mContext, getString(R.string.save_error_check_network), Toast.LENGTH_SHORT).show();
-            finallizeDialog();
+            finalizeDialog();
         });
         mCurrentEdit = null;
     }
@@ -297,7 +307,7 @@ public class EditUserInfoActivity extends BaseActivity {
         setListViewHeightBasedOnChildren(mBaseInfoList);
         mFavorGridView.setAdapter(mFavorAdapter);
         mFavorGridView.setOnItemClickListener(mTasteItemListener);
-//        setListViewHeightBasedOnChildren(mFavorGridView);
+        setListViewHeightBasedOnChildren(mFavorGridView);
         mContactInfoAdapter = new GeneralUserInfoAdapter(getResources().getStringArray(R.array.user_contact_info_title), CONTACT_INFO_ADAPTER);
         mContactInfoList.setAdapter(mContactInfoAdapter);
         mContactInfoList.setOnItemClickListener(mContactListener);
@@ -325,16 +335,16 @@ public class EditUserInfoActivity extends BaseActivity {
         int date;
         if (birthDate == null) {
             birthDate = new Date();
-            year = birthDate.getYear() + 1900;
-        } else {
-            year = birthDate.getYear();
         }
+        year = birthDate.getYear();
         month = birthDate.getMonth();
         date = birthDate.getDate();
-        datePicker.init(year, month, date, new DatePicker.OnDateChangedListener() {
+        datePicker.setMinDate(new Date(50, 0, 0).getTime());
+        datePicker.setMaxDate(new Date().getTime());
+        datePicker.init(year + 1900, month, date, new DatePicker.OnDateChangedListener() {
             @Override
             public void onDateChanged(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                etBirth = new Date(year, monthOfYear, dayOfMonth);
+                etBirth = new Date(year - 1900, monthOfYear, dayOfMonth);
 //                etBirth = String.format(getString(R.string.year_month_day) , year , monthOfYear , dayOfMonth) ;
             }
         });
@@ -484,15 +494,15 @@ public class EditUserInfoActivity extends BaseActivity {
                     Intent intent = new Intent();
                     intent.setAction(MessageDef.ACTION_GET_THIRD_PARTY_USER);
                     sendBroadcast(intent);
-                    finallizeDialog();
+                    finalizeDialog();
                 }, () -> {
                     Toast.makeText(mContext, getString(R.string.error_upload), Toast.LENGTH_LONG).show();
-                    finallizeDialog();
+                    finalizeDialog();
                 });
             } else {
                 Toast.makeText(mContext, getString(R.string.error_upload), Toast.LENGTH_LONG).show();
             }
-            finallizeDialog();
+            finalizeDialog();
         }
         ).execute();
     }
@@ -598,7 +608,7 @@ public class EditUserInfoActivity extends BaseActivity {
                             if (mFullUser.getProfile() != null
                                     && mFullUser.getProfile().getBirthday().isPresent()) {
                                 Date date = mFullUser.getProfile().getBirthday().get();
-                                String formatBirth = String.format(getString(R.string.year_month_day), date.getYear(), date.getMonth() + 1, date.getDate());
+                                String formatBirth = String.format(getString(R.string.year_month_day), date.getYear() + 1900, date.getMonth() + 1, date.getDate());
                                 valueText.setText(formatBirth);
                             } else {
                                 valueText.setText(getString(R.string.un_setting));
@@ -687,11 +697,11 @@ public class EditUserInfoActivity extends BaseActivity {
                             case 3:
                                 Optional<List<String>> language = mFullUser.getProfile().getLanguages();
                                 if (language.isPresent() && language.get().size() != 0) {
-                                    String languageStr = "";
-                                    for (String lan : language.get()) {
-                                        languageStr += lan;
-                                    }
-                                    valueText.setText(languageStr);
+//                                    String languageStr = "";
+//                                    for (String lan : language.get()) {
+//                                        languageStr += lan;
+//                                    }
+                                    valueText.setText(String.format(getString(R.string.language_count), language.get().size()));
                                 } else {
                                     valueText.setText(getString(R.string.un_setting));
                                 }
@@ -722,7 +732,10 @@ public class EditUserInfoActivity extends BaseActivity {
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             switch (position) {
                 case 0:
-                    createGeneralEditTextDialog(getString(R.string.email), getString(R.string.input_email), 1, 0, new DialogInterface.OnClickListener() {
+                    String email = null;
+                    if (mFullUser.getContactInfo().isPresent())
+                        email = mFullUser.getContactInfo().get().getEmail();
+                    createGeneralEditTextDialog(email, getString(R.string.email), getString(R.string.input_email), 1, 0, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             if (mCurrentEdit == null || mCurrentEdit.equals("")) {
@@ -758,7 +771,11 @@ public class EditUserInfoActivity extends BaseActivity {
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             switch (position) {
                 case 0:
-                    createGeneralEditTextDialog(getString(R.string.industry), getString(R.string.industry_hint), 4, 100, new DialogInterface.OnClickListener() {
+                    String industry = null;
+                    if (mFullUser.getProfile().getCareer().isPresent()) {
+                        industry = mFullUser.getProfile().getCareer().get();
+                    }
+                    createGeneralEditTextDialog(industry, getString(R.string.industry), getString(R.string.industry_hint), 4, 100, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
@@ -777,7 +794,10 @@ public class EditUserInfoActivity extends BaseActivity {
                     });
                     break;
                 case 1:
-                    createGeneralEditTextDialog(getString(R.string.interest_hobby), getString(R.string.interest_hobby_hint), 4, 100, new DialogInterface.OnClickListener() {
+                    String hobby = null;
+                    if (mFullUser.getProfile().getHobby().isPresent())
+                        hobby = mFullUser.getProfile().getHobby().get();
+                    createGeneralEditTextDialog(hobby, getString(R.string.interest_hobby), getString(R.string.interest_hobby_hint), 4, 100, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
@@ -796,7 +816,11 @@ public class EditUserInfoActivity extends BaseActivity {
                     });
                     break;
                 case 2:
-                    createGeneralEditTextDialog(getString(R.string.education), getString(R.string.education_hint), 4, 100, new DialogInterface.OnClickListener() {
+                    String education = null;
+                    if (mFullUser.getProfile().getEducationBackground().isPresent()) {
+                        education = mFullUser.getProfile().getEducationBackground().get();
+                    }
+                    createGeneralEditTextDialog(education, getString(R.string.education), getString(R.string.education_hint), 4, 100, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();

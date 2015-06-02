@@ -37,9 +37,10 @@
                 android:text="@string/base_info"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
+                android:textStyle="bold"
                 android:textSize="18sp"
                 android:textColor="@color/black"
-                android:layout_marginTop="10dip"
+                android:layout_marginTop="20dip"
                 android:id="@+id/edit_info_base_info"
                 android:layout_marginLeft="20dip" />
 
@@ -62,12 +63,13 @@
 
             <TextView
                 android:text="@string/flavor_hobby"
+                android:textStyle="bold"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 android:textSize="18sp"
                 android:id="@+id/edit_info_favor"
                 android:textColor="@color/black"
-                android:layout_marginTop="10dip"
+                android:layout_marginTop="20dip"
                 android:layout_marginLeft="20dip" />
 
             <View
@@ -90,11 +92,12 @@
 
             <TextView
                 android:text="@string/contact_way"
+                android:textStyle="bold"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 android:textSize="18sp"
                 android:textColor="@color/black"
-                android:layout_marginTop="10dip"
+                android:layout_marginTop="20dip"
                 android:id="@+id/edit_info_contact_info"
                 android:layout_marginLeft="20dip" />
 
@@ -117,11 +120,12 @@
 
             <TextView
                 android:text="@string/detail_info"
+                android:textStyle="bold"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 android:textSize="18sp"
                 android:textColor="@color/black"
-                android:layout_marginTop="10dip"
+                android:layout_marginTop="20dip"
                 android:id="@+id/edit_info_detail_info"
                 android:layout_marginLeft="20dip" />
 

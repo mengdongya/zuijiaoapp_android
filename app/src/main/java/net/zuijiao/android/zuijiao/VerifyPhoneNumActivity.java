@@ -128,14 +128,14 @@ public class VerifyPhoneNumActivity extends BaseActivity {
             }
             createDialog();
             Router.getAccountModule().updatePhoneNumber(mPhoneNumEditor.getText().toString().trim(), securityCode, () -> {
-                finallizeDialog();
+                finalizeDialog();
                 Intent intent = new Intent();
                 intent.putExtra("verified_phone_num", mPhoneNumEditor.getText().toString().trim());
                 setResult(RESULT_OK, intent);
                 finish();
             }, errorMsg -> {
                 Toast.makeText(mContext, errorMsg, Toast.LENGTH_SHORT).show();
-                finallizeDialog();
+                finalizeDialog();
             });
         }
         return super.onOptionsItemSelected(item);

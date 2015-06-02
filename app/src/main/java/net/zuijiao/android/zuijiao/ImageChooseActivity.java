@@ -1,7 +1,7 @@
 package net.zuijiao.android.zuijiao;
 
 import android.app.ProgressDialog;
-import android.content.Context;
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -10,6 +10,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,10 +50,11 @@ public class ImageChooseActivity extends BaseActivity {
     @ViewInject(R.id.image_chooser_toolbar)
     private Toolbar mToolbar;
     private List<SimpleImage> images = null;
-    private Context mContext = null;
+    private List<SimpleImage> brokenImages = null;
     private HashMap<String, Bitmap> data = new HashMap<>();
     private ArrayList<String> ids = new ArrayList<String>();
     private ProgressDialog mDialog = null;
+    private ContentResolver mContentResolver = null;
     private AdapterView.OnItemClickListener mListener = new AdapterView.OnItemClickListener() {
 
         @Override
@@ -71,6 +73,7 @@ public class ImageChooseActivity extends BaseActivity {
                 holder = new ViewHolder();
                 convertView = LayoutInflater.from(mContext).inflate(
                         R.layout.head_chooser, null);
+                convertView.setLayoutParams(new GridView.LayoutParams(parent.getWidth() / 2, parent.getWidth() / 2));
                 holder.image = (ImageView) convertView;
                 convertView.setTag(holder);
             } else {
@@ -78,22 +81,21 @@ public class ImageChooseActivity extends BaseActivity {
             }
 
             Bitmap bitmap = null;
-            if ((bitmap = getFromCache(images.get(position).id)) == null
-                    || bitmap.getByteCount() <= 0 || bitmap.isRecycled()) {
-                try {
+            try {
+                if ((bitmap = getFromCache(images.get(position).id)) == null
+                        || bitmap.getByteCount() <= 0 || bitmap.isRecycled()) {
                     bitmap = MediaStore.Images.Thumbnails.getThumbnail(
                             mContext.getContentResolver(),
                             Integer.parseInt(images.get(position).id),
                             MediaStore.Images.Thumbnails.MINI_KIND, null);
-                    addToCache(bitmap, images.get(position).id);
-                    System.out.println("bitmap == " + bitmap.toString());
-                } catch (Throwable t) {
-                    t.printStackTrace();
+
                 }
-            }
-            System.out.println("bitmap == " + bitmap.toString());
-            try {
-                holder.image.setImageBitmap(bitmap);
+                if (bitmap != null) {
+                    addToCache(bitmap, images.get(position).id);
+                    holder.image.setImageBitmap(bitmap);
+                } else {
+                    Log.e("imagechooseAcitivity", "bitmap == null !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                }
             } catch (Throwable t) {
                 t.printStackTrace();
             }
@@ -121,7 +123,7 @@ public class ImageChooseActivity extends BaseActivity {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            mAdapter.notifyDataSetChanged();
+            mGdView.setAdapter(mAdapter);
         }
     };
 
@@ -134,9 +136,9 @@ public class ImageChooseActivity extends BaseActivity {
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(getString(R.string.image_chooser));
-        mContext = getApplicationContext();
+        mContentResolver = mContext.getContentResolver();
         images = FileManager.getImageList(mContext);
-        mGdView.setAdapter(mAdapter);
+//        mGdView.setAdapter(mAdapter);
         mGdView.setOnItemClickListener(mListener);
         new Thread(() -> {
             initCache();
@@ -147,7 +149,6 @@ public class ImageChooseActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
-
     private void initCache() {
         if (images == null || images.size() == 0) {
             return;
@@ -158,7 +159,7 @@ public class ImageChooseActivity extends BaseActivity {
             }
             try {
                 Bitmap bitmap = MediaStore.Images.Thumbnails.getThumbnail(
-                        mContext.getContentResolver(),
+                        mContentResolver,
                         Integer.parseInt(image.id),
                         MediaStore.Images.Thumbnails.MINI_KIND, null);
                 if (bitmap != null) {
@@ -168,6 +169,8 @@ public class ImageChooseActivity extends BaseActivity {
                     synchronized (ids) {
                         ids.add(image.id);
                     }
+                } else {
+
                 }
             } catch (Throwable t) {
                 t.printStackTrace();
@@ -280,7 +283,7 @@ public class ImageChooseActivity extends BaseActivity {
                         } catch (IOException e) {
                             Toast.makeText(mContext, getString(R.string.error_read_file), Toast.LENGTH_LONG).show();
                             e.printStackTrace();
-                            finallizeDialog();
+                            finalizeDialog();
                             setResult(RESULT_CANCELED);
                             finish();
                             return;
@@ -292,7 +295,7 @@ public class ImageChooseActivity extends BaseActivity {
                     } catch (FileNotFoundException e) {
                         e.printStackTrace();
                         Toast.makeText(mContext, getString(R.string.error_read_file), Toast.LENGTH_LONG).show();
-                        finallizeDialog();
+                        finalizeDialog();
                         setResult(RESULT_CANCELED);
                         finish();
                         return;
@@ -306,14 +309,14 @@ public class ImageChooseActivity extends BaseActivity {
                         } catch (IOException e) {
                             // TODO Auto-generated catch block
                             Toast.makeText(mContext, getString(R.string.error_read_file), Toast.LENGTH_LONG).show();
-                            finallizeDialog();
+                            finalizeDialog();
                             e.printStackTrace();
                             finish();
                             return;
                         }
                         setResult(RESULT_OK);
                     } else {
-                        finallizeDialog();
+                        finalizeDialog();
                         setResult(RESULT_CANCELED);
                     }
                 } else {
@@ -325,20 +328,6 @@ public class ImageChooseActivity extends BaseActivity {
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-//    private void createDialog() {
-//        if (mDialog != null && mDialog.isShowing()) {
-//            return;
-//        }
-//        mDialog = ProgressDialog.show(ImageChooseActivity.this, "", getString(R.string.on_loading));
-//    }
-//
-//    private void finallizeDialog() {
-//        if (mDialog == null) {
-//            return;
-//        }
-//        mDialog.dismiss();
-//        mDialog = null;
-//    }
 
     class ViewHolder {
         ImageView image;

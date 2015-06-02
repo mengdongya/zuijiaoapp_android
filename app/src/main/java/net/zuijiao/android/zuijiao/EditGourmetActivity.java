@@ -38,6 +38,7 @@ import com.zuijiao.utils.UpyunUploadTask;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * Created by xiaqibo on 2015/4/29.
@@ -89,7 +90,6 @@ public class EditGourmetActivity extends BaseActivity implements View.OnClickLis
     private LinearLayout mLocationLayout = null;
 
     private Gourmet mGourmet = null;
-    private Gourmet mEditGourmet = null;
     private String mEditName = null;
     private ArrayList<String> mEditLabels = new ArrayList<>();
     private String mEditDescription = null;
@@ -160,12 +160,21 @@ public class EditGourmetActivity extends BaseActivity implements View.OnClickLis
                     Intent intent = new Intent();
                     intent.setAction(MessageDef.ACTION_REFRESH_RECOMMENDATION);
                     sendBroadcast(intent);
-                    finallizeDialog();
+                    finalizeDialog();
+                    Intent data = new Intent();
+                    mGourmet.setAddress(mEditAddress);
+                    mGourmet.setDate(new Date());
+                    mGourmet.setDescription(mEditDescription);
+                    mGourmet.setImageURLs(mImageUrls);
+                    mGourmet.setPrice(mEditPrice);
+                    mGourmet.setTags(mEditLabels);
+                    data.putExtra("gourmet", mGourmet);
+                    setResult(RESULT_OK, data);
                     finish();
                 }, () -> {
                     Toast.makeText(mContext, getString(R.string.notify_edit_gourmet_failed), Toast.LENGTH_SHORT).show();
                     System.out.println("EditGourmet" + " edit_failed");
-                    finallizeDialog();
+                    finalizeDialog();
                 });
     }
 
@@ -187,11 +196,11 @@ public class EditGourmetActivity extends BaseActivity implements View.OnClickLis
                     Intent intent = new Intent();
                     intent.setAction(MessageDef.ACTION_REFRESH_RECOMMENDATION);
                     sendBroadcast(intent);
-                    finallizeDialog();
+                    finalizeDialog();
                     finish();
                 }, () -> {
                     Toast.makeText(mContext, getString(R.string.notify_add_gourmet_failed), Toast.LENGTH_SHORT).show();
-                    finallizeDialog();
+                    finalizeDialog();
                 });
     }
 
@@ -210,7 +219,7 @@ public class EditGourmetActivity extends BaseActivity implements View.OnClickLis
                         }
                     } else {
                         mImageUrls.clear();
-                        finallizeDialog();
+                        finalizeDialog();
                     }
                 }).execute();
     }
@@ -261,11 +270,6 @@ public class EditGourmetActivity extends BaseActivity implements View.OnClickLis
         mEtGourmetName.addTextChangedListener(new MyTextWatcher(mTvGourmetNameListener, 15, mContext));
         mEtGourmetDescription.addTextChangedListener(new MyTextWatcher(mTvDescriptionListener, 100, mContext));
         if (mGourmet != null) {
-            try {
-                mEditGourmet = (Gourmet) mGourmet.clone();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
             mEtGourmetName.setText(mGourmet.getName());
             mEtGourmetDescription.setText(mGourmet.getDescription());
             mImageUrls.addAll(mGourmet.getImageURLs());

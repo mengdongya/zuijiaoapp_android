@@ -23,9 +23,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center_horizontal"
-            android:layout_marginBottom="5dip"
+            android:layout_marginBottom="80dip"
             android:gravity="center_horizontal"
-            android:orientation="horizontal"></LinearLayout>
+            android:orientation="horizontal" />
     </FrameLayout>
 
     <RelativeLayout
@@ -41,15 +41,13 @@
 
 
         <com.zuijiao.view.MyScrollView
-            android:layout_marginTop="224dip"
+            android:layout_marginTop="@dimen/scroll_view_bottom"
             android:id="@+id/food_detail_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_above="@+id/food_detail_input">
             <!--android:layout_marginTop="224dip"-->
             <FrameLayout
-                android:focusable="true"
-                android:focusableInTouchMode="true"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/white">
@@ -185,6 +183,7 @@
                     <FrameLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:paddingBottom="5dip"
                         android:padding="@dimen/main_content_item_margin_left">
 
                         <TextView
@@ -200,8 +199,20 @@
                             android:id="@+id/lv_food_detail_comment"
                             android:layout_width="wrap_content"
                             android:visibility="gone"
-                            android:layout_height="match_parent"></ListView>
+                            android:layout_height="match_parent" />
                     </FrameLayout>
+
+                    <Button
+                        android:visibility="gone"
+                        android:id="@+id/food_detail_more_comment"
+                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content"
+                        android:background="@color/transparent"
+                        android:layout_gravity="center_horizontal"
+                        android:gravity="center"
+                        android:textSize="15sp"
+                        android:textColor="@color/tv_light_gray"
+                        android:text="@string/more_comment" />
                     <!--</LinearLayout>-->
                     <!--</ScrollView>-->
                 </LinearLayout>
@@ -212,25 +223,27 @@
             </FrameLayout>
         </com.zuijiao.view.MyScrollView>
 
+        <View
+            android:id="@+id/input_diviver"
+            android:layout_width="match_parent"
+            android:layout_height="10dip"
+            android:layout_above="@+id/food_detail_input"
+            android:background="@drawable/bg_input_diviver" />
+
         <RelativeLayout
             android:id="@+id/food_detail_input"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="50dip"
             android:layout_alignParentBottom="true"
             android:background="@color/white"
             android:gravity="center_vertical">
 
-            <View
-                android:id="@+id/input_diviver"
-                android:layout_width="match_parent"
-                android:layout_height="10dip"
-                android:background="@drawable/bg_input_diviver" />
 
             <com.zuijiao.view.MyEditText2
                 android:id="@+id/et_comment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/input_diviver"
+                android:layout_centerVertical="true"
                 android:layout_toLeftOf="@+id/comment_commit"
                 android:hint="@string/comment_hint"
                 android:singleLine="true"
@@ -238,12 +251,13 @@
 
             <ImageButton
                 android:id="@+id/comment_commit"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="50dip"
+                android:layout_height="50dip"
+                android:scaleType="fitXY"
+                android:padding="10dip"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:layout_margin="10dip"
-                android:background="@color/transparent"
+                android:background="@drawable/comment_commit_bg"
                 android:src="@drawable/comment_commit" />
         </RelativeLayout>
 

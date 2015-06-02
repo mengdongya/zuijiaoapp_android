@@ -4,17 +4,32 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/tv_no_friend"
+    <LinearLayout
+        android:id="@+id/friend_empty_content"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
-        android:layout_gravity="center"
-        android:textSize="20sp"
-        android:typeface="monospace"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="130dip"
+        android:gravity="center"
         android:visibility="gone"
-        android:textColor="@color/tv_light_gray"
-        android:text="@string/no_fans"
-        android:singleLine="true" />
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/fragment_friend_no_content_text_view"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:singleLine="false"
+            android:text="@string/no_favor"
+            android:lineSpacingExtra="5dip"
+            android:textColor="@color/bg_light_gray"
+            android:gravity="center_horizontal" />
+
+        <ImageView
+            android:layout_height="60dip"
+            android:layout_width="60dip"
+            android:layout_marginTop="20dip"
+            android:src="@drawable/empty_information" />
+    </LinearLayout>
 
     <ListView
         android:layout_width="match_parent"

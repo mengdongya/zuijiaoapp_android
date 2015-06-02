@@ -12,7 +12,6 @@ import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.lidroid.xutils.view.annotation.ContentView;
 import com.lidroid.xutils.view.annotation.ViewInject;
@@ -59,7 +58,11 @@ public class TasteActivity extends BaseActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.taste_tag, menu);
         mMenuBtn = menu.findItem(R.id.taste_tag);
-        mMenuBtn.setTitle(String.format(getString(R.string.sure_with_num), mUserTaste.size(), 5));
+        int totalSize = 9;
+        if (tasteTags != null) {
+            totalSize = tasteTags.size();
+        }
+        mMenuBtn.setTitle(String.format(getString(R.string.sure_with_num), mUserTaste.size(), totalSize));
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -80,13 +83,16 @@ public class TasteActivity extends BaseActivity {
 
             if (mUserTaste.contains(tasteTags.get(position).getName())) {
                 mUserTaste.remove(tasteTags.get(position).getName());
-            } else if (mUserTaste.size() >= 5) {
-                Toast.makeText(mContext, getString(R.string.taste_count_upper_limit), Toast.LENGTH_SHORT).show();
-                return;
-            } else {
+            }
+//            else if (mUserTaste.size() >= 5) {
+//                Toast.makeText(mContext, getString(R.string.taste_count_upper_limit), Toast.LENGTH_SHORT).show();
+//                return;
+//            }
+//
+            else {
                 mUserTaste.add(tasteTags.get(position).getName());
             }
-            mMenuBtn.setTitle(String.format(getString(R.string.sure_with_num), mUserTaste.size(), 5));
+            mMenuBtn.setTitle(String.format(getString(R.string.sure_with_num), mUserTaste.size(), tasteTags.size()));
             mAdapter.notifyDataSetChanged();
         }
     };

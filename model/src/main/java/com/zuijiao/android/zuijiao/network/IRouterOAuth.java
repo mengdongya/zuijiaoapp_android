@@ -15,10 +15,10 @@ import retrofit.http.POST;
  * <p>
  */
 public abstract interface IRouterOAuth {
-    final String RootURL = "/oauth/v1";
+    final String RootURL = "/oauth";
 
     @FormUrlEncoded
-    @POST(RootURL + "/login")
+    @POST(RootURL + "/v1/login")
     void login(@Field("openId") String openID
             , @Field("platform") String platform
             , @Field("deviceToken") String deviceToken
@@ -27,7 +27,7 @@ public abstract interface IRouterOAuth {
             , Callback<OAuthModel> callback);
 
     @FormUrlEncoded
-    @POST(RootURL + "/login")
+    @POST(RootURL + "/v1/login")
     OAuthModel login(@Field("openId") String openID
             , @Field("platform") String platform
             , @Field("openToken") String openToken
@@ -36,9 +36,10 @@ public abstract interface IRouterOAuth {
     );
 
     @FormUrlEncoded
-    @POST(RootURL + "/ios/register")
+    @POST(RootURL + "/v2/ios/register")
     void register(@Field("nickname") String name
             , @Field("imageUrl") String avatarURL
+            , @Field("gender") String gender
             , @Field("openId") String openID
             , @Field("platform") String platform
             , @Field("deviceToken") String deviceToken
@@ -47,7 +48,7 @@ public abstract interface IRouterOAuth {
             , Callback<OAuthModel> callback);
 
     @FormUrlEncoded
-    @POST(RootURL + "/ios/register")
+    @POST(RootURL + "/v1/ios/register")
     OAuthModel register(@Field("nickname") String name
             , @Field("imageUrl") String avatarURL
             , @Field("openId") String openID
@@ -58,15 +59,15 @@ public abstract interface IRouterOAuth {
     );
 
     @FormUrlEncoded
-    @POST(RootURL + "/visitor")
+    @POST(RootURL + "/v1/visitor")
     void visitor(@FieldMap Map<String, String> oauthParam, Callback<OAuthModel> callback);
 
     @FormUrlEncoded
-    @POST(RootURL + "/visitor")
+    @POST(RootURL + "/v1/visitor")
     OAuthModel visitor(@FieldMap Map<String, String> oauthParam);
 
     @FormUrlEncoded
-    @POST(RootURL + "/ios/account-login")
+    @POST(RootURL + "/v1/ios/account-login")
     void loginEmailRoutine(@Field("email") String email
             , @Field("password") String password
             , @Field("openToken") String openToken
@@ -75,7 +76,7 @@ public abstract interface IRouterOAuth {
             , Callback<OAuthModel> callback);
 
     @FormUrlEncoded
-    @POST(RootURL + "/ios/account-login")
+    @POST(RootURL + "/v1/ios/account-login")
     OAuthModel loginEmailRoutine(@Field("email") String email
             , @Field("password") String password
             , @Field("openToken") String openToken
@@ -83,20 +84,21 @@ public abstract interface IRouterOAuth {
             , @FieldMap Map<String, String> oauthParam);
 
     @FormUrlEncoded
-    @POST(RootURL + "/ios/account-register")
+    @POST(RootURL + "/v2/ios/register/account")
     void registerEmailRoutine(
             @Field("nickname") String name
             , @Field("imageUrl") String avatarURL
             , @Field("email") String email
             , @Field("password") String password
             , @Field("openToken") String openToken
+            , @Field("gender") String gender
             , @Field("deviceToken") String deviceToken
             , @FieldMap Map<String, String> oauthParam
             , Callback<OAuthModel> callback
     );
 
     @FormUrlEncoded
-    @POST(RootURL + "/ios/account-register")
+    @POST(RootURL + "/v1/ios/account-register")
     OAuthModel registerEmailRoutine(
             @Field("nickname") String name
             , @Field("imageUrl") String avatarURL

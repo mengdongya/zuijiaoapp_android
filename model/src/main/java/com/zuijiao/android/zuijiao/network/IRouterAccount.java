@@ -1,6 +1,7 @@
 package com.zuijiao.android.zuijiao.network;
 
 import com.squareup.okhttp.Response;
+import com.zuijiao.android.zuijiao.model.Banquent.Attendee;
 import com.zuijiao.android.zuijiao.model.user.User;
 
 import retrofit.Callback;
@@ -44,10 +45,18 @@ public interface IRouterAccount {
     @POST("/account/v2/contract/mobile/update")
     void updatePhoneNumber(@Field("mobile") String phoneNumber, @Field("code") String securityCode, Callback<Response> callback);
 
-    @GET("/users/v2/mobile/person/{id}")
+    @GET("/users/v2/ios/person/{id}")
     void fetchUserInfoByIdentifier(@Path("id") Integer identifier, Callback<User> callback);
 
     @GET("/account/v2/mobile/info")
     void fetchMyInfo(Callback<User> callback);
+
+    // MARK: - banquent
+
+    @GET("/users/v2/ios/seller/{id}")
+    void masterInfo(@Path("id") Integer chefId, Callback<Attendee> callback);
+
+    @GET("/users/v2/ios/buyer/{id}")
+    void attendeeInfo(@Path("id") Integer attendeeId, Callback<Attendee> callback);
 
 }

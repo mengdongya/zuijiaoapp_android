@@ -166,4 +166,8 @@ public class Router {
         return RouterSocial.INSTANCE;
     }
 
+    public static RouterBanquent getBanquentModule() {
+        return RouterBanquent.INSTANCE;
+    }
+
 }

@@ -7,6 +7,7 @@ import com.zuijiao.android.util.HanyuPinyinHelper;
 import com.zuijiao.android.util.MD5;
 import com.zuijiao.android.util.Optional;
 import com.zuijiao.android.util.functional.LambdaExpression;
+import com.zuijiao.android.zuijiao.model.Banquent.OrderStatus;
 import com.zuijiao.android.zuijiao.model.Gourmet;
 import com.zuijiao.android.zuijiao.model.Gourmets;
 import com.zuijiao.android.zuijiao.model.common.ConfigurationType;
@@ -87,8 +88,8 @@ public class TestClass {
     }
 
     static void testOp(LambdaExpression expression) {
-        RouterOAuth.INSTANCE.loginEmailRoutine("1@1.1",
-                "c4ca4238a0b923820dcc509a6f75849b",
+        RouterOAuth.INSTANCE.loginEmailRoutine("2@2.2",
+                "c81e728d9d4c2f636f067f89cc14862c",
                 Optional.empty(),
                 Optional.empty(),
                 () -> expression.action(),
@@ -97,12 +98,14 @@ public class TestClass {
     }
 
     public static void main(String[] args) throws NoSuchAlgorithmException {
-        Router.setup("http://xielingyu2.zuijiaodev.com", null, null, null, "yyyy-MM-dd'T'HH:mm:ssXXX");
+        Router.setup("http://xielingyu3.zuijiaodev.com", null, null, null, "yyyy-MM-dd'T'HH:mm:ssXXX");
         testOp(() -> {
 
 //            Router.getGourmetModule().addGourmet("pri", "add", "20", "desc", null, null, 1, 1, true, null, null);
 
-            Router.getGourmetModule().fetchMyRecommendationList(null, 20, null, null);
+            Router.getBanquentModule().orders(OrderStatus.Waiting, null, 135, s -> {
+                System.out.println(s);
+            }, e -> System.err.println("err: " + e));
 
 //            Router.getMessageModule().markAsRead(() -> System.out.println("succ"), () -> System.out.println("failed"));
 

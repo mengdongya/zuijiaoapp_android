@@ -2,6 +2,7 @@ package com.zuijiao.android.zuijiao.network;
 
 import com.zuijiao.android.util.functional.LambdaExpression;
 import com.zuijiao.android.util.functional.OneParameterExpression;
+import com.zuijiao.android.zuijiao.model.Banquent.Attendee;
 import com.zuijiao.android.zuijiao.model.user.User;
 
 import java.util.ArrayList;
@@ -108,4 +109,17 @@ public enum RouterAccount {
     ) {
         service.fetchMyInfo(CallbackFactory.getInstance().callback(successCallback, failureCallback));
     }
+
+    // MARK: - banquent
+
+    public void masterInfo(Integer chefId, OneParameterExpression<Attendee> successCallback
+            , OneParameterExpression<String> failureCallback) {
+        service.masterInfo(chefId, CallbackFactory.getInstance().callback(successCallback, failureCallback));
+    }
+
+    public void attendeeInfo(Integer attendeeId, OneParameterExpression<Attendee> successCallback
+            , OneParameterExpression<String> failureCallback) {
+        service.attendeeInfo(attendeeId, CallbackFactory.getInstance().callback(successCallback, failureCallback));
+    }
+
 }

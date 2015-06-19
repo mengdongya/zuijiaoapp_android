@@ -45,9 +45,6 @@ public enum RouterOAuth {
         fillOAuthToken(model);
     }
 
-    /**
-     *
-     */
     public void registerEmailRoutine(String name
             , String avatarURL
             , String email
@@ -57,12 +54,27 @@ public enum RouterOAuth {
             , LambdaExpression successCallback
             , OneParameterExpression<Integer> failureCallback
     ) {
+        registerEmailRoutine(name, avatarURL, email, password, "male", deviceToken, openIDOAuthToken, successCallback, failureCallback);
+    }
+
+    public void registerEmailRoutine(String name
+            , String avatarURL
+            , String email
+            , String password
+            , String gender
+            , Optional<String> deviceToken
+            , Optional<String> openIDOAuthToken
+            , LambdaExpression successCallback
+            , OneParameterExpression<Integer> failureCallback
+    ) {
         assert (deviceToken != null);
         assert (openIDOAuthToken != null);
+        assert (gender.equals("male") || gender.equals("female"));
         service.registerEmailRoutine(name
                 , avatarURL
                 , email
                 , password
+                , gender // male or female
                 , deviceToken.orElse(null)
                 , openIDOAuthToken.orElse(null)
                 , OAuthParam
@@ -92,6 +104,7 @@ public enum RouterOAuth {
      */
     public void register(String name
             , String avatarURL
+            , String gender
             , String openID
             , String platform
             , Optional<String> deviceToken
@@ -103,6 +116,7 @@ public enum RouterOAuth {
         assert (openIDOAuthToken != null);
         service.register(name
                 , avatarURL
+                , gender // male or female
                 , openID
                 , platform
                 , deviceToken.orElse(null)

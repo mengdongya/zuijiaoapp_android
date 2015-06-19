@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.zuijiao.view.PagerSlidingTab
+        android:id="@+id/main_tabs"
+        android:layout_height="55dip"
+        android:layout_width="match_parent"
+        android:elevation="8dip" />
+
+    <android.support.v4.view.ViewPager
+        android:background="@color/transparent"
+        android:id="@+id/main_view_pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+</LinearLayout>

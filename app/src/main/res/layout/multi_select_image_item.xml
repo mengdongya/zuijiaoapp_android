@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="100dp"
+    android:layout_height="match_parent"
+    android:padding="5dip"
+    android:paddingLeft="5dip"
     android:background="@color/white">
 
     <ImageView
@@ -10,12 +12,24 @@
         android:layout_height="match_parent"
         android:scaleType="centerCrop" />
 
-    <ToggleButton
+    <!-- <ToggleButton
+         android:id="@+id/multi_toggle_button"
+         android:layout_width="match_parent"
+         android:layout_height="30dip"
+         android:gravity="center"
+         android:background="@drawable/pic_choose_selector"
+         android:textOff="@string/select"
+         android:textOn="@string/delete" />-->
+    <ImageView
         android:id="@+id/multi_toggle_button"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@drawable/pic_choose_selector"
-        android:textOff="@string/select"
-        android:textOn="@string/delete" />
-
+        android:layout_height="30dip"
+        android:layout_width="30dip"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginRight="5dip"
+        android:layout_marginBottom="5dip"
+        android:elevation="5dip"
+        android:src="@drawable/multi_image_selected"
+        android:scaleType="fitXY"
+        android:background="@color/transparent" />
 </RelativeLayout>

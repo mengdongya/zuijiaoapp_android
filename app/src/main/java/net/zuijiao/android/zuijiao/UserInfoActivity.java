@@ -213,10 +213,13 @@ public final class UserInfoActivity extends BaseActivity implements View.OnClick
         switch (item.getItemId()) {
             case R.id.menu_edit_self_info:
                 if (mFullUser == null) {
-                    getUserInfo(() -> {
-                        Intent intent = new Intent();
-                        intent.setClass(mContext, EditUserInfoActivity.class);
-                        startActivityForResult(intent, EDIT_USER_INFO_REQ);
+                    getUserInfo(new LambdaExpression() {
+                        @Override
+                        public void action() {
+                            Intent intent = new Intent();
+                            intent.setClass(mContext, EditUserInfoActivity.class);
+                            startActivityForResult(intent, EDIT_USER_INFO_REQ);
+                        }
                     });
                 } else {
                     Intent intent = new Intent();
@@ -226,32 +229,50 @@ public final class UserInfoActivity extends BaseActivity implements View.OnClick
                 break;
             case R.id.menu_follow_someone:
                 if (mFullUser != null && mFullUser.getFriendShip() != null && mFullUser.getFriendShip().isFollowing()) {
-                    Router.getSocialModule().unFollow(mTinyUser.getIdentifier(), () -> {
-                        mFullUser.getFriendShip().setIsFollowing(false);
-                        Toast.makeText(mContext, getString(R.string.un_follow_success), Toast.LENGTH_SHORT).show();
-                        mMenuBtn.setTitle(getString(R.string.follow));
-                    }, errorMsg -> {
-                        Toast.makeText(mContext, R.string.notify_net2, Toast.LENGTH_SHORT).show();
+                    Router.getSocialModule().unFollow(mTinyUser.getIdentifier(), new LambdaExpression() {
+                        @Override
+                        public void action() {
+                            mFullUser.getFriendShip().setIsFollowing(false);
+                            Toast.makeText(mContext, getString(R.string.un_follow_success), Toast.LENGTH_SHORT).show();
+                            mMenuBtn.setTitle(getString(R.string.follow));
+                        }
+                    }, new OneParameterExpression<String>() {
+                        @Override
+                        public void action(String s) {
+                            Toast.makeText(mContext, R.string.notify_net2, Toast.LENGTH_SHORT).show();
+                        }
                     });
                 } else if (mFullUser != null && mFullUser.getFriendShip() != null && !mFullUser.getFriendShip().isFollowing()) {
-                    Router.getSocialModule().follow(mTinyUser.getIdentifier(), () -> {
-                        mFullUser.getFriendShip().setIsFollowing(true);
-                        Toast.makeText(mContext, getString(R.string.follow_success), Toast.LENGTH_SHORT).show();
-                        mMenuBtn.setTitle(getString(R.string.un_follow));
-                    }, errorMsg -> {
-                        Toast.makeText(mContext, R.string.notify_net2, Toast.LENGTH_SHORT).show();
+                    Router.getSocialModule().follow(mTinyUser.getIdentifier(), new LambdaExpression() {
+                        @Override
+                        public void action() {
+                            mFullUser.getFriendShip().setIsFollowing(true);
+                            Toast.makeText(mContext, getString(R.string.follow_success), Toast.LENGTH_SHORT).show();
+                            mMenuBtn.setTitle(getString(R.string.un_follow));
+                        }
+                    }, new OneParameterExpression<String>() {
+                        @Override
+                        public void action(String s) {
+                            Toast.makeText(mContext, R.string.notify_net2, Toast.LENGTH_SHORT).show();
+                        }
                     });
                 } else {
-                    Router.getSocialModule().follow(mTinyUser.getIdentifier(), () -> {
-                        if (mFullUser != null && mFullUser.getFriendShip() == null) {
-                            mFullUser.setFriendShip(new FriendShip());
+                    Router.getSocialModule().follow(mTinyUser.getIdentifier(), new LambdaExpression() {
+                        @Override
+                        public void action() {
+                            if (mFullUser != null && mFullUser.getFriendShip() == null) {
+                                mFullUser.setFriendShip(new FriendShip());
+                            }
+                            mFullUser.getFriendShip().setIsFollowing(true);
+                            mFullUser.getFriendShip().setIsFollowing(true);
+                            Toast.makeText(mContext, getString(R.string.follow_success), Toast.LENGTH_SHORT).show();
+                            mMenuBtn.setTitle(getString(R.string.un_follow));
                         }
-                        mFullUser.getFriendShip().setIsFollowing(true);
-                        mFullUser.getFriendShip().setIsFollowing(true);
-                        Toast.makeText(mContext, getString(R.string.follow_success), Toast.LENGTH_SHORT).show();
-                        mMenuBtn.setTitle(getString(R.string.un_follow));
-                    }, errorMsg -> {
-                        Toast.makeText(mContext, R.string.notify_net2, Toast.LENGTH_SHORT).show();
+                    }, new OneParameterExpression<String>() {
+                        @Override
+                        public void action(String s) {
+                            Toast.makeText(mContext, R.string.notify_net2, Toast.LENGTH_SHORT).show();
+                        }
                     });
                 }
                 break;
@@ -275,7 +296,7 @@ public final class UserInfoActivity extends BaseActivity implements View.OnClick
             mFileMng.setFullUser(mFullUser);
         }
         if (mFullUser.getAvatarURL().isPresent())
-        Picasso.with(mContext).load(mFullUser.getAvatarURL().get()).placeholder(R.drawable.default_user_head).into(mUserHead);
+            Picasso.with(mContext).load(mFullUser.getAvatarURL().get()).placeholder(R.drawable.default_user_head).into(mUserHead);
         mUserName.setText(mFullUser.getNickname().get());
         int follower = 0, following = 0, recommendation = 0, favor = 0;
         if (mFullUser.getFriendShip() != null) {
@@ -296,23 +317,35 @@ public final class UserInfoActivity extends BaseActivity implements View.OnClick
     }
 
     private void getUserInfo(final LambdaExpression expression) {
-        OneParameterExpression<User> successExpression = fullUser -> {
-            mFullUser = fullUser;
-            registerViewByFullUser();
-            if (expression != null)
-                expression.action();
+        OneParameterExpression<User> successExpression = new OneParameterExpression<User>() {
+            @Override
+            public void action(User fullUser) {
+                mFullUser = fullUser;
+                registerViewByFullUser();
+                if (expression != null)
+                    expression.action();
+            }
         };
-        OneParameterExpression<String> failExpression = errorMsg -> {
-            Toast.makeText(mContext, getString(R.string.notify_net2), Toast.LENGTH_SHORT).show();
+        OneParameterExpression<String> failExpression = new OneParameterExpression<String>() {
+            @Override
+            public void action(String s) {
+                Toast.makeText(mContext, getString(R.string.notify_net2), Toast.LENGTH_SHORT).show();
+            }
         };
         if ((mTinyUser.getIdentifier().equals(mPreferMng.getStoredUserId()) || mTinyUser.getIdentifier() == -1)) {
             if (Router.getInstance().getCurrentUser().isPresent()) {
                 Router.getAccountModule().fetchMyInfo(successExpression, failExpression);
             } else {
-                tryLoginFirst(() -> {
-                    getUserInfo(null);
-                }, errorMsg -> {
-                    Toast.makeText(mContext, getString(R.string.notify_net2), Toast.LENGTH_SHORT).show();
+                tryLoginFirst(new LambdaExpression() {
+                    @Override
+                    public void action() {
+                        getUserInfo(null);
+                    }
+                }, new OneParameterExpression<Integer>() {
+                    @Override
+                    public void action(Integer integer) {
+                        Toast.makeText(mContext, getString(R.string.notify_net2), Toast.LENGTH_SHORT).show();
+                    }
                 });
             }
         } else {
@@ -331,10 +364,16 @@ public final class UserInfoActivity extends BaseActivity implements View.OnClick
             }
             int id = mTinyUser.getIdentifier();
             if (id == -1) {
-                tryLoginFirst(() -> {
-                    getUserInfo(null);
-                }, errorMsg -> {
-                    Toast.makeText(mContext, getString(R.string.notify_net2), Toast.LENGTH_SHORT).show();
+                tryLoginFirst(new LambdaExpression() {
+                    @Override
+                    public void action() {
+                        getUserInfo(null);
+                    }
+                }, new OneParameterExpression<Integer>() {
+                    @Override
+                    public void action(Integer integer) {
+                        Toast.makeText(mContext, getString(R.string.notify_net2), Toast.LENGTH_SHORT).show();
+                    }
                 });
             } else getUserInfo(null);
         }
@@ -362,7 +401,7 @@ public final class UserInfoActivity extends BaseActivity implements View.OnClick
         switch (view.getId()) {
             case R.id.user_info_recommend:
                 intent.setClass(UserInfoActivity.this, RecommendAndFavorActivity.class);
-                intent.putExtra("content_type", MainFragment.RECOMMEND_PAGE);
+                intent.putExtra("content_type", GourmetDisplayFragment.RECOMMEND_PAGE);
                 intent.putExtra("tiny_user", mTinyUser);
                 break;
             case R.id.user_info_fans:
@@ -370,7 +409,7 @@ public final class UserInfoActivity extends BaseActivity implements View.OnClick
                 intent.putExtra("friend_index", 1);
                 if (mFullUser != null && mFullUser.getFriendShip() != null) {
                     intent.putExtra("follow_count", mFullUser.getFriendShip().getFollowingCount());
-                    intent.putExtra("fans_conut", mFullUser.getFriendShip().getFollowerCount());
+                    intent.putExtra("fans_count", mFullUser.getFriendShip().getFollowerCount());
                 }
                 intent.putExtra("tiny_user", mTinyUser);
                 break;
@@ -379,13 +418,13 @@ public final class UserInfoActivity extends BaseActivity implements View.OnClick
                 intent.putExtra("friend_index", 0);
                 if (mFullUser != null && mFullUser.getFriendShip() != null) {
                     intent.putExtra("follow_count", mFullUser.getFriendShip().getFollowingCount());
-                    intent.putExtra("fans_conut", mFullUser.getFriendShip().getFollowerCount());
+                    intent.putExtra("fans_count", mFullUser.getFriendShip().getFollowerCount());
                 }
                 intent.putExtra("tiny_user", mTinyUser);
                 break;
             case R.id.user_info_wish:
                 intent.setClass(UserInfoActivity.this, RecommendAndFavorActivity.class);
-                intent.putExtra("content_type", MainFragment.FAVOR_PAGE);
+                intent.putExtra("content_type", GourmetDisplayFragment.FAVOR_PAGE);
                 intent.putExtra("tiny_user", mTinyUser);
                 break;
             case R.id.user_info_user_head:
@@ -393,7 +432,6 @@ public final class UserInfoActivity extends BaseActivity implements View.OnClick
                 ArrayList<SimpleImage> avatarUrls = new ArrayList<>();
                 String avatarUrl = null;
                 try {
-
                     if (mFullUser != null) {
                         avatarUrl = mFullUser.getAvatarURL().get();
                     } else {

@@ -24,6 +24,7 @@ import android.widget.Toast;
 
 import com.lidroid.xutils.view.annotation.ContentView;
 import com.lidroid.xutils.view.annotation.ViewInject;
+import com.zuijiao.android.util.functional.OneParameterExpression;
 import com.zuijiao.android.zuijiao.network.Router;
 import com.zuijiao.utils.MyTextWatcher;
 import com.zuijiao.view.WordWrapView;
@@ -57,18 +58,24 @@ public class LabelActivity extends BaseActivity {
             View logoutView = LayoutInflater.from(getApplicationContext()).inflate(
                     R.layout.delete_label_dialog, null);
             AlertDialog dialog = new AlertDialog.Builder(LabelActivity.this).setView(logoutView).create();
-            logoutView.findViewById(R.id.delete_label_btn_cancel).setOnClickListener((View v) -> {
-                dialog.dismiss();
+            logoutView.findViewById(R.id.delete_label_btn_cancel).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dialog.dismiss();
+                }
             });
-            logoutView.findViewById(R.id.delete_label_btn_confirm).setOnClickListener((View v) -> {
-                dialog.dismiss();
-                try {
-                    mAddedLabels.removeView(view);
-                    mAddedText.remove(((TextView) view).getText());
-                    mMenuBtn.setTitle(String.format(getString(R.string.sure_with_num), mAddedText.size(), 5));
-                    bLabelChanged = true;
-                } catch (Throwable t) {
-                    t.printStackTrace();
+            logoutView.findViewById(R.id.delete_label_btn_confirm).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dialog.dismiss();
+                    try {
+                        mAddedLabels.removeView(view);
+                        mAddedText.remove(((TextView) view).getText());
+                        mMenuBtn.setTitle(String.format(getString(R.string.sure_with_num), mAddedText.size(), 5));
+                        bLabelChanged = true;
+                    } catch (Throwable t) {
+                        t.printStackTrace();
+                    }
                 }
             });
             dialog.show();
@@ -92,21 +99,27 @@ public class LabelActivity extends BaseActivity {
         mLabelEditor.requestFocus();
         mEditorIndicator.setText(String.format(getString(R.string.nick_name_watcher), 0, 15));
         mLabelEditor.addTextChangedListener(new MyTextWatcher(mEditorIndicator, 15, mContext));
-        mLabelEditor.setOnEditorActionListener((TextView v, int actionId, KeyEvent event) -> {
-            if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_NEXT) {
-                String text = v.getText().toString().trim();
-                v.setText("");
-                addOneLabel(text);
-                return true;
+        mLabelEditor.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_NEXT) {
+                    String text = v.getText().toString().trim();
+                    v.setText("");
+                    addOneLabel(text);
+                    return true;
+                }
+                return false;
             }
-            return false;
         });
         mLvHotLabels.setOnItemClickListener(mHotLabelListener);
         fetchHotLabels();
-        new Handler().postDelayed(() -> {
-            InputMethodManager inputManager =
-                    (InputMethodManager) mLabelEditor.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-            inputManager.showSoftInput(mLabelEditor, 0);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                InputMethodManager inputManager =
+                        (InputMethodManager) mLabelEditor.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                inputManager.showSoftInput(mLabelEditor, 0);
+            }
         }, 200);
         for (String label : mAddedText) {
             addToViewGroup(label);
@@ -114,20 +127,26 @@ public class LabelActivity extends BaseActivity {
     }
 
     private void fetchHotLabels() {
-        Router.getCommonModule().gourmetTags(hotLabels -> {
-            mHotLabels = hotLabels;
-            mLvHotLabels.setAdapter(new HotLabelAdapter());
-        }, errorMsg -> {
-            mHotLabels = new ArrayList<>();
-            mHotLabels.add("xihuanni");
-            mHotLabels.add("nashuangyandongren");
-            mHotLabels.add("xiaoshenggengmiren");
-            mHotLabels.add("yuanzaike");
-            mLvHotLabels.setAdapter(new HotLabelAdapter());
-//            fetchHotLabels();
-        });
+        Router.getCommonModule().gourmetTags(new OneParameterExpression<List<String>>() {
+            @Override
+            public void action(List<String> hotLabels) {
+                mHotLabels = hotLabels;
+                mLvHotLabels.setAdapter(new HotLabelAdapter());
+            }
+        }, null);
     }
 
+    //    new OneParameterExpression<String>() {
+//        @Override
+//        public void action(String s) {
+//            mHotLabels = new ArrayList<>();
+//            mHotLabels.add("xihuanni");
+//            mHotLabels.add("nashuangyandongren");
+//            mHotLabels.add("xiaoshenggengmiren");
+//            mHotLabels.add("yuanzaike");
+//            mLvHotLabels.setAdapter(new HotLabelAdapter());
+//        }
+//    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.label_edit, menu);
@@ -162,11 +181,17 @@ public class LabelActivity extends BaseActivity {
                     R.layout.delete_label_dialog, null);
             AlertDialog dialog = new AlertDialog.Builder(LabelActivity.this).setView(logoutView).create();
             ((TextView) logoutView.findViewById(R.id.dialog_title)).setText(getString(R.string.notify_discard_edit_label));
-            logoutView.findViewById(R.id.delete_label_btn_cancel).setOnClickListener((View v) -> {
-                dialog.dismiss();
+            logoutView.findViewById(R.id.delete_label_btn_cancel).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dialog.dismiss();
+                }
             });
-            logoutView.findViewById(R.id.delete_label_btn_confirm).setOnClickListener((View v) -> {
-                super.onBackPressed();
+            logoutView.findViewById(R.id.delete_label_btn_confirm).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    LabelActivity.this.getParent().onBackPressed();
+                }
             });
             dialog.show();
         } else {

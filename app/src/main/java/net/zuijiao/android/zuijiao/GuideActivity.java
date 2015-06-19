@@ -22,6 +22,8 @@ import android.widget.Toast;
 import com.lidroid.xutils.view.annotation.ContentView;
 import com.lidroid.xutils.view.annotation.ViewInject;
 import com.zuijiao.android.util.Optional;
+import com.zuijiao.android.util.functional.LambdaExpression;
+import com.zuijiao.android.util.functional.OneParameterExpression;
 import com.zuijiao.android.zuijiao.model.Gourmet;
 import com.zuijiao.android.zuijiao.network.Cache;
 import com.zuijiao.android.zuijiao.network.Router;
@@ -148,52 +150,61 @@ public class GuideActivity extends BaseActivity {
         mPager.setAdapter(new ViewPagerAdapter(viewList));
         mPager.setOnPageChangeListener(mPageListener);
 
-        mBtn.setOnClickListener((View v) -> {
-            mPb.setVisibility(View.VISIBLE);
-            mBtn.setVisibility(View.GONE);
+        mBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mPb.setVisibility(View.VISIBLE);
+                mBtn.setVisibility(View.GONE);
 //                openHome();
-            mPreferMng.getPreferInfo().setAppFirstLaunch(false);
-            mPreferMng.saveFirstLaunch();
-            if (!mBCallByUser) {
-                firstInit();
-            } else {
-                goToMain();
+                mPreferMng.getPreferInfo().setAppFirstLaunch(false);
+                mPreferMng.saveFirstLaunch();
+                if (!mBCallByUser) {
+                    firstInit();
+                } else {
+                    goToMain();
+                }
             }
         });
     }
 
     private void firstInit() {
-        tryLoginFirst(() -> {
-        }, e -> {
-        });
-        new Handler().postDelayed(() -> {
-            try {
-                List<Gourmet> list = dbMng.initGourmets();
-                if (list != null) {
-                    FileManager.mainGourmet = Optional.ofNullable(list);
-                } else {
-                    FileManager.mainGourmet = Optional.empty();
+        tryLoginFirst(null, null);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    List<Gourmet> list = dbMng.initGourmets();
+                    if (list != null) {
+                        FileManager.mainGourmet = Optional.ofNullable(list);
+                    } else {
+                        FileManager.mainGourmet = Optional.empty();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } catch (Throwable t) {
+                    t.printStackTrace();
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
-            } catch (Throwable t) {
-                t.printStackTrace();
+                DBOpenHelper.copyLocationDb(mContext);
+                goToMain();
             }
-            DBOpenHelper.copyLocationDb(mContext);
-            goToMain();
         }, 800);
     }
 
     private void networkSetup(AuthorInfo auth) {
         if (ThirdPartySDKManager.getInstance(getApplicationContext()).isThirdParty(auth.getPlatform())) {
-            Router.getOAuthModule().login(auth.getUid(), auth.getPlatform(), Optional.<String>empty(), Optional.of(auth.getToken()), () -> {
-                        //  TinyUser user = Optional.of()Router.INSTANCE.getCurrentUser() ;
-                        goToMain();
+            Router.getOAuthModule().login(auth.getUid(), auth.getPlatform(), Optional.<String>empty(), Optional.of(auth.getToken()), new LambdaExpression() {
+                        @Override
+                        public void action() {
+                            goToMain();
+                        }
                     },
-                    errorMessage -> {
-                        System.out.println("failure " + errorMessage);
-                        Toast.makeText(GuideActivity.this, getResources().getString(R.string.notify_net2), Toast.LENGTH_LONG).show();
-                        goToMain();
+                    new OneParameterExpression<Integer>() {
+                        @Override
+                        public void action(Integer errorMessage) {
+                            System.out.println("failure " + errorMessage);
+                            Toast.makeText(GuideActivity.this, getResources().getString(R.string.notify_net2), Toast.LENGTH_LONG).show();
+                            goToMain();
+                        }
                     });
         } else if ((auth.getEmail() != null) && (!auth.getEmail().equals(""))) {
             //2@2.2
@@ -202,24 +213,36 @@ public class GuideActivity extends BaseActivity {
                     auth.getPassword(),
                     Optional.empty(),
                     Optional.empty(),
-                    () -> {
-                        goToMain();
+                    new LambdaExpression() {
+                        @Override
+                        public void action() {
+                            goToMain();
+                        }
                     },
-                    errorMessage -> {
-                        System.out.println("failure " + errorMessage);
-                        Toast.makeText(GuideActivity.this, getResources().getString(R.string.notify_net2), Toast.LENGTH_LONG).show();
-                        goToMain();
+                    new OneParameterExpression<Integer>() {
+                        @Override
+                        public void action(Integer errorMessage) {
+                            System.out.println("failure " + errorMessage);
+                            Toast.makeText(GuideActivity.this, getResources().getString(R.string.notify_net2), Toast.LENGTH_LONG).show();
+                            goToMain();
+                        }
                     }
             );
 
         } else {
-            Router.getOAuthModule().visitor(() -> {
-                        goToMain();
-                    },
-                    errorMessage -> {
-                        System.out.println("failure " + errorMessage);
-                        Toast.makeText(GuideActivity.this, getResources().getString(R.string.notify_net2), Toast.LENGTH_LONG).show();
-                        goToMain();
+            Router.getOAuthModule().visitor(new LambdaExpression() {
+                                                @Override
+                                                public void action() {
+                                                    goToMain();
+                                                }
+                                            },
+                    new OneParameterExpression<Integer>() {
+                        @Override
+                        public void action(Integer errorMessage) {
+                            System.out.println("failure " + errorMessage);
+                            Toast.makeText(GuideActivity.this, getResources().getString(R.string.notify_net2), Toast.LENGTH_LONG).show();
+                            goToMain();
+                        }
                     });
         }
         Cache.INSTANCE.setup();

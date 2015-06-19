@@ -1,11 +1,8 @@
 package net.zuijiao.android.zuijiao;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
@@ -15,7 +12,6 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.lidroid.xutils.view.annotation.ContentView;
 import com.lidroid.xutils.view.annotation.ViewInject;
@@ -137,39 +133,10 @@ public class ConcerningActivity extends BaseActivity {
                                          UpdateResponse updateInfo) {
                 if (updateStatus == 0 && updateInfo != null) {
                     showUpdateDialog(updateInfo.path, updateInfo.updateLog);
-                } else if (updateStatus == 1) {
-                    Toast.makeText(mContext, getString(R.string.no_update_avaliable), Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(mContext, getString(R.string.notify_net2), Toast.LENGTH_SHORT).show();
                 }
-                // case 0: // has update
-                // case 1: // has no update
-                // case 2: // none wifi
-                // case 3: // time out
             }
         });
         UmengUpdateAgent.update(this);
     }
 
-    private void showUpdateDialog(final String downloadUrl, final String message) {
-        AlertDialog.Builder updateAlertDialog = new AlertDialog.Builder(this);
-        updateAlertDialog.setIcon(R.drawable.icon);
-        updateAlertDialog.setTitle(R.string.app_name);
-        updateAlertDialog.setMessage(getString(R.string.update_hint, message));
-        updateAlertDialog.setNegativeButton(R.string.update_ok,
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                        try {
-                            startActivity(new Intent(Intent.ACTION_VIEW, Uri
-                                    .parse(downloadUrl)));
-                        } catch (Exception ex) {
-
-                        }
-                    }
-                }).setPositiveButton(R.string.dialog_no, null);
-        if (!isFinishing())
-            updateAlertDialog.show();
-    }
 }

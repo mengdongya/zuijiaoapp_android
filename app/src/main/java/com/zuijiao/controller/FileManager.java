@@ -2,7 +2,10 @@ package com.zuijiao.controller;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Message;
 import android.provider.MediaStore;
 
 import com.zuijiao.android.util.Optional;
@@ -10,18 +13,22 @@ import com.zuijiao.android.zuijiao.model.Gourmet;
 import com.zuijiao.android.zuijiao.model.user.User;
 import com.zuijiao.entity.SimpleImage;
 
-import net.zuijiao.android.zuijiao.MainFragment;
+import net.zuijiao.android.zuijiao.GourmetDisplayFragment;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 
 public class FileManager {
     public final static String APP_FOLDER_NAME = "Zuijiao";
     public final static String THIRD_PARTY_HEAD = "third_party_head.jpg";
+    public final static String COMPRESS_FOLDER = "compressedImage" + File.separator;
     public static final String CHOOSE_IMAGE = Environment.getDataDirectory()
             .getAbsolutePath() + File.separator + "head.jpg";
     private static final int COPY_BLOCK_SIZE = 4096;
@@ -90,11 +97,6 @@ public class FileManager {
             return true;
         }
         return desFile.mkdirs();
-        // path.trim() ;
-        // String[] folderNames = path.split(File.separator) ;
-        // for(int i = 0 ;i < folderNames.length ; i++){
-        //
-        // }
     }
 
     //
@@ -146,11 +148,11 @@ public class FileManager {
     }
 
     public static void setGourmets(int type, Optional<List<Gourmet>> gourmets) {
-        if (type == MainFragment.MAIN_PAGE) {
+        if (type == GourmetDisplayFragment.MAIN_PAGE) {
             mainGourmet = gourmets;
-        } else if (type == MainFragment.FAVOR_PAGE) {
+        } else if (type == GourmetDisplayFragment.FAVOR_PAGE) {
             favorGourmets = gourmets;
-        } else if (type == MainFragment.RECOMMEND_PAGE) {
+        } else if (type == GourmetDisplayFragment.RECOMMEND_PAGE) {
             recommendList = gourmets;
         }
     }
@@ -173,10 +175,110 @@ public class FileManager {
         }
     }
 
+    public boolean load = true;
+    private Thread loadImageThread;
+    private LinkedList<SimpleImage> images = new LinkedList<>();
+    private LinkedList<String> ids = new LinkedList<>();
+    HashMap<String, Bitmap> cachedBitmap = null;
+    private static final int MAX_CACHE_BITMAP_COUNT = 200;
+    private Handler imageHandler;
+
+    public void getImageBitmap(Handler handler) {
+        load = true;
+        imageHandler = handler;
+        int maxMemory = (int) Runtime.getRuntime().maxMemory();
+        int mCacheSize = maxMemory / 4;
+        cachedBitmap = new HashMap<>();
+        loadImageThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                boolean firstInit = true;
+                while (load) {
+                    while (images.size() != 0) {
+                        String imageId = images.get(0).id;
+                        Bitmap bmp = cachedBitmap.get(imageId);
+                        if (bmp == null || bmp.isRecycled()) {
+                            cachedBitmap.remove(imageId);
+                            ids.remove(imageId);
+                            Bitmap bitmap = MediaStore.Images.Thumbnails.getThumbnail(
+                                    mContext.getContentResolver(),
+                                    Integer.parseInt(imageId),
+                                    MediaStore.Images.Thumbnails.MINI_KIND, null);
+                            if (bitmap != null) {
+//                                synchronized (cachedBitmap) {
+                                while (ids.size() > MAX_CACHE_BITMAP_COUNT) {
+                                    String strId = ids.get(0);
+                                    Bitmap bm = cachedBitmap.get(strId);
+//                                    cachedBitmap.remove(bm);
+                                    bm.recycle();
+                                    bm = null;
+                                    cachedBitmap.remove(strId);
+                                    ids.remove(0);
+                                }
+                                cachedBitmap.put(imageId, bitmap);
+                                ids.add(imageId);
+//                                }
+                            }
+                        }
+                        synchronized (images) {
+                            images.removeFirst();
+                        }
+                        if (!load)
+                            break;
+                    }
+                    if (firstInit) {
+                        Message message = handler.obtainMessage();
+                        handler.sendMessage(message);
+                        firstInit = false;
+                    }
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+        loadImageThread.start();
+    }
+
+    public void addToLoadList(List<SimpleImage> images) {
+//        synchronized (this.images){
+        for (SimpleImage image : images) {
+            if (!ids.contains(image.id)) {
+                this.images.add(image);
+            }
+//            }
+        }
+    }
+
+    public void addToLoadList(SimpleImage image) {
+        images.add(image);
+    }
+
+    public void stopLoadImage(List<SimpleImage> imagePaths) {
+        load = false;
+        for (SimpleImage image : imagePaths) {
+            Bitmap bmp = cachedBitmap.get(image.id);
+            if (bmp != null) {
+                bmp.recycle();
+            }
+            cachedBitmap.remove(image.id);
+        }
+        images.clear();
+        ids.clear();
+    }
+
+    public Bitmap getBitmapFromMemCache(String key) {
+        return cachedBitmap.get(key);
+    }
+
     public static List<SimpleImage> getImageList(Context context) {
+        Date beginDate = new Date();
+        System.out.println("getimagebegin :" + beginDate.getTime());
         List<SimpleImage> list = new ArrayList<SimpleImage>();
         Cursor cursor = MediaStore.Images.Media.query(context.getContentResolver(),
-                MediaStore.Images.Media.EXTERNAL_CONTENT_URI, STORE_IMAGES);
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI, STORE_IMAGES, null, MediaStore.Images.Media.DATE_ADDED);
         SimpleImage image = null;
         while (cursor.moveToNext()) {
             String id = cursor.getString(1);
@@ -193,6 +295,7 @@ public class FileManager {
             list.add(0, image);
         }
         cursor.close();
+        System.out.println("getimageend :" + new Date().getTime() + "duration == " + (new Date().getTime() - beginDate.getTime()));
         return list;
     }
 

@@ -27,6 +27,8 @@ import com.tencent.mm.sdk.modelbase.BaseResp;
 import com.tencent.mm.sdk.modelmsg.SendAuth;
 import com.zuijiao.android.util.MD5;
 import com.zuijiao.android.util.Optional;
+import com.zuijiao.android.util.functional.LambdaExpression;
+import com.zuijiao.android.util.functional.OneParameterExpression;
 import com.zuijiao.android.zuijiao.model.user.TinyUser;
 import com.zuijiao.android.zuijiao.network.Router;
 import com.zuijiao.controller.MessageDef;
@@ -137,38 +139,44 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
             }
 
             mDialog = ProgressDialog.show(LoginActivity.this, null, getResources().getString(R.string.on_loading));
-            Router.getOAuthModule().loginEmailRoutine(mEmail, mPassword, Optional.<String>empty(), Optional.<String>empty(), () -> {
-                Toast.makeText(getApplicationContext(), getString(R.string.login_success), Toast.LENGTH_SHORT).show();
-                TinyUser user = Router.getInstance().getCurrentUser().get();
-                AuthorInfo auth = new AuthorInfo();
-                auth.setEmail(mEmail);
-                auth.setPlatform("");
-                try {
-                    auth.setHeadPath(user.getAvatarURL().get());
-                } catch (NoSuchElementException e) {
-                    e.printStackTrace();
-                    auth.setHeadPath("");
+            Router.getOAuthModule().loginEmailRoutine(mEmail, mPassword, Optional.<String>empty(), Optional.<String>empty(), new LambdaExpression() {
+                @Override
+                public void action() {
+                    Toast.makeText(getApplicationContext(), getString(R.string.login_success), Toast.LENGTH_SHORT).show();
+                    TinyUser user = Router.getInstance().getCurrentUser().get();
+                    AuthorInfo auth = new AuthorInfo();
+                    auth.setEmail(mEmail);
+                    auth.setPlatform("");
+                    try {
+                        auth.setHeadPath(user.getAvatarURL().get());
+                    } catch (NoSuchElementException e) {
+                        e.printStackTrace();
+                        auth.setHeadPath("");
+                    }
+                    auth.setPassword(mPassword);
+                    auth.setUserName(user.getNickName());
+                    auth.setUserId(user.getIdentifier());
+                    mPreferMng.saveThirdPartyLoginMsg(auth);
+                    Intent intent = new Intent();
+                    intent.setAction(MessageDef.ACTION_GET_THIRD_PARTY_USER);
+                    sendBroadcast(intent);
+                    if (mDialog != null) {
+                        mDialog.dismiss();
+                        mDialog = null;
+                    }
                 }
-                auth.setPassword(mPassword);
-                auth.setUserName(user.getNickName());
-                auth.setUserId(user.getIdentifier());
-                mPreferMng.saveThirdPartyLoginMsg(auth);
-                Intent intent = new Intent();
-                intent.setAction(MessageDef.ACTION_GET_THIRD_PARTY_USER);
-                sendBroadcast(intent);
-                if (mDialog != null) {
-                    mDialog.dismiss();
-                    mDialog = null;
-                }
-            }, errorMessage -> {
-                if (errorMessage == 401) {
-                    Toast.makeText(getApplicationContext(), getString(R.string.error_password), Toast.LENGTH_LONG).show();
-                } else {
-                    Toast.makeText(getApplicationContext(), getString(R.string.notify_net2), Toast.LENGTH_LONG).show();
-                }
-                if (mDialog != null) {
-                    mDialog.dismiss();
-                    mDialog = null;
+            }, new OneParameterExpression<Integer>() {
+                @Override
+                public void action(Integer errorMessage) {
+                    if (errorMessage == 401) {
+                        Toast.makeText(getApplicationContext(), getString(R.string.error_password), Toast.LENGTH_LONG).show();
+                    } else {
+                        Toast.makeText(getApplicationContext(), getString(R.string.notify_net2), Toast.LENGTH_LONG).show();
+                    }
+                    if (mDialog != null) {
+                        mDialog.dismiss();
+                        mDialog = null;
+                    }
                 }
             });
         }

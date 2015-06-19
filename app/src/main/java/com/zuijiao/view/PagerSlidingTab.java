@@ -50,7 +50,7 @@ public class PagerSlidingTab extends HorizontalScrollView {
     }
 
     // @formatter:off
-    private static final int[] ATTRS = new int[]{android.R.attr.textSize, android.R.attr.textColor};
+    private final int[] ATTRS = new int[]{android.R.attr.textSize, android.R.attr.textColor};
     // @formatter:on
 
     private LinearLayout.LayoutParams defaultTabLayoutParams;
@@ -568,7 +568,7 @@ public class PagerSlidingTab extends HorizontalScrollView {
         return savedState;
     }
 
-    static class SavedState extends BaseSavedState {
+    class SavedState extends BaseSavedState {
         int currentPosition;
 
         public SavedState(Parcelable superState) {
@@ -586,7 +586,7 @@ public class PagerSlidingTab extends HorizontalScrollView {
             dest.writeInt(currentPosition);
         }
 
-        public static final Parcelable.Creator<SavedState> CREATOR = new Parcelable.Creator<SavedState>() {
+        public final Parcelable.Creator<SavedState> CREATOR = new Parcelable.Creator<SavedState>() {
             @Override
             public SavedState createFromParcel(Parcel in) {
                 return new SavedState(in);

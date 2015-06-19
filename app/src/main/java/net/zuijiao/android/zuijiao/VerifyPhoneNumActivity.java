@@ -15,6 +15,8 @@ import android.widget.Toast;
 
 import com.lidroid.xutils.view.annotation.ContentView;
 import com.lidroid.xutils.view.annotation.ViewInject;
+import com.zuijiao.android.util.functional.LambdaExpression;
+import com.zuijiao.android.util.functional.OneParameterExpression;
 import com.zuijiao.android.zuijiao.network.Router;
 
 import java.util.regex.Matcher;
@@ -71,14 +73,20 @@ public class VerifyPhoneNumActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 mSendBtn.setEnabled(false);
-                Router.getCommonModule().requestSecurityCode(mPhoneNumEditor.getText().toString().trim(), () -> {
-                    Message msg = Message.obtain();
-                    msg.arg1 = 60;
-                    mHandler.sendMessage(msg);
-                    mSendBtn.setText(getString(R.string.re_send_verification_code));
-                    securityCodeSent = true;
-                }, () -> {
-                    mSendBtn.setEnabled(true);
+                Router.getCommonModule().requestSecurityCode(mPhoneNumEditor.getText().toString().trim(), new LambdaExpression() {
+                    @Override
+                    public void action() {
+                        Message msg = Message.obtain();
+                        msg.arg1 = 60;
+                        mHandler.sendMessage(msg);
+                        mSendBtn.setText(getString(R.string.re_send_verification_code));
+                        securityCodeSent = true;
+                    }
+                }, new LambdaExpression() {
+                    @Override
+                    public void action() {
+                        mSendBtn.setEnabled(true);
+                    }
                 });
             }
         });
@@ -127,15 +135,21 @@ public class VerifyPhoneNumActivity extends BaseActivity {
                 return super.onOptionsItemSelected(item);
             }
             createDialog();
-            Router.getAccountModule().updatePhoneNumber(mPhoneNumEditor.getText().toString().trim(), securityCode, () -> {
-                finalizeDialog();
-                Intent intent = new Intent();
-                intent.putExtra("verified_phone_num", mPhoneNumEditor.getText().toString().trim());
-                setResult(RESULT_OK, intent);
-                finish();
-            }, errorMsg -> {
-                Toast.makeText(mContext, errorMsg, Toast.LENGTH_SHORT).show();
-                finalizeDialog();
+            Router.getAccountModule().updatePhoneNumber(mPhoneNumEditor.getText().toString().trim(), securityCode, new LambdaExpression() {
+                @Override
+                public void action() {
+                    finalizeDialog();
+                    Intent intent = new Intent();
+                    intent.putExtra("verified_phone_num", mPhoneNumEditor.getText().toString().trim());
+                    setResult(RESULT_OK, intent);
+                    finish();
+                }
+            }, new OneParameterExpression<String>() {
+                @Override
+                public void action(String errorMsg) {
+                    Toast.makeText(mContext, errorMsg, Toast.LENGTH_SHORT).show();
+                    finalizeDialog();
+                }
             });
         }
         return super.onOptionsItemSelected(item);

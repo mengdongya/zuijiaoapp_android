@@ -73,9 +73,10 @@ public class FriendActivity extends BaseActivity {
         //cursor color
         mTabs.setIndicatorColor(Color.WHITE);
         //tab divider color
-        mTabs.setDividerColor(Color.parseColor("#373737"));
+        mTabs.setDividerColor(getResources().getColor(R.color.toolbar));
         //tab background
-        mTabs.setBackgroundColor(Color.parseColor("#373737"));
+        mTabs.setBackgroundColor(getResources().getColor(R.color.toolbar));
+//        mTabs.setBackgroundColor(Color.parseColor("#373737"));
         //tab bottom height
         mTabs.setUnderlineHeight((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
                 1, getResources().getDisplayMetrics()));

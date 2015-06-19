@@ -16,7 +16,9 @@ import android.widget.Toast;
 
 import com.lidroid.xutils.view.annotation.ContentView;
 import com.lidroid.xutils.view.annotation.ViewInject;
+import com.zuijiao.android.util.functional.OneParameterExpression;
 import com.zuijiao.android.zuijiao.model.common.Language;
+import com.zuijiao.android.zuijiao.model.common.Languages;
 import com.zuijiao.android.zuijiao.network.Cache;
 import com.zuijiao.android.zuijiao.network.Router;
 
@@ -84,11 +86,17 @@ public class LanguagesChooseActivity extends BaseActivity {
         }
         mLanguages = Cache.INSTANCE.languages;
         if (mLanguages == null) {
-            Router.getCommonModule().languages(languages -> {
-                mLanguages = languages.getLanguages();
-                mList.setAdapter(mAdapter);
-            }, error -> {
-                Toast.makeText(mContext, getString(R.string.notify_net2), Toast.LENGTH_SHORT).show();
+            Router.getCommonModule().languages(new OneParameterExpression<Languages>() {
+                @Override
+                public void action(Languages languages) {
+                    mLanguages = languages.getLanguages();
+                    mList.setAdapter(mAdapter);
+                }
+            }, new OneParameterExpression<String>() {
+                @Override
+                public void action(String s) {
+                    Toast.makeText(mContext, getString(R.string.notify_net2), Toast.LENGTH_SHORT).show();
+                }
             });
         }
 //        mLanguages = getResources().getStringArray(R.array.languages);

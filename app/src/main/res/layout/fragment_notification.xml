@@ -6,7 +6,7 @@
 
     <com.zuijiao.view.PagerSlidingTab
         android:id="@+id/notification_tabs"
-        android:layout_height="55dip"
+        android:layout_height="40dip"
         android:layout_width="match_parent"
         android:elevation="8dip" />
 

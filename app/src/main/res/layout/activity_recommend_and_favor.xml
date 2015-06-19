@@ -9,7 +9,7 @@
         layout="@layout/toolbar" />
 
     <fragment
-        android:name="net.zuijiao.android.zuijiao.MainFragment"
+        android:name="net.zuijiao.android.zuijiao.GourmetDisplayFragment"
         android:id="@+id/recommend_and_favor_fragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_radius"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="8dip"
+        android:layout_marginRight="8dip"
+        android:layout_marginTop="0dip"
+        android:layout_marginBottom="8dip"
+        android:background="@drawable/bg_white_round_corner"
+        android:elevation="3dip"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/banquet_order_item_image"
+            android:src="@drawable/shanghai"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/main_item_image_height"
+            android:scaleType="centerCrop" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="0dip"
+            android:paddingLeft="10dip"
+            android:paddingRight="10dip"
+            android:paddingTop="10dip">
+
+            <TextView
+                android:id="@+id/banquet_order_item_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:text="Sonian的台味厨房"
+                android:gravity="center_vertical|left"
+                android:textColor="@color/tv_deep_gray"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/banquet_order_item_date_location"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:layout_marginTop="10dip"
+                android:layout_below="@id/banquet_order_item_name"
+                android:text="4月18日 周六 18：0"
+                android:textColor="@color/bg_light_gray"
+                android:textSize="16dip" />
+
+            <TextView
+                android:id="@+id/banquet_order_item_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:layout_below="@id/banquet_order_item_date_location"
+                android:layout_marginTop="10dip"
+                android:text="共有5人参加"
+                android:textColor="@color/bg_light_gray"
+                android:layout_marginBottom="10dip"
+                android:textSize="14sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:layout_below="@id/banquet_order_item_date_location"
+                android:layout_marginTop="10dip"
+                android:layout_alignParentRight="true"
+                android:text="@string/to_evaluate"
+                android:textColor="@color/tv_orange_red"
+                android:layout_marginBottom="10dip"
+                android:textSize="16dip" />
+        </RelativeLayout>
+
+
+    </LinearLayout>
+
+</LinearLayout>

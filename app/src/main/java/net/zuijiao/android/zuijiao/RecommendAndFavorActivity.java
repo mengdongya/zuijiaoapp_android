@@ -14,10 +14,10 @@ import com.zuijiao.android.zuijiao.model.user.TinyUser;
 @ContentView(R.layout.activity_recommend_and_favor)
 public class RecommendAndFavorActivity extends BaseActivity {
 
-    protected int mContentType = MainFragment.RECOMMEND_PAGE;
+    protected int mContentType = GourmetDisplayFragment.RECOMMEND_PAGE;
     protected Optional<TinyUser> mCurrentUser = null;
     @ViewInject(R.id.recommend_and_favor_fragment)
-    private MainFragment mFragment = null;
+    private GourmetDisplayFragment mFragment = null;
     @ViewInject(R.id.recommend_and_favor_toolbar)
     private Toolbar mToolbar;
 
@@ -36,13 +36,13 @@ public class RecommendAndFavorActivity extends BaseActivity {
     protected void registerViews() {
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        mContentType = mTendIntent.getIntExtra("content_type", MainFragment.FAVOR_PAGE);
+        mContentType = mTendIntent.getIntExtra("content_type", GourmetDisplayFragment.FAVOR_PAGE);
         mCurrentUser = Optional.of((TinyUser) mTendIntent.getSerializableExtra("tiny_user"));
-        if (mContentType == MainFragment.FAVOR_PAGE) {
+        if (mContentType == GourmetDisplayFragment.FAVOR_PAGE) {
             getSupportActionBar().setTitle(String.format(getString(R.string.whose_favor), mCurrentUser.get().getNickName()));
-        } else if (mContentType == MainFragment.RECOMMEND_PAGE) {
+        } else if (mContentType == GourmetDisplayFragment.RECOMMEND_PAGE) {
             getSupportActionBar().setTitle(String.format(getString(R.string.whose_recommend), mCurrentUser.get().getNickName()));
         }
-        mFragment = (MainFragment) getSupportFragmentManager().findFragmentById(R.id.recommend_and_favor_fragment);
+        mFragment = (GourmetDisplayFragment) getSupportFragmentManager().findFragmentById(R.id.recommend_and_favor_fragment);
     }
 }

@@ -56,8 +56,6 @@ public class CommonWebViewActivity extends BaseActivity {
                 view.setVisibility(View.VISIBLE);
             }
         };
-        // mWvClient.onPageFinished(mWebView,contentUrl);
-//        mWebView.set
         mWebView.setWebViewClient(mWvClient);
         mWebView.loadUrl(contentUrl);
 

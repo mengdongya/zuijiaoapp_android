@@ -82,7 +82,9 @@
 
             <GridView
                 android:focusable="false"
-                android:padding="10dip"
+                android:paddingLeft="10dip"
+                android:layout_marginTop="10dip"
+                android:paddingRight="10dip"
                 android:focusableInTouchMode="false"
                 android:background="@color/transparent"
                 android:id="@+id/edit_info_favor_gv"

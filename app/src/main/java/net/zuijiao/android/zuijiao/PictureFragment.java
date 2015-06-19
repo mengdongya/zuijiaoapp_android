@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
@@ -63,18 +64,6 @@ public class PictureFragment extends Fragment {
         return view;
     }
 
-    private void loadPic(String ur) {
-
-    }
-
-    ;
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-
-    }
-
     @Override
     public void onDestroyView() {
         super.onDestroyView();
@@ -91,15 +80,16 @@ public class PictureFragment extends Fragment {
             BitmapFactory.Options options = new BitmapFactory.Options();
             options.inJustDecodeBounds = true;
             Bitmap bmp = BitmapFactory.decodeFile(mImageUrl, options);
-            long height = options.outHeight * 1000 / options.outWidth;
-            options.outWidth = 1000;
-            options.outHeight = (int) height;
+            options.inSampleSize = calculateInSampleSize(options, 720, 1080);
             options.inJustDecodeBounds = false;
-            options.inPreferredConfig = Bitmap.Config.ARGB_4444;
-            options.inPurgeable = true;
-            options.inInputShareable = true;
-            mBmp = BitmapFactory
-                    .decodeFile(mImageUrl, options);
+            try {
+                mBmp = BitmapFactory
+                        .decodeFile(mImageUrl, options);
+            } catch (OutOfMemoryError error) {
+                error.printStackTrace();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             return null;
         }
 
@@ -113,12 +103,27 @@ public class PictureFragment extends Fragment {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
+            Log.d("pictureFragment", "LoadImageTask executed");
             if (mBmp != null) {
                 mImageView.setImageBitmap(mBmp);
             } else {
+                Toast.makeText(getActivity().getApplicationContext(), "out of memory , try later ", Toast.LENGTH_SHORT).show();
+                ;
                 mImageView.setImageResource(R.drawable.empty_view_greeting);
             }
         }
+    }
+
+    private int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
+        int height = options.outHeight;
+        int width = options.outWidth;
+        int inSampleSize = 1;
+        if (height > reqHeight || width > reqWidth) {
+            final int heightRatio = Math.round((float) height / (float) reqHeight);
+            final int widthRatio = Math.round((float) width / (float) reqWidth);
+            inSampleSize = heightRatio < widthRatio ? heightRatio : widthRatio;
+        }
+        return inSampleSize;
     }
 
 }

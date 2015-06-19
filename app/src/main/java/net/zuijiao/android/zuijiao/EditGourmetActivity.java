@@ -4,8 +4,11 @@ package net.zuijiao.android.zuijiao;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
@@ -28,15 +31,20 @@ import android.widget.Toast;
 import com.lidroid.xutils.view.annotation.ContentView;
 import com.lidroid.xutils.view.annotation.ViewInject;
 import com.squareup.picasso.Picasso;
+import com.upyun.block.api.listener.CompleteListener;
 import com.zuijiao.android.util.functional.LambdaExpression;
 import com.zuijiao.android.zuijiao.model.Gourmet;
 import com.zuijiao.android.zuijiao.network.Router;
+import com.zuijiao.controller.FileManager;
 import com.zuijiao.controller.MessageDef;
 import com.zuijiao.entity.SimpleImage;
 import com.zuijiao.utils.MyTextWatcher;
 import com.zuijiao.utils.UpyunUploadTask;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -129,13 +137,8 @@ public class EditGourmetActivity extends BaseActivity implements View.OnClickLis
             if (mImages != null && mImages.size() != 0) {
                 mImageUrls.addAll(UpyunUploadTask.gourmetImagePaths(
                         mPreferMng.getStoredUserId(), mEditName, mImages.size(), "jpg"));
-                uploadImageContinuously(mImages.get(0), () -> {
-                    if (mType == TYPE_CREATE_PERSONAL_GOURMET || mType == TYPE_CREATE_STORE_GOURMET) {
-                        addGourmet();
-                    } else {
-                        editGourmet();
-                    }
-                });
+
+                uploadOnCompressed();
             } else {
                 if (mType == TYPE_CREATE_PERSONAL_GOURMET || mType == TYPE_CREATE_STORE_GOURMET) {
                     addGourmet();
@@ -147,6 +150,83 @@ public class EditGourmetActivity extends BaseActivity implements View.OnClickLis
         return super.onOptionsItemSelected(item);
     }
 
+    private void uploadOnCompressed() {
+        AsyncTask compressTask = new AsyncTask() {
+            @Override
+            protected void onPostExecute(Object o) {
+                uploadImageContinuously(mImages.get(0), new LambdaExpression() {
+                    @Override
+                    public void action() {
+                        if (mType == TYPE_CREATE_PERSONAL_GOURMET || mType == TYPE_CREATE_STORE_GOURMET) {
+                            addGourmet();
+                        } else {
+                            editGourmet();
+                        }
+                    }
+                });
+                super.onPostExecute(o);
+            }
+
+            @Override
+            protected Object doInBackground(Object[] params) {
+                if (Environment.getExternalStorageState() == Environment.MEDIA_MOUNTED) {
+                    Toast.makeText(mContext, getString(R.string.comment), Toast.LENGTH_LONG).show();
+                    return null;
+                }
+                final BitmapFactory.Options options = new BitmapFactory.Options();
+                options.inJustDecodeBounds = true;
+                for (SimpleImage simpleImage : mImages) {
+                    BitmapFactory.decodeFile(simpleImage.data, options);
+                    options.inSampleSize = calculateInSampleSize(options, 480, 800);
+                    options.inJustDecodeBounds = false;
+                    Bitmap bm = BitmapFactory.decodeFile(simpleImage.data, options);
+                    if (FileManager.createRootFolder()) {
+                        File desFile = new File(FileManager.getAppRootPath() + File.separator + FileManager.COMPRESS_FOLDER + new Date().getTime());
+                        try {
+                            if (!desFile.exists()) {
+                                FileManager.createFolder(desFile.getParent());
+                                desFile.createNewFile();
+                            }
+                            OutputStream os = null;
+                            os = new FileOutputStream(desFile);
+                            if (bm.compress(Bitmap.CompressFormat.JPEG, 75, os)) {
+                                os.flush();
+                                os.close();
+                                os = null;
+                                bm.recycle();
+                                simpleImage.data = desFile.getAbsolutePath();
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+                return null;
+            }
+        };
+        compressTask.execute();
+    }
+
+
+    private static int calculateInSampleSize(BitmapFactory.Options options,
+                                             int reqWidth, int reqHeight) {
+        // Raw height and width of image
+        final int height = options.outHeight;
+        final int width = options.outWidth;
+        int inSampleSize = 1;
+
+        if (height > reqHeight || width > reqWidth) {
+            final int heightRatio = Math.round((float) height
+                    / (float) reqHeight);
+            final int widthRatio = Math.round((float) width / (float) reqWidth);
+            inSampleSize = heightRatio < widthRatio ? widthRatio : heightRatio;
+        }
+
+        return inSampleSize;
+    }
+
     private void editGourmet() {
         createDialog();
         mEditAddress = filterNullStr(mEditAddress);
@@ -154,27 +234,33 @@ public class EditGourmetActivity extends BaseActivity implements View.OnClickLis
         Router.getGourmetModule().updateGourmet(mGourmet.getIdentifier(),
                 mEditAddress, mEditPrice, mEditDescription,
                 mImageUrls, mEditLabels,
-                mType == TYPE_EDIT_PERSONAL_GOURMET, () -> {
-                    Toast.makeText(mContext, getString(R.string.notify_edit_gourmet_success), Toast.LENGTH_SHORT).show();
-                    System.out.println("EditGourmet" + " edit_success");
-                    Intent intent = new Intent();
-                    intent.setAction(MessageDef.ACTION_REFRESH_RECOMMENDATION);
-                    sendBroadcast(intent);
-                    finalizeDialog();
-                    Intent data = new Intent();
-                    mGourmet.setAddress(mEditAddress);
-                    mGourmet.setDate(new Date());
-                    mGourmet.setDescription(mEditDescription);
-                    mGourmet.setImageURLs(mImageUrls);
-                    mGourmet.setPrice(mEditPrice);
-                    mGourmet.setTags(mEditLabels);
-                    data.putExtra("gourmet", mGourmet);
-                    setResult(RESULT_OK, data);
-                    finish();
-                }, () -> {
-                    Toast.makeText(mContext, getString(R.string.notify_edit_gourmet_failed), Toast.LENGTH_SHORT).show();
-                    System.out.println("EditGourmet" + " edit_failed");
-                    finalizeDialog();
+                mType == TYPE_EDIT_PERSONAL_GOURMET, new LambdaExpression() {
+                    @Override
+                    public void action() {
+                        Toast.makeText(mContext, getString(R.string.notify_edit_gourmet_success), Toast.LENGTH_SHORT).show();
+                        System.out.println("EditGourmet" + " edit_success");
+                        Intent intent = new Intent();
+                        intent.setAction(MessageDef.ACTION_REFRESH_RECOMMENDATION);
+                        sendBroadcast(intent);
+                        finalizeDialog();
+                        Intent data = new Intent();
+                        mGourmet.setAddress(mEditAddress);
+                        mGourmet.setDate(new Date());
+                        mGourmet.setDescription(mEditDescription);
+                        mGourmet.setImageURLs(mImageUrls);
+                        mGourmet.setPrice(mEditPrice);
+                        mGourmet.setTags(mEditLabels);
+                        data.putExtra("gourmet", mGourmet);
+                        setResult(RESULT_OK, data);
+                        finish();
+                    }
+                }, new LambdaExpression() {
+                    @Override
+                    public void action() {
+                        Toast.makeText(mContext, getString(R.string.notify_edit_gourmet_failed), Toast.LENGTH_SHORT).show();
+                        System.out.println("EditGourmet" + " edit_failed");
+                        finalizeDialog();
+                    }
                 });
     }
 
@@ -191,37 +277,48 @@ public class EditGourmetActivity extends BaseActivity implements View.OnClickLis
         Router.getGourmetModule().addGourmet(mEditName, mEditAddress,
                 mEditPrice, mEditDescription, mImageUrls,
                 mEditLabels, mProvinceId, mCityId,
-                mType == TYPE_CREATE_PERSONAL_GOURMET, () -> {
-                    Toast.makeText(mContext, getString(R.string.notify_add_gourmet_success), Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent();
-                    intent.setAction(MessageDef.ACTION_REFRESH_RECOMMENDATION);
-                    sendBroadcast(intent);
-                    finalizeDialog();
-                    finish();
-                }, () -> {
-                    Toast.makeText(mContext, getString(R.string.notify_add_gourmet_failed), Toast.LENGTH_SHORT).show();
-                    finalizeDialog();
+                mType == TYPE_CREATE_PERSONAL_GOURMET, new LambdaExpression() {
+                    @Override
+                    public void action() {
+                        Toast.makeText(mContext, getString(R.string.notify_add_gourmet_success), Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent();
+                        intent.setAction(MessageDef.ACTION_REFRESH_RECOMMENDATION);
+                        sendBroadcast(intent);
+                        finalizeDialog();
+                        finish();
+                    }
+                }, new LambdaExpression() {
+                    @Override
+                    public void action() {
+                        Toast.makeText(mContext, getString(R.string.notify_add_gourmet_failed), Toast.LENGTH_SHORT).show();
+                        finalizeDialog();
+                    }
                 });
     }
 
     private void uploadImageContinuously(SimpleImage image, LambdaExpression lambdaExpression) {
         String imageUrl = mImageUrls.get(mImages.indexOf(image));
-        createDialog();
+        String msg = String.format(getString(R.string.upload_image), mImages.indexOf(image) + 1, mImages.size());
+        createDialog(msg);
         new UpyunUploadTask(image.data, imageUrl, null,
-                (boolean isComplete, String result, String error) -> {
-                    if (isComplete) {
+                new CompleteListener() {
+                    @Override
+                    public void result(boolean isComplete, String s, String s2) {
+                        if (isComplete) {
 //                        mImageUrls.add(imageUrl);
-                        SimpleImage nextImage = getNextImage(image);
-                        if (nextImage != null && new File(nextImage.data).exists()) {
-                            uploadImageContinuously(nextImage, lambdaExpression);
+                            SimpleImage nextImage = getNextImage(image);
+                            if (nextImage != null && new File(nextImage.data).exists()) {
+                                uploadImageContinuously(nextImage, lambdaExpression);
+                            } else {
+                                lambdaExpression.action();
+                            }
                         } else {
-                            lambdaExpression.action();
+                            mImageUrls.clear();
+                            finalizeDialog();
                         }
-                    } else {
-                        mImageUrls.clear();
-                        finalizeDialog();
                     }
-                }).execute();
+                }
+        ).execute();
     }
 
     private SimpleImage getNextImage(SimpleImage currentImage) {

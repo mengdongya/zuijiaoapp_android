@@ -10,11 +10,12 @@
     tools:ignore="UseCompoundDrawables">
 
     <TextView
+        android:id="@+id/toolbar_location_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="上海"
-        android:textColor="@color/white"
-        android:textSize="15sp" />
+        android:textColor="#959595"
+        android:textSize="14sp" />
 
     <ImageView
         android:layout_width="10dip"

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">嘴角</string>
-    <string name="current_version_code">1.1.0</string>
+    <string name="current_version_code">1.2.0</string>
     <string name="welcome_word">发现最美的味道</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
@@ -234,7 +234,7 @@
     <string name="already_read">已阅</string>
     <string name="label_count">%d个标签</string>
     <string name="image_count_upper_limit">最多%d张图片</string>
-    <string name="notify_add_gourmet_success">添加美食成功</string>
+    <string name="notify_add_gourmet_success">发布成功</string>
     <string name="notify_add_gourmet_failed">添加失败，请检查你的网络</string>
     <string name="notify_edit_gourmet_success">编辑美食成功</string>
     <string name="notify_edit_gourmet_failed">编辑失败，请检查你的网络</string>
@@ -265,4 +265,37 @@
     <string name="language_count">%d种语言</string>
     <string name="recommend_gourmet">推荐美食</string>
     <string name="more_comment">更多评论</string>
+    <string name="upload_image">上传图片%1$d/%2$d</string>
+    <string name="exit_confirm">再按一次，暂别嘴角</string>
+    <string name="repeat_email_address">邮箱已被注册</string>
+    <string name="new_version">有了新版本，现在更新吗？</string>
+    <string name="later">以后再说</string>
+    <string name="update">更新</string>
+    <string name="gourmet">美食</string>
+    <string name="banquet">家庭料理</string>
+    <string name="order_now">立即预订</string>
+    <string name="cuisine_name">料理人&#160;|&#160;%s</string>
+    <string name="about_cuisine">关于料理人</string>
+    <string name="detail">详情</string>
+    <string name="all_comments">所有%d条评论</string>
+    <string name="order_msg">订单信息</string>
+    <string name="time">时间</string>
+    <string name="price">价格</string>
+    <string name="address">地址</string>
+    <string name="remark">备注</string>
+    <string name="choose_the_way_to_pay">选择支付方式</string>
+    <string name="pay_by_zhifubao">支付宝支付</string>
+    <string name="pay_by_weixin">微信支付</string>
+    <string name="pay_right_now">立即支付</string>
+    <string name="pay_by">使用%s进行支付</string>
+    <string name="zhifubao">支付宝</string>
+    <string name="banquet_detail_address_notify">*详细地址将在预订成功后发送到您的手机</string>
+    <string name="click_bind_mobile_phone">点击设置手机号</string>
+    <string name="my_order">我的赏味单</string>
+    <string name="coming_soon">即将开始</string>
+    <string name="leaving_for_evaluated">待评价</string>
+    <string name="whole">全部</string>
+    <string name="to_evaluate">去评价</string>
+    <string name="honey_name1">昵称</string>
+    <string name="sd_card_unmounted">sd卡未加载</string>
 </resources>

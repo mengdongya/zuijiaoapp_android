@@ -94,6 +94,7 @@ public class BigImageActivity extends BaseActivity {
             }
             --mTotalCount;
             if (mTotalCount == 0) {
+                mAdapter.notifyDataSetChanged();
                 onBackPressed();
             } else {
                 mAdapter.notifyDataSetChanged();

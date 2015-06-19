@@ -17,6 +17,7 @@ import com.lidroid.xutils.view.annotation.ContentView;
 import com.lidroid.xutils.view.annotation.ViewInject;
 import com.zuijiao.android.util.Optional;
 import com.zuijiao.android.util.functional.LambdaExpression;
+import com.zuijiao.android.util.functional.OneParameterExpression;
 import com.zuijiao.android.zuijiao.model.common.Configuration;
 import com.zuijiao.android.zuijiao.model.common.ConfigurationType;
 import com.zuijiao.android.zuijiao.network.Router;
@@ -54,14 +55,24 @@ public class SettingActivity extends BaseActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         mEmail = mPreferMng.getStoredBindEmail();
         mCurrentAccount.setText(mEmail.equals("") ? getString(R.string.un_setting) : mEmail);
-
-        Router.getCommonModule().currentConfiguration(configuration -> registerSwitchButton(configuration), null);
+        Router.getCommonModule().currentConfiguration(new OneParameterExpression<Configuration>() {
+            @Override
+            public void action(Configuration configuration) {
+                registerSwitchButton(configuration);
+            }
+        }, null);
         registerSwitchButton(mConfiguration);
-        mLogoutBtn.setOnClickListener((View view) -> {
-            logout();
+        mLogoutBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                logout();
+            }
         });
-        mAccountLayout.setOnClickListener((View view) -> {
-            bindEmail();
+        mAccountLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                bindEmail();
+            }
         });
         mSb1.setOnCheckedChangeListener(new SBCheckedChangeListener());
         mSb2.setOnCheckedChangeListener(new SBCheckedChangeListener());
@@ -95,25 +106,37 @@ public class SettingActivity extends BaseActivity {
         View logoutView = LayoutInflater.from(getApplicationContext()).inflate(
                 R.layout.logout_dialog, null);
         AlertDialog dialog = new AlertDialog.Builder(SettingActivity.this).setView(logoutView).create();
-        logoutView.findViewById(R.id.logout_btn_cancel).setOnClickListener((View v) -> {
-            dialog.dismiss();
-        });
-        logoutView.findViewById(R.id.logout_btn_confirm).setOnClickListener((View v) -> {
-            dialog.dismiss();
-            createDialog();
-            ThirdPartySDKManager.getInstance(mContext).logout(mContext);
-            PreferenceManager.getInstance(mContext).clearThirdPartyLoginMsg();
-            try {
-                FileManager.recommendList.get().clear();
-                FileManager.favorGourmets.get().clear();
-            } catch (Exception e) {
+        logoutView.findViewById(R.id.logout_btn_cancel).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
             }
-            Router.getOAuthModule().visitor(() -> {
-                backToMain();
-            }, errorMessage -> {
-                Router.getInstance().setCurrentUser(Optional.empty());
-                backToMain();
-            });
+        });
+        logoutView.findViewById(R.id.logout_btn_confirm).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                createDialog();
+                ThirdPartySDKManager.getInstance(mContext).logout(mContext);
+                PreferenceManager.getInstance(mContext).clearThirdPartyLoginMsg();
+                try {
+                    FileManager.recommendList.get().clear();
+                    FileManager.favorGourmets.get().clear();
+                } catch (Exception e) {
+                }
+                Router.getOAuthModule().visitor(new LambdaExpression() {
+                    @Override
+                    public void action() {
+                        backToMain();
+                    }
+                }, new OneParameterExpression<Integer>() {
+                    @Override
+                    public void action(Integer integer) {
+                        Router.getInstance().setCurrentUser(Optional.empty());
+                        backToMain();
+                    }
+                });
+            }
         });
         dialog.show();
     }
@@ -148,36 +171,54 @@ public class SettingActivity extends BaseActivity {
                     case R.id.setting_sb_comment_me:
                         type = ConfigurationType.Comment;
                         switchTo = !mConfiguration.isNotifyComment();
-                        successCallback = () -> {
-                            mConfiguration.setNotifyComment(!mConfiguration.isNotifyComment());
+                        successCallback = new LambdaExpression() {
+                            @Override
+                            public void action() {
+                                mConfiguration.setNotifyComment(!mConfiguration.isNotifyComment());
+                            }
                         };
                         break;
                     case R.id.setting_sb_favor_me:
                         type = ConfigurationType.Like;
                         switchTo = !mConfiguration.isNotifyLike();
-                        successCallback = () -> {
-                            mConfiguration.setNotifyLike(!mConfiguration.isNotifyLike());
+                        successCallback = new LambdaExpression() {
+                            @Override
+                            public void action() {
+                                mConfiguration.setNotifyLike(!mConfiguration.isNotifyLike());
+                            }
                         };
                         break;
                     case R.id.setting_sb_follow_me:
                         type = ConfigurationType.Follow;
                         switchTo = !mConfiguration.isNotifyFollowed();
-                        successCallback = () -> {
-                            mConfiguration.setNotifyFollowed(!mConfiguration.isNotifyFollowed());
+                        successCallback = new LambdaExpression() {
+                            @Override
+                            public void action() {
+                                mConfiguration.setNotifyFollowed(!mConfiguration.isNotifyFollowed());
+                            }
                         };
                         break;
                 }
-                Router.getCommonModule().updateConfiguration(type, switchTo, () -> {
-                    buttonView.setEnabled(true);
-                    successCallback.action();
-                    mPreferMng.saveConfig(mConfiguration);
-                }, errorMsg -> {
-                    new Handler().postDelayed(() -> {
+                Router.getCommonModule().updateConfiguration(type, switchTo, new LambdaExpression() {
+                    @Override
+                    public void action() {
                         buttonView.setEnabled(true);
-                        this.bFromUser = false;
-                        ((SwitchButton) buttonView).toggle();
-                        Toast.makeText(mContext, getString(R.string.notify_net3), Toast.LENGTH_SHORT).show();
-                    }, 500);
+                        successCallback.action();
+                        mPreferMng.saveConfig(mConfiguration);
+                    }
+                }, new OneParameterExpression<String>() {
+                    @Override
+                    public void action(String s) {
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                buttonView.setEnabled(true);
+                                bFromUser = false;
+                                ((SwitchButton) buttonView).toggle();
+                                Toast.makeText(mContext, getString(R.string.notify_net3), Toast.LENGTH_SHORT).show();
+                            }
+                        }, 500);
+                    }
                 });
             }
         }

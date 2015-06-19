@@ -237,7 +237,7 @@
     <string name="already_read">已阅</string>
     <string name="label_count">%d个标签</string>
     <string name="image_count_upper_limit">最多%d张图片</string>
-    <string name="notify_add_gourmet_success">添加美食成功</string>
+    <string name="notify_add_gourmet_success">发布成功</string>
     <string name="notify_add_gourmet_failed">添加失败，请检查你的网络</string>
     <string name="notify_edit_gourmet_success">编辑美食成功</string>
     <string name="notify_edit_gourmet_failed">编辑失败，请检查你的网络</string>
@@ -268,6 +268,12 @@
     <string name="language_count">%d种语言</string>
     <string name="recommend_gourmet">推荐美食</string>
     <string name="more_comment">更多评论</string>
+    <string name="upload_image">上传图片%1$d/%2$d</string>
+    <string name="exit_confirm">再按一次，暂别嘴角</string>
+    <string name="repeat_email_address">邮箱已被注册</string>
+    <string name="new_version">有了新版本，现在更新吗？</string>
+    <string name="later">以后再说</string>
+    <string name="update">更新</string>
     <!-- umeng socialize strings begin-->
     <!--<string name="pull_to_refresh_pull_label" translatable="false">向下拉动可以刷新</string>-->
     <!--<string name="pull_to_refresh_release_label" translatable="false">松开可以刷新</string>-->

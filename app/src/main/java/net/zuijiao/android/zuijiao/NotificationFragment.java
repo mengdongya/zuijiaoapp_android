@@ -62,9 +62,10 @@ public class NotificationFragment extends Fragment implements MessageFragment.On
         //cursor color
         mTabs.setIndicatorColor(Color.WHITE);
         //tab divider color
-        mTabs.setDividerColor(Color.parseColor("#373737"));
+        mTabs.setDividerColor(getResources().getColor(R.color.toolbar));
         //tab background
-        mTabs.setBackgroundColor(Color.parseColor("#373737"));
+//        mTabs.setBackgroundColor(Color.parseColor("#373737"));
+        mTabs.setBackgroundColor(getResources().getColor(R.color.toolbar));
         //tab bottom height
         mTabs.setUnderlineHeight((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
                 1, getResources().getDisplayMetrics()));
@@ -85,12 +86,14 @@ public class NotificationFragment extends Fragment implements MessageFragment.On
     public void messageRead() {
         if (mMsgFragment != null) {
             mMsgFragment.markRead();
+            mTabs.setTabText(1, getString(R.string.comment));
         }
     }
 
     public void notificationRead() {
         if (mNotifyFragment != null) {
             mNotifyFragment.markRead();
+            mTabs.setTabText(0, getString(R.string.notification));
         }
     }
 
@@ -137,8 +140,19 @@ public class NotificationFragment extends Fragment implements MessageFragment.On
 
 
     @Override
-    public void onFetch() {
-        mTabs.setTabText(0, String.format(getString(R.string.notification_with_count), mNotifyFragment.getSize()));
-        mTabs.setTabText(1, String.format(getString(R.string.comment_with_count), mMsgFragment.getSize()));
+    public void onFetch(int tabIndex, int unReadCount) {
+        if (tabIndex == 0) {
+            if (unReadCount == 0) {
+                mTabs.setTabText(tabIndex, getString(R.string.notification));
+            } else {
+                mTabs.setTabText(tabIndex, String.format(getString(R.string.notification_with_count), unReadCount));
+            }
+        } else {
+            if (unReadCount == 0) {
+                mTabs.setTabText(tabIndex, getString(R.string.comment));
+            } else {
+                mTabs.setTabText(tabIndex, String.format(getString(R.string.comment_with_count), unReadCount));
+            }
+        }
     }
 }

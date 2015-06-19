@@ -76,19 +76,22 @@ public class GourmetCommentAdapter extends BaseAdapter {
             holder = (CommentViewHolder) convertView.getTag();
         }
         holder.time.setText(StrUtil.formatTime(comment.getPostDate(), mContext));
-        holder.userName.setText(position + comment.getUser().getNickName());
+        holder.userName.setText(comment.getUser().getNickName());
         if (comment.getUser().getAvatarURL().isPresent())
             Picasso.with(mContext)
                     .load(comment.getUser().getAvatarURL().get())
                     .placeholder(R.drawable.default_user_head)
 //                    .error(R.drawable.empty_view_greeting)
                     .into(holder.head);
-        holder.head.setOnClickListener((View view) -> {
-            Intent intent = new Intent();
-            intent.setClass(mContext, UserInfoActivity.class);
-            intent.putExtra("tiny_user", comment.getUser());
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            mContext.startActivity(intent);
+        holder.head.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent();
+                intent.setClass(mContext, UserInfoActivity.class);
+                intent.putExtra("tiny_user", comment.getUser());
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                mContext.startActivity(intent);
+            }
         });
         if (comment.getReplyTo().isPresent()) {
             String replyToUserName = comment.getReplyTo().get().getNickName();

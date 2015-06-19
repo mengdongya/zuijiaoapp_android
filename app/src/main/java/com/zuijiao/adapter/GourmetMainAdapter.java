@@ -3,6 +3,7 @@ package com.zuijiao.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,6 +30,9 @@ public class GourmetMainAdapter extends BaseAdapter {
     private Context mContext = null;
     private LayoutInflater mInflater = null;
     private Optional<List<Gourmet>> gourmets = Optional.empty();
+    private static Typeface demiLight = null;
+    private static Typeface light = null;
+
 
     public GourmetMainAdapter() {
         super();
@@ -38,6 +42,10 @@ public class GourmetMainAdapter extends BaseAdapter {
         super();
         this.mContext = context;
         mInflater = LayoutInflater.from(context);
+        if (demiLight == null)
+            demiLight = Typeface.createFromAsset(mContext.getAssets(), "fonts/Roboto-Regular.ttf");
+        if (light == null)
+            light = Typeface.createFromAsset(mContext.getAssets(), "fonts/RobotoCondensed-Light.ttf");
     }
 
     public void setData(Optional<List<Gourmet>> gourmets) {
@@ -76,17 +84,21 @@ public class GourmetMainAdapter extends BaseAdapter {
         }
         Gourmet gourmet = gourmets.get().get(position);
         holder.text1_food_name.setText("\u200B" + gourmet.getName());
+        holder.text1_food_name.setTypeface(demiLight);
         holder.text4_user_name.setText(gourmet.getUser().getNickName());
+        holder.text4_user_name.setTypeface(light);
         holder.text_intro.setText(gourmet.getDescription());
+        holder.text_intro.setTypeface(light);
         holder.text2_personal.setVisibility(gourmet.getIsPrivate() ? View.VISIBLE : View.GONE);
+        holder.text2_personal.setTypeface(light);
         if (gourmet.getImageURLs().size() > 0) {
             holder.image_food.setVisibility(View.VISIBLE);
-            Picasso.with(mContext).load(gourmet.getImageURLs().get(0) + "!Thumbnails").into(holder.image_food);
+            Picasso.with(mContext).load(gourmet.getImageURLs().get(0) + "!Thumbnails").placeholder(R.drawable.empty_view_greeting).into(holder.image_food);
         } else if (gourmet.getImageURLs().size() == 0) {
             holder.image_food.setVisibility(View.GONE);
         }
         if (gourmet.getUser().getAvatarURL().isPresent())
-            Picasso.with(mContext).load(gourmet.getUser().getAvatarURL().get()).into(holder.image_user_head);
+            Picasso.with(mContext).load(gourmet.getUser().getAvatarURL().get()).placeholder(R.drawable.default_user_head).into(holder.image_user_head);
         holder.image_user_head.setOnClickListener(new UserHeadClickListener(gourmet.getUser()));
         if (gourmet.getTags() == null || gourmet.getTags().size() == 0) {
             holder.label.setVisibility(View.GONE);
@@ -124,6 +136,7 @@ public class GourmetMainAdapter extends BaseAdapter {
         textView.setTextColor(Color.WHITE);
         textView.setTextSize(14);
         textView.setText(textContent);
+        textView.setTypeface(light);
         return textView;
     }
 

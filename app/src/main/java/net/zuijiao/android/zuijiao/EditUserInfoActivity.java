@@ -30,7 +30,9 @@ import android.widget.Toast;
 import com.lidroid.xutils.view.annotation.ContentView;
 import com.lidroid.xutils.view.annotation.ViewInject;
 import com.squareup.picasso.Picasso;
+import com.upyun.block.api.listener.CompleteListener;
 import com.zuijiao.android.util.Optional;
+import com.zuijiao.android.util.functional.LambdaExpression;
 import com.zuijiao.android.zuijiao.model.common.TasteTag;
 import com.zuijiao.android.zuijiao.model.user.ContactInfo;
 import com.zuijiao.android.zuijiao.model.user.User;
@@ -52,14 +54,28 @@ import static android.widget.AdapterView.OnItemClickListener;
 @ContentView(R.layout.activity_edit_info)
 public class EditUserInfoActivity extends BaseActivity {
     public static final int CHOOSE_HEAD_IMAGE_REQ = 1001;
-
+    private View.OnClickListener mHeadListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Intent intent = new Intent();
+            intent.setClass(mContext, ImageChooseActivity.class);
+            startActivityForResult(intent, CHOOSE_HEAD_IMAGE_REQ);
+        }
+    };
     public static final int VERIFY_PHONE_NUMBER_REQ = 1002;
-
     public static final int LANGUAGE_CHOOSE_REQ = 1003;
-
     public static final int LOCATION_CHOOSE_REQ = 1004;
-
     private static final int TASTE_TAG_REQ = 1005;
+    private OnItemClickListener mTasteItemListener = new OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            Intent intent = new Intent();
+            intent.setClass(mContext, TasteActivity.class);
+            if (mTmpFullUser.getProfile().getTasteTags().isPresent())
+                intent.putStringArrayListExtra("my_taste_tag", (ArrayList) mTmpFullUser.getProfile().getTasteTags().get());
+            startActivityForResult(intent, TASTE_TAG_REQ);
+        }
+    };
     private static final int BASE_INFO_ADAPTER = 0;
     private static final int CONTACT_INFO_ADAPTER = 1;
     private static final int DETAIL_INFO_ADAPTER = 2;
@@ -99,7 +115,6 @@ public class EditUserInfoActivity extends BaseActivity {
     private String etEducation = null;
     private List<String> etLanguage = null;
     private String mCurrentEdit = null;
-    private boolean bAnyInfoChanged = false;
     private OnItemClickListener mUserInfoItemListener = new OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -153,17 +168,140 @@ public class EditUserInfoActivity extends BaseActivity {
             }
         }
     };
-
-    private OnItemClickListener mTasteItemListener = new OnItemClickListener() {
+    private OnItemClickListener mContactListener = new OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            Intent intent = new Intent();
-            intent.setClass(mContext, TasteActivity.class);
-            if (mTmpFullUser.getProfile().getTasteTags().isPresent())
-            intent.putStringArrayListExtra("my_taste_tag", (ArrayList) mTmpFullUser.getProfile().getTasteTags().get());
-            startActivityForResult(intent, TASTE_TAG_REQ);
+            switch (position) {
+                case 0:
+                    String email = null;
+                    if (mFullUser.getContactInfo().isPresent())
+                        email = mFullUser.getContactInfo().get().getEmail();
+                    createGeneralEditTextDialog(email, getString(R.string.email), getString(R.string.input_email), 1, 0, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            if (mCurrentEdit == null || mCurrentEdit.equals("")) {
+                                return;
+                            }
+                            if (!mCurrentEdit.matches(EMAIL_REGEX)) {
+                                Toast.makeText(mContext, getString(R.string.register_error_email_format), Toast.LENGTH_SHORT).show();
+                                return;
+                            }
+                            dialog.dismiss();
+                            if (mFullUser.getContactInfo().isPresent() && mCurrentEdit.equals(mFullUser.getContactInfo().get().getEmail())) {
+                                mCurrentEdit = null;
+                                return;
+                            }
+                            if (!mTmpFullUser.getContactInfo().isPresent()) {
+                                mTmpFullUser.setContactInfo(new ContactInfo());
+                            }
+                            mTmpFullUser.getContactInfo().get().setEmail(mCurrentEdit);
+                            updateUserInfo();
+                        }
+                    });
+                    break;
+                case 1:
+                    Intent intent = new Intent();
+                    intent.setClass(mContext, VerifyPhoneNumActivity.class);
+                    startActivityForResult(intent, VERIFY_PHONE_NUMBER_REQ);
+                    break;
+            }
         }
     };
+    private OnItemClickListener mDetailListener = new OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            switch (position) {
+                case 0:
+                    String industry = null;
+                    if (mFullUser.getProfile().getCareer().isPresent()) {
+                        industry = mFullUser.getProfile().getCareer().get();
+                    }
+                    createGeneralEditTextDialog(industry, getString(R.string.industry), getString(R.string.industry_hint), 4, 100, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                            if (mCurrentEdit == null || mCurrentEdit.equals("")) {
+                                return;
+                            }
+                            if (mFullUser.getProfile() != null
+                                    && mFullUser.getProfile().getCareer().isPresent()
+                                    && mFullUser.getProfile().getCareer().get().equals(mCurrentEdit)) {
+                                mCurrentEdit = null;
+                                return;
+                            }
+                            mTmpFullUser.getProfile().setCareer(mCurrentEdit);
+                            updateUserInfo();
+                        }
+                    });
+                    break;
+                case 1:
+                    String hobby = null;
+                    if (mFullUser.getProfile().getHobby().isPresent())
+                        hobby = mFullUser.getProfile().getHobby().get();
+                    createGeneralEditTextDialog(hobby, getString(R.string.interest_hobby), getString(R.string.interest_hobby_hint), 4, 100, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                            if (mCurrentEdit == null || mCurrentEdit.equals("")) {
+                                return;
+                            }
+                            if (mFullUser.getProfile() != null
+                                    && mFullUser.getProfile().getHobby().isPresent()
+                                    && mFullUser.getProfile().getHobby().get().equals(mCurrentEdit)) {
+                                mCurrentEdit = null;
+                                return;
+                            }
+                            mTmpFullUser.getProfile().setHobby(mCurrentEdit);
+                            updateUserInfo();
+                        }
+                    });
+                    break;
+                case 2:
+                    String education = null;
+                    if (mFullUser.getProfile().getEducationBackground().isPresent()) {
+                        education = mFullUser.getProfile().getEducationBackground().get();
+                    }
+                    createGeneralEditTextDialog(education, getString(R.string.education), getString(R.string.education_hint), 4, 100, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                            if (mCurrentEdit == null || mCurrentEdit.equals("")) {
+                                return;
+                            }
+                            if (mFullUser.getProfile() != null
+                                    && mFullUser.getProfile().getEducationBackground().isPresent()
+                                    && mFullUser.getProfile().getEducationBackground().get().equals(mCurrentEdit)) {
+                                mCurrentEdit = null;
+                                return;
+                            }
+                            mTmpFullUser.getProfile().setEducationBackground(mCurrentEdit);
+                            updateUserInfo();
+                        }
+                    });
+                    break;
+                case 3:
+                    Intent intent = new Intent();
+                    intent.setClass(mContext, LanguagesChooseActivity.class);
+
+                    ArrayList<String> languageCode = new ArrayList<>();
+                    try {
+                        for (String str : mTmpFullUser.getProfile().getLanguages().get()) {
+                            languageCode.add(str);
+                        }
+                    } catch (Exception e) {
+
+                    }
+                    if (languageCode != null && languageCode.size() != 0) {
+                        intent.putExtra("selected_language", languageCode);
+                    }
+                    startActivityForResult(intent, LANGUAGE_CHOOSE_REQ);
+                    break;
+                default:
+                    break;
+            }
+        }
+    };
+    private boolean bAnyInfoChanged = false;
     private BaseAdapter mFavorAdapter = new BaseAdapter() {
         @Override
         public int getCount() {
@@ -270,22 +408,28 @@ public class EditUserInfoActivity extends BaseActivity {
 
     private void updateUserInfo() {
         createDialog();
-        Router.getAccountModule().update(mTmpFullUser, () -> {
-            bAnyInfoChanged = true;
-            if (!mFullUser.getNickname().equals(mTmpFullUser.getNickname())) {
-                mPreferMng.saveNickname(mTmpFullUser.getNickname().get());
+        Router.getAccountModule().update(mTmpFullUser, new LambdaExpression() {
+            @Override
+            public void action() {
+                bAnyInfoChanged = true;
+                if (!mFullUser.getNickname().equals(mTmpFullUser.getNickname())) {
+                    mPreferMng.saveNickname(mTmpFullUser.getNickname().get());
+                }
+                mFullUser = mTmpFullUser.clone();
+                mBaseInfoAdapter.notifyDataSetChanged();
+                mContactInfoAdapter.notifyDataSetChanged();
+                mDetailInfoAdapter.notifyDataSetChanged();
+                mFavorAdapter.notifyDataSetChanged();
+                setListViewHeightBasedOnChildren(mFavorGridView);
+                finalizeDialog();
             }
-            mFullUser = mTmpFullUser.clone();
-            mBaseInfoAdapter.notifyDataSetChanged();
-            mContactInfoAdapter.notifyDataSetChanged();
-            mDetailInfoAdapter.notifyDataSetChanged();
-            mFavorAdapter.notifyDataSetChanged();
-            setListViewHeightBasedOnChildren(mFavorGridView);
-            finalizeDialog();
-        }, () -> {
-            mTmpFullUser = mFullUser.clone();
-            Toast.makeText(mContext, getString(R.string.save_error_check_network), Toast.LENGTH_SHORT).show();
-            finalizeDialog();
+        }, new LambdaExpression() {
+            @Override
+            public void action() {
+                mTmpFullUser = mFullUser.clone();
+                Toast.makeText(mContext, getString(R.string.save_error_check_network), Toast.LENGTH_SHORT).show();
+                finalizeDialog();
+            }
         });
         mCurrentEdit = null;
     }
@@ -376,26 +520,30 @@ public class EditUserInfoActivity extends BaseActivity {
         } else {
             mGenderCheckItem = 2;
         }
-        AlertDialog alertDialog = new AlertDialog.Builder(EditUserInfoActivity.this).setSingleChoiceItems(array, mGenderCheckItem, (DialogInterface dialog, int which) -> {
-            dialog.dismiss();
-            if (which == mGenderCheckItem) {
-                return;
-            }
-            String gender = "keepSecret";
-            switch (which) {
-                case 0:
-                    gender = "male";
-                    break;
-                case 1:
-                    gender = "female";
-                    break;
-                case 2:
-                    gender = "keepSecret";
-                    break;
-            }
-            mTmpFullUser.getProfile().setGender(gender);
-            updateUserInfo();
-        }).setTitle(getString(R.string.gender)).create();
+        AlertDialog alertDialog = new AlertDialog.Builder(EditUserInfoActivity.this).setSingleChoiceItems(array, mGenderCheckItem,
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        if (which == mGenderCheckItem) {
+                            return;
+                        }
+                        String gender = "keepSecret";
+                        switch (which) {
+                            case 0:
+                                gender = "male";
+                                break;
+                            case 1:
+                                gender = "female";
+                                break;
+                            case 2:
+                                gender = "keepSecret";
+                                break;
+                        }
+                        mTmpFullUser.getProfile().setGender(gender);
+                        updateUserInfo();
+                    }
+                }).setTitle(getString(R.string.gender)).create();
         alertDialog.show();
     }
 
@@ -474,37 +622,44 @@ public class EditUserInfoActivity extends BaseActivity {
         etAvatar = UpyunUploadTask.avatarPath(mPreferMng.getStoredUserId(), "jpg");
         new UpyunUploadTask(getCacheDir().getPath() + File.separator + "head.jpg"
                 , etAvatar
-                , (long transferedBytes, long totalBytes) -> {
-        }
-                , (boolean isComplete, String result, String error) -> {
-            if (isComplete) {
-                createDialog();
-                Router.getAccountModule().updateAvatar(etAvatar, () -> {
-                    bAnyInfoChanged = true;
-                    if (Router.getInstance().getCurrentUser().isPresent()) {
-                        Router.getInstance().getCurrentUser().get().setAvatarURL(etAvatar);
-                        mPreferMng.saveAvatarPath(Router.getInstance().getCurrentUser().get().getAvatarURL().get());
-                        mFullUser.setAvatarURL(Router.getInstance().getCurrentUser().get().getAvatarURL().get());
-//                    mPreferMng.saveAvatarPath(UpyunUploadTask.avatarPath(etAvatar));
-                        Picasso.with(mContext)
-                                .load(Router.getInstance().getCurrentUser().get().getAvatarURL().get())
-                                .placeholder(R.drawable.default_user_head)
-                                .into(mUserHead);
-                    }
-                    Intent intent = new Intent();
-                    intent.setAction(MessageDef.ACTION_GET_THIRD_PARTY_USER);
-                    sendBroadcast(intent);
-                    finalizeDialog();
-                }, () -> {
+                , null
+                , new CompleteListener() {
+            @Override
+            public void result(boolean isComplete, String s, String s2) {
+                if (isComplete) {
+                    createDialog();
+                    Router.getAccountModule().updateAvatar(etAvatar, new LambdaExpression() {
+                        @Override
+                        public void action() {
+                            bAnyInfoChanged = true;
+                            if (Router.getInstance().getCurrentUser().isPresent()) {
+                                Router.getInstance().getCurrentUser().get().setAvatarURL(etAvatar);
+                                mPreferMng.saveAvatarPath(Router.getInstance().getCurrentUser().get().getAvatarURL().get());
+                                mFullUser.setAvatarURL(Router.getInstance().getCurrentUser().get().getAvatarURL().get());
+                                Picasso.with(mContext)
+                                        .load(Router.getInstance().getCurrentUser().get().getAvatarURL().get())
+                                        .placeholder(R.drawable.default_user_head)
+                                        .into(mUserHead);
+                            }
+                            Intent intent = new Intent();
+                            intent.setAction(MessageDef.ACTION_GET_THIRD_PARTY_USER);
+                            sendBroadcast(intent);
+                            finalizeDialog();
+
+                        }
+                    }, new LambdaExpression() {
+                        @Override
+                        public void action() {
+                            Toast.makeText(mContext, getString(R.string.error_upload), Toast.LENGTH_LONG).show();
+                            finalizeDialog();
+                        }
+                    });
+                } else {
                     Toast.makeText(mContext, getString(R.string.error_upload), Toast.LENGTH_LONG).show();
-                    finalizeDialog();
-                });
-            } else {
-                Toast.makeText(mContext, getString(R.string.error_upload), Toast.LENGTH_LONG).show();
+                }
+                finalizeDialog();
             }
-            finalizeDialog();
-        }
-        ).execute();
+        }).execute();
     }
 
     public void setListViewHeightBasedOnChildren(ListView listView) {
@@ -537,7 +692,7 @@ public class EditUserInfoActivity extends BaseActivity {
         }
         ViewGroup.LayoutParams params = gdView.getLayoutParams();
         params.height = totalHeight
-                + (gdView.getVerticalSpacing() * (listAdapter.getCount()));
+                + (gdView.getVerticalSpacing() * (listAdapter.getCount() / 5));
 
     }
 
@@ -718,146 +873,4 @@ public class EditUserInfoActivity extends BaseActivity {
             return convertView;
         }
     }
-
-    private View.OnClickListener mHeadListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            Intent intent = new Intent();
-            intent.setClass(mContext, ImageChooseActivity.class);
-            startActivityForResult(intent, CHOOSE_HEAD_IMAGE_REQ);
-        }
-    };
-    private OnItemClickListener mContactListener = new OnItemClickListener() {
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            switch (position) {
-                case 0:
-                    String email = null;
-                    if (mFullUser.getContactInfo().isPresent())
-                        email = mFullUser.getContactInfo().get().getEmail();
-                    createGeneralEditTextDialog(email, getString(R.string.email), getString(R.string.input_email), 1, 0, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            if (mCurrentEdit == null || mCurrentEdit.equals("")) {
-                                return;
-                            }
-                            if (!mCurrentEdit.matches(EMAIL_REGEX)) {
-                                Toast.makeText(mContext, getString(R.string.register_error_email_format), Toast.LENGTH_SHORT).show();
-                                return;
-                            }
-                            dialog.dismiss();
-                            if (mFullUser.getContactInfo().isPresent() && mCurrentEdit.equals(mFullUser.getContactInfo().get().getEmail())) {
-                                mCurrentEdit = null;
-                                return;
-                            }
-                            if (!mTmpFullUser.getContactInfo().isPresent()) {
-                                mTmpFullUser.setContactInfo(new ContactInfo());
-                            }
-                            mTmpFullUser.getContactInfo().get().setEmail(mCurrentEdit);
-                            updateUserInfo();
-                        }
-                    });
-                    break;
-                case 1:
-                    Intent intent = new Intent();
-                    intent.setClass(mContext, VerifyPhoneNumActivity.class);
-                    startActivityForResult(intent, VERIFY_PHONE_NUMBER_REQ);
-                    break;
-            }
-        }
-    };
-    private OnItemClickListener mDetailListener = new OnItemClickListener() {
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            switch (position) {
-                case 0:
-                    String industry = null;
-                    if (mFullUser.getProfile().getCareer().isPresent()) {
-                        industry = mFullUser.getProfile().getCareer().get();
-                    }
-                    createGeneralEditTextDialog(industry, getString(R.string.industry), getString(R.string.industry_hint), 4, 100, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                            if (mCurrentEdit == null || mCurrentEdit.equals("")) {
-                                return;
-                            }
-                            if (mFullUser.getProfile() != null
-                                    && mFullUser.getProfile().getCareer().isPresent()
-                                    && mFullUser.getProfile().getCareer().get().equals(mCurrentEdit)) {
-                                mCurrentEdit = null;
-                                return;
-                            }
-                            mTmpFullUser.getProfile().setCareer(mCurrentEdit);
-                            updateUserInfo();
-                        }
-                    });
-                    break;
-                case 1:
-                    String hobby = null;
-                    if (mFullUser.getProfile().getHobby().isPresent())
-                        hobby = mFullUser.getProfile().getHobby().get();
-                    createGeneralEditTextDialog(hobby, getString(R.string.interest_hobby), getString(R.string.interest_hobby_hint), 4, 100, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                            if (mCurrentEdit == null || mCurrentEdit.equals("")) {
-                                return;
-                            }
-                            if (mFullUser.getProfile() != null
-                                    && mFullUser.getProfile().getHobby().isPresent()
-                                    && mFullUser.getProfile().getHobby().get().equals(mCurrentEdit)) {
-                                mCurrentEdit = null;
-                                return;
-                            }
-                            mTmpFullUser.getProfile().setHobby(mCurrentEdit);
-                            updateUserInfo();
-                        }
-                    });
-                    break;
-                case 2:
-                    String education = null;
-                    if (mFullUser.getProfile().getEducationBackground().isPresent()) {
-                        education = mFullUser.getProfile().getEducationBackground().get();
-                    }
-                    createGeneralEditTextDialog(education, getString(R.string.education), getString(R.string.education_hint), 4, 100, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                            if (mCurrentEdit == null || mCurrentEdit.equals("")) {
-                                return;
-                            }
-                            if (mFullUser.getProfile() != null
-                                    && mFullUser.getProfile().getEducationBackground().isPresent()
-                                    && mFullUser.getProfile().getEducationBackground().get().equals(mCurrentEdit)) {
-                                mCurrentEdit = null;
-                                return;
-                            }
-                            mTmpFullUser.getProfile().setEducationBackground(mCurrentEdit);
-                            updateUserInfo();
-                        }
-                    });
-                    break;
-                case 3:
-                    Intent intent = new Intent();
-                    intent.setClass(mContext, LanguagesChooseActivity.class);
-
-                    ArrayList<String> languageCode = new ArrayList<>();
-                    try {
-                        for (String str : mTmpFullUser.getProfile().getLanguages().get()) {
-                            languageCode.add(str);
-                        }
-                    } catch (Exception e) {
-
-                    }
-                    if (languageCode != null && languageCode.size() != 0) {
-                        intent.putExtra("selected_language", languageCode);
-                    }
-                    startActivityForResult(intent, LANGUAGE_CHOOSE_REQ);
-                    break;
-                default:
-                    break;
-            }
-        }
-    };
 }

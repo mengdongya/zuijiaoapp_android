@@ -21,6 +21,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -294,15 +296,19 @@ public class DBOpenHelper extends SQLiteOpenHelper {
 
 
     public boolean insertGourmets(Gourmets gourmets) {
-        new Thread(() -> {
-            synchronized (gourmets) {
-                for (Gourmet gourmet : gourmets.getGourmets()) {
-                    if (!insertGourmet(gourmet)) {
-                        break;
-                    } else {
-                        insertUserInfo(gourmet.getUser());
-                        insertImageUrl(gourmet.getIdentifier(), gourmet.getImageURLs());
-                        continue;
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                db.delete(DBConstans.TABLE_GOURMET, null, null);
+                synchronized (gourmets) {
+                    for (Gourmet gourmet : gourmets.getGourmets()) {
+                        if (!insertGourmet(gourmet)) {
+                            break;
+                        } else {
+                            insertUserInfo(gourmet.getUser());
+                            insertImageUrl(gourmet.getIdentifier(), gourmet.getImageURLs());
+                            continue;
+                        }
                     }
                 }
             }
@@ -358,7 +364,7 @@ public class DBOpenHelper extends SQLiteOpenHelper {
         try {
 
             synchronized (db) {
-                Cursor cursor = db.query(DBConstans.TABLE_GOURMET, null, null, null, null, null, DBConstans.COLUMN_GOURMET_ID);
+                Cursor cursor = db.query(DBConstans.TABLE_GOURMET, null, null, null, null, null, null);
                 if (cursor != null && cursor.getCount() > 0) {
                     List<Gourmet> tmpGourmets = new ArrayList<Gourmet>();
                     cursor.moveToFirst();
@@ -386,6 +392,12 @@ public class DBOpenHelper extends SQLiteOpenHelper {
                         tmpGourmets.add(gourmet);
                         cursor.moveToNext();
                     }
+                    Collections.sort(tmpGourmets, new Comparator<Gourmet>() {
+                        @Override
+                        public int compare(Gourmet g1, Gourmet g2) {
+                            return (int) (g2.getDate().getTime() - g1.getDate().getTime());
+                        }
+                    });
                     return tmpGourmets;
                 }
             }

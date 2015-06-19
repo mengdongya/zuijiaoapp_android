@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +21,8 @@ import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 import com.zuijiao.android.util.Optional;
+import com.zuijiao.android.util.functional.LambdaExpression;
+import com.zuijiao.android.util.functional.OneParameterExpression;
 import com.zuijiao.android.zuijiao.model.Gourmet;
 import com.zuijiao.android.zuijiao.model.message.Message;
 import com.zuijiao.android.zuijiao.model.message.Messages;
@@ -51,7 +54,7 @@ public class MessageFragment extends Fragment implements FragmentDataListener,
                     Gourmet gourmet = msg.getGourmet().get();
                     Intent intent = new Intent();
                     intent.putExtra("selected_gourmet", gourmet);
-                    intent.setClass(mContext, FoodDetailActivity.class);
+                    intent.setClass(mContext, GourmetDetailActivity.class);
                     startActivity(intent);
                 } else {
                     Toast.makeText(mContext, getString(R.string.no_gourmet_related), Toast.LENGTH_SHORT).show();
@@ -74,6 +77,7 @@ public class MessageFragment extends Fragment implements FragmentDataListener,
     };
     private int mType = 0;
     private LinearLayout mLayout = null;
+    private SwipeRefreshLayout mRefreshLayout = null;
     private Activity mActivity = null;
     private OnMessageFetch messageListener;
 
@@ -107,8 +111,16 @@ public class MessageFragment extends Fragment implements FragmentDataListener,
         mLayout = (LinearLayout) mContentView.findViewById(R.id.message_empty_content);
         mAdapter = new MessageAdapter();
         mListView.setAdapter(mAdapter);
+        mRefreshLayout = (SwipeRefreshLayout) mContentView.findViewById(R.id.message_fragment_swipe_refresh);
+        mRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                networkStep(true);
+            }
+        });
         mListView.setOnItemClickListener(mItemClickListener);
-        mListView.setPullLoadEnable(true);
+        mListView.setPullLoadEnable(false);
+        mListView.setPullRefreshEnable(false);
         mListView.setListViewListener(this);
         firstInit();
         return mContentView;
@@ -120,7 +132,7 @@ public class MessageFragment extends Fragment implements FragmentDataListener,
     }
 
     private void firstInit() {
-        mListView.autoResetHeadView();
+//        mListView.autoResetHeadView();
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -147,8 +159,11 @@ public class MessageFragment extends Fragment implements FragmentDataListener,
 
     @Override
     public void onRefresh() {
-        new Handler().postDelayed(() -> {
-            networkStep(true);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                networkStep(true);
+            }
         }, 1000);
     }
 
@@ -165,27 +180,38 @@ public class MessageFragment extends Fragment implements FragmentDataListener,
 
     private void networkStep(boolean bRefresh) {
         if (Router.getInstance().getCurrentUser().equals(Optional.empty())) {
-            ((BaseActivity) getActivity()).tryLoginFirst(() -> {
-                if (Router.getInstance().getCurrentUser().equals(Optional.empty())) {
-                    mAdapter.mData.clear();
-                    mAdapter.notifyDataSetChanged();
-                    mListView.setPullLoadEnable(false);
-                    mListView.stopRefresh();
-                    mListView.stopLoadMore();
-                    ((BaseActivity) getActivity()).notifyLogin(() -> {
-                        if (Router.getInstance().getCurrentUser().equals(Optional.empty())) {
+            ((BaseActivity) getActivity()).tryLoginFirst(new LambdaExpression() {
+                @Override
+                public void action() {
+                    if (Router.getInstance().getCurrentUser().equals(Optional.empty())) {
+                        mAdapter.mData.clear();
+                        mAdapter.notifyDataSetChanged();
+                        mListView.setPullLoadEnable(false);
+                        mListView.stopRefresh();
+                        mListView.stopLoadMore();
+                        mRefreshLayout.setRefreshing(false);
+                        ((BaseActivity) getActivity()).notifyLogin(new LambdaExpression() {
+                            @Override
+                            public void action() {
+                                if (Router.getInstance().getCurrentUser().equals(Optional.empty())) {
 
-                        } else {
-                            networkStep(bRefresh);
-                        }
-                    });
-                } else {
-                    networkStep(bRefresh);
+                                } else {
+                                    networkStep(bRefresh);
+                                }
+                            }
+                        });
+                    } else {
+                        networkStep(bRefresh);
+                    }
                 }
-            }, error -> {
-                Toast.makeText(mActivity, getResources().getString(R.string.notify_net2), Toast.LENGTH_LONG).show();
-                mListView.stopRefresh();
-                mListView.stopLoadMore();
+            }, new OneParameterExpression<Integer>() {
+                @Override
+                public void action(Integer integer) {
+                    Toast.makeText(mActivity, getResources().getString(R.string.notify_net2), Toast.LENGTH_LONG).show();
+//                mListView.stopRefresh();
+                    mRefreshLayout.setRefreshing(false);
+                    mListView.stopLoadMore();
+                }
             });
             return;
         }
@@ -202,12 +228,19 @@ public class MessageFragment extends Fragment implements FragmentDataListener,
         } else if (mType == 1) {
             type = News.NotificationType.Comment;
         }
-        Router.getMessageModule().message(type, theLastOneIdentifier, null, 500, msg -> {
-            onMessageFetchSuccess(bRefresh, msg);
-        }, errorMsg -> {
-            Toast.makeText(mContext, getString(R.string.notify_net), Toast.LENGTH_LONG).show();
-            mListView.stopRefresh();
-            mListView.stopLoadMore();
+        Router.getMessageModule().message(type, theLastOneIdentifier, null, 500, new OneParameterExpression<Messages>() {
+            @Override
+            public void action(Messages msg) {
+                onMessageFetchSuccess(bRefresh, msg);
+            }
+        }, new OneParameterExpression<String>() {
+            @Override
+            public void action(String s) {
+                Toast.makeText(mContext, getString(R.string.notify_net), Toast.LENGTH_LONG).show();
+//            mListView.stopRefresh();
+                mListView.stopLoadMore();
+                mRefreshLayout.setRefreshing(false);
+            }
         });
     }
 
@@ -232,7 +265,8 @@ public class MessageFragment extends Fragment implements FragmentDataListener,
                 mAdapter.notifyDataSetChanged();
                 mLayout.setVisibility(View.VISIBLE);
             }
-            mListView.stopRefresh();
+//            mListView.stopRefresh();
+            mRefreshLayout.setRefreshing(false);
         } else {
             if (!msg.getAllMessage().isEmpty()) {
                 if (mAdapter.mData == null) {
@@ -251,8 +285,15 @@ public class MessageFragment extends Fragment implements FragmentDataListener,
             }
             mListView.stopLoadMore();
         }
-        if (messageListener != null) messageListener.onFetch();
-        PreferenceManager.getInstance(mContext).saveMsgLastRefreshTime(new Date().getTime());
+        int unReadCount = 0;
+        for (Message message : msg.getAllMessage()) {
+            if (!message.getIsRead()) {
+                unReadCount++;
+            }
+        }
+        if (messageListener != null)
+            messageListener.onFetch(mType, unReadCount);
+//        PreferenceManager.getInstance(mContext).saveMsgLastRefreshTime(new Date().getTime());
     }
 
     public void clearMessage() {
@@ -273,7 +314,7 @@ public class MessageFragment extends Fragment implements FragmentDataListener,
     }
 
     public interface OnMessageFetch {
-        public void onFetch();
+        public void onFetch(int tabIndex, int unReadCount);
     }
 
     //    public List<Message> mData = new ArrayList<>();

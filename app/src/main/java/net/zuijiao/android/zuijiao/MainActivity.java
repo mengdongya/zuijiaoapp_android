@@ -3,10 +3,9 @@ package net.zuijiao.android.zuijiao;
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.net.Uri;
+import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -40,10 +39,12 @@ import com.lidroid.xutils.view.annotation.ContentView;
 import com.lidroid.xutils.view.annotation.ViewInject;
 import com.readystatesoftware.viewbadger.BadgeView;
 import com.squareup.picasso.Picasso;
+import com.umeng.fb.FeedbackAgent;
 import com.umeng.update.UmengUpdateAgent;
 import com.umeng.update.UmengUpdateListener;
 import com.umeng.update.UpdateResponse;
 import com.zuijiao.android.util.Optional;
+import com.zuijiao.android.util.functional.OneParameterExpression;
 import com.zuijiao.android.zuijiao.model.message.News;
 import com.zuijiao.android.zuijiao.model.message.NewsList;
 import com.zuijiao.android.zuijiao.model.user.TinyUser;
@@ -55,6 +56,7 @@ import com.zuijiao.entity.AuthorInfo;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Date;
 
 @ContentView(R.layout.activity_main)
 public final class MainActivity extends BaseActivity {
@@ -84,14 +86,17 @@ public final class MainActivity extends BaseActivity {
     @ViewInject(R.id.lv_drawe_items2)
     private ListView mSettingList = null;
     private ArrayList<Fragment> mFragmentList = null;
+    //    private GourmetDisplayFragment mMainFragment = null;
     private MainFragment mMainFragment = null;
-    private MainFragment mRecommendFragment = null;
-    private MainFragment mFavorFragment = null;
-    private NotificationFragment mNotifyFragment = null;
+    private GourmetDisplayFragment mRecommendFragment = null;
+    private GourmetDisplayFragment mFavorFragment = null;
+    private MyOrderFragment mMyOrderFragment = null;
     private Fragment mCurrentFragment = null;
     private FragmentManager mFragmentMng = null;
     private FragmentTransaction mFragmentTransaction = null;
     private String[] titles = null;
+    public static int unReadNewsCount = 0;
+    private static final int BACK_STACK_DURATION = 2000;
     private OnItemClickListener mTabsListener = new OnItemClickListener() {
 
         @Override
@@ -110,33 +115,36 @@ public final class MainActivity extends BaseActivity {
             mCurrentFragment = mFragmentList.get(position);
             mToolBar.setTitle(titles[position]);
             if (position == 3) {
-                removeBadgeView();
+//                removeBadgeView();
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     mToolBar.setElevation(0);
                 }
-                if (!mToolBar.getMenu().hasVisibleItems())
-                    mToolBar.getMenu().add(0, R.id.action_already_read, 1, getString(R.string.already_read))
-                            .setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS)
-                            .setOnMenuItemClickListener((MenuItem item) -> {
-                                Router.getMessageModule().markAsRead(() -> {
-                                }, () -> {
-                                });
-                                Router.getMessageModule().markAsRead(News.NotificationType.Notice, () -> {
-                                    if (mNotifyFragment != null) {
-                                        mNotifyFragment.notificationRead();
-                                    }
-                                }, () -> {
-                                });
-                                Router.getMessageModule().markAsRead(News.NotificationType.Comment, () -> {
-                                    if (mNotifyFragment != null) {
-                                        mNotifyFragment.messageRead();
-                                    }
-                                }, () -> {
-                                });
-                                return false;
-                            });
+//                if (!mToolBar.getMenu().hasVisibleItems())
+//                    mToolBar.getMenu().add(0, R.id.action_already_read, 1, getString(R.string.already_read))
+//                            .setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS)
+//                            .setOnMenuItemClickListener((MenuItem item) -> {
+//                                Router.getMessageModule().markAsRead(() -> {
+//                                    unReadNewsCount = 0 ;
+//                                    mTabTitleAdapter.notifyDataSetChanged();
+//                                }, () -> {
+//
+//                                });
+//                                Router.getMessageModule().markAsRead(News.NotificationType.Notice, () -> {
+//                                    if (mMyOrderFragment != null) {
+//                                        mMyOrderFragment.notificationRead();
+//                                    }
+//                                }, () -> {
+//                                });
+//                                Router.getMessageModule().markAsRead(News.NotificationType.Comment, () -> {
+//                                    if (mMyOrderFragment != null) {
+//                                        mMyOrderFragment.messageRead();
+//                                    }
+//                                }, () -> {
+//                                });
+//                                return false;
+//                            });
             } else {
-                mToolBar.getMenu().removeItem(R.id.action_already_read);
+//                mToolBar.getMenu().removeItem(R.id.action_already_read);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     mToolBar.setElevation(30);
                 }
@@ -144,13 +152,16 @@ public final class MainActivity extends BaseActivity {
             if (position != 0) {
                 mLocationView.setVisibility(View.INVISIBLE);
             } else {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    mToolBar.setElevation(0);
+                }
                 mLocationView.setVisibility(View.VISIBLE);
             }
             mDrawerLayout.closeDrawer(Gravity.LEFT);
         }
     };
     private int[] mTabImages = {R.drawable.setting_home, R.drawable.setting_recommend, R.drawable.setting_favor, R.drawable.setting_msg};
-    private int[] mTabTitles = {R.string.main_page, R.string.recommend_page, R.string.favor_page, R.string.msg_page};
+    private int[] mTabTitles = {R.string.main_page, R.string.recommend_page, R.string.favor_page, R.string.my_order};
     private View mLocationView = null;
     private BadgeView mBadgeView = null;
     private OnClickListener mLocationListener = new OnClickListener() {
@@ -211,10 +222,10 @@ public final class MainActivity extends BaseActivity {
             image.setImageResource(mTabImages[position]);
             textView.setText(getString(mTabTitles[position]));
             textMsg.setVisibility(View.GONE);
-            if (position == 3 && mNewsList != null && mNewsList.getNews() != null && mNewsList.getNews().size() != 0) {
-                textMsg.setText(mNewsList.getNews().size() + "");
-                textMsg.setVisibility(View.VISIBLE);
-            }
+//            if (position == 3 && unReadNewsCount != 0) {
+//                textMsg.setText(unReadNewsCount + "");
+//                textMsg.setVisibility(View.VISIBLE);
+//            }
             return contentView;
         }
 
@@ -264,14 +275,16 @@ public final class MainActivity extends BaseActivity {
         public void onItemClick(AdapterView<?> parent, View view, int position,
                                 long id) {
             if (position == 0) {
-                Intent feedBackIntent = new Intent(MainActivity.this,
-                        CommonWebViewActivity.class);
-                feedBackIntent.putExtra("title",
-                        getResources().getString(R.string.feed_back));
-                String token = Router.getInstance().getAccessToken().get();
-                String url = String.format(getString(R.string.feed_back_url), "", token);
-                feedBackIntent.putExtra("content_url", getString(R.string.feed_back_url));
-                startActivity(feedBackIntent);
+                FeedbackAgent agent = new FeedbackAgent(MainActivity.this);
+                agent.startFeedbackActivity();
+//                Intent feedBackIntent = new Intent(MainActivity.this,
+//                        CommonWebViewActivity.class);
+//                feedBackIntent.putExtra("title",
+//                        getResources().getString(R.string.feed_back));
+//                String token = Router.getInstance().getAccessToken().get();
+//                String url = String.format(getString(R.string.feed_back_url), "", token);
+//                feedBackIntent.putExtra("content_url", getString(R.string.feed_back_url));
+//                startActivity(feedBackIntent);
             } else if (position == 1) {
                 Intent feedBackIntent = new Intent(MainActivity.this,
                         ConcerningActivity.class);
@@ -305,6 +318,8 @@ public final class MainActivity extends BaseActivity {
         filter.addAction(MessageDef.ACTION_REFRESH_RECOMMENDATION);
         filter.addAction(MessageDef.ACTION_PUSH_RECEIVED);
         registerReceiver(mReceiver, filter);
+        FeedbackAgent agent = new FeedbackAgent(this);
+        agent.sync();
     }
 
     @Override
@@ -314,7 +329,7 @@ public final class MainActivity extends BaseActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-//		getMenuInflater().inflate(R.menu.main, menu);
+        getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
 
@@ -324,6 +339,8 @@ public final class MainActivity extends BaseActivity {
 //        mToolBar.setOnMenuItemClickListener(onMenuItemClick);
         mLocationView = LayoutInflater.from(this).inflate(
                 R.layout.location_layout, null);
+        Typeface tf = Typeface.createFromAsset(getAssets(), "fonts/RobotoCondensed-Light.ttf");
+        ((TextView) mLocationView.findViewById(R.id.toolbar_location_text)).setTypeface(tf);
         mLocationView.setOnClickListener(mLocationListener);
         mToolBar.addView(mLocationView);
         // Optional<TinyUser> user = Router.getInstance().getCurrentUser();
@@ -370,14 +387,14 @@ public final class MainActivity extends BaseActivity {
         mMainTabsTitle.setOnItemClickListener(mTabsListener);
         mThirdPartyUserHead.setOnClickListener(mUserInfoDetail);
         mFragmentList = new ArrayList<Fragment>();
-        mMainFragment = new MainFragment(MainFragment.MAIN_PAGE, mContext);
+        mMainFragment = new MainFragment(mContext);
         mFragmentList.add(mMainFragment);
-        mRecommendFragment = new MainFragment(MainFragment.RECOMMEND_PAGE, mContext);
+        mRecommendFragment = new GourmetDisplayFragment(GourmetDisplayFragment.RECOMMEND_PAGE, mContext);
         mFragmentList.add(mRecommendFragment);
-        mFavorFragment = new MainFragment(MainFragment.FAVOR_PAGE, mContext);
+        mFavorFragment = new GourmetDisplayFragment(GourmetDisplayFragment.FAVOR_PAGE, mContext);
         mFragmentList.add(mFavorFragment);
-        mNotifyFragment = new NotificationFragment();
-        mFragmentList.add(mNotifyFragment);
+        mMyOrderFragment = new MyOrderFragment();
+        mFragmentList.add(mMyOrderFragment);
         mFragmentMng = getSupportFragmentManager();
         mFragmentTransaction = mFragmentMng.beginTransaction();
         mFragmentTransaction.add(R.id.main_content_container,
@@ -387,13 +404,18 @@ public final class MainActivity extends BaseActivity {
         mToolBar.setTitle(titles[0]);
         checkVersion();
         Router.getMessageModule().notifications(newsList -> {
-            if (newsList != null && newsList.getNews() != null && newsList.getNews().size() != 0) {
-                showBadgeView();
-            }
             mNewsList = newsList;
-            mTabTitleAdapter.notifyDataSetChanged();
+            if (newsList != null && newsList.getNews() != null && newsList.getNews().size() != 0) {
+                for (News news : newsList.getNews()) {
+                    unReadNewsCount += news.getUnreadCount();
+                }
+                if (unReadNewsCount > 0) {
+                    showBadgeView();
+//                    mTabTitleAdapter.notifyDataSetChanged();
+                }
+            }
         }, errorMsg -> {
-
+            //do nothing
         });
     }
 
@@ -422,7 +444,7 @@ public final class MainActivity extends BaseActivity {
         if (mBadgeView == null) {
             mBadgeView = initBadgeView();
         }
-        if (mBadgeView != null) {
+        if (!mBadgeView.isShown()) {
             mBadgeView.show();
         }
     }
@@ -435,22 +457,34 @@ public final class MainActivity extends BaseActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.menu_main) {
+            Intent intent = new Intent();
+            intent.setClass(mContext, MessageActivity.class);
+            startActivity(intent);
+        }
         return super.onOptionsItemSelected(item);
     }
+
+    private long lastBackPressedTime = 0;
 
     public void onBackPressed() {
         if (mDrawerLayout.isDrawerOpen(Gravity.LEFT)) {
             mDrawerLayout.closeDrawer(Gravity.LEFT);
             return;
         }
-        if (mFragmentList.indexOf(mCurrentFragment) == 0 && mMainFragment.holdBackEvent()) {
-            mMainFragment.closeFloatMenu();
+        if (mFragmentList.indexOf(mCurrentFragment) == 0 && mMainFragment.onBackPressed()) {
             return;
         }
         if (mFragmentList.indexOf(mCurrentFragment) != 0) {
             mTabsListener.onItemClick(mMainTabsTitle, null, 0, 0);
 //            mFragmentMng.beginTransaction().hide(mCurrentFragment).show(mFragmentList.get(0)).commit();
 //            mCurrentFragment =mFragmentList.get(0) ;
+            return;
+        }
+        long currentBackPressedTime = new Date().getTime();
+        if (currentBackPressedTime - lastBackPressedTime > BACK_STACK_DURATION) {
+            Toast.makeText(mContext, getString(R.string.exit_confirm), BACK_STACK_DURATION).show();
+            lastBackPressedTime = currentBackPressedTime;
             return;
         }
         super.onBackPressed();
@@ -479,12 +513,13 @@ public final class MainActivity extends BaseActivity {
 
     protected void onPushReceived() {
         showBadgeView();
-        Router.getMessageModule().notifications(newsList -> {
-            mNewsList = newsList;
-            mTabTitleAdapter.notifyDataSetChanged();
-        }, errorMsg -> {
-
-        });
+        Router.getMessageModule().notifications(new OneParameterExpression<NewsList>() {
+            @Override
+            public void action(NewsList newsList) {
+                mNewsList = newsList;
+//            mTabTitleAdapter.notifyDataSetChanged();
+            }
+        }, null);
     }
 
     protected void onUserInfoGot() {
@@ -517,36 +552,10 @@ public final class MainActivity extends BaseActivity {
                 if (updateStatus == 0 && updateInfo != null) {
                     showUpdateDialog(updateInfo.path, updateInfo.updateLog);
                 }
-                // case 0: // has update
-                // case 1: // has no update
-                // case 2: // none wifi
-                // case 3: // time out
             }
         });
 
         UmengUpdateAgent.update(this);
-    }
-
-    private void showUpdateDialog(final String downloadUrl, final String message) {
-        AlertDialog.Builder updateAlertDialog = new AlertDialog.Builder(this);
-        updateAlertDialog.setIcon(R.drawable.icon);
-        updateAlertDialog.setTitle(R.string.app_name);
-        updateAlertDialog.setMessage(getString(R.string.update_hint, message));
-        updateAlertDialog.setNegativeButton(R.string.update_ok,
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                        try {
-                            startActivity(new Intent(Intent.ACTION_VIEW, Uri
-                                    .parse(downloadUrl)));
-                        } catch (Exception ex) {
-
-                        }
-                    }
-                }).setPositiveButton(R.string.dialog_no, null);
-        if (!isFinishing())
-            updateAlertDialog.show();
     }
 
     @Override
@@ -555,7 +564,7 @@ public final class MainActivity extends BaseActivity {
         if (requestCode == SETTING_REQ && resultCode == LOGOUT_RESULT) {
             mFavorFragment.clearPersonalData();
             mRecommendFragment.clearPersonalData();
-            mNotifyFragment.clearMessage();
+//            mMyOrderFragment.clearMessage();
             mFavorFragment.mDisplayUser = null;
             mRecommendFragment.mDisplayUser = null;
             Toast.makeText(mContext, getString(R.string.logout_msg), Toast.LENGTH_SHORT).show();
@@ -568,8 +577,10 @@ public final class MainActivity extends BaseActivity {
     }
 
     protected void onRecommendationChanged() {
+
         try {
-            mRecommendFragment.firstInit();
+            if (mRecommendFragment.isAdded())
+                mRecommendFragment.firstInit();
         } catch (Exception r) {
             r.printStackTrace();
         } catch (Throwable t) {

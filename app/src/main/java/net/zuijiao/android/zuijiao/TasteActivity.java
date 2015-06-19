@@ -93,7 +93,8 @@ public class TasteActivity extends BaseActivity {
                 mUserTaste.add(tasteTags.get(position).getName());
             }
             mMenuBtn.setTitle(String.format(getString(R.string.sure_with_num), mUserTaste.size(), tasteTags.size()));
-            mAdapter.notifyDataSetChanged();
+            mAdapter.getView(position, view, parent);
+//            mAdapter.notifyDataSetChanged();
         }
     };
     private BaseAdapter mAdapter = new BaseAdapter() {
@@ -117,10 +118,11 @@ public class TasteActivity extends BaseActivity {
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            View contentView = LayoutInflater.from(mContext).inflate(R.layout.taste_select_item, null);
-            TextView text = (TextView) contentView.findViewById(R.id.taste_item_text);
-            ImageView image = (ImageView) contentView.findViewById(R.id.taste_item_image);
-            ImageView shadow = (ImageView) contentView.findViewById(R.id.taste_item_shadow);
+            if (convertView == null)
+                convertView = LayoutInflater.from(mContext).inflate(R.layout.taste_select_item, null);
+            TextView text = (TextView) convertView.findViewById(R.id.taste_item_text);
+            ImageView image = (ImageView) convertView.findViewById(R.id.taste_item_image);
+            ImageView shadow = (ImageView) convertView.findViewById(R.id.taste_item_shadow);
             Picasso.with(mContext).load(tasteTags.get(position).getImageURL()).placeholder(R.drawable.default_user_head).into(image);
             text.setText(tasteTags.get(position).getName());
             if (mUserTaste.contains(tasteTags.get(position).getName())) {
@@ -128,7 +130,7 @@ public class TasteActivity extends BaseActivity {
             } else {
                 shadow.setVisibility(View.GONE);
             }
-            return contentView;
+            return convertView;
         }
     };
 }

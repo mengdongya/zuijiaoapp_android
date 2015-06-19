@@ -26,6 +26,7 @@ import com.zuijiao.entity.SimpleLocation;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 
 @ContentView(R.layout.activity_location)
 public class LocationActivity extends BaseActivity {
@@ -210,13 +211,16 @@ public class LocationActivity extends BaseActivity {
 
     private void getProvinceList() {
         locations = DBOpenHelper.getmInstance(mContext).getProvinceList();
-        Collections.sort(locations, (SimpleLocation l1, SimpleLocation l2) -> {
-            if (isDirectCity(l1.getName()) == isDirectCity(l2.getName())) {
-                return 0;
-            } else if (isDirectCity(l1.getName()) && !isDirectCity(l2.getName())) {
-                return -1;
-            } else {
-                return 1;
+        Collections.sort(locations, new Comparator<SimpleLocation>() {
+            @Override
+            public int compare(SimpleLocation l1, SimpleLocation l2) {
+                if (isDirectCity(l1.getName()) == isDirectCity(l2.getName())) {
+                    return 0;
+                } else if (isDirectCity(l1.getName()) && !isDirectCity(l2.getName())) {
+                    return -1;
+                } else {
+                    return 1;
+                }
             }
         });
     }

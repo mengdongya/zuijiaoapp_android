@@ -40,24 +40,25 @@ public class SplashActivity extends BaseActivity {
         if (mPreferInfo.isAppFirstLaunch()) {
             goToGuide();
         } else {
-            tryLoginFirst(() -> {
-            }, e -> {
-            });
-            new Handler().postDelayed(() -> {
-                try {
-                    List<Gourmet> list = dbMng.initGourmets();
-                    if (list != null) {
-                        FileManager.mainGourmet = Optional.ofNullable(list);
-                    } else {
-                        FileManager.mainGourmet = Optional.empty();
+            tryLoginFirst(null, null);
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        List<Gourmet> list = dbMng.initGourmets();
+                        if (list != null) {
+                            FileManager.mainGourmet = Optional.ofNullable(list);
+                        } else {
+                            FileManager.mainGourmet = Optional.empty();
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    } catch (Throwable t) {
+                        t.printStackTrace();
                     }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                } catch (Throwable t) {
-                    t.printStackTrace();
+                    DBOpenHelper.copyLocationDb(SplashActivity.this.getApplicationContext());
+                    goToMain();
                 }
-                DBOpenHelper.copyLocationDb(SplashActivity.this.getApplicationContext());
-                goToMain();
             }, 800);
         }
     }

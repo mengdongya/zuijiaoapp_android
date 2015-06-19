@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.widget.Toast;
 
 import com.zuijiao.android.util.Optional;
+import com.zuijiao.android.util.functional.OneParameterExpression;
 import com.zuijiao.android.zuijiao.network.Router;
 import com.zuijiao.entity.AuthorInfo;
 import com.zuijiao.thirdopensdk.AbsSDK;
@@ -108,33 +109,36 @@ public class ThirdPartySDKManager implements AbsSDK.LoginListener {
         String imageurl = authInfo.getHeadPath();
         String platsform = authInfo.getPlatform();
         String token = authInfo.getToken();
-        Router.getOAuthModule().register(userName, imageurl, openid, platsform, Optional.<String>empty(), Optional.of(token), isNew -> {
-                    Toast.makeText(mContext, mContext.getString(R.string.login_success), Toast.LENGTH_SHORT).show();
-                    if (!isNew) {
-                        String avataUrl = null;
-                        if (Router.getInstance().getCurrentUser().get().getAvatarURL().isPresent()) {
-                            avataUrl = Router.getInstance().getCurrentUser().get().getAvatarURL().get();
-                            authInfo.setHeadPath(avataUrl);
-                        }
-                        authInfo.setUserName(Router.getInstance().getCurrentUser().get().getNickName());
+        Router.getOAuthModule().register(userName, imageurl, openid, platsform, Optional.<String>empty(), Optional.of(token), new OneParameterExpression<Boolean>() {
+            @Override
+            public void action(Boolean isNew) {
+                Toast.makeText(mContext, mContext.getString(R.string.login_success), Toast.LENGTH_SHORT).show();
+                if (!isNew) {
+                    String avataUrl = null;
+                    if (Router.getInstance().getCurrentUser().get().getAvatarURL().isPresent()) {
+                        avataUrl = Router.getInstance().getCurrentUser().get().getAvatarURL().get();
+                        authInfo.setHeadPath(avataUrl);
                     }
-                    authInfo.setUserId(Router.getInstance().getCurrentUser().get().getIdentifier());
-                    PreferenceManager.getInstance(mContext).saveThirdPartyLoginMsg(authInfo);
-                    Intent intent = new Intent(
-                            MessageDef.ACTION_GET_THIRD_PARTY_USER);
-                    Bundle bundle = new Bundle();
-                    bundle.putBoolean("result", true);
-                    bundle.putString("name", Router.getInstance().getCurrentUser().get().getNickName());
-                    bundle.putString("head_url", authInfo.getHeadPath());
-                    intent.putExtra("userinfo", bundle);
-                    mContext.sendBroadcast(intent);
+                    authInfo.setUserName(Router.getInstance().getCurrentUser().get().getNickName());
                 }
-                , errorMessage ->
-                {
-                    Toast.makeText(mContext, mContext.getResources().getString(R.string.notify_net2), Toast.LENGTH_SHORT).show();
-                }
-
-        );
+                authInfo.setUserId(Router.getInstance().getCurrentUser().get().getIdentifier());
+                PreferenceManager.getInstance(mContext).saveThirdPartyLoginMsg(authInfo);
+                Intent intent = new Intent(
+                        MessageDef.ACTION_GET_THIRD_PARTY_USER);
+                Bundle bundle = new Bundle();
+                bundle.putBoolean("result", true);
+                bundle.putString("name", Router.getInstance().getCurrentUser().get().getNickName());
+                bundle.putString("head_url", authInfo.getHeadPath());
+                intent.putExtra("userinfo", bundle);
+                mContext.sendBroadcast(intent);
+            }
+        }
+                , new OneParameterExpression<Integer>() {
+            @Override
+            public void action(Integer integer) {
+                Toast.makeText(mContext, mContext.getResources().getString(R.string.notify_net2), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     ;

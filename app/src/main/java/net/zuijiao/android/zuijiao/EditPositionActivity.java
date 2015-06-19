@@ -15,7 +15,9 @@ import android.widget.TextView;
 
 import com.lidroid.xutils.view.annotation.ContentView;
 import com.lidroid.xutils.view.annotation.ViewInject;
+import com.zuijiao.android.util.functional.OneParameterExpression;
 import com.zuijiao.android.zuijiao.model.common.Restaurant;
+import com.zuijiao.android.zuijiao.model.common.Restaurants;
 import com.zuijiao.android.zuijiao.network.Router;
 
 import java.util.ArrayList;
@@ -41,19 +43,23 @@ public class EditPositionActivity extends BaseActivity {
     private ArrayList<String> mAutoSearchList = new ArrayList<>();
     private Handler mHandler = new Handler();
     private String mRestaurantName = null;
-    private Runnable mRun = () -> {
-        Router.getCommonModule().restaurantSearch(mRestaurantName, 20, restaurants -> {
-            mAutoSearchList.clear();
-            if (restaurants == null || restaurants.getRestaurants() == null) {
-                //do nothing
-            } else for (Restaurant restaurant : restaurants.getRestaurants()) {
-                mAutoSearchList.add(restaurant.getAddress());
-            }
-            mAdapter.notifyDataSetChanged();
-            return;
-        }, errorMsg -> {
-
-        });
+    private Runnable restaurantSearchTask = new Runnable() {
+        @Override
+        public void run() {
+            Router.getCommonModule().restaurantSearch(mRestaurantName, 20, new OneParameterExpression<Restaurants>() {
+                @Override
+                public void action(Restaurants restaurants) {
+                    mAutoSearchList.clear();
+                    if (restaurants == null || restaurants.getRestaurants() == null) {
+                        //do nothing
+                    } else for (Restaurant restaurant : restaurants.getRestaurants()) {
+                        mAutoSearchList.add(restaurant.getAddress());
+                    }
+                    mAdapter.notifyDataSetChanged();
+                    return;
+                }
+            }, null);
+        }
     };
 
     @Override
@@ -70,7 +76,7 @@ public class EditPositionActivity extends BaseActivity {
         mLocationEditor.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                mHandler.removeCallbacks(mRun);
+                mHandler.removeCallbacks(restaurantSearchTask);
             }
 
             @Override
@@ -80,7 +86,7 @@ public class EditPositionActivity extends BaseActivity {
 //                mAutoSearchList.add("result" + count);
 //                mAdapter.notifyDataSetChanged();
                 mRestaurantName = s.toString();
-                mHandler.postDelayed(mRun, 500);
+                mHandler.postDelayed(restaurantSearchTask, 500);
                 if (text == null || text.equals("")) {
                     mCreateNewBtn.setVisibility(View.INVISIBLE);
                 } else {
@@ -98,17 +104,23 @@ public class EditPositionActivity extends BaseActivity {
         mCreateNewBtn.setVisibility(View.INVISIBLE);
     }
 
-    private AdapterView.OnItemClickListener onItemClickListener = (AdapterView<?> parent, View view, int position, long id) -> {
-        setResultOk(mAutoSearchList.get(position));
+    private AdapterView.OnItemClickListener onItemClickListener = new AdapterView.OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            setResultOk(mAutoSearchList.get(position));
+        }
     };
-    private View.OnClickListener mCreateListener = (View view) -> {
-        setResultOk(mRestaurantName);
+    private View.OnClickListener mCreateListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            setResultOk(mRestaurantName);
+        }
     };
 
     @Override
     protected void onStop() {
         super.onStop();
-        mHandler.removeCallbacks(mRun);
+        mHandler.removeCallbacks(restaurantSearchTask);
     }
 
     private void setResultOk(String name) {

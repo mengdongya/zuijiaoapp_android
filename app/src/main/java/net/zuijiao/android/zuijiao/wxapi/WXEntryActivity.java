@@ -1,6 +1,7 @@
 package net.zuijiao.android.zuijiao.wxapi;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -16,6 +17,7 @@ import com.tencent.mm.sdk.openapi.IWXAPIEventHandler;
 import com.tencent.mm.sdk.openapi.WXAPIFactory;
 import com.umeng.analytics.MobclickAgent;
 import com.zuijiao.android.util.Optional;
+import com.zuijiao.android.util.functional.OneParameterExpression;
 import com.zuijiao.android.zuijiao.network.Router;
 import com.zuijiao.controller.MessageDef;
 import com.zuijiao.controller.PreferenceManager;
@@ -84,6 +86,12 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
             finish();
             return;
         }
+        if (resp.getType() == ConstantsAPI.COMMAND_PAY_BY_WX) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle(R.string.banquet);
+            builder.setMessage(getString(R.string.banquet, resp.errStr + ";code=" + String.valueOf(resp.errCode)));
+            builder.show();
+        }
         switch (resp.errCode) {
             case BaseResp.ErrCode.ERR_OK:
                 Bundle bundle = new Bundle();
@@ -130,33 +138,38 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
                                 String nickname = new String(jsonObject1.getString("nickname").getBytes(), "utf-8");
                                 String headimgurl = jsonObject1
                                         .getString("headimgurl");
-                                Router.getOAuthModule().register(nickname, headimgurl, unionId, "wechat", Optional.<String>empty(), Optional.of(mRereshToken), isNew -> {
-                                    Toast.makeText(getApplicationContext(), getString(R.string.login_success), Toast.LENGTH_SHORT).show();
-                                    AuthorInfo userInfo = new AuthorInfo();
-//                                    userInfo.setUserName(nickname);
-                                    userInfo.setUid(unionId);
-                                    userInfo.setToken(mRereshToken);
-                                    userInfo.setPlatform("wechat");
-                                    userInfo.setHeadPath(headimgurl);
-                                    if (!isNew) {
-                                        String avataUrl = null;
-                                        if (Router.getInstance().getCurrentUser().get().getAvatarURL().isPresent()) {
-                                            avataUrl = Router.getInstance().getCurrentUser().get().getAvatarURL().get();
-                                            userInfo.setHeadPath(avataUrl);
+                                Router.getOAuthModule().register(nickname, headimgurl, unionId, "wechat", Optional.<String>empty(), Optional.of(mRereshToken), new OneParameterExpression<Boolean>() {
+                                    @Override
+                                    public void action(Boolean isNew) {
+                                        Toast.makeText(getApplicationContext(), getString(R.string.login_success), Toast.LENGTH_SHORT).show();
+                                        AuthorInfo userInfo = new AuthorInfo();
+                                        userInfo.setUid(unionId);
+                                        userInfo.setToken(mRereshToken);
+                                        userInfo.setPlatform("wechat");
+                                        userInfo.setHeadPath(headimgurl);
+                                        if (!isNew) {
+                                            String avataUrl = null;
+                                            if (Router.getInstance().getCurrentUser().get().getAvatarURL().isPresent()) {
+                                                avataUrl = Router.getInstance().getCurrentUser().get().getAvatarURL().get();
+                                                userInfo.setHeadPath(avataUrl);
+                                            }
                                         }
+                                        userInfo.setUserId(Router.getInstance().getCurrentUser().get().getIdentifier());
+                                        userInfo.setUserName(Router.getInstance().getCurrentUser().get().getNickName());
+                                        PreferenceManager.getInstance(getApplicationContext()).saveThirdPartyLoginMsg(userInfo);
+                                        Intent intent = new Intent(
+                                                MessageDef.ACTION_GET_THIRD_PARTY_USER);
+                                        Bundle bundle = new Bundle();
+                                        bundle.putString("name", nickname);
+                                        bundle.putString("head_url", userInfo.getHeadPath());
+                                        intent.putExtra("userinfo", bundle);
+                                        WXEntryActivity.this.sendBroadcast(intent);
                                     }
-                                    userInfo.setUserId(Router.getInstance().getCurrentUser().get().getIdentifier());
-                                    userInfo.setUserName(Router.getInstance().getCurrentUser().get().getNickName());
-                                    PreferenceManager.getInstance(getApplicationContext()).saveThirdPartyLoginMsg(userInfo);
-                                    Intent intent = new Intent(
-                                            MessageDef.ACTION_GET_THIRD_PARTY_USER);
-                                    Bundle bundle = new Bundle();
-                                    bundle.putString("name", nickname);
-                                    bundle.putString("head_url", userInfo.getHeadPath());
-                                    intent.putExtra("userinfo", bundle);
-                                    WXEntryActivity.this.sendBroadcast(intent);
-                                }, errorMessage -> {
-                                    Toast.makeText(getApplicationContext(), getResources().getString(R.string.notify_net2), Toast.LENGTH_SHORT).show();
+                                }, new OneParameterExpression<Integer>() {
+                                    @Override
+                                    public void action(Integer integer) {
+                                        Toast.makeText(getApplicationContext(), getResources().getString(R.string.notify_net2), Toast.LENGTH_SHORT).show();
+                                    }
                                 });
 
                             } catch (ClientProtocolException e1) {

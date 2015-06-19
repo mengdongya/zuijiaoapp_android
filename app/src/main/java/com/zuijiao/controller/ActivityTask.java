@@ -107,12 +107,12 @@ public class ActivityTask extends Application {
         }
     }
 
-    public static Typeface getTypeFace(Context context) {
-        if (boldFont == null) {
-            boldFont = Typeface.createFromAsset(context.getAssets(), "fonts/NotoSansHans-Regular.otf");
-        }
-        return boldFont;
-    }
+//    public static Typeface getTypeFace(Context context) {
+//        if (boldFont == null) {
+//            boldFont = Typeface.createFromAsset(context.getAssets(), "fonts/NotoSansHans-Regular.otf");
+//        }
+//        return boldFont;
+//    }
 
     public void addActivity(Activity activity) {
         synchronized (mActivitiesList) {

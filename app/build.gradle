@@ -22,7 +22,7 @@ android {
 
     buildTypes {
         debug {
-            buildConfigField "String", "Base_Url", "\"http://xielingyu2.zuijiaodev.com\""
+            buildConfigField "String", "Base_Url", "\"http://xielingyu3.zuijiaodev.com\""
             buildConfigField "String", "Avatar_Base_Url", "\"/debug/Avatar\""
             buildConfigField "String", "Gourmet_Base_Url", "\"/debug/Gourmet\""
             buildConfigField "String", "Web_View_Url", "\"http://huangyi3.zuijiaodev.com\""

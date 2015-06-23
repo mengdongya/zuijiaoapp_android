@@ -49,7 +49,6 @@ public class WeixinApi extends AbsSDK {
 
     @Override
     public boolean isLogin(String token) {
-        // TODO Auto-generated method stub
         return false;
     }
 

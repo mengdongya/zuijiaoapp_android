@@ -22,6 +22,7 @@ import android.widget.Toast;
 
 import com.lidroid.xutils.view.annotation.ContentView;
 import com.lidroid.xutils.view.annotation.ViewInject;
+import com.upyun.block.api.listener.CompleteListener;
 import com.zuijiao.android.util.Optional;
 import com.zuijiao.android.util.functional.LambdaExpression;
 import com.zuijiao.android.util.functional.OneParameterExpression;
@@ -31,6 +32,7 @@ import com.zuijiao.controller.MessageDef;
 import com.zuijiao.controller.PreferenceManager;
 import com.zuijiao.entity.AuthorInfo;
 import com.zuijiao.utils.MD5;
+import com.zuijiao.utils.UpyunUploadTask;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -69,6 +71,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
     private String mErrorCode = null;
     private ProgressDialog mDialog = null;
     private String photoFileName;
+    private String mUserAvatar;
     private File photoDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM);
 
     @Override
@@ -136,7 +139,6 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                     os = null;
                     photo.recycle();
                 } catch (IOException e) {
-                    // TODO Auto-generated catch block
                     Toast.makeText(mContext, getString(R.string.error_read_file), Toast.LENGTH_LONG).show();
                     finalizeDialog();
                     e.printStackTrace();
@@ -174,40 +176,14 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                         e.printStackTrace();
                         return false;
                     }
-                    Router.getOAuthModule().registerEmailRoutine(mNickName, null, mEmail, mPwd, Optional.<String>empty(), Optional.<String>empty(), new LambdaExpression() {
+                    mUserAvatar = UpyunUploadTask.avatarPath(new Date().getTime(), "jpg");
+                    new UpyunUploadTask(getCacheDir().getPath() + File.separator + "head.jpg", mUserAvatar, null, new CompleteListener() {
+                        @Override
+                        public void result(boolean bComplete, String s, String s2) {
+                            doRegister();
+                        }
+                    }).execute();
 
-                        @Override
-                        public void action() {
-                            //register success !
-                            Toast.makeText(getApplicationContext(), getString(R.string.login_success), Toast.LENGTH_SHORT).show();
-                            //Login success !
-                            TinyUser user = Router.getInstance().getCurrentUser().get();
-                            AuthorInfo authorInfo = new AuthorInfo();
-                            authorInfo.setUserName(user.getNickName());
-                            authorInfo.setPassword(mPwd);
-                            authorInfo.setPlatform("");
-                            authorInfo.setEmail(mEmail);
-                            authorInfo.setUserId(user.getIdentifier());
-                            PreferenceManager.getInstance(getApplicationContext()).saveThirdPartyLoginMsg(authorInfo);
-                            Intent intent = new Intent();
-                            intent.setAction(MessageDef.ACTION_GET_THIRD_PARTY_USER);
-                            sendBroadcast(intent);
-                            intent.setClass(RegisterActivity.this, MainActivity.class);
-                            startActivity(intent);
-                            finalizeDialog();
-                        }
-                    }, new OneParameterExpression<Integer>() {
-                        @Override
-                        public void action(Integer errorMessage) {
-                            if (errorMessage != null && errorMessage.equals("401")) {
-                                Toast.makeText(getApplicationContext(), getString(R.string.repeat_email_address), Toast.LENGTH_SHORT).show();
-                            } else {
-                                Toast.makeText(getApplicationContext(), getString(R.string.notify_net2), Toast.LENGTH_SHORT).show();
-                            }
-                            finalizeDialog();
-                            /// register failed !
-                        }
-                    });
                 } else {
                     Toast.makeText(getApplicationContext(), mErrorCode, Toast.LENGTH_SHORT).show();
                     finalizeDialog();
@@ -215,6 +191,45 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void doRegister() {
+        Router.getOAuthModule().registerEmailRoutine(mNickName, mUserAvatar, mEmail, mPwd, "male",
+                Optional.<String>empty(), Optional.<String>empty(), new LambdaExpression() {
+
+                    @Override
+                    public void action() {
+                        //register success !
+                        Toast.makeText(getApplicationContext(), getString(R.string.login_success), Toast.LENGTH_SHORT).show();
+                        //Login success !
+                        TinyUser user = Router.getInstance().getCurrentUser().get();
+                        AuthorInfo authorInfo = new AuthorInfo();
+                        authorInfo.setUserName(user.getNickName());
+                        authorInfo.setPassword(mPwd);
+                        authorInfo.setPlatform("");
+                        authorInfo.setEmail(mEmail);
+                        authorInfo.setUserId(user.getIdentifier());
+                        PreferenceManager.getInstance(getApplicationContext()).saveThirdPartyLoginMsg(authorInfo);
+                        Intent intent = new Intent();
+                        intent.setAction(MessageDef.ACTION_GET_THIRD_PARTY_USER);
+                        sendBroadcast(intent);
+                        intent.setClass(RegisterActivity.this, MainActivity.class);
+                        startActivity(intent);
+                        finalizeDialog();
+                    }
+                }, new OneParameterExpression<Integer>() {
+                    @Override
+                    public void action(Integer errorMessage) {
+                        if (errorMessage != null && errorMessage.equals("401")) {
+                            Toast.makeText(getApplicationContext(), getString(R.string.repeat_email_address), Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(getApplicationContext(), getString(R.string.notify_net2), Toast.LENGTH_SHORT).show();
+                        }
+                        finalizeDialog();
+                        /// register failed !
+                    }
+                });
+
     }
 
     private boolean checkInputState() {

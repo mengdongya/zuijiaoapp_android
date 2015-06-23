@@ -128,7 +128,6 @@ public class ImageChooseActivity extends BaseActivity {
                             os = null;
                             photo.recycle();
                         } catch (Exception e) {
-                            // TODO Auto-generated catch block
                             Toast.makeText(mContext, getString(R.string.error_read_file), Toast.LENGTH_LONG).show();
                             finalizeDialog();
                             e.printStackTrace();

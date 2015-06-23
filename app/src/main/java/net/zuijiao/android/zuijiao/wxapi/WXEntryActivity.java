@@ -138,7 +138,7 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
                                 String nickname = new String(jsonObject1.getString("nickname").getBytes(), "utf-8");
                                 String headimgurl = jsonObject1
                                         .getString("headimgurl");
-                                Router.getOAuthModule().register(nickname, headimgurl, unionId, "wechat", Optional.<String>empty(), Optional.of(mRereshToken), new OneParameterExpression<Boolean>() {
+                                Router.getOAuthModule().register(nickname, headimgurl, null, unionId, "wechat", Optional.<String>empty(), Optional.of(mRereshToken), new OneParameterExpression<Boolean>() {
                                     @Override
                                     public void action(Boolean isNew) {
                                         Toast.makeText(getApplicationContext(), getString(R.string.login_success), Toast.LENGTH_SHORT).show();

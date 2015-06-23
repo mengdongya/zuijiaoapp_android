@@ -71,7 +71,6 @@ public class QQApi extends AbsSDK {
                     mInfo.getUserInfo(new IUiListener() {
                                           @Override
                                           public void onError(UiError arg0) {
-                                              // TODO Auto-generated method stub
                                           }
 
                                           @Override
@@ -96,7 +95,6 @@ public class QQApi extends AbsSDK {
 
                                           @Override
                                           public void onCancel() {
-                                              // TODO Auto-generated method stub
 
                                           }
                                       }
@@ -106,7 +104,6 @@ public class QQApi extends AbsSDK {
 
                 @Override
                 public void onError(UiError arg0) {
-                    // TODO Auto-generated method stub
 
                 }
 
@@ -150,7 +147,6 @@ public class QQApi extends AbsSDK {
 
     @Override
     public boolean isLogin(String token) {
-        // TODO Auto-generated method stub
         return false;
     }
 }

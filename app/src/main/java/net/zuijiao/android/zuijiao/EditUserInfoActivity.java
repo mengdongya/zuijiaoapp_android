@@ -645,7 +645,6 @@ public class EditUserInfoActivity extends BaseActivity {
                             intent.setAction(MessageDef.ACTION_GET_THIRD_PARTY_USER);
                             sendBroadcast(intent);
                             finalizeDialog();
-
                         }
                     }, new LambdaExpression() {
                         @Override

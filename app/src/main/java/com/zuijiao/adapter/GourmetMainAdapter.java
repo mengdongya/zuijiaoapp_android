@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -58,11 +59,14 @@ public class GourmetMainAdapter extends BaseAdapter {
         return null;
     }
 
+    int count = 0;
+
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder holder;
         if (convertView == null) {
             convertView = mInflater.inflate(R.layout.main_content_item, null);
+            Log.i("gourmetADpater", "count == " + count++);
             holder = new ViewHolder();
             holder.image_food = (ImageView) convertView
                     .findViewById(R.id.content_item_image);

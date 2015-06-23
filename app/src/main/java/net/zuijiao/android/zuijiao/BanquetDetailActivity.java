@@ -19,16 +19,18 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.lidroid.xutils.view.annotation.ContentView;
 import com.lidroid.xutils.view.annotation.ViewInject;
 import com.squareup.picasso.Picasso;
 import com.zuijiao.adapter.ImageViewPagerAdapter;
+import com.zuijiao.android.zuijiao.model.Banquent.Banquent;
+import com.zuijiao.android.zuijiao.model.user.TinyUser;
 import com.zuijiao.view.BanquetDetailScrollView;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * Created by xiaqibo on 2015/6/10.
@@ -73,11 +75,13 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
     private TextView mInstructTitle;
     @ViewInject(R.id.banquet_detail_location_text)
     private TextView mInstructPosition;
-    @ViewInject(R.id.banquet_detail_instruction_content_date)
+    @ViewInject(R.id.banquet_detail_date_text)
     private TextView mInstructDate;
-    @ViewInject(R.id.banquet_detail_instruction_content_price)
-    private RelativeLayout mInstructPrice;
-    @ViewInject(R.id.banquet_detail_instruction_content_requirement)
+    @ViewInject(R.id.banquet_detail_price_text)
+    private TextView mInstructPrice;
+    //    @ViewInject(R.id.banquet_detail_instruction_content_price)
+//    private RelativeLayout mInstructPrice;
+    @ViewInject(R.id.banquet_detail_request_text)
     private TextView mInstructRequirement;
     @ViewInject(R.id.banquet_detail_instruct_status)
     private TextView mInstructStatus;
@@ -85,8 +89,8 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
     private GridView mOrderedPersonShow;
     @ViewInject(R.id.banquet_detail_review_title)
     private TextView mReviewTitle;
-    @ViewInject(R.id.banquet_detail_lastest_comment)
-    private View mLastComment;
+    //    @ViewInject(R.id.banquet_detail_lastest_comment)
+//    private View mLastComment;
     @ViewInject(R.id.banquet_detail_comment_btn)
     private Button mAllCommentBtn;
     @ViewInject(R.id.banquet_detail_bottom_price)
@@ -95,6 +99,8 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
     private TextView mBottomDate;
     @ViewInject(R.id.banquet_detail_bottom_order)
     private Button mOrderBtn;
+    private Banquent mBanquent;
+    private String[] weekDays;
 
     private ImageViewPagerAdapter mViewPagerAdapter = null;
     private TranslateAnimation hideToolbarAnim = new TranslateAnimation(Animation.RELATIVE_TO_SELF, 0.0f,
@@ -114,25 +120,49 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
     protected void registerViews() {
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        if (mTendIntent != null) {
+            mBanquent = (Banquent) mTendIntent.getSerializableExtra("banquet");
+        }
+        if (mBanquent == null)
+            finish();
+        weekDays = mContext.getResources().getStringArray(R.array.week_days);
         mScrollView.setScrollStateListener(this);
         mViewPagerAdapter = new ImageViewPagerAdapter(initImages());
         mImagePages.setAdapter(mViewPagerAdapter);
         mImagePages.setOnPageChangeListener(mPageListener);
+        mImagesIndex.setText(1 + "/" + mViewPagerAdapter.getCount());
+        initViewsByBanquet();
         mAllCommentBtn.setOnClickListener(this);
         mAboutHostBtn.setOnClickListener(this);
         mOrderBtn.setOnClickListener(this);
         mHostHead.setOnClickListener(this);
+    }
+
+    private void initViewsByBanquet() {
+        mBanquetTitle.setText(mBanquent.getTitle());
+        mBanquetDescription.setText(mBanquent.getDesc());
+        if (mBanquent.getMaster().getAvatarURL().isPresent())
+            Picasso.with(mContext).load(mBanquent.getMaster().getAvatarURL().get()).placeholder(R.drawable.default_user_head).into(mHostHead);
+        mHostName.setText(String.format(getString(R.string.format_host_name), mBanquent.getMaster().getNickName()));
+        mMenuContent.setText(formatMenuContent());
+        mCharaContent.setText(mBanquent.getCharacteristic());
+        mInstructPosition.setText(mBanquent.getAddress());
+        mInstructDate.setText(formatDate(mBanquent.getTime()));
+        mInstructPrice.setText(String.format(getString(R.string.price_per_one), mBanquent.getPrice()));
+        mInstructRequirement.setText(mBanquent.getRequirement());
+        mInstructStatus.setText(String.format(getString(R.string.banquent_capacity),
+                mBanquent.getBanquentCapacity().getMin(),
+                mBanquent.getBanquentCapacity().getMax(),
+                mBanquent.getBanquentCapacity().getCount()));
         mOrderedPersonShow.setAdapter(mGridAdapter);
         setListViewHeightBasedOnChildren(mOrderedPersonShow);
     }
 
     private ArrayList<ImageView> initImages() {
         ArrayList<ImageView> mImageList = new ArrayList<>();
-        final ArrayList<String> imageUrls = new ArrayList<>();
-        imageUrls.add("http://d.hiphotos.baidu.com/image/pic/item/b64543a98226cffc2d1e40b8ba014a90f603ea80.jpg");
-        imageUrls.add("http://t10.baidu.com/it/u=4286244909,263883255&fm=32&s=5A35894461A38EA4FAE4159603008089&w=533&h=800&img.JPEG");
-        imageUrls.add("http://t12.baidu.com/it/u=3975863465,10899649&fm=32&s=5160317707314388464C68EB0300E032&w=533&h=800&img.JPEG");
-        for (int i = 0; i < imageUrls.size(); i++) {
+        if (mBanquent.getImageUrls() == null)
+            return null;
+        for (String imageUrl : mBanquent.getImageUrls()) {
             ImageView image = new ImageView(this);
             image.setLayoutParams(new ActionBar.LayoutParams(ActionBar.LayoutParams.MATCH_PARENT,
                     ActionBar.LayoutParams.MATCH_PARENT));
@@ -146,12 +176,12 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
                     Intent intent = new Intent(BanquetDetailActivity.this, BigImageActivity.class);
                     int currentImageIndex = mImagePages.getCurrentItem();
                     intent.putExtra("current_image_index", currentImageIndex);
-                    intent.putStringArrayListExtra("cloud_images", imageUrls);
+                    intent.putStringArrayListExtra("cloud_images", mBanquent.getImageUrls());
                     startActivity(intent);
                 }
             });
             Picasso.with(getApplicationContext())
-                    .load(imageUrls.get(i))
+                    .load(imageUrl)
                     .placeholder(R.drawable.empty_view_greeting)
                     .error(R.drawable.empty_view_greeting)
                     .into(image);
@@ -170,38 +200,49 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
         }
     }
 
+    private String formatMenuContent() {
+        if (mBanquent.getMenu() == null || mBanquent.getMenu().size() == 0) {
+            return "";
+        }
+        StringBuilder strBuilder = new StringBuilder();
+        for (String menuItem : mBanquent.getMenu()) {
+            strBuilder.append(menuItem);
+            if (mBanquent.getMenu().indexOf(menuItem) != mBanquent.getMenu().size() - 1)
+                strBuilder.append("\n");
+        }
+        return strBuilder.toString();
+    }
+
     private void hideToolbarAndBottomView() {
-        if (mToolbar.getVisibility() == View.GONE
-                && mBottomView.getVisibility() == View.GONE)
+        if (mToolbar.getVisibility() == View.GONE)
             return;
-        mBottomDivisionView.setVisibility(View.GONE);
+//        mBottomDivisionView.setVisibility(View.GONE);
         hideToolbarAnim.setDuration(500);
         mToolbar.startAnimation(hideToolbarAnim);
-        hideBottomViewAnim.setDuration(500);
-        mBottomView.startAnimation(hideBottomViewAnim);
+//        hideBottomViewAnim.setDuration(500);
+//        mBottomView.startAnimation(hideBottomViewAnim);
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
                 mToolbar.setVisibility(View.GONE);
-                mBottomView.setVisibility(View.GONE);
+//                mBottomView.setVisibility(View.GONE);
             }
         }, 500);
     }
 
     private void showToolbarAndBottomView() {
-        if (mToolbar.getVisibility() == View.VISIBLE
-                && mBottomView.getVisibility() == View.VISIBLE)
+        if (mToolbar.getVisibility() == View.VISIBLE)
             return;
-        mBottomDivisionView.setVisibility(View.VISIBLE);
-        showBottomViewAnim.setDuration(500);
+//        mBottomDivisionView.setVisibility(View.VISIBLE);
+//        showBottomViewAnim.setDuration(500);
         showToolbarAnim.setDuration(500);
         mToolbar.startAnimation(showToolbarAnim);
-        mBottomView.startAnimation(showBottomViewAnim);
+//        mBottomView.startAnimation(showBottomViewAnim);
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
                 mToolbar.setVisibility(View.VISIBLE);
-                mBottomView.setVisibility(View.VISIBLE);
+//                mBottomView.setVisibility(View.VISIBLE);
             }
         }, 500);
     }
@@ -226,7 +267,9 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
     private BaseAdapter mGridAdapter = new BaseAdapter() {
         @Override
         public int getCount() {
-            return 26;
+            if (mBanquent.getAttendees() != null)
+                return mBanquent.getAttendees().size();
+            return 0;
         }
 
         @Override
@@ -241,7 +284,13 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            return LayoutInflater.from(mContext).inflate(R.layout.user_info_favor_item, null);
+            View contentView = LayoutInflater.from(mContext).inflate(R.layout.user_info_favor_item, null);
+            TinyUser user = mBanquent.getAttendees().get(position);
+            ImageView userHead = (ImageView) contentView.findViewById(R.id.user_info_favor_item_image);
+            TextView userName = (TextView) contentView.findViewById(R.id.user_info_favor_item_text);
+            Picasso.with(mContext).load(user.getAvatarURL().get()).placeholder(R.drawable.default_user_head).into(userHead);
+            userName.setText(user.getNickName());
+            return contentView;
         }
     };
 
@@ -281,4 +330,17 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
                 + (gdView.getVerticalSpacing() * (listAdapter.getCount() / 5));
 
     }
+
+    private String formatDate(Date date) {
+        StringBuilder strBuilder = new StringBuilder();
+        strBuilder.append(String.format(mContext.getString(R.string.month_day), date.getMonth(), date.getDate()));
+        strBuilder.append(" ");
+        strBuilder.append(weekDays[date.getDay()]);
+        strBuilder.append(" ");
+        strBuilder.append(date.getHours() + ":00");
+        strBuilder.append(" ");
+        return strBuilder.toString();
+    }
+
+
 }

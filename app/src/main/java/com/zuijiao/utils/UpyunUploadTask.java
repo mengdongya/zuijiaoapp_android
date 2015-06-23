@@ -67,6 +67,12 @@ public final class UpyunUploadTask extends AsyncTask<Void, Void, String> {
         }
     }
 
+    public static String avatarPath(long dateTime, String fileExtension) {
+        Random randomGenerator = new Random();
+        Integer randomNumber = randomGenerator.nextInt(1000);
+        return String.format("%s/%d_%d.%s", BuildConfig.Avatar_Base_Url, dateTime, randomNumber, fileExtension);
+    }
+
     public static String avatarPath(Integer userId, String fileExtension) {
         Random randomGenerator = new Random();
         Integer randomNumber = randomGenerator.nextInt(1000);
@@ -76,6 +82,7 @@ public final class UpyunUploadTask extends AsyncTask<Void, Void, String> {
     public static String avatarPath(String relativeUrl) {
         return String.format("%s%s", Router.PicBaseUrl, relativeUrl);
     }
+
 
     public static String gourmetPath(Integer userId, String gourmetName, String fileExtension, Integer index) {
         String dateString = DateUtil.todayInString();

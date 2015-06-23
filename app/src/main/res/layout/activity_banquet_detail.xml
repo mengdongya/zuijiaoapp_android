@@ -14,7 +14,7 @@
             android:background="@color/white"
             android:layout_height="match_parent"
             android:layout_width="match_parent"
-            android:paddingBottom="10dip"
+            android:paddingBottom="50dip"
             android:orientation="vertical">
 
             <RelativeLayout
@@ -93,6 +93,7 @@
                 android:text="料理人   |  Sinian" />
 
             <LinearLayout
+                android:visibility="gone"
                 android:id="@+id/banquet_detail_star_container"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dip"
@@ -416,6 +417,7 @@
 
             <View
                 android:layout_height="1dip"
+                android:visibility="gone"
                 android:layout_marginTop="10dip"
                 android:background="@color/bg_light_gray2"
                 android:layout_width="match_parent" />
@@ -423,6 +425,7 @@
             <TextView
                 android:id="@+id/banquet_detail_review_title"
                 android:text="评价\nReviews"
+                android:visibility="gone"
                 android:singleLine="false"
                 android:textSize="16sp"
                 android:textColor="@color/tv_deep_gray"
@@ -434,17 +437,17 @@
                 android:layout_marginTop="10dip"
                 android:layout_width="wrap_content" />
 
-            <include
-                layout="@layout/banquet_comment_item"
-                android:id="@+id/banquet_detail_lastest_comment" />
+            <!--<include-->
+            <!--layout="@layout/banquet_comment_item"-->
+            <!--android:id="@+id/banquet_detail_lastest_comment" />-->
 
             <Button
                 android:text="@string/all_comments"
+                android:visibility="gone"
                 style="?android:attr/buttonStyleSmall"
                 android:id="@+id/banquet_detail_comment_btn"
                 android:layout_height="35dip"
                 android:paddingLeft="5dip"
-                android:layout_marginBottom="50dip"
                 android:paddingRight="5dip"
                 android:layout_marginTop="10dip"
                 android:layout_width="wrap_content"

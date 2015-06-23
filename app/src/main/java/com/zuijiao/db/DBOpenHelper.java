@@ -450,7 +450,6 @@ public class DBOpenHelper extends SQLiteOpenHelper {
             synchronized (db) {
                 Cursor cursor = db.query(DBConstans.TABLE_USER, null, DBConstans.COLUMN_GOURMET_USER_ID + " = ?", new String[]{user.getIdentifier() + ""}, null, null, null);
                 if (cursor != null && cursor.getCount() > 0) {
-                    //TODO Modify user info ;
                     return true;
                 } else {
                     ContentValues values = new ContentValues();

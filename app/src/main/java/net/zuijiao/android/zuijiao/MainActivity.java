@@ -241,7 +241,6 @@ public final class MainActivity extends BaseActivity {
 
         @Override
         public int getCount() {
-            // TODO Auto-generated method stub
             return 4;
         }
     };

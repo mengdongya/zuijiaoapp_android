@@ -90,8 +90,8 @@ public abstract interface IRouterOAuth {
             , @Field("imageUrl") String avatarURL
             , @Field("email") String email
             , @Field("password") String password
-            , @Field("openToken") String openToken
             , @Field("gender") String gender
+            , @Field("openToken") String openToken
             , @Field("deviceToken") String deviceToken
             , @FieldMap Map<String, String> oauthParam
             , Callback<OAuthModel> callback

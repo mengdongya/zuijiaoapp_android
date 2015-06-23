@@ -298,4 +298,7 @@
     <string name="to_evaluate">去评价</string>
     <string name="honey_name1">昵称</string>
     <string name="sd_card_unmounted">sd卡未加载</string>
+    <string name="banquent_capacity">可接纳%1$d-/%2$d人，已预订%3$d人</string>
+    <string name="price_per_one">%d&#160;元/位</string>
+    <string name="format_host_name">料理人&#160;|&#160;%s</string>
 </resources>

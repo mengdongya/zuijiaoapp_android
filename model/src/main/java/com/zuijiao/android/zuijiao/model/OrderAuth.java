@@ -14,42 +14,58 @@ public class OrderAuth {
     @SerializedName("data")
     private Data data;
 
+    public String getAppId() {
+        return data.paySign.appId;
+    }
+
+    public Integer getTimeStamp() {
+        return data.paySign.timeStamp;
+    }
+
+    public String getNonceStr() {
+        return data.paySign.nonceStr;
+    }
+
+    public String getPackage() {
+        return data.paySign.packages;
+    }
+
+    public String getPrepayId() {
+        return data.paySign.prepayId;
+    }
+
+    public String getSign() {
+        return data.paySign.sign;
+    }
+
+    public String getPartnerId() {
+        return data.paySign.partnerId;
+    }
+
     class Data {
         @SerializedName("order")
         private Order order;
         @SerializedName("paySign")
-        private PaySign params;
+        private PaySign paySign;
     }
 
     class PaySign {
         @SerializedName("queryString")
         private String query;
-        @SerializedName("parameters")
-        private Params params;
-    }
-
-    class Params {
-        @SerializedName("_input_charset")
-        private String inputChar;
-        @SerializedName("notify_url")
-        private String notifyUrl;
-        @SerializedName("out_trade_no")
-        private String outTradeNo;
-        @SerializedName("partner")
-        private String partner;
-        @SerializedName("payment_type")
-        private Integer paymentType;
-        @SerializedName("seller_id")
-        private String sellerId;
-        @SerializedName("service")
-        private String service;
-        @SerializedName("subject")
-        private Integer subject;
-        @SerializedName("total_fee")
-        private Float totalFee;
         @SerializedName("sign")
         private String sign;
-        @SerializedName("sign_type")
-        private String signType;
+        @SerializedName("partnerid")
+        private String partnerId;
+        @SerializedName("package")
+        private String packages;
+        @SerializedName("noncestr")
+        private String nonceStr;
+        @SerializedName("timestamp")
+        private Integer timeStamp;
+        @SerializedName("appid")
+        private String appId;
+        @SerializedName("prepayid")
+        private String prepayId;
     }
+
 }

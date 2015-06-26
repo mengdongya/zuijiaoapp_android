@@ -23,6 +23,7 @@ import com.zuijiao.android.util.functional.OneParameterExpression;
 import com.zuijiao.android.zuijiao.model.Banquent.Banquent;
 import com.zuijiao.android.zuijiao.model.OrderAuth;
 import com.zuijiao.android.zuijiao.network.Router;
+import com.zuijiao.thirdopensdk.WeixinPay;
 
 import java.util.Date;
 
@@ -111,10 +112,12 @@ public class BanquetOrderActivity extends BaseActivity implements View.OnClickLi
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.banquet_order_bottom_pay:
-                Router.getBanquentModule().createOrder(mBanquent.getIdentifier(), "15900463272", "7148", mRemark, "alipay", new OneParameterExpression<OrderAuth>() {
+
+                Router.getBanquentModule().createOrder(mBanquent.getIdentifier(), phoneNum, verifyCode, mRemark, "wxpay", new OneParameterExpression<OrderAuth>() {
                     @Override
-                    public void action(OrderAuth orders) {
+                    public void action(OrderAuth orderAuth) {
                         Log.d("pay_interface", "result_success");
+                        new WeixinPay(BanquetOrderActivity.this).pay(orderAuth);
                     }
                 }, new OneParameterExpression<String>() {
                     @Override

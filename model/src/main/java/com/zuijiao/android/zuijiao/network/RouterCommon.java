@@ -7,7 +7,6 @@ import com.zuijiao.android.util.functional.OneParameterExpression;
 import com.zuijiao.android.zuijiao.model.common.Configuration;
 import com.zuijiao.android.zuijiao.model.common.ConfigurationType;
 import com.zuijiao.android.zuijiao.model.common.GourmetTags;
-import com.zuijiao.android.zuijiao.model.common.Language;
 import com.zuijiao.android.zuijiao.model.common.Languages;
 import com.zuijiao.android.zuijiao.model.common.Restaurants;
 import com.zuijiao.android.zuijiao.model.common.TasteTags;
@@ -75,5 +74,11 @@ public enum RouterCommon {
     public void languages(final OneParameterExpression<Languages> successCallback
             , final OneParameterExpression<String> failureCallback) {
         service.languages(CallbackFactory.getInstance().callback(successCallback, failureCallback));
+    }
+
+
+    public void verifyPhoneNumber(final String phoneNum, final String code, final OneParameterExpression<Integer> successCallback
+            , final OneParameterExpression<String> failureCallback) {
+        service.verifyPhoneNumber(phoneNum, code, CallbackFactory.getInstance().callback(successCallback, failureCallback));
     }
 }

@@ -72,6 +72,7 @@
                 android:layout_marginTop="10dip"
                 android:layout_alignParentRight="true"
                 android:text="@string/to_evaluate"
+                android:visibility="gone"
                 android:textColor="@color/tv_orange_red"
                 android:layout_marginBottom="10dip"
                 android:textSize="16dip" />

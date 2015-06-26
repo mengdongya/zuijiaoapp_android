@@ -76,7 +76,7 @@ public class WeixinPay {
 
         @Override
         protected void onPreExecute() {
-//            dialog = ProgressDialog.show(PayActivity.this, getString(R.string.app_tip), getString(R.string.getting_prepayid));
+
         }
 
         @Override
@@ -124,8 +124,6 @@ public class WeixinPay {
         req.packageValue = "Sign=WXPay";
         req.nonceStr = genNonceStr();
         req.timeStamp = String.valueOf(genTimeStamp());
-
-
         List<NameValuePair> signParams = new LinkedList<NameValuePair>();
         signParams.add(new BasicNameValuePair("appid", req.appId));
         signParams.add(new BasicNameValuePair("noncestr", req.nonceStr));
@@ -133,13 +131,9 @@ public class WeixinPay {
         signParams.add(new BasicNameValuePair("partnerid", req.partnerId));
         signParams.add(new BasicNameValuePair("prepayid", req.prepayId));
         signParams.add(new BasicNameValuePair("timestamp", req.timeStamp));
-
         req.sign = genAppSign(signParams);
-
 //        sb.append("sign\n"+req.sign+"\n\n");
-//
 //        show.setText(sb.toString());
-
         Log.e("orion", signParams.toString());
 
     }

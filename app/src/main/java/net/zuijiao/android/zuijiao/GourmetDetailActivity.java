@@ -515,7 +515,7 @@ public class GourmetDetailActivity extends BaseActivity implements
         View confirmView = LayoutInflater.from(getApplicationContext()).inflate(
                 R.layout.logout_dialog, null);
         AlertDialog dialog = new AlertDialog.Builder(GourmetDetailActivity.this).setView(confirmView).create();
-        ((TextView) confirmView.findViewById(R.id.textView)).setText(String.format(getString(R.string.confirm_delete_gourmet), gourmet.getName()));
+        ((TextView) confirmView.findViewById(R.id.logout_content)).setText(String.format(getString(R.string.confirm_delete_gourmet), gourmet.getName()));
         confirmView.findViewById(R.id.logout_btn_cancel).setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {

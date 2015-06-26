@@ -4,24 +4,32 @@ import com.google.gson.annotations.SerializedName;
 import com.zuijiao.android.util.Optional;
 import com.zuijiao.android.zuijiao.model.user.Profile;
 
-import java.util.List;
+import java.util.ArrayList;
 
 /**
  * Created by user on 6/19/15.
  */
 public class Attendee {
 
-    @SerializedName("ID") private Integer identifier;
-    @SerializedName("nickname") private String nickname;
-    @SerializedName("imageUrl") private String avatarURL; //: ?
+    @SerializedName("ID")
+    private Integer identifier;
+    @SerializedName("nickname")
+    private String nickname;
+    @SerializedName("imageUrl")
+    private String avatarURL; //: ?
 
-    @SerializedName("profile") private Profile profile;
-    @SerializedName("host") private OrganizerInfo organizerInfo;
+    @SerializedName("profile")
+    private Profile profile;
+    @SerializedName("host")
+    private OrganizerInfo organizerInfo;
 
     class OrganizerInfo {
-        @SerializedName("skill") private String  qualification;
-        @SerializedName("culinary") private String cookingSkill;
-        @SerializedName("imageUrls") private List<String> imageUrls;
+        @SerializedName("skill")
+        private String qualification;
+        @SerializedName("culinary")
+        private String cookingSkill;
+        @SerializedName("imageUrls")
+        private ArrayList<String> imageUrls;
     }
 
     public Integer getIdentifier() {
@@ -41,14 +49,20 @@ public class Attendee {
     }
 
     public String getQualification() {
-        return organizerInfo.qualification;
+        if (organizerInfo != null)
+            return organizerInfo.qualification;
+        return null;
     }
 
     public String getCookingSkill() {
-        return organizerInfo.cookingSkill;
+        if (organizerInfo != null)
+            return organizerInfo.cookingSkill;
+        return null;
     }
 
-    public List<String> getImageUrls() {
-        return organizerInfo.imageUrls;
+    public ArrayList<String> getImageUrls() {
+        if (organizerInfo != null)
+            return organizerInfo.imageUrls;
+        return null;
     }
 }

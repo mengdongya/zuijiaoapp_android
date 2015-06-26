@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include
+        android:id="@+id/order_display_toolbar"
+        layout="@layout/toolbar" />
+
+    <ScrollView
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent">
+
+        <LinearLayout
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_margin="5dip"
+                android:elevation="3dip"
+                android:background="@drawable/bg_white_round_corner"
+                android:id="@+id/order_display_clickable_group"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_height="224dip"
+
+                    android:layout_width="match_parent"
+                    android:src="@drawable/empty_view_greeting"
+                    android:scaleType="centerCrop"
+                    android:id="@+id/banquet_order_display_image_view" />
+
+                <TextView
+                    android:text="Sonian的台味厨房"
+                    android:singleLine="false"
+                    android:layout_marginLeft="5dip"
+                    android:layout_marginRight="5dip"
+                    android:id="@+id/banquet_order_display_title"
+                    android:textSize="16sp"
+                    android:textColor="@color/tv_deep_gray"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:layout_marginTop="10dip"
+                    android:layout_width="wrap_content" />
+
+                <TextView
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:layout_marginLeft="5dip"
+                    android:layout_marginRight="5dip"
+                    android:layout_marginBottom="10dip"
+                    android:id="@+id/banquet_order_display_date_location"
+                    android:textSize="15sp"
+                    android:textColor="@color/tv_deep_gray"
+                    android:layout_marginTop="10dip"
+                    android:text="2015"
+                    android:singleLine="false" />
+            </LinearLayout>
+
+            <View
+                android:layout_height="1dip"
+                android:layout_width="match_parent"
+                android:background="@color/bg_light_gray2" />
+
+            <TextView
+                android:id="@+id/banquet_order_display_status"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:textSize="16sp"
+                android:layout_margin="10dip"
+                android:gravity="right"
+                android:textColor="@color/tv_light_gray"
+                android:text="等待尚未" />
+
+            <include
+                layout="@layout/order_detail_info_item"
+                android:id="@+id/order_detail_oder_id" />
+
+            <include
+                layout="@layout/order_detail_info_item"
+                android:id="@+id/order_detail_oder_price" />
+
+            <include
+                layout="@layout/order_detail_info_item"
+                android:id="@+id/order_detail_oder_phone" />
+
+            <include
+                layout="@layout/order_detail_info_item"
+                android:id="@+id/order_detail_oder_remark" />
+
+            <include
+                layout="@layout/order_detail_info_item"
+                android:id="@+id/order_detail_oder_time" />
+
+            <View
+                android:layout_height="1dip"
+                android:layout_width="match_parent"
+                android:background="@color/bg_light_gray2" />
+
+            <TextView
+                android:textSize="14sp"
+                android:layout_marginTop="10dip"
+                android:layout_marginLeft="10dip"
+                android:layout_marginRight="10dip"
+                android:textColor="@color/bg_light_gray"
+                android:layout_height="wrap_content"
+                android:lineSpacingExtra="7dip"
+                android:layout_marginBottom="20dip"
+                android:layout_width="match_parent"
+                android:text="@string/banquet_order_notice" />
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

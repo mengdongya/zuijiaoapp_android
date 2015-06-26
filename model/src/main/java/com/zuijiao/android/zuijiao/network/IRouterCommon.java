@@ -44,4 +44,8 @@ public interface IRouterCommon {
     @FormUrlEncoded
     @POST("/account/v1/setting/update")
     void updateConfiguration(@Field("item") String option, @Field("value") Integer setTo, Callback<Response> callback);
+
+    @FormUrlEncoded
+    @POST("/service/captcha/code/check")
+    void verifyPhoneNumber(@Field("mobile") String phone, @Field("code") String code, Callback<Response> callback);
 }

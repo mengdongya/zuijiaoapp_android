@@ -6,6 +6,7 @@ import com.zuijiao.android.zuijiao.model.Banquent.BanquentForTheme;
 import com.zuijiao.android.zuijiao.model.Banquent.Banquents;
 import com.zuijiao.android.zuijiao.model.Banquent.OrderStatus;
 import com.zuijiao.android.zuijiao.model.Banquent.Orders;
+import com.zuijiao.android.zuijiao.model.OrderAuth;
 
 /**
  * Created by user on 6/18/15.
@@ -14,6 +15,24 @@ public enum RouterBanquent {
     INSTANCE;
 
     private IRouterBanquent service = Router.getInstance().restAdapter.create(IRouterBanquent.class);
+
+    public void createOrder(Integer themeId,
+                            String phoneNumber,
+                            String code,
+                            String remark,
+                            String payMethod,
+                            final OneParameterExpression<OrderAuth> successCallback,
+                            final OneParameterExpression<String> failureCallback) {
+        service.createOrder(themeId, phoneNumber, code, remark, payMethod, CallbackFactory.getInstance().callback(successCallback, failureCallback));
+    }
+
+    public void createOrder(Integer themeId,
+                            String remark,
+                            String payMethod,
+                            final OneParameterExpression<OrderAuth> successCallback,
+                            final OneParameterExpression<String> failureCallback) {
+        service.createOrder(themeId, remark, payMethod, CallbackFactory.getInstance().callback(successCallback, failureCallback));
+    }
 
     public void orders(OrderStatus status
             , Integer maxId

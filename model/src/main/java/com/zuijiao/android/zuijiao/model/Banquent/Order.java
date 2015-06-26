@@ -2,12 +2,13 @@ package com.zuijiao.android.zuijiao.model.Banquent;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
  * Created by user on 6/18/15.
  */
-public class Order {
+public class Order implements Serializable {
 
     @SerializedName("ID")
     private Integer identifier;

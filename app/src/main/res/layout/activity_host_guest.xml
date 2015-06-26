@@ -19,46 +19,54 @@
             android:layout_width="match_parent">
 
             <RelativeLayout
-                android:layout_height="wrap_content"
+                android:id="@+id/host_guest_host_image_container"
+                android:layout_height="256dip"
                 android:layout_width="match_parent">
 
-                <ImageView
-                    android:layout_height="218dip"
-                    android:scaleType="centerCrop"
+                <android.support.v4.view.ViewPager
+                    android:id="@+id/host_guest_host_images"
                     android:layout_width="match_parent"
-                    android:src="@drawable/shanghai" />
-
-                <LinearLayout
-                    android:layout_height="20dip"
-                    android:layout_width="100dip"
-                    android:layout_marginTop="5dip"
-                    android:layout_centerHorizontal="true"
-                    android:id="@+id/linearLayout"
-                    android:orientation="horizontal" />
+                    android:layout_height="224dip"
+                    android:gravity="center" />
 
                 <com.zuijiao.view.RoundImageView
                     android:layout_height="64dip"
+                    android:id="@+id/host_guest_host_head"
                     android:layout_width="64dip"
                     myattr:border_thickness="1dip"
                     myattr:border_outside_color="#eeeeee"
                     myattr:border_inside_color="#eeeeee"
-                    android:src="@drawable/shanghai"
-                    android:layout_below="@+id/linearLayout"
+                    android:src="@drawable/default_user_head"
                     android:layout_centerHorizontal="true"
-                    android:layout_marginTop="161dp" />
+                    android:layout_alignParentBottom="true" />
+
+                <TextView
+                    android:id="@+id/host_guest_images_index"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:textColor="@color/white"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentRight="true"
+                    android:textSize="15sp"
+                    android:background="@drawable/banquet_detail_image_index_bg"
+                    android:layout_marginBottom="20dip"
+                    android:layout_marginRight="40dip" />
             </RelativeLayout>
 
             <com.zuijiao.view.RoundImageView
                 android:layout_height="64dip"
+                android:id="@+id/host_guest_guest_head"
                 android:layout_width="64dip"
                 android:layout_marginTop="10dip"
                 myattr:border_thickness="1dip"
-                myattr:border_outside_color="#eeeeee"
-                myattr:border_inside_color="#eeeeee"
-                android:src="@drawable/shanghai"
+                android:visibility="gone"
+                myattr:border_outside_color="#333333"
+                myattr:border_inside_color="#333333"
+                android:src="@drawable/default_user_head"
                 android:layout_gravity="center_horizontal" />
 
             <TextView
+                android:id="@+id/host_guest_attendee_name"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
                 android:layout_gravity="center_horizontal"
@@ -68,11 +76,13 @@
                 android:textColor="@color/tv_deep_gray" />
 
             <TextView
+                android:id="@+id/host_guest_attendee_info"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:text="上海 女"
+                android:gravity="center_horizontal"
                 android:layout_marginTop="10dip"
+                android:lineSpacingExtra="5dip"
                 android:textSize="17sp"
                 android:textColor="@color/tv_deep_gray" />
 
@@ -89,24 +99,23 @@
                     android:layout_width="match_parent" />
 
                 <TextView
+                    android:id="@+id/host_guest_introduction_title"
                     android:layout_marginTop="10dip"
                     android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:textSize="17sp"
-                    android:text="@string/personal_gourmet"
+                    android:textSize="18sp"
                     android:textColor="@color/tv_deep_gray" />
 
                 <TextView
+                    android:id="@+id/host_guest_introduction"
                     android:layout_margin="10dip"
                     android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:textSize="17sp"
-
-                    android:text="三年前从台湾岛上海来打拼，在场边了大江南北的美食后，舌头就开始思念起了家乡的味道，于是就买起了锅碗瓢盘，希望在自己的厨房再现妈妈的味道。"
+                    android:textSize="15sp"
+                    android:lineSpacingExtra="5dip"
                     android:textColor="@color/tv_deep_gray" />
-
             </LinearLayout>
 
             <LinearLayout
@@ -126,125 +135,33 @@
                     android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:textSize="17sp"
+                    android:textSize="18sp"
                     android:text="@string/detail_info"
                     android:textColor="@color/tv_deep_gray" />
 
-                <LinearLayout
-                    android:layout_marginTop="10dip"
-                    android:layout_marginLeft="10dip"
-                    android:layout_height="wrap_content"
-                    android:layout_width="match_parent"
-                    android:orientation="horizontal">
+                <include
+                    layout="@layout/attendee_detail_info_item"
+                    android:id="@+id/attendee_detail_career_item" />
 
-                    <TextView
-                        android:layout_height="wrap_content"
-                        android:layout_width="wrap_content"
-                        android:textSize="17sp"
-                        android:textColor="@color/bg_light_gray"
-                        android:text="@string/industry" />
+                <include
+                    layout="@layout/attendee_detail_info_item"
+                    android:id="@+id/attendee_detail_language_item" />
 
-                    <TextView
-                        android:layout_height="wrap_content"
-                        android:layout_width="wrap_content"
-                        android:textSize="17sp"
-                        android:layout_marginLeft="20dip"
-                        android:textColor="@color/tv_deep_gray"
-                        android:text="公共关系" />
-                </LinearLayout>
+                <include
+                    layout="@layout/attendee_detail_info_item"
+                    android:id="@+id/attendee_detail_education_item" />
 
-                <View
-                    android:layout_height="1dip"
-                    android:layout_width="match_parent"
-                    android:layout_margin="8dip"
-                    android:background="@color/bg_gray_white" />
+                <include
+                    layout="@layout/attendee_detail_info_item"
+                    android:id="@+id/attendee_detail_hobby_item" />
 
-                <LinearLayout
-                    android:layout_marginLeft="10dip"
-                    android:layout_marginTop="5dip"
-                    android:layout_height="wrap_content"
-                    android:layout_width="match_parent"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_height="wrap_content"
-                        android:layout_width="wrap_content"
-                        android:textSize="17sp"
-                        android:textColor="@color/bg_light_gray"
-                        android:text="@string/my_language" />
-
-                    <TextView
-                        android:layout_height="wrap_content"
-                        android:layout_width="wrap_content"
-                        android:textSize="17sp"
-                        android:layout_marginLeft="20dip"
-                        android:textColor="@color/tv_deep_gray"
-                        android:text="中外文" />
-                </LinearLayout>
-
-                <View
-                    android:layout_height="1dip"
-                    android:layout_width="match_parent"
-                    android:layout_margin="8dip"
-                    android:background="@color/bg_gray_white" />
-
-                <LinearLayout
-                    android:layout_marginLeft="10dip"
-                    android:layout_marginTop="5dip"
-                    android:layout_height="wrap_content"
-                    android:layout_width="match_parent"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_height="wrap_content"
-                        android:layout_width="wrap_content"
-                        android:textSize="17sp"
-                        android:textColor="@color/bg_light_gray"
-                        android:text="@string/education" />
-
-                    <TextView
-                        android:layout_height="wrap_content"
-                        android:layout_width="wrap_content"
-                        android:textSize="17sp"
-                        android:layout_marginLeft="20dip"
-                        android:textColor="@color/tv_deep_gray"
-                        android:text="台湾大学 汉语语言文学系" />
-                </LinearLayout>
-
-                <View
-                    android:layout_height="1dip"
-                    android:layout_width="match_parent"
-                    android:layout_margin="8dip"
-                    android:background="@color/bg_gray_white" />
-
-                <LinearLayout
-                    android:layout_marginLeft="10dip"
-
-                    android:layout_height="wrap_content"
-                    android:layout_width="match_parent"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_height="wrap_content"
-                        android:layout_width="wrap_content"
-                        android:textSize="17sp"
-                        android:textColor="@color/bg_light_gray"
-                        android:text="@string/interest_hobby" />
-
-                    <TextView
-                        android:layout_height="wrap_content"
-                        android:layout_width="wrap_content"
-                        android:textSize="17sp"
-                        android:layout_marginLeft="20dip"
-                        android:textColor="@color/tv_deep_gray"
-                        android:text="喜欢喝酒出去玩耍" />
-                </LinearLayout>
 
             </LinearLayout>
 
             <LinearLayout
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
+                android:visibility="gone"
                 android:orientation="vertical">
 
                 <View
@@ -257,7 +174,7 @@
                     android:id="@+id/banquet_detail_review_title"
                     android:text="评价\nReviews"
                     android:singleLine="false"
-                    android:textSize="16sp"
+                    android:textSize="18sp"
                     android:textColor="@color/tv_deep_gray"
                     android:layout_gravity="center_horizontal"
                     android:layout_height="wrap_content"
@@ -301,8 +218,9 @@
 
                 <TextView
                     android:text="已经举办的私宴"
+                    android:id="@+id/host_guest_history_title"
                     android:singleLine="false"
-                    android:textSize="16sp"
+                    android:textSize="18sp"
                     android:textColor="@color/tv_deep_gray"
                     android:layout_gravity="center_horizontal"
                     android:layout_height="wrap_content"

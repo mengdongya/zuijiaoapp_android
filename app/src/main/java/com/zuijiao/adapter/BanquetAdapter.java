@@ -35,6 +35,7 @@ public class BanquetAdapter extends BaseAdapter implements AdapterView.OnItemCli
     private int count = 0;
     private LayoutInflater mInflater;
     private View mBannerContainer;
+
     public BanquetAdapter(Context context) {
         super();
         this.mContext = context;
@@ -113,18 +114,26 @@ public class BanquetAdapter extends BaseAdapter implements AdapterView.OnItemCli
             }
             Banquent banquent = mBanquentList.get(position);
             Picasso.with(mContext).load(banquent.getSurfaceImageUrl()).placeholder(R.drawable.empty_view_greeting).into(holder.image);
+            if (banquent.getMaster().getAvatarURL().isPresent())
+                Picasso.with(mContext).load(banquent.getMaster().getAvatarURL().get()).placeholder(R.drawable.default_user_head).into(holder.head);
             holder.title.setText(banquent.getTitle());
             String dateInfo = formatDate(banquent.getTime());
             holder.detail.setText(dateInfo + banquent.getAddress());
             holder.description.setText(banquent.getDesc());
             holder.price.setText(String.format(mContext.getString(R.string.price_per_one), banquent.getPrice()));
             BanquentCapacity banquentCapacity = banquent.getBanquentCapacity();
-            holder.status.setText(String.format(mContext.getString(R.string.banquent_capacity), banquentCapacity.getMin(), banquentCapacity.getMax(), banquentCapacity.getCount()));
+            if (banquentCapacity.getMin() == banquentCapacity.getMax()) {
+                holder.status.setText(String.format(mContext.getString(R.string.banquent_capacity_simple), banquentCapacity.getMax(), banquentCapacity.getCount()));
+            } else {
+                holder.status.setText(String.format(mContext.getString(R.string.banquent_capacity_muilt), banquentCapacity.getMin(), banquentCapacity.getMax(), banquentCapacity.getCount()));
+            }
             holder.head.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(mContext, HostAndGuestActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    intent.putExtra("b_host", true);
+                    intent.putExtra("attendee_id", banquent.getMaster().getIdentifier());
                     mContext.startActivity(intent);
                 }
             });
@@ -156,8 +165,6 @@ public class BanquetAdapter extends BaseAdapter implements AdapterView.OnItemCli
         strBuilder.append(" ");
         return strBuilder.toString();
     }
-
-
 
 
     class ViewHolder {

@@ -125,7 +125,11 @@ public abstract class BaseActivity extends ActionBarActivity {
 
     protected void finalizeDialog() {
         if (mDialog == null) return;
-        mDialog.dismiss();
+        try {
+            mDialog.dismiss();
+        } catch (Throwable t) {
+            t.printStackTrace();
+        }
         mDialog = null;
     }
 
@@ -241,7 +245,7 @@ public abstract class BaseActivity extends ActionBarActivity {
         AlertDialog updateAlertDialog = new AlertDialog.Builder(this).setView(logoutView).create();
 
         ((TextView) logoutView.findViewById(R.id.logout_title)).setText(getString(R.string.new_version));
-        ((TextView) logoutView.findViewById(R.id.textView)).setText(message);
+        ((TextView) logoutView.findViewById(R.id.logout_content)).setText(message);
         Button confirmBtn = (Button) logoutView.findViewById(R.id.logout_btn_confirm);
         Button cancelBtn = (Button) logoutView.findViewById(R.id.logout_btn_cancel);
         confirmBtn.setText(getString(R.string.update));

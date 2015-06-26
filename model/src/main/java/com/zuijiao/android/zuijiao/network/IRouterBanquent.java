@@ -1,13 +1,11 @@
 package com.zuijiao.android.zuijiao.network;
 
-import com.zuijiao.android.zuijiao.model.Banquent.Banquent;
 import com.zuijiao.android.zuijiao.model.Banquent.BanquentForTheme;
 import com.zuijiao.android.zuijiao.model.Banquent.Banquents;
-import com.zuijiao.android.zuijiao.model.Banquent.Order;
 import com.zuijiao.android.zuijiao.model.Banquent.Orders;
+import com.zuijiao.android.zuijiao.model.OrderAuth;
 
 import retrofit.Callback;
-import retrofit.client.Response;
 import retrofit.http.Field;
 import retrofit.http.FormUrlEncoded;
 import retrofit.http.GET;
@@ -25,18 +23,27 @@ public interface IRouterBanquent {
     @POST(RootURL + "/ios/order/create")
     @FormUrlEncoded
     void createOrder(@Field("eventID") Integer themeId
-                     , @Field("mobile") String phoneNumber
-                     , @Field("note") String remark
-                     , @Field("payWay") String payMethod
-                     , Callback<Orders> restaurantsCallback
-                     );
+            , @Field("mobile") String phoneNumber
+            , @Field("code") String code
+            , @Field("note") String remark
+            , @Field("payWay") String payMethod
+            , Callback<OrderAuth> restaurantsCallback
+    );
+
+    @POST(RootURL + "/ios/order/create")
+    @FormUrlEncoded
+    void createOrder(@Field("eventID") Integer themeId
+            , @Field("note") String remark
+            , @Field("payWay") String payMethod
+            , Callback<OrderAuth> restaurantsCallback
+    );
 
     @GET(RootURL + "/ios/orders")
     void orders(@Query("status") String status
             , @Query("maxID") Integer sinceId
             , @Query("count") Integer count
-                     , Callback<Orders> callback
-                     );
+            , Callback<Orders> callback
+    );
 
     //MARK: - Theme
 
@@ -61,7 +68,7 @@ public interface IRouterBanquent {
 
     @GET(RootURL + "/ios/user/{identifier}/events")
     void themesOfParticipator(@Path("identifier") Integer identifier
-            ,@Query("maxID") Integer sinceId
+            , @Query("maxID") Integer sinceId
             , @Query("count") Integer count
             , Callback<Banquents> callback
     );

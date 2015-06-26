@@ -10,4 +10,8 @@ import java.util.List;
 public class Orders {
     @SerializedName("items")
     private List<Order> orderList;
+
+    public List<Order> getOrderList() {
+        return orderList;
+    }
 }

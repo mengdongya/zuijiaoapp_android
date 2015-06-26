@@ -127,12 +127,18 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity
+            android:label="ssss"
+            android:name="net.zuijiao.android.zuijiao.BanquetOrderDisplayActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
+        <activity
             android:name="net.zuijiao.android.zuijiao.BanquetCommentActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity
             android:name="net.zuijiao.android.zuijiao.BanquetOrderActivity"
             android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|adjustNothing"
             android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />

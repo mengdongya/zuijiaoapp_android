@@ -1,5 +1,6 @@
 package net.zuijiao.android.zuijiao;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -7,6 +8,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 import android.util.TypedValue;
+import android.view.MenuItem;
 
 import com.lidroid.xutils.view.annotation.ContentView;
 import com.lidroid.xutils.view.annotation.ViewInject;
@@ -37,6 +39,14 @@ public class MessageActivity extends BaseActivity implements MessageFragment.OnM
         mTabs.setViewPager(mViewPager);
     }
 
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.menu_main) {
+            //luo ji shixian
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
     private void initTabsValue() {
         //cursor color

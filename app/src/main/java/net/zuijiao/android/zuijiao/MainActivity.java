@@ -65,6 +65,7 @@ public final class MainActivity extends BaseActivity {
     // main activity layout widget ,including slide menu
     @ViewInject(R.id.drawer)
     private DrawerLayout mDrawerLayout;
+
     // DrawerListener
     private ActionBarDrawerToggle mDrawerToggle;
     // login button and user head in drawer view
@@ -422,7 +423,7 @@ public final class MainActivity extends BaseActivity {
         ViewGroup badgeParent = (ViewGroup) findViewById(R.id.badge_parent);
         final BadgeView badgeView = new BadgeView(getApplicationContext(),
                 badgeParent);
-        badgeView.setBadgePosition(BadgeView.POSITION_TOP_LEFT);
+        badgeView.setBadgePosition(BadgeView.POSITION_TOP_RIGHT);
         badgeView.setWidth(15);
         badgeView.setHeight(15);
         DisplayMetrics dm = new DisplayMetrics();
@@ -434,7 +435,7 @@ public final class MainActivity extends BaseActivity {
         badgeParent.measure(width, height);
         height = badgeParent.getMeasuredHeight();
         width = badgeParent.getMeasuredWidth();
-        badgeView.setBadgeMargin(width / 3, height / 4);
+        badgeView.setBadgeMargin(width / 18, height / 4);
         badgeView.setFocusable(false);
         return badgeView;
     }

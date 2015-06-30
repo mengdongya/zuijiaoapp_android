@@ -15,6 +15,8 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.lidroid.xutils.view.annotation.ContentView;
@@ -23,6 +25,7 @@ import com.zuijiao.android.util.functional.OneParameterExpression;
 import com.zuijiao.android.zuijiao.model.Banquent.Banquent;
 import com.zuijiao.android.zuijiao.model.OrderAuth;
 import com.zuijiao.android.zuijiao.network.Router;
+import com.zuijiao.thirdopensdk.Alipay;
 import com.zuijiao.thirdopensdk.WeixinPay;
 
 import java.util.Date;
@@ -51,6 +54,15 @@ public class BanquetOrderActivity extends BaseActivity implements View.OnClickLi
     private TextView mBottomPrice;
     @ViewInject(R.id.banquet_order_bottom_pay_way)
     private TextView mBottomPayWay;
+
+    @ViewInject(R.id.zhifubao_pay)
+    private LinearLayout ZhiFubao;
+    @ViewInject(R.id.weixin_pay)
+    private LinearLayout WeiXin;
+    @ViewInject(R.id.payby_alipay)
+    private ImageView AlipayImage;
+    @ViewInject(R.id.payby_weixin)
+    private ImageView WeixinImage;
 
     private Banquent mBanquent;
     private String[] weekDays;
@@ -91,6 +103,11 @@ public class BanquetOrderActivity extends BaseActivity implements View.OnClickLi
             }
         });
         mPayBtn.setOnClickListener(this);
+        ZhiFubao.setOnClickListener(this);
+        WeiXin.setOnClickListener(this);
+        WeixinImage.setOnClickListener(this);
+        AlipayImage.setOnClickListener(this);
+        WeixinImage.setVisibility(View.INVISIBLE);
     }
 
     private void initViewsByBanquet() {
@@ -111,24 +128,62 @@ public class BanquetOrderActivity extends BaseActivity implements View.OnClickLi
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.zhifubao_pay:
+                if(0==AlipayImage.getVisibility()){
+                    AlipayImage.setVisibility(View.INVISIBLE);
+                    WeixinImage.setVisibility(View.VISIBLE);
+                }else{
+                    AlipayImage.setVisibility(View.VISIBLE);
+                    WeixinImage.setVisibility(View.INVISIBLE);
+                }
+                break;
+            case R.id.weixin_pay:
+                if(0==WeixinImage.getVisibility()){
+                    WeixinImage.setVisibility(View.INVISIBLE);
+                    AlipayImage.setVisibility(View.VISIBLE);
+                }else{
+                    WeixinImage.setVisibility(View.VISIBLE);
+                    AlipayImage.setVisibility(View.INVISIBLE);
+                }
+                break;
             case R.id.banquet_order_bottom_pay:
+                payForOrder();
 
-                Router.getBanquentModule().createOrder(mBanquent.getIdentifier(), phoneNum, verifyCode, mRemark, "wxpay", new OneParameterExpression<OrderAuth>() {
-                    @Override
-                    public void action(OrderAuth orderAuth) {
-                        Log.d("pay_interface", "result_success");
-                        new WeixinPay(BanquetOrderActivity.this).pay(orderAuth);
-                    }
-                }, new OneParameterExpression<String>() {
-                    @Override
-                    public void action(String s) {
-                        Log.d("pay_interface", "result_failed");
-                    }
-                });
                 break;
         }
     }
 
+    private void payForOrder(){
+
+        if(0==AlipayImage.getVisibility()){
+            Router.getBanquentModule().createOrder(mBanquent.getIdentifier(), phoneNum, verifyCode, mRemark, "alipay", new OneParameterExpression<OrderAuth>() {
+                @Override
+                public void action(OrderAuth orderAuth) {
+                    Log.d("pay_interface", "result_success");
+                    String query = orderAuth.getQueryString();
+                    new Alipay(BanquetOrderActivity.this).pay(query);
+                }
+            }, new OneParameterExpression<String>() {
+                @Override
+                public void action(String s) {
+                    Log.d("pay_interface", "result_failed");
+                }
+            });
+        }else {
+            Router.getBanquentModule().createOrder(mBanquent.getIdentifier(), phoneNum, verifyCode, mRemark, "wxpay", new OneParameterExpression<OrderAuth>() {
+                @Override
+                public void action(OrderAuth orderAuth) {
+                    Log.d("pay_interface", "result_success");
+                    new WeixinPay(BanquetOrderActivity.this).pay(orderAuth);
+                }
+            }, new OneParameterExpression<String>() {
+                @Override
+                public void action(String s) {
+                    Log.d("pay_interface", "result_failed");
+                }
+            });
+        }
+    }
     private String formatDate(Date date) {
         StringBuilder strBuilder = new StringBuilder();
         strBuilder.append(String.format(mContext.getString(R.string.month_day), date.getMonth(), date.getDate()));

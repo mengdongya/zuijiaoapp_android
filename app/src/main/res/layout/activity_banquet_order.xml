@@ -217,7 +217,8 @@
                 android:gravity="center_vertical"
                 android:paddingRight="5dip"
                 android:paddingLeft="5dip"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:id="@+id/zhifubao_pay">
 
                 <TextView
                     android:layout_height="wrap_content"
@@ -233,7 +234,8 @@
                     android:layout_height="20dip"
                     android:scaleType="fitXY"
                     android:layout_gravity="center_vertical"
-                    android:layout_width="20dip" />
+                    android:layout_width="20dip"
+                    android:id="@+id/payby_alipay" />
             </LinearLayout>
 
             <LinearLayout
@@ -243,7 +245,8 @@
                 android:gravity="center_vertical"
                 android:paddingRight="5dip"
                 android:paddingLeft="5dip"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:id="@+id/weixin_pay">
 
                 <TextView
                     android:layout_height="wrap_content"
@@ -259,7 +262,8 @@
                     android:layout_height="20dip"
                     android:scaleType="fitXY"
                     android:layout_gravity="center_vertical"
-                    android:layout_width="20dip" />
+                    android:layout_width="20dip"
+                    android:id="@+id/payby_weixin" />
             </LinearLayout>
 
         </LinearLayout>

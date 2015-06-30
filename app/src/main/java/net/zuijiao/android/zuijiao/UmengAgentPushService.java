@@ -39,7 +39,7 @@ public class UmengAgentPushService extends UmengBaseIntentService {
             String ticker = js.getString("ticker");
             showNotification(title, text, ticker);
             msg = new UMessage(jsonObject);
-            UTrack.getInstance(context).trackMsgClick(msg, true);
+            UTrack.getInstance(context).trackMsgClick(msg);
             Intent notifyMessageReceived = new Intent(MessageDef.ACTION_PUSH_RECEIVED);
             sendBroadcast(notifyMessageReceived);
         } catch (JSONException e) {

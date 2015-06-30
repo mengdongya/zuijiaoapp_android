@@ -148,7 +148,6 @@ public class BanquetOrderActivity extends BaseActivity implements View.OnClickLi
                 break;
             case R.id.banquet_order_bottom_pay:
                 payForOrder();
-
                 break;
         }
     }

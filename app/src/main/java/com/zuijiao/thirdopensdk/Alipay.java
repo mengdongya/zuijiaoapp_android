@@ -16,7 +16,7 @@ import com.alipay.sdk.app.PayTask;
 public class Alipay {
     private static final int SDK_PAY_FLAG = 1;
 
-    private static final int SDK_CHECK_FLAG = 2;
+//    private static final int SDK_CHECK_FLAG = 2;
     Activity act ;
 
     public Alipay(Activity act){
@@ -49,11 +49,11 @@ public class Alipay {
                     }
                     break;
                 }
-                case SDK_CHECK_FLAG: {
+                /*case SDK_CHECK_FLAG: {
                     Toast.makeText(act, "the result is" + msg.obj,
                             Toast.LENGTH_SHORT).show();
                     break;
-                }
+                }*/
                 default:
                     break;
             }

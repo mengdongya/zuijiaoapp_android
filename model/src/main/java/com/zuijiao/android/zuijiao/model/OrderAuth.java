@@ -11,7 +11,7 @@ public class OrderAuth {
     private String apiVersion;
     @SerializedName("kind")
     private String kind;
-    @SerializedName("data")
+    @SerializedName("data")//
     private Data data;
 
     public String getAppId() {

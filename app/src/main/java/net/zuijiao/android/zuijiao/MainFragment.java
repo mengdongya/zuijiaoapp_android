@@ -1,5 +1,6 @@
 package net.zuijiao.android.zuijiao;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -15,7 +16,7 @@ import android.view.ViewGroup;
 
 import com.zuijiao.view.PagerSlidingTab;
 
-
+@SuppressLint("ValidFragment")
 public class MainFragment extends Fragment {
     private ViewPager mViewPager = null;
     private PagerSlidingTab mTabs = null;
@@ -97,9 +98,9 @@ public class MainFragment extends Fragment {
         @Override
         public CharSequence getPageTitle(int position) {
             if (position == 1) {
-                return getString(R.string.banquet);
-            } else if (position == 0) {
                 return getString(R.string.gourmet);
+            } else if (position == 0) {
+                return getString(R.string.banquet);
             }
             return "!";
         }
@@ -112,13 +113,14 @@ public class MainFragment extends Fragment {
         @Override
         public Fragment getItem(int position) {
             if (position == 0) {
-                if (gourmetFragment == null)
-                    gourmetFragment = new GourmetDisplayFragment(GourmetDisplayFragment.MAIN_PAGE, mContext);
-                return gourmetFragment;
-            } else {
                 if (banquetFragment == null)
                     banquetFragment = new BanquetDisplayFragment();
                 return banquetFragment;
+
+            } else {
+                if (gourmetFragment == null)
+                    gourmetFragment = new GourmetDisplayFragment(GourmetDisplayFragment.MAIN_PAGE, mContext);
+                return gourmetFragment;
             }
         }
     }

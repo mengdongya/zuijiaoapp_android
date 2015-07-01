@@ -2,7 +2,7 @@ package com.zuijiao.android.zuijiao.model.user;
 
 import com.google.gson.annotations.SerializedName;
 import com.zuijiao.android.util.Optional;
-import com.zuijiao.android.zuijiao.network.Router;
+import com.zuijiao.android.util.functional.ImageUrlUtil;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -48,14 +48,15 @@ public class User implements Serializable, Cloneable {
 
     public Optional<String> getAvatarURL() {
 //        return Optional.ofNullable(avatarURL);
-        if (avatarURL != null) {
-            if (avatarURL.length() > 0 && avatarURL.startsWith("http"))
-                return Optional.ofNullable(avatarURL);
-            else {
-                return Optional.of(Router.PicBaseUrl + avatarURL);
-            }
-        }
-        return Optional.empty();
+//        if (avatarURL != null) {
+//            if (avatarURL.length() > 0 && avatarURL.startsWith("http"))
+//                return Optional.ofNullable(avatarURL);
+//            else {
+//                return Optional.of(Router.PicBaseUrl + avatarURL);
+//            }
+//        }
+
+        return Optional.ofNullable(ImageUrlUtil.imageUrl(avatarURL));
     }
 
     public void setAvatarURL(String avatarURL) {

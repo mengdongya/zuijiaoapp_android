@@ -1,7 +1,6 @@
 package net.zuijiao.android.zuijiao.wxapi;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -16,7 +15,7 @@ import com.tencent.mm.sdk.openapi.WXAPIFactory;
 import com.umeng.analytics.MobclickAgent;
 import com.zuijiao.thirdopensdk.WeixinApi;
 
-import net.zuijiao.android.zuijiao.R;
+import net.zuijiao.android.zuijiao.BanquetOrderCallbackActivity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -29,6 +28,10 @@ public class WXPayEntryActivity extends Activity implements IWXAPIEventHandler {
     private ProgressDialog mDialog = null;
     private String mRereshToken = null;
     private String mAccessToken = null;
+    private String openId = null;
+    private String code = null;
+    private String url = null;
+    private String token = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,23 +61,22 @@ public class WXPayEntryActivity extends Activity implements IWXAPIEventHandler {
         }
     }
 
-    private String openId = null;
-    private String code = null;
-    private String url = null;
-    private String token = null;
-
     @Override
     public void onResp(BaseResp resp) {
         Log.i(Tag, "onResp");
-        if (mApi == null) {
-            finish();
-            return;
-        }
-        if (resp.getType() == ConstantsAPI.COMMAND_PAY_BY_WX) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle(R.string.banquet);
-            builder.setMessage(getString(R.string.banquet, resp.errStr + ";code=" + String.valueOf(resp.errCode)));
-            builder.show();
+        Intent intent = new Intent(this, BanquetOrderCallbackActivity.class);
+        switch (resp.errCode) {
+            case BaseResp.ErrCode.ERR_OK:
+                intent.putExtra("b_success", true);
+                startActivity(intent);
+                finish();
+                break;
+            default:
+                Log.d("wxPay", "failed");
+                intent.putExtra("b_success", false);
+                startActivity(intent);
+                finish();
+                break;
         }
     }
 

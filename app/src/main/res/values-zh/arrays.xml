@@ -100,4 +100,12 @@
         <item>周六</item>
         <item>周日</item>
     </string-array>
+    <string-array name="pay_way">
+        <item>微信支付</item>
+        <item>支付宝支付</item>
+    </string-array>
+    <string-array name="pay_way_str">
+        <item>wxpay</item>
+        <item>alipay</item>
+    </string-array>
 </resources>

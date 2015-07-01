@@ -164,7 +164,7 @@
             android:name="net.zuijiao.android.zuijiao.RegisterActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme"
-            android:windowSoftInputMode="adjustPan|stateHidden" />
+            android:windowSoftInputMode="adjustResize|stateHidden" />
         <activity
             android:label="@string/msg_page"
             android:name="net.zuijiao.android.zuijiao.MessageActivity"
@@ -242,6 +242,10 @@
             android:name="net.zuijiao.android.zuijiao.wxapi.WXEntryActivity"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+        <activity
+            android:name="net.zuijiao.android.zuijiao.BanquetOrderCallbackActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
         <activity
             android:name="net.zuijiao.android.zuijiao.wxapi.WXPayEntryActivity"
             android:exported="true"

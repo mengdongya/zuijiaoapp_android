@@ -136,8 +136,7 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
                                         .getEntity(), "UTF-8");
                                 jsonObject1 = getJSON(strResult1);
                                 String nickname = new String(jsonObject1.getString("nickname").getBytes(), "utf-8");
-                                String headimgurl = jsonObject1
-                                        .getString("headimgurl");
+                                String headimgurl = jsonObject1.getString("headimgurl");
                                 Router.getOAuthModule().register(nickname, headimgurl, null, unionId, "wechat", Optional.<String>empty(), Optional.of(mRereshToken), new OneParameterExpression<Boolean>() {
                                     @Override
                                     public void action(Boolean isNew) {
@@ -171,6 +170,22 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
                                         Toast.makeText(getApplicationContext(), getResources().getString(R.string.notify_net2), Toast.LENGTH_SHORT).show();
                                     }
                                 });
+//                                if(!ImageDownloader.download(headimgurl , getCacheDir().getPath() + File.separator + "head.jpg")) {
+//                                    Toast.makeText(getApplicationContext() ,R.string.notify_net2 , Toast.LENGTH_SHORT).show();
+//                                    return;
+//                                }
+//                                String mUserAvatar = UpyunUploadTask.avatarPath(new Date().getTime(), "jpg");
+//                                new UpyunUploadTask(getCacheDir().getPath() + File.separator + "head.jpg", mUserAvatar, null, new CompleteListener() {
+//                                    @Override
+//                                    public void result(boolean bComplete, String s, String s2) {
+//                                        if(bComplete){
+//
+//                                        }else{
+//                                            Toast.makeText(getApplicationContext() ,R.string.notify_net2 , Toast.LENGTH_SHORT).show();
+//                                        }
+//                                    }
+//                                }).execute();
+
 
                             } catch (ClientProtocolException e1) {
                                 e1.printStackTrace();

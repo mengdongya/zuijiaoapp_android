@@ -45,6 +45,12 @@ public class BanquetAdapter extends BaseAdapter implements AdapterView.OnItemCli
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        position -= 1;
+        if (showBanner()) {
+            position = position - 1;
+        }
+        if (position < 0)
+            return;
         Intent intent = new Intent(mContext, BanquetDetailActivity.class);
         intent.putExtra("banquet", mBanquentList.get(position));
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -112,6 +118,8 @@ public class BanquetAdapter extends BaseAdapter implements AdapterView.OnItemCli
                     return getView(position, null, parent);
                 }
             }
+            if (showBanner())
+                position -= 1;
             Banquent banquent = mBanquentList.get(position);
             Picasso.with(mContext).load(banquent.getSurfaceImageUrl()).placeholder(R.drawable.empty_view_greeting).into(holder.image);
             if (banquent.getMaster().getAvatarURL().isPresent())
@@ -152,6 +160,11 @@ public class BanquetAdapter extends BaseAdapter implements AdapterView.OnItemCli
     public void setData(Banquents banquents) {
         this.mBanquents = banquents;
         this.mBanquentList = mBanquents.getBanquentList();
+        notifyDataSetChanged();
+    }
+
+    public void addData(Banquents banquents) {
+        this.mBanquentList.addAll(banquents.getBanquentList());
         notifyDataSetChanged();
     }
 

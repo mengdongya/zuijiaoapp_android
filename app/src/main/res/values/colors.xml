@@ -79,5 +79,6 @@
     <color name="blue_semi_transparent_pressed">#80738ffe</color>
     <color name="logout_btn_normal">#ccc91919</color>
     <color name="logout_btn_pressed">#ff999999</color>
-
+    <color name="banquet_theme">#ff893c34</color>
+    <color name="banquet_theme_dark">#ff602924</color>
 </resources>

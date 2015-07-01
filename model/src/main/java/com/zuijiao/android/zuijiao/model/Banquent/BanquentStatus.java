@@ -29,12 +29,16 @@ public enum BanquentStatus implements Serializable {
         switch (this) {
             case Selling:
                 rawValue = "selling";
+                break;
             case SoldOut:
                 rawValue = "outOfStock";
+                break;
             case OverTime:
                 rawValue = "overtime";
+                break;
             case End:
                 rawValue = "end";
+                break;
         }
         return rawValue;
     }

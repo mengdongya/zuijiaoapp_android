@@ -2,6 +2,7 @@ package com.zuijiao.android.zuijiao.model.Banquent;
 
 import com.google.gson.annotations.SerializedName;
 import com.zuijiao.android.util.Optional;
+import com.zuijiao.android.util.functional.ImageUrlUtil;
 import com.zuijiao.android.zuijiao.model.user.Profile;
 
 import java.util.ArrayList;
@@ -41,7 +42,8 @@ public class Attendee {
     }
 
     public Optional<String> getAvatarURL() {
-        return Optional.ofNullable(avatarURL);
+//        return Optional.ofNullable(avatarURL);
+        return Optional.ofNullable(ImageUrlUtil.imageUrl(avatarURL));
     }
 
     public Profile getProfile() {

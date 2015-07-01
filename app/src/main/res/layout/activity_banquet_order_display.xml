@@ -28,7 +28,6 @@
 
                 <ImageView
                     android:layout_height="224dip"
-
                     android:layout_width="match_parent"
                     android:src="@drawable/empty_view_greeting"
                     android:scaleType="centerCrop"

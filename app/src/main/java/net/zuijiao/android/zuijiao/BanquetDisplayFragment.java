@@ -8,9 +8,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.webkit.WebViewClient;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.zuijiao.adapter.BanquetAdapter;
 import com.zuijiao.android.util.functional.OneParameterExpression;
@@ -23,13 +23,14 @@ import java.lang.reflect.Field;
 /**
  * Created by xiaqibo on 2015/6/8.
  */
-public class BanquetDisplayFragment extends Fragment {
+public class BanquetDisplayFragment extends Fragment implements RefreshAndInitListView.MyListViewListener {
     private RefreshAndInitListView mListView;
     private SwipeRefreshLayout mRefreshLayout;
     private View mContentView;
     private ImageView closeBanner;
     private WebViewClient mWvClient = null;
     private BanquetAdapter mAdapter;
+    private Integer lastedId = null;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -45,16 +46,13 @@ public class BanquetDisplayFragment extends Fragment {
         mRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                netWorkStep();
+                netWorkStep(true);
             }
         });
-        mContentView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                Log.i("MainFragment", "onGlobalLayout");
-            }
-        });
-        netWorkStep();
+        mListView.setPullRefreshEnable(false);
+        mListView.setPullLoadEnable(false);
+        mListView.setListViewListener(this);
+        netWorkStep(true);
         return mContentView;
     }
 
@@ -72,21 +70,43 @@ public class BanquetDisplayFragment extends Fragment {
     }
 
 
-    private void netWorkStep() {
-        mRefreshLayout.setRefreshing(true);
-        Router.getBanquentModule().themesOfPublic(0, 20, new OneParameterExpression<Banquents>() {
+    private void netWorkStep(boolean bRefresh) {
+        if (bRefresh) {
+            mRefreshLayout.setRefreshing(true);
+            lastedId = null;
+        }
+        Router.getBanquentModule().themesOfPublic(lastedId, 20, new OneParameterExpression<Banquents>() {
             @Override
             public void action(Banquents banquents) {
-                Log.d("banquetDisplayFragment", "success!");
-                mAdapter.setData(banquents);
+                if (bRefresh) {
+                    mAdapter.setData(banquents);
+                } else {
+                    mAdapter.addData(banquents);
+                }
+                lastedId = banquents.getBanquentList().get(banquents.getBanquentList().size() - 1).getIdentifier();
+                if (banquents.getBanquentList().size() < 20)
+                    mListView.setPullLoadEnable(false);
+                else
+                    mListView.setPullLoadEnable(true);
                 mRefreshLayout.setRefreshing(false);
             }
         }, new OneParameterExpression<String>() {
             @Override
             public void action(String s) {
                 Log.d("banquetDisplayFragment", "failed!");
+                Toast.makeText(getActivity().getApplicationContext(), getString(R.string.notify_net2), Toast.LENGTH_SHORT).show();
                 mRefreshLayout.setRefreshing(false);
             }
         });
+    }
+
+    @Override
+    public void onRefresh() {
+        netWorkStep(true);
+    }
+
+    @Override
+    public void onLoadMore() {
+        netWorkStep(false);
     }
 }

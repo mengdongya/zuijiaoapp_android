@@ -14,6 +14,10 @@ public class OrderAuth {
     @SerializedName("data")
     private Data data;
 
+    public String getQuery() {
+        return data.paySign.query;
+    }
+
     public String getAppId() {
         return data.paySign.appId;
     }

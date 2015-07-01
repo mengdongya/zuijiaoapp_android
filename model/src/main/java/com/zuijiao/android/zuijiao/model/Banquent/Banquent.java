@@ -1,6 +1,7 @@
 package com.zuijiao.android.zuijiao.model.Banquent;
 
 import com.google.gson.annotations.SerializedName;
+import com.zuijiao.android.util.functional.ImageUrlUtil;
 import com.zuijiao.android.zuijiao.model.user.TinyUser;
 
 import java.io.Serializable;
@@ -26,7 +27,7 @@ public class Banquent implements Serializable {
     @SerializedName("imageUrl")
     private String surfaceImageUrl;
     @SerializedName("status")
-    private BanquentStatus status;
+    private String status;
 
     @SerializedName("address")
     private String address;
@@ -68,10 +69,10 @@ public class Banquent implements Serializable {
     }
 
     public String getSurfaceImageUrl() {
-        return surfaceImageUrl;
+        return ImageUrlUtil.imageUrl(surfaceImageUrl);
     }
 
-    public BanquentStatus getStatus() {
+    public String getStatus() {
         return status;
     }
 
@@ -92,7 +93,12 @@ public class Banquent implements Serializable {
     }
 
     public ArrayList<String> getImageUrls() {
-        return imageUrls;
+        ArrayList<String> arrayList = new ArrayList<>();
+        for (String imageUrl : imageUrls) {
+            imageUrl = ImageUrlUtil.imageUrl(imageUrl);
+            arrayList.add(imageUrl);
+        }
+        return arrayList;
     }
 
     public BanquentCapacity getBanquentCapacity() {

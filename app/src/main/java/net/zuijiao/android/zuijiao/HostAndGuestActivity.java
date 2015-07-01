@@ -8,6 +8,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
@@ -98,6 +99,7 @@ public class HostAndGuestActivity extends BaseActivity {
         ((TextView) mAttendeeEducation.findViewById(R.id.attendee_detail_info_item_title)).setText(getString(R.string.education));
         ((TextView) mAttendeeHobby.findViewById(R.id.attendee_detail_info_item_title)).setText(getString(R.string.interest_hobby));
         mHostImages.setOnPageChangeListener(mPageListener);
+        mHistoryList.setOnItemClickListener(mItemListener);
         networkStep();
     }
 
@@ -314,6 +316,17 @@ public class HostAndGuestActivity extends BaseActivity {
 
         }
     };
+
+
+    private AdapterView.OnItemClickListener mItemListener = new AdapterView.OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            Intent intent = new Intent(mContext, BanquetDetailActivity.class);
+            intent.putExtra("banquet", banquentList.get(position));
+            startActivity(intent);
+        }
+    };
+
     private BaseAdapter mHistoryAdapter = new BaseAdapter() {
         @Override
         public int getCount() {

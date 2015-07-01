@@ -25,7 +25,7 @@
 -keep class retrofit.** { *; }
 
 -keep class com.zuijiao.android.zuijiao.network.** { *; }
-
+-keep class com.alipay.android.app.{*;}
 -keepattributes Signature
 
 -dontwarn com.squareup.okhttp.**

@@ -2,8 +2,5 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="rectangle">
     <corners android:radius="1dip" />
-    <solid android:color="@color/banquet_theme" />
-    <padding
-        android:top="5dip"
-        android:bottom="5dip" />
+    <solid android:color="@color/banquet_theme_dark" />
 </shape>

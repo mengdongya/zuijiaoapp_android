@@ -21,14 +21,20 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.lidroid.xutils.view.annotation.ContentView;
 import com.lidroid.xutils.view.annotation.ViewInject;
 import com.squareup.picasso.Picasso;
 import com.zuijiao.adapter.ImageViewPagerAdapter;
+import com.zuijiao.android.util.functional.LambdaExpression;
+import com.zuijiao.android.util.functional.OneParameterExpression;
 import com.zuijiao.android.zuijiao.model.Banquent.Banquent;
 import com.zuijiao.android.zuijiao.model.Banquent.BanquentCapacity;
+import com.zuijiao.android.zuijiao.model.Banquent.BanquentStatus;
 import com.zuijiao.android.zuijiao.model.user.TinyUser;
+import com.zuijiao.android.zuijiao.model.user.User;
+import com.zuijiao.android.zuijiao.network.Router;
 import com.zuijiao.view.BanquetDetailScrollView;
 
 import java.util.ArrayList;
@@ -105,6 +111,10 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
     private View mMenuContainer;
     @ViewInject(R.id.banquet_detail_char_container)
     private View mCharactContainer;
+    @ViewInject(R.id.banquet_detail_finished)
+    private TextView mFinishText;
+    @ViewInject(R.id.banquet_detail_bottom_can_order)
+    private View mBottomOrderView;
     private Banquent mBanquent;
     private String[] weekDays;
 
@@ -121,6 +131,61 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
     private TranslateAnimation showBottomViewAnim = new TranslateAnimation(Animation.RELATIVE_TO_SELF, 0.0f,
             Animation.RELATIVE_TO_SELF, 0.0f, Animation.RELATIVE_TO_SELF,
             1.0f, Animation.RELATIVE_TO_SELF, 0.0f);
+    private ViewPager.OnPageChangeListener mPageListener = new ViewPager.OnPageChangeListener() {
+        @Override
+        public void onPageSelected(int arg0) {
+            mImagesIndex.setText((arg0 + 1) + "/" + mViewPagerAdapter.getCount());
+        }
+
+        @Override
+        public void onPageScrolled(int arg0, float arg1, int arg2) {
+
+        }
+
+        @Override
+        public void onPageScrollStateChanged(int arg0) {
+
+        }
+    };
+    private AdapterView.OnItemClickListener mGridListener = new AdapterView.OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            Intent intent = new Intent(mContext, HostAndGuestActivity.class);
+            intent.putExtra("attendee_id", mBanquent.getAttendees().get(position).getIdentifier());
+            intent.putExtra("b_host", false);
+            startActivity(intent);
+        }
+    };
+    private BaseAdapter mGridAdapter = new BaseAdapter() {
+        @Override
+        public int getCount() {
+            if (mBanquent.getAttendees() != null)
+                return mBanquent.getAttendees().size();
+            return 0;
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return position;
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            View contentView = LayoutInflater.from(mContext).inflate(R.layout.user_info_favor_item, null);
+            TinyUser user = mBanquent.getAttendees().get(position);
+            ImageView userHead = (ImageView) contentView.findViewById(R.id.user_info_favor_item_image);
+            TextView userName = (TextView) contentView.findViewById(R.id.user_info_favor_item_text);
+            Picasso.with(mContext).load(user.getAvatarURL().get()).placeholder(R.drawable.default_user_head).into(userHead);
+//            userName.setText(user.getNickName());
+            userName.setVisibility(View.GONE);
+            return contentView;
+        }
+    };
 
     @Override
     protected void registerViews() {
@@ -194,8 +259,28 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
         mOrderedPersonShow.setAdapter(mGridAdapter);
         mOrderedPersonShow.setOnItemClickListener(mGridListener);
         setListViewHeightBasedOnChildren(mOrderedPersonShow);
-        mBottomPrice.setText(String.format(getString(R.string.price_per_one), mBanquent.getPrice()));
-        mBottomDate.setText(formatDate(mBanquent.getTime()));
+        switch (BanquentStatus.fromString(mBanquent.getStatus())) {
+            case Selling:
+                mBottomPrice.setText(String.format(getString(R.string.price_per_one), mBanquent.getPrice()));
+                mBottomDate.setText(formatDate(mBanquent.getTime()));
+                break;
+            case SoldOut:
+                mBottomOrderView.setVisibility(View.GONE);
+                mFinishText.setVisibility(View.VISIBLE);
+                mFinishText.setText(getString(R.string.banquet_status_sold_out));
+                break;
+            case OverTime:
+                mBottomOrderView.setVisibility(View.GONE);
+                mFinishText.setVisibility(View.VISIBLE);
+                mFinishText.setText(getString(R.string.banquet_status_over_time));
+                break;
+            case End:
+                mBottomOrderView.setVisibility(View.GONE);
+                mFinishText.setVisibility(View.VISIBLE);
+                mFinishText.setText(getString(R.string.banquet_status_end));
+                break;
+        }
+
     }
 
     private ArrayList<ImageView> initImages() {
@@ -287,82 +372,71 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
         }, 500);
     }
 
-    private ViewPager.OnPageChangeListener mPageListener = new ViewPager.OnPageChangeListener() {
-        @Override
-        public void onPageSelected(int arg0) {
-            mImagesIndex.setText((arg0 + 1) + "/" + mViewPagerAdapter.getCount());
-        }
-
-        @Override
-        public void onPageScrolled(int arg0, float arg1, int arg2) {
-
-        }
-
-        @Override
-        public void onPageScrollStateChanged(int arg0) {
-
-        }
-    };
-    private AdapterView.OnItemClickListener mGridListener = new AdapterView.OnItemClickListener() {
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            Intent intent = new Intent(mContext, HostAndGuestActivity.class);
-            intent.putExtra("attendee_id", mBanquent.getAttendees().get(position).getIdentifier());
-            intent.putExtra("b_host", false);
-            startActivity(intent);
-        }
-    };
-
-    private BaseAdapter mGridAdapter = new BaseAdapter() {
-        @Override
-        public int getCount() {
-            if (mBanquent.getAttendees() != null)
-                return mBanquent.getAttendees().size();
-            return 0;
-        }
-
-        @Override
-        public Object getItem(int position) {
-            return position;
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return position;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            View contentView = LayoutInflater.from(mContext).inflate(R.layout.user_info_favor_item, null);
-            TinyUser user = mBanquent.getAttendees().get(position);
-            ImageView userHead = (ImageView) contentView.findViewById(R.id.user_info_favor_item_image);
-            TextView userName = (TextView) contentView.findViewById(R.id.user_info_favor_item_text);
-            Picasso.with(mContext).load(user.getAvatarURL().get()).placeholder(R.drawable.default_user_head).into(userHead);
-//            userName.setText(user.getNickName());
-            userName.setVisibility(View.GONE);
-            return contentView;
-        }
-    };
-
     @Override
     public void onClick(View v) {
         Intent intent = new Intent();
         switch (v.getId()) {
             case R.id.banquet_detail_comment_btn:
                 intent.setClass(mContext, BanquetCommentActivity.class);
+                startActivity(intent);
                 break;
             case R.id.banquet_detail_host_head:
             case R.id.banquet_detail_about_host:
                 intent.putExtra("b_host", true);
                 intent.putExtra("attendee_id", mBanquent.getMaster().getIdentifier());
                 intent.setClass(mContext, HostAndGuestActivity.class);
+                startActivity(intent);
                 break;
             case R.id.banquet_detail_bottom_order:
-                intent.setClass(mContext, BanquetOrderActivity.class);
-                intent.putExtra("banquet", mBanquent);
+                if (!Router.getInstance().getCurrentUser().isPresent()) {
+                    tryLoginFirst(new LambdaExpression() {
+                        @Override
+                        public void action() {
+                            if (Router.getInstance().getCurrentUser().isPresent()) {
+                                goToOrder();
+                            } else {
+                                notifyLogin(null);
+                            }
+                        }
+                    }, new OneParameterExpression<Integer>() {
+                        @Override
+                        public void action(Integer integer) {
+                            Toast.makeText(mContext, getString(R.string.notify_net2), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                } else {
+                    goToOrder();
+                }
                 break;
         }
-        startActivity(intent);
+    }
+
+    private void goToOrder() {
+        Intent intent = new Intent();
+        createDialog();
+        Router.getAccountModule().fetchMyInfo(new OneParameterExpression<User>() {
+            @Override
+            public void action(User user) {
+                String phoneNum = "";
+                try {
+                    phoneNum = user.getContactInfo().get().getPhoneNumber();
+                } catch (Throwable e) {
+                    e.printStackTrace();
+                }
+                intent.setClass(mContext, BanquetOrderActivity.class);
+                intent.putExtra("banquet", mBanquent);
+                if (phoneNum != null && !phoneNum.equals(""))
+                    intent.putExtra("contact_phone_num", phoneNum);
+                startActivity(intent);
+                finalizeDialog();
+            }
+        }, new OneParameterExpression<String>() {
+            @Override
+            public void action(String s) {
+                Toast.makeText(mContext, getString(R.string.notify_net2), Toast.LENGTH_SHORT).show();
+                finalizeDialog();
+            }
+        });
     }
 
 

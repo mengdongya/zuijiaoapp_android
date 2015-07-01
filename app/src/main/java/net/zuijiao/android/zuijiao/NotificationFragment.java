@@ -1,5 +1,6 @@
 package net.zuijiao.android.zuijiao;
 
+import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -17,6 +18,7 @@ import com.zuijiao.view.PagerSlidingTab;
 /**
  * Created by xiaqibo on 2015/5/5.
  */
+@SuppressLint("ValidFragment")
 public class NotificationFragment extends Fragment implements MessageFragment.OnMessageFetch {
     private ViewPager mViewPager = null;
     private PagerSlidingTab mTabs = null;

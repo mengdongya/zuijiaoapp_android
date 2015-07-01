@@ -1,5 +1,6 @@
 package net.zuijiao.android.zuijiao;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -30,6 +31,7 @@ import java.util.List;
 /**
  * Created by xiaqibo on 2015/6/16.
  */
+@SuppressLint("ValidFragment")
 public class OrderListFragment extends Fragment implements
         RefreshAndInitListView.MyListViewListener,
         SwipeRefreshLayout.OnRefreshListener,
@@ -85,10 +87,10 @@ public class OrderListFragment extends Fragment implements
                 status = OrderStatus.Finished;
                 break;
             case 2:
-                status = OrderStatus.Finished;
+                status = OrderStatus.All;
                 break;
             default:
-                status = OrderStatus.Finished;
+                status = OrderStatus.All;
         }
         mRefreshLayout.setRefreshing(true);
         Router.getBanquentModule().orders(status, lastedId, 20, new OneParameterExpression<Orders>() {
@@ -174,6 +176,7 @@ public class OrderListFragment extends Fragment implements
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        position -= 1;
         Intent intent = new Intent(getActivity(), BanquetOrderDisplayActivity.class);
         intent.putExtra("order", orderList.get(position));
         startActivity(intent);

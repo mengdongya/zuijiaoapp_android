@@ -1,5 +1,6 @@
 package net.zuijiao.android.zuijiao;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -20,6 +21,7 @@ import java.util.ArrayList;
 /**
  * Created by xiaqibo on 2015/6/16.
  */
+@SuppressLint("ValidFragment")
 public class MyOrderFragment extends Fragment {
 
     private ViewPager mViewPager = null;

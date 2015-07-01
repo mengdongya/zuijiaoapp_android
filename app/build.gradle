@@ -33,8 +33,8 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            buildConfigField "String", "Base_Url", "\"http://api.zuijiao.net\""
-//            buildConfigField "String", "Base_Url", "\"http://xielingyu2.zuijiaodev.com\""
+//            buildConfigField "String", "Base_Url", "\"http://api.zuijiao.net\""
+            buildConfigField "String", "Base_Url", "\"http://xielingyu3.zuijiaodev.com\""
             buildConfigField "String", "Web_View_Url", "\"http://mobile.views.zuijiao.net\""
             buildConfigField "String", "Avatar_Base_Url", "\"/Avatar\""
             buildConfigField "String", "Gourmet_Base_Url", "\"/Gourmet\""
@@ -63,32 +63,12 @@ dependencies {
     compile 'com.android.support:appcompat-v7:21.0.3'
     compile 'com.squareup.picasso:picasso:2.5.2'
     compile project(':model')
-    compile files('libs/umeng-analytics-v5.4.2.jar')
-    //  <- used by upyun sdk start ->x
     compile 'com.loopj.android:android-async-http:1.4.6'
-    //    compile 'org.json:json:20141113'
     compile 'commons-codec:commons-codec:1.6'
-    //  <- used by upyun sdk end ->
     compile 'com.facebook.stetho:stetho:1.1.0'
     compile 'com.facebook.stetho:stetho-okhttp:1.1.0'
-    compile files('libs/BaiduLBS_Android.jar')
-    //    compile 'com.getbase:floatingactionbutton:1.9.0'
     compile 'com.android.support:support-annotations:21.0.3'
     compile 'com.kyleduo.switchbutton:library:1.2.8'
     compile 'com.github.clans:fab:1.5.0'
-    //    compile files('libs/baidumapapi.jar')
-    compile files('libs/umeng_social_sdk.jar')
-    compile files('libs/SocialSDK_WeiXin_1.jar')
-    compile files('libs/SocialSDK_WeiXin_2.jar')
-    compile files('libs/SocialSDK_QQZone_3.jar')
-    compile files('libs/SocialSDK_QQZone_2.jar')
-    compile files('libs/SocialSDK_QQZone_1.jar')
-    compile files('libs/httpmime-4.1.3.jar')
-    compile files('libs/SocialSDK_Sina.jar')
-    compile files('libs/weibosdkcore.jar')
-    compile files('libs/com.umeng.message.lib_v2.2.0.jar')
     compile 'com.android.support:support-v4:21.+'
-    compile files('libs/com.umeng.fb.5.3.0.jar')
-    compile files('libs/alipaySDK-20150610.jar')
-    compile files('libs/com.umeng.message.lib_v2.3.0.jar')
 }

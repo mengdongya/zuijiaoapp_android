@@ -1,6 +1,7 @@
 package com.zuijiao.android.zuijiao.model.Banquent;
 
 import com.google.gson.annotations.SerializedName;
+import com.zuijiao.android.util.functional.ImageUrlUtil;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -58,7 +59,8 @@ public class Order implements Serializable {
     }
 
     public String getImageUrl() {
-        return imageUrl;
+        return ImageUrlUtil.imageUrl(imageUrl);
+//        return imageUrl;
     }
 
     public Date getCreateTime() {

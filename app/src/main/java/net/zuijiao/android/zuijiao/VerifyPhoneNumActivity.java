@@ -1,6 +1,7 @@
 package net.zuijiao.android.zuijiao;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Handler;
@@ -8,11 +9,11 @@ import android.os.Message;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -133,6 +134,14 @@ public class VerifyPhoneNumActivity extends BaseActivity {
     }
 
     @Override
+    protected void onStop() {
+        super.onStop();
+        InputMethodManager imm = (InputMethodManager) mVerifyNumEditor.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (imm.isActive())
+            imm.hideSoftInputFromWindow(mVerifyNumEditor.getApplicationWindowToken(), 0);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.menu_confirm_phone_num) {
             if (!securityCodeSent) {
@@ -144,15 +153,17 @@ public class VerifyPhoneNumActivity extends BaseActivity {
                 return false;
             }
             if (bFromOrder) {
+                createDialog();
                 Router.getCommonModule().verifyPhoneNumber(mPhoneNumEditor.getText().toString().trim(), securityCode, new OneParameterExpression<Integer>() {
                     @Override
                     public void action(Integer integer) {
-                        Log.d("111", "ssss");
+                        finalizeDialog();
                         showKeepDialog();
                     }
                 }, new OneParameterExpression<String>() {
                     @Override
                     public void action(String s) {
+                        finalizeDialog();
                         if (s.contains("412")) {
                             Toast.makeText(mContext, getString(R.string.error_verify_code), Toast.LENGTH_SHORT).show();
                         } else {
@@ -162,26 +173,32 @@ public class VerifyPhoneNumActivity extends BaseActivity {
                 });
 
             } else {
-                keepPhoneNum(securityCode);
+                keepPhoneNum(securityCode, null);
             }
         }
         return super.onOptionsItemSelected(item);
     }
 
-    private void keepPhoneNum(String securityCode) {
+    private void keepPhoneNum(String securityCode, AlertDialog dialog) {
         createDialog();
         Router.getAccountModule().updatePhoneNumber(mPhoneNumEditor.getText().toString().trim(), securityCode, new LambdaExpression() {
             @Override
             public void action() {
-                finalizeDialog();
-                Intent intent = new Intent();
-                intent.putExtra("verified_phone_num", mPhoneNumEditor.getText().toString().trim());
-                setResult(RESULT_OK, intent);
-                finish();
+                if (dialog != null)
+                    dialog.dismiss();
+                if (!bFromOrder) {
+                    finalizeDialog();
+                    Intent intent = new Intent();
+                    intent.putExtra("verified_phone_num", mPhoneNumEditor.getText().toString().trim());
+                    setResult(RESULT_OK, intent);
+                    finish();
+                }
             }
         }, new OneParameterExpression<String>() {
             @Override
             public void action(String errorMsg) {
+                if (dialog != null)
+                    dialog.dismiss();
                 Toast.makeText(mContext, errorMsg, Toast.LENGTH_SHORT).show();
                 finalizeDialog();
             }
@@ -194,7 +211,7 @@ public class VerifyPhoneNumActivity extends BaseActivity {
         AlertDialog dialog = new AlertDialog.Builder(VerifyPhoneNumActivity.this).setView(logoutView).create();
         ((TextView) logoutView.findViewById(R.id.logout_content)).setText(getString(R.string.keep_phone_confirm));
         Button negativeBtn = (Button) logoutView.findViewById(R.id.logout_btn_cancel);
-        Button positiveBtn = (Button) logoutView.findViewById(R.id.logout_btn_cancel);
+        Button positiveBtn = (Button) logoutView.findViewById(R.id.logout_btn_confirm);
         negativeBtn.setText(getString(R.string.no));
         positiveBtn.setText(getString(R.string.yes));
         negativeBtn.setOnClickListener(new View.OnClickListener() {
@@ -206,7 +223,7 @@ public class VerifyPhoneNumActivity extends BaseActivity {
         positiveBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                keepPhoneNum(mVerifyNumEditor.getText().toString().trim());
+                keepPhoneNum(mVerifyNumEditor.getText().toString().trim(), dialog);
             }
         });
         dialog.show();

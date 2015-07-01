@@ -126,9 +126,10 @@
                 android:layout_gravity="right" />
 
             <View
-                android:layout_height="1dip"
                 android:layout_width="match_parent"
-                android:background="@color/bg_gray_white" />
+                android:layout_height="1dip"
+                android:layout_marginTop="10dip"
+                android:background="@color/bg_light_gray" />
 
             <LinearLayout
                 android:layout_height="wrap_content"
@@ -199,7 +200,6 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dip"
-                android:layout_marginTop="10dip"
                 android:background="@color/bg_light_gray" />
 
             <TextView
@@ -210,61 +210,12 @@
                 android:textColor="@color/bg_light_gray"
                 android:textSize="13sp" />
 
-            <LinearLayout
-                android:layout_height="wrap_content"
-                android:minHeight="50dip"
+            <ListView
+                android:layout_marginTop="8dip"
+                android:layout_height="match_parent"
                 android:layout_width="match_parent"
-                android:gravity="center_vertical"
-                android:paddingRight="5dip"
-                android:paddingLeft="5dip"
-                android:orientation="horizontal"
-                android:id="@+id/zhifubao_pay">
+                android:id="@+id/banquet_order_pay_way_list" />
 
-                <TextView
-                    android:layout_height="wrap_content"
-                    android:layout_width="match_parent"
-                    android:layout_weight="1"
-                    android:textColor="@color/tv_deep_gray"
-                    android:textSize="14sp"
-                    android:text="@string/pay_by_zhifubao" />
-
-                <ImageView
-                    android:layout_marginLeft="10dip"
-                    android:src="@drawable/correct"
-                    android:layout_height="20dip"
-                    android:scaleType="fitXY"
-                    android:layout_gravity="center_vertical"
-                    android:layout_width="20dip"
-                    android:id="@+id/payby_alipay" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_height="wrap_content"
-                android:minHeight="50dip"
-                android:layout_width="match_parent"
-                android:gravity="center_vertical"
-                android:paddingRight="5dip"
-                android:paddingLeft="5dip"
-                android:orientation="horizontal"
-                android:id="@+id/weixin_pay">
-
-                <TextView
-                    android:layout_height="wrap_content"
-                    android:layout_width="match_parent"
-                    android:layout_weight="1"
-                    android:textColor="@color/tv_deep_gray"
-                    android:textSize="14sp"
-                    android:text="@string/pay_by_weixin" />
-
-                <ImageView
-                    android:layout_marginLeft="10dip"
-                    android:src="@drawable/correct"
-                    android:layout_height="20dip"
-                    android:scaleType="fitXY"
-                    android:layout_gravity="center_vertical"
-                    android:layout_width="20dip"
-                    android:id="@+id/payby_weixin" />
-            </LinearLayout>
 
         </LinearLayout>
     </ScrollView>
@@ -291,7 +242,7 @@
             android:text="198元/位"
             android:layout_marginLeft="10dip"
             android:layout_marginTop="5dip"
-            android:textColor="@color/tv_orange_red"
+            android:textColor="@color/banquet_theme"
             android:textSize="17sp" />
 
         <TextView
@@ -312,9 +263,11 @@
             android:layout_width="wrap_content"
             android:text="@string/pay_right_now"
             android:gravity="center"
+            android:paddingRight="5dip"
+            android:paddingLeft="5dip"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:textColor="@color/tv_orange_red"
+            android:textColor="@color/banquet_theme"
             android:textSize="19sp" />
     </RelativeLayout>
 </RelativeLayout>

@@ -2,7 +2,7 @@ package com.zuijiao.android.zuijiao.model.user;
 
 import com.google.gson.annotations.SerializedName;
 import com.zuijiao.android.util.Optional;
-import com.zuijiao.android.zuijiao.network.Router;
+import com.zuijiao.android.util.functional.ImageUrlUtil;
 
 import java.io.Serializable;
 
@@ -23,14 +23,15 @@ public class TinyUser implements Serializable {
     }
 
     public Optional<String> getAvatarURL() {
-        if (avatarURL != null) {
-            if (avatarURL.length() > 0 && avatarURL.startsWith("http"))
-                return Optional.ofNullable(avatarURL);
-            else {
-                return Optional.of(Router.PicBaseUrl + avatarURL);
-            }
-        }
-        return Optional.empty();
+//        if (avatarURL != null) {
+//            if (avatarURL.length() > 0 && avatarURL.startsWith("http"))
+//                return Optional.ofNullable(avatarURL);
+//            else {
+//                return Optional.of(Router.PicBaseUrl + avatarURL);
+//            }
+//        }
+//        return Optional.empty();
+        return Optional.ofNullable(ImageUrlUtil.imageUrl(avatarURL));
     }
 
     public Integer getIdentifier() {

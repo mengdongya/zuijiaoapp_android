@@ -1,5 +1,6 @@
 package net.zuijiao.android.zuijiao;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -38,6 +39,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+@SuppressLint("ValidFragment")
 public class MessageFragment extends Fragment implements FragmentDataListener,
         MyListViewListener {
     public RefreshAndInitListView mListView = null;

@@ -66,7 +66,7 @@ public class BanquetOrderDisplayActivity extends BaseActivity {
             finish();
             return;
         }
-        Picasso.with(mContext).load(mOrder.getImageUrl()).into(mImage);
+        Picasso.with(mContext).load(mOrder.getImageUrl()).placeholder(R.drawable.empty_view_greeting).into(mImage);
         title.setText(mOrder.getTitle());
         String formatDate = formatDate(mOrder.getCreateTime());
         dateLocation.setText(formatDate + getString(R.string.center_dot) + mOrder.getAddress());
@@ -105,6 +105,7 @@ public class BanquetOrderDisplayActivity extends BaseActivity {
                     @Override
                     public void action(String errorMsg) {
                         Toast.makeText(mContext, getString(R.string.notify_net2), Toast.LENGTH_SHORT).show();
+                        finalizeDialog();
                     }
                 });
 

@@ -1,13 +1,14 @@
 package com.zuijiao.thirdopensdk;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v4.app.FragmentActivity;
 import android.text.TextUtils;
-import android.widget.Toast;
 
 import com.alipay.sdk.app.PayTask;
+
+import net.zuijiao.android.zuijiao.BanquetOrderCallbackActivity;
 
 
 /**
@@ -16,11 +17,11 @@ import com.alipay.sdk.app.PayTask;
 public class Alipay {
     private static final int SDK_PAY_FLAG = 1;
 
-//    private static final int SDK_CHECK_FLAG = 2;
-    Activity act ;
+    //    private static final int SDK_CHECK_FLAG = 2;
+    private Activity mActivity;
 
-    public Alipay(Activity act){
-     this.act = act ;
+    public Alipay(Activity act) {
+        this.mActivity = act;
     }
 
     private Handler mHandler = new Handler() {
@@ -32,32 +33,31 @@ public class Alipay {
                     String resultInfo = payResult.getResult();
 
                     String resultStatus = payResult.getResultStatus();
-
+                    Intent intent = new Intent(mActivity, BanquetOrderCallbackActivity.class);
                     if (TextUtils.equals(resultStatus, "9000")) {
-                        Toast.makeText(act, "successed",
-                                Toast.LENGTH_SHORT).show();
+                        intent.putExtra("b_suceess", true);
+                        mActivity.startActivity(intent);
+//                        Toast.makeText(act, "successed",
+//                                Toast.LENGTH_SHORT).show();
                     } else {
-                        if (TextUtils.equals(resultStatus, "8000")) {
-                            Toast.makeText(act, "waiting for the result",
-                                    Toast.LENGTH_SHORT).show();
-
-                        } else {
-                            Toast.makeText(act, "failed",
-                                    Toast.LENGTH_SHORT).show();
-
-                        }
+                        intent.putExtra("b_suceess", false);
+                        mActivity.startActivity(intent);
+//                        if (TextUtils.equals(resultStatus, "8000")) {
+//                            Toast.makeText(act, "waiting for the result",
+//                                    Toast.LENGTH_SHORT).show();
+//
+//                        } else {
+//
+//                        }
                     }
                     break;
                 }
-                /*case SDK_CHECK_FLAG: {
-                    Toast.makeText(act, "the result is" + msg.obj,
-                            Toast.LENGTH_SHORT).show();
-                    break;
-                }*/
                 default:
                     break;
             }
-        };
+        }
+
+        ;
     };
 
     public void pay(String queryString) {
@@ -66,16 +66,14 @@ public class Alipay {
 
             @Override
             public void run() {
-                PayTask alipay = new PayTask(act);
+                PayTask alipay = new PayTask(mActivity);
                 String result = alipay.pay(queryString);
-
                 Message msg = new Message();
                 msg.what = SDK_PAY_FLAG;
                 msg.obj = result;
                 mHandler.sendMessage(msg);
             }
         };
-
         Thread payThread = new Thread(payRunnable);
         payThread.start();
     }

@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include
+        layout="@layout/toolbar"
+        android:id="@+id/order_callback_toolbar" />
+
+
+    <FrameLayout
+        android:layout_height="match_parent"
+        android:layout_width="match_parent">
+
+        <ImageView
+            android:id="@+id/order_callback_bg"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_gravity="top|center_horizontal"
+            android:layout_marginBottom="100dip"
+            android:layout_marginTop="15dip"
+            android:elevation="3dip"
+            android:src="@drawable/order_callback_success_bg" />
+
+        <LinearLayout
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_gravity="center"
+            android:background="@color/transparent"
+            android:elevation="4dip"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/order_callback_title"
+                android:layout_marginTop="10dip"
+                android:layout_height="wrap_content"
+                android:text="Sonian的台味厨房"
+                android:textSize="18sp"
+                android:layout_gravity="center"
+                android:layout_width="wrap_content" />
+
+
+            <TextView
+                android:id="@+id/order_callback_detail"
+                android:layout_marginTop="10dip"
+                android:layout_height="wrap_content"
+                android:text="4月18日 周六 18:00\n上海市黄浦区知音苑"
+                android:textSize="16sp"
+                android:gravity="center_horizontal"
+                android:lineSpacingExtra="5dip"
+                android:layout_gravity="center"
+                android:layout_width="wrap_content" />
+
+            <TextView
+                android:id="@+id/order_callback_waiting"
+                android:layout_height="wrap_content"
+                android:text="@string/waiting_fo_you"
+                android:textColor="@color/tv_light_gray"
+                android:textSize="15sp"
+                android:layout_gravity="center"
+                android:layout_marginTop="30dip"
+                android:layout_width="wrap_content" />
+
+            <Button
+                android:id="@+id/order_callback_finish_btn"
+                android:layout_height="wrap_content"
+                android:layout_width="100dip"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                android:gravity="center"
+                style="?android:attr/buttonStyleSmall"
+                android:background="@drawable/order_feedback_btn_bg"
+                android:layout_marginTop="10dip"
+                android:text="@string/finish" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/order_callback_notify_complete"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:gravity="center_horizontal"
+            android:layout_gravity="bottom"
+            android:textSize="12sp"
+            android:layout_marginBottom="70dip"
+            android:textColor="@color/tv_light_gray"
+            android:text="@string/notify_complete_information" />
+
+        <TextView
+            android:id="@+id/order_callback_complete_info"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:background="@null"
+            android:textColor="@color/banquet_theme"
+            android:layout_marginBottom="40dip"
+            android:layout_gravity="center_horizontal|bottom"
+            android:text="@string/complete_information"
+            android:textSize="15sp" />
+
+    </FrameLayout>
+</LinearLayout>

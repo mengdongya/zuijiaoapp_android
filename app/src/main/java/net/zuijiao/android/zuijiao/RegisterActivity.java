@@ -96,7 +96,6 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
         if (requestCode == CHOOSE_GALLERY_REQ && RESULT_OK == resultCode) {
             String path = (getCacheDir().getPath() + File.separator + "head.jpg");
             File file = new File(path);
-            ;
             if (file.exists()) {
                 mHeadChooseImage.setImageBitmap(BitmapFactory.decodeFile(path));
             }
@@ -205,6 +204,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                         TinyUser user = Router.getInstance().getCurrentUser().get();
                         AuthorInfo authorInfo = new AuthorInfo();
                         authorInfo.setUserName(user.getNickName());
+                        authorInfo.setHeadPath(mUserAvatar);
                         authorInfo.setPassword(mPwd);
                         authorInfo.setPlatform("");
                         authorInfo.setEmail(mEmail);
@@ -233,6 +233,10 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
     }
 
     private boolean checkInputState() {
+        if( "head.jpg" == mHeadChooseImage.toString()||mHeadChooseImage.toString().equals("")){
+            mErrorCode = getString(R.string.register_error_headimage);
+            return false;
+        }
         mNickName = mEtNickName.getText().toString().trim();
         if (mNickName == null || mNickName.equals("")) {
             mErrorCode = getString(R.string.register_error_name);

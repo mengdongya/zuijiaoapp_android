@@ -105,7 +105,7 @@ public class BanquetOrderActivity extends BaseActivity implements View.OnClickLi
             ImageView image = (ImageView) convertView.findViewById(R.id.pay_way_image);
             if (mSelectedPayWay == position) {
                 image.setVisibility(View.VISIBLE);
-            } else image.setVisibility(View.GONE);
+            } else image.setVisibility(View.INVISIBLE);
             textView.setText(payWayRes[position]);
             return convertView;
         }

@@ -39,15 +39,6 @@ public class MessageActivity extends BaseActivity implements MessageFragment.OnM
         mTabs.setViewPager(mViewPager);
     }
 
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.menu_main) {
-            //luo ji shixian
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
     private void initTabsValue() {
         //cursor color
         mTabs.setIndicatorColor(Color.WHITE);

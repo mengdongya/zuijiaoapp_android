@@ -46,6 +46,10 @@ public class OrderAuth {
         return data.paySign.partnerId;
     }
 
+    public String getQueryString() {
+        return data.paySign.query;
+    }
+
     class Data {
         @SerializedName("order")
         private Order order;

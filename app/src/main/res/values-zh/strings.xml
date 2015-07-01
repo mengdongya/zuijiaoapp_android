@@ -105,7 +105,6 @@
     <string name="notify_empty_email">请输入正确的邮箱地址</string>
     <string name="notify_empty_password">请输入密码</string>
     <string name="none_msg">暂时还没有消息</string>
-    <string name="register_error_headimage">用户头像不能为空 ！</string>
     <string name="register_error_email">邮箱地址不能为空</string>
     <string name="register_error_email_format">请输入正确的邮箱地址</string>
     <string name="register_error_name">请输入用户名</string>

@@ -233,10 +233,6 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
     }
 
     private boolean checkInputState() {
-        if( "head.jpg" == mHeadChooseImage.toString()||mHeadChooseImage.toString().equals("")){
-            mErrorCode = getString(R.string.register_error_headimage);
-            return false;
-        }
         mNickName = mEtNickName.getText().toString().trim();
         if (mNickName == null || mNickName.equals("")) {
             mErrorCode = getString(R.string.register_error_name);

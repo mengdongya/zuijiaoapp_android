@@ -294,11 +294,10 @@ public class HostAndGuestActivity extends BaseActivity {
             View listItem = listAdapter.getView(i, null, listView);
             listItem.measure(0, 0);
             totalHeight += listItem.getMeasuredHeight();
-        }git
+        }
         ViewGroup.LayoutParams params = listView.getLayoutParams();
         params.height = totalHeight
-                + (listView.getDividerHeight() * (listAdapter.getCount()-1));
-        listView.setLayoutParams(params);
+                + (listView.getDividerHeight() * (listAdapter.getCount()));
     }
 
     private ViewPager.OnPageChangeListener mPageListener = new ViewPager.OnPageChangeListener() {

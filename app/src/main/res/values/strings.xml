@@ -54,7 +54,7 @@
     <string name="honey_name">用户名</string>
     <string name="password">密码</string>
     <string name="password_confirm">密码确认</string>
-    <string name="notify_register">还没有嘴角账号，点击注册</string>
+    <string name="notify_register">还没有嘴角账号？点击注册</string>
     <string name="notify_register_part">还没有嘴角账号，点击注册</string>
     <string name="third_party_login">第三方账号登录</string>
     <string name="weibo">微博</string>
@@ -334,5 +334,5 @@
     <string name="notify_order_failed">很抱歉，您的预定未成功，请稍后重试，\n或者致电021-58313120</string>
     <string name="finish">完成</string>
     <string name="waiting_fo_you">等待您的赏位</string>
-    <string name="on_register" >正在注册</string>
+    <string name="notify_choose_avatar">请选择头像</string>
 </resources>

@@ -82,7 +82,7 @@ public class MainFragment extends Fragment {
     }
 
     public boolean onBackPressed() {
-        if (mViewPager.getCurrentItem() == 0 && gourmetFragment.holdBackEvent()) {
+        if (mViewPager.getCurrentItem() == 1 && gourmetFragment.holdBackEvent()) {
             gourmetFragment.closeFloatMenu();
             return true;
         }

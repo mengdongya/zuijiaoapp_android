@@ -29,18 +29,16 @@ public class Alipay {
             switch (msg.what) {
                 case SDK_PAY_FLAG: {
                     PayResult payResult = new PayResult((String) msg.obj);
-
                     String resultInfo = payResult.getResult();
-
                     String resultStatus = payResult.getResultStatus();
                     Intent intent = new Intent(mActivity, BanquetOrderCallbackActivity.class);
                     if (TextUtils.equals(resultStatus, "9000")) {
-                        intent.putExtra("b_suceess", true);
+                        intent.putExtra("b_success", true);
                         mActivity.startActivity(intent);
 //                        Toast.makeText(act, "successed",
 //                                Toast.LENGTH_SHORT).show();
                     } else {
-                        intent.putExtra("b_suceess", false);
+                        intent.putExtra("b_success", false);
                         mActivity.startActivity(intent);
 //                        if (TextUtils.equals(resultStatus, "8000")) {
 //                            Toast.makeText(act, "waiting for the result",

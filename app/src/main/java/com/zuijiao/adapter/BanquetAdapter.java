@@ -102,7 +102,7 @@ public class BanquetAdapter extends BaseAdapter implements AdapterView.OnItemCli
         } else {
             if (convertView == null) {
                 convertView = mInflater.inflate(R.layout.banquet_list_item, null);
-                Log.i("banquet_adapter", "inflater" + count++);
+                Log.i("banquet_adapter", "inflater" + (count++));
                 holder = new ViewHolder();
                 holder.image = (ImageView) convertView.findViewById(R.id.banquet_item_image);
                 holder.title = (TextView) convertView.findViewById(R.id.banquet_item_title);

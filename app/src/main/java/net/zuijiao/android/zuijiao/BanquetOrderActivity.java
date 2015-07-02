@@ -105,7 +105,7 @@ public class BanquetOrderActivity extends BaseActivity implements View.OnClickLi
             ImageView image = (ImageView) convertView.findViewById(R.id.pay_way_image);
             if (mSelectedPayWay == position) {
                 image.setVisibility(View.VISIBLE);
-            } else image.setVisibility(View.GONE);
+            } else image.setVisibility(View.INVISIBLE);
             textView.setText(payWayRes[position]);
             return convertView;
         }
@@ -128,7 +128,7 @@ public class BanquetOrderActivity extends BaseActivity implements View.OnClickLi
         payWayRes = getResources().getStringArray(R.array.pay_way);
         payWayStr = getResources().getStringArray(R.array.pay_way_str);
         mPayWayList.setAdapter(mPayWayAdapter);
-        setListViewHeightBasedOnChildren(mPayWayList);
+//        setListViewHeightBasedOnChildren(mPayWayList);
         mPayWayList.setOnItemClickListener(mPayWaySwitcher);
         if (phoneNum != null && !phoneNum.equals("")) {
             mBanquetPhone.setText(phoneNum);
@@ -235,6 +235,8 @@ public class BanquetOrderActivity extends BaseActivity implements View.OnClickLi
         int totalHeight = 0;
         for (int i = 0; i < listAdapter.getCount(); i++) {
             View listItem = listAdapter.getView(i, null, listView);
+            if (listItem == null)
+                continue;
             listItem.measure(0, 0);
             totalHeight += listItem.getMeasuredHeight();
         }

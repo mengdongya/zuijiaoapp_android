@@ -55,7 +55,7 @@ public class ImageChooseActivity extends BaseActivity {
     private ArrayList<String> mCachedId = new ArrayList<String>();
     private ProgressDialog mDialog = null;
     private ContentResolver mContentResolver = null;
-
+    private final int maxSize = 40;
 
     protected void registerViews() {
         setSupportActionBar(mToolbar);
@@ -158,12 +158,13 @@ public class ImageChooseActivity extends BaseActivity {
         for (SimpleImage image : list) {
             if (mCachedId.contains(image.id))
                 continue;
-            Bitmap bitmap = MediaStore.Images.Thumbnails.getThumbnail(
-                    mContentResolver,
-                    Integer.parseInt(image.id),
-                    MediaStore.Images.Thumbnails.MINI_KIND, null);
-            if (bitmap != null) {
-                addToCache(bitmap, image.id);
+            Bitmap bmp = mFileMng.getImageBmpById(image.id, mContentResolver);
+//            Bitmap bitmap = MediaStore.Images.Thumbnails.getThumbnail(
+//                    mContentResolver,
+//                    Integer.parseInt(image.id),
+//                    MediaStore.Images.Thumbnails.MINI_KIND, null);
+            if (bmp != null && !bmp.isRecycled()) {
+                addToCache(bmp, image.id);
             }
         }
     }
@@ -173,14 +174,15 @@ public class ImageChooseActivity extends BaseActivity {
             return;
         }
         for (SimpleImage image : images) {
-            if (mCachedData.size() >= 20) {
+            if (mCachedData.size() >= 8) {
                 break;
             }
             try {
-                Bitmap bitmap = MediaStore.Images.Thumbnails.getThumbnail(
-                        mContext.getContentResolver(),
-                        Integer.parseInt(image.id),
-                        MediaStore.Images.Thumbnails.MINI_KIND, null);
+                Bitmap bitmap = mFileMng.getImageBmpById(image.id, mContentResolver);
+//                Bitmap bitmap = MediaStore.Images.Thumbnails.getThumbnail(
+//                        mContext.getContentResolver(),
+//                        Integer.parseInt(image.id),
+//                        MediaStore.Images.Thumbnails.MINI_KIND, null);
                 if (bitmap != null) {
                     synchronized (mCachedData) {
                         mCachedData.put(image.id, bitmap);
@@ -200,6 +202,7 @@ public class ImageChooseActivity extends BaseActivity {
 
     private static final int CACHE_SIZE = 50;
 
+
     private void addToCache(Bitmap bitmap, String id) {
         if (mCachedData == null) {
             mCachedData = new HashMap<String, Bitmap>();
@@ -208,9 +211,8 @@ public class ImageChooseActivity extends BaseActivity {
             mCachedId = new ArrayList<String>();
         }
         int i = 0;
-        if (mCachedId.size() >= CACHE_SIZE) {
-
-            while (mCachedId.size() >= CACHE_SIZE) {
+        if (mCachedData.size() > maxSize) {
+            while (mCachedData.size() > maxSize) {
                 String strId = mCachedId.get(0);
                 Bitmap bm = mCachedData.get(strId);
                 if (bm != null && !bm.isRecycled()) {
@@ -222,9 +224,36 @@ public class ImageChooseActivity extends BaseActivity {
             }
             System.gc();
         }
-        mCachedId.add(id);
-        mCachedData.put(id, bitmap);
+        if (bitmap != null && !bitmap.isRecycled()) {
+            mCachedId.add(id);
+            mCachedData.put(id, bitmap);
+        }
     }
+//    private void addToCache(Bitmap bitmap, String id) {
+//        if (mCachedData == null) {
+//            mCachedData = new HashMap<String, Bitmap>();
+//        }
+//        if (mCachedId == null) {
+//            mCachedId = new ArrayList<String>();
+//        }
+//        int i = 0;
+//        if (mCachedId.size() >= CACHE_SIZE) {
+//
+//            while (mCachedId.size() >= CACHE_SIZE) {
+//                String strId = mCachedId.get(0);
+//                Bitmap bm = mCachedData.get(strId);
+//                if (bm != null && !bm.isRecycled()) {
+//                    bm.recycle();
+//                }
+//                bm = null;
+//                mCachedData.remove(strId);
+//                mCachedId.remove(0);
+//            }
+//            System.gc();
+//        }
+//        mCachedId.add(id);
+//        mCachedData.put(id, bitmap);
+//    }
 
     private Bitmap getFromCache(String id) {
         if (mCachedData == null) {
@@ -305,10 +334,11 @@ public class ImageChooseActivity extends BaseActivity {
                 getThreadPool().execute(new Runnable() {
                     @Override
                     public void run() {
-                        Bitmap bitmap = MediaStore.Images.Thumbnails.getThumbnail(
-                                mContext.getContentResolver(),
-                                Integer.parseInt(image.id),
-                                MediaStore.Images.Thumbnails.MINI_KIND, null);
+                        Bitmap bitmap = mFileMng.getImageBmpById(image.id, mContentResolver);
+//                        Bitmap bitmap = MediaStore.Images.Thumbnails.getThumbnail(
+//                                mContext.getContentResolver(),
+//                                Integer.parseInt(image.id),
+//                                MediaStore.Images.Thumbnails.MINI_KIND, null);
                         addToCache(bitmap, image.id);
                         Message msg = mHandler.obtainMessage();
                         msg.what = Integer.parseInt(image.id);

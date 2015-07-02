@@ -29,6 +29,7 @@
         android:layout_below="@id/et_login_email"
         android:layout_marginLeft="10dip"
         android:layout_marginRight="10dip"
+        android:layout_marginTop="10dip"
         android:drawableBottom="@drawable/single_line"
         android:hint="@string/password"
         android:inputType="textPassword"
@@ -40,7 +41,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/et_login_passsword"
-        android:layout_marginTop="15dip"
+        android:layout_marginTop="20dip"
         android:gravity="center_horizontal"
         android:text="@string/notify_register" />
 

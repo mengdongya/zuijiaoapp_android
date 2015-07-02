@@ -1,10 +1,11 @@
 package net.zuijiao.android.zuijiao;
 
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.os.Message;
-import android.provider.MediaStore;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,7 +23,10 @@ import com.lidroid.xutils.view.annotation.ViewInject;
 import com.zuijiao.controller.FileManager;
 import com.zuijiao.entity.SimpleImage;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -33,7 +37,7 @@ import java.util.concurrent.Executors;
  */
 @ContentView(R.layout.activity_multi_image_choose)
 public class MultiImageChooseActivity extends BaseActivity {
-
+    private final String LOG = "multiImage";
     @ViewInject(R.id.multi_image_choose_toolbar)
     private Toolbar mToolbar = null;
     @ViewInject(R.id.multi_image_choose_grid_view)
@@ -42,14 +46,14 @@ public class MultiImageChooseActivity extends BaseActivity {
     private Button mSureBtn = null;
     private List<SimpleImage> images = null;
     private int mMaxCount = 5;
-    private static final int CACHE_SIZE = 50;
+    private static final int CACHE_SIZE = 20;
     //cached bitmap ;
-
-    private HashMap<String, Bitmap> mCachedData = new HashMap<>();
+    private HashMap<String, Bitmap> mCachedData = new HashMap();
     //id of cached bitmap ;
     private ArrayList<String> mCachedId = new ArrayList<String>();
     private ArrayList<SimpleImage> mSelectedImage = new ArrayList<>();
-
+    private ContentResolver mResolver = null;
+    private final int maxSize = 40;
 
     @Override
     protected void registerViews() {
@@ -69,10 +73,8 @@ public class MultiImageChooseActivity extends BaseActivity {
                 finish();
             }
         });
-        int maxMemory = (int) Runtime.getRuntime().maxMemory();
-        int mCacheSize = maxMemory / 4;
-        Log.i("memory>>>>>>>>>>>>>>>", "maxMemory == " + maxMemory);
         mGridView.setOnItemClickListener(mGridListener);
+        mResolver = mContext.getContentResolver();
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -91,8 +93,6 @@ public class MultiImageChooseActivity extends BaseActivity {
         }
     }
 
-    //    private ArrayList<String> mSelectedId = new ArrayList<>();
-//    private ArrayList<String> mSelectedPath = new ArrayList<>();
     private AdapterView.OnItemClickListener mGridListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -103,10 +103,8 @@ public class MultiImageChooseActivity extends BaseActivity {
             } else {
                 if (mSelectedImage.size() >= mMaxCount) {
                     Toast.makeText(mContext, String.format(getString(R.string.image_count_upper_limit), mMaxCount), Toast.LENGTH_SHORT).show();
-//                    ((ToggleButton) view).setChecked(false);
                 } else {
                     mSelectedImage.add(image);
-//                    ((ToggleButton) view).setChecked(true);
                 }
             }
             mGridViewAdapter.getView(position, view, parent);
@@ -130,26 +128,17 @@ public class MultiImageChooseActivity extends BaseActivity {
     }
 
     private void initCache() {
+        Date date = new Date();
         if (images == null || images.size() == 0) {
             return;
         }
         for (SimpleImage image : images) {
-            if (mCachedData.size() >= 20) {
+            if (mCachedData.size() >= 12) {
                 break;
             }
             try {
-                Bitmap bitmap = MediaStore.Images.Thumbnails.getThumbnail(
-                        mContext.getContentResolver(),
-                        Integer.parseInt(image.id),
-                        MediaStore.Images.Thumbnails.MINI_KIND, null);
-                if (bitmap != null) {
-                    synchronized (mCachedData) {
-                        mCachedData.put(image.id, bitmap);
-                    }
-                    synchronized (mCachedId) {
-                        mCachedId.add(image.id);
-                    }
-                }
+                Bitmap bitmap = mFileMng.getImageBmpById(image.id, mResolver);
+                addToCache(bitmap, image.id);
             } catch (Throwable t) {
                 t.printStackTrace();
             }
@@ -157,7 +146,13 @@ public class MultiImageChooseActivity extends BaseActivity {
         Message msg = mHandler.obtainMessage();
         msg.what = 0x10001;
         mHandler.sendMessage(msg);
+        Log.i(LOG, new Date().getTime() - date.getTime() + "");
     }
+
+
+//    private Bitmap getImageBitmap(String id) {
+//
+//    }
 
 
     private void addToCache(Bitmap bitmap, String id) {
@@ -168,9 +163,8 @@ public class MultiImageChooseActivity extends BaseActivity {
             mCachedId = new ArrayList<String>();
         }
         int i = 0;
-        if (mCachedId.size() >= CACHE_SIZE) {
-
-            while (mCachedId.size() >= CACHE_SIZE) {
+        if (mCachedData.size() > maxSize) {
+            while (mCachedData.size() > maxSize) {
                 String strId = mCachedId.get(0);
                 Bitmap bm = mCachedData.get(strId);
                 if (bm != null && !bm.isRecycled()) {
@@ -182,8 +176,10 @@ public class MultiImageChooseActivity extends BaseActivity {
             }
             System.gc();
         }
-        mCachedId.add(id);
-        mCachedData.put(id, bitmap);
+        if (bitmap != null && !bitmap.isRecycled()) {
+            mCachedId.add(id);
+            mCachedData.put(id, bitmap);
+        }
     }
 
     private BaseAdapter mGridViewAdapter = new BaseAdapter() {
@@ -227,10 +223,12 @@ public class MultiImageChooseActivity extends BaseActivity {
                 getThreadPool().execute(new Runnable() {
                     @Override
                     public void run() {
-                        Bitmap bitmap = MediaStore.Images.Thumbnails.getThumbnail(
-                                mContext.getContentResolver(),
-                                Integer.parseInt(image.id),
-                                MediaStore.Images.Thumbnails.MINI_KIND, null);
+                        Bitmap bitmap = mFileMng.getImageBmpById(image.id, mResolver);
+//                        Bitmap bitmap = MediaStore.Images.Thumbnails.getThumbnail(
+//                                mResolver,
+//                                Integer.parseInt(image.id),
+//                                MediaStore.Images.Thumbnails.MINI_KIND, null);
+//                        bitmap = compressImage(bitmap);
                         addToCache(bitmap, image.id);
                         Message msg = mHandler.obtainMessage();
                         msg.what = Integer.parseInt(image.id);
@@ -252,7 +250,7 @@ public class MultiImageChooseActivity extends BaseActivity {
         if (mImageThreadPool == null) {
             synchronized (ExecutorService.class) {
                 if (mImageThreadPool == null) {
-                    mImageThreadPool = Executors.newFixedThreadPool(2);
+                    mImageThreadPool = Executors.newFixedThreadPool(5);
                 }
             }
         }
@@ -281,47 +279,25 @@ public class MultiImageChooseActivity extends BaseActivity {
             }
         }
     };
-//            if(mGridView.getAdapter() == null){
 
-//                mGridView.setOnScrollListener(new AbsListView.OnScrollListener() {
-//                    @Override
-//                    public void onScrollStateChanged(AbsListView view, int scrollState) {
-//
-//                    }
-//
-//                    @Override
-//                    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-////                        int loadPreciousFrom = (firstVisibleItem - 20 )<0 ? 0 : firstVisibleItem - 20 ;
-////                        int loadPreciousTo =  (firstVisibleItem - 10 )<0 ? 0 : firstVisibleItem - 10 ;
-////                        mFileMng.addToLoadList(images.subList(loadPreciousFrom,loadPreciousTo));
-////                        int loadMoreFrom = firstVisibleItem + visibleItemCount +1> images.size() -1 ? images.size() -1 :firstVisibleItem + visibleItemCount +1 ;
-////                        int loadMoreTo = firstVisibleItem + visibleItemCount +11> images.size() -1 ? images.size() -1 :firstVisibleItem + visibleItemCount + 11 ;
-////                        mFileMng.addToLoadList(images.subList( loadMoreFrom,loadMoreTo) );
-//                    }
-//                });
-//            }else
-//                mGridViewAdapter.notifyDataSetInvalidated();
-//            SimpleImage image = (SimpleImage) msg.obj;
-//            ImageView imageView = (ImageView) mGridView.findViewWithTag(image.id);
-//            if(imageView!= null){
-//                imageView.setImageBitmap(mFileMng.getBitmapFromMemCache(image.id));
-//            }
-//            int position = images.indexOf(image) ;
-//            mGridViewAdapter.getView(position ,null ,mGridView) ;
-//            mGridView.getOnItemClickListener().onItemClick(mGridView);
-//            mGridViewAdapter.notifyDataSetChanged();
-//            for(SimpleImage image : images){
-//                if(image.id.equals(id)){
-//                    mGridViewAdapter.getView(images.indexOf(image) ,mGridView.getChildAt(images.indexOf(image)) , mGridView) ;
-//                    break ;
-//                }
-//            }
-
-    //            if(mGridView.getAdapter() == null)
-//                mGridView.setAdapter(mGridViewAdapter);
-//            else
-//                mGridViewAdapter.notifyDataSetChanged(); ;
-//        }
+    private Bitmap compressImage(Bitmap image) {
+        if (image.getByteCount() / 1024 < 400) {
+            return image;
+        }
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        image.compress(Bitmap.CompressFormat.JPEG, 100, baos);//质量压缩方法，这里100表示不压缩，把压缩后的数据存放到baos中
+        int options = 100;
+        while (baos.toByteArray().length / 1024 > 100) {    //循环判断如果压缩后图片是否大于100kb,大于继续压缩
+            baos.reset();//重置baos即清空baos
+            options -= 40;//每次都减少10
+            if (options < 50)
+                break;
+            image.compress(Bitmap.CompressFormat.JPEG, options, baos);//这里压缩options%，把压缩后的数据存放到baos中
+        }
+        ByteArrayInputStream isBm = new ByteArrayInputStream(baos.toByteArray());//把压缩后的数据baos存放到ByteArrayInputStream中
+        Bitmap bitmap = BitmapFactory.decodeStream(isBm, null, null);//把ByteArrayInputStream数据生成图片
+        return bitmap;
+    }
     private boolean selectedImageContainsCurrentImage(SimpleImage image) {
         for (SimpleImage si : mSelectedImage) {
             if (si.data.equals(image.data)) {

@@ -473,7 +473,7 @@ public final class MainActivity extends BaseActivity {
             startActivity(intent);
             Router.getMessageModule().markAsRead(News.NotificationType.Notice, () -> {
                 if (unReadNewsCount > 0) {
-                    showBadgeView();
+                    removeBadgeView();
                 }
             }, () -> {
             });

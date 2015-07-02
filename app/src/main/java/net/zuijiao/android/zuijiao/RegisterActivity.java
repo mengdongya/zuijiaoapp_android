@@ -73,6 +73,8 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
     private String photoFileName;
     private String mUserAvatar;
     private File photoDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM);
+    private boolean bUserAvatarSet = false;
+    private String mSelectedGender = "male";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,9 +98,9 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
         if (requestCode == CHOOSE_GALLERY_REQ && RESULT_OK == resultCode) {
             String path = (getCacheDir().getPath() + File.separator + "head.jpg");
             File file = new File(path);
-            ;
             if (file.exists()) {
                 mHeadChooseImage.setImageBitmap(BitmapFactory.decodeFile(path));
+                bUserAvatarSet = true;
             }
         } else if (requestCode == TAKE_PHOTO_REQ && resultCode == RESULT_OK) {
 //            Bitmap photo = data.getParcelableExtra("data");
@@ -145,6 +147,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                     return;
                 }
                 mHeadChooseImage.setImageBitmap(BitmapFactory.decodeFile(getCacheDir().getPath() + File.separator + "head.jpg"));
+                bUserAvatarSet = true;
                 finalizeDialog();
             } else {
                 finalizeDialog();
@@ -176,17 +179,20 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                         e.printStackTrace();
                         return false;
                     }
+                    createDialog();
                     mUserAvatar = UpyunUploadTask.avatarPath(new Date().getTime(), "jpg");
                     new UpyunUploadTask(getCacheDir().getPath() + File.separator + "head.jpg", mUserAvatar, null, new CompleteListener() {
                         @Override
                         public void result(boolean bComplete, String s, String s2) {
-                            doRegister();
+                            finalizeDialog();
+                            if (bComplete)
+                                doRegister();
+                            else
+                                Toast.makeText(mContext, R.string.notify_net2, Toast.LENGTH_SHORT).show();
                         }
                     }).execute();
-
                 } else {
                     Toast.makeText(getApplicationContext(), mErrorCode, Toast.LENGTH_SHORT).show();
-                    finalizeDialog();
                 }
                 break;
         }
@@ -195,17 +201,16 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
 
     private void doRegister() {
         createDialog();
-        Router.getOAuthModule().registerEmailRoutine(mNickName, mUserAvatar, mEmail, mPwd, "male",
+        Router.getOAuthModule().registerEmailRoutine(mNickName, mUserAvatar, mEmail, mPwd, mSelectedGender,
                 Optional.<String>empty(), Optional.<String>empty(), new LambdaExpression() {
-
                     @Override
                     public void action() {
                         //register success !
                         Toast.makeText(getApplicationContext(), getString(R.string.login_success), Toast.LENGTH_SHORT).show();
-                        //Login success !
                         TinyUser user = Router.getInstance().getCurrentUser().get();
                         AuthorInfo authorInfo = new AuthorInfo();
                         authorInfo.setUserName(user.getNickName());
+                        authorInfo.setHeadPath(mUserAvatar);
                         authorInfo.setPassword(mPwd);
                         authorInfo.setPlatform("");
                         authorInfo.setEmail(mEmail);
@@ -217,8 +222,6 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                         intent.setClass(RegisterActivity.this, MainActivity.class);
                         startActivity(intent);
                         finalizeDialog();
-
-
                     }
                 }, new OneParameterExpression<Integer>() {
                     @Override
@@ -229,13 +232,16 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                             Toast.makeText(getApplicationContext(), getString(R.string.notify_net2), Toast.LENGTH_SHORT).show();
                         }
                         finalizeDialog();
-                        /// register failed !
                     }
                 });
 
     }
 
     private boolean checkInputState() {
+        if (!bUserAvatarSet) {
+            mErrorCode = getString(R.string.notify_choose_avatar);
+            return false;
+        }
         mNickName = mEtNickName.getText().toString().trim();
         if (mNickName == null || mNickName.equals("")) {
             mErrorCode = getString(R.string.register_error_name);
@@ -303,6 +309,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                 if (v.isActivated()) {
                     return;
                 }
+                mSelectedGender = "male";
                 mMaleBtn.setActivated(true);
                 mMaleBtn.setTextColor(Color.WHITE);
                 mFemaleBtn.setActivated(false);
@@ -312,6 +319,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                 if (v.isActivated()) {
                     return;
                 }
+                mSelectedGender = "female";
                 mFemaleBtn.setActivated(true);
                 mFemaleBtn.setTextColor(Color.WHITE);
                 mMaleBtn.setActivated(false);

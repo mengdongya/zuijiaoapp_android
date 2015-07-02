@@ -405,4 +405,5 @@
     <string name="umeng_socialize_share">分享</string>
     <string name="com_facebook_loading">Loading...</string>
     <!-- umeng socialize strings ends-->
+    <string name="on_register" >正在注册</string>
 </resources>

@@ -242,12 +242,12 @@ public class HostAndGuestActivity extends BaseActivity {
         } else {
             mAttendeeLanguage.setVisibility(View.GONE);
         }
-        if (mAttendee.getProfile().getEducationBackground().isPresent() && !mAttendee.getProfile().getEducationBackground().equals("")) {
+        if (mAttendee.getProfile().getEducationBackground().isPresent() && !mAttendee.getProfile().getEducationBackground().get().equals("")) {
             ((TextView) mAttendeeEducation.findViewById(R.id.attendee_detail_info_item_content)).setText(mAttendee.getProfile().getEducationBackground().get());
         } else {
             mAttendeeEducation.setVisibility(View.GONE);
         }
-        if (mAttendee.getProfile().getHobby().isPresent() && !mAttendee.getProfile().getHobby().equals("")) {
+        if (mAttendee.getProfile().getHobby().isPresent() && !mAttendee.getProfile().getHobby().get().equals("")) {
             ((TextView) mAttendeeHobby.findViewById(R.id.attendee_detail_info_item_content)).setText(mAttendee.getProfile().getHobby().get());
         } else {
             mAttendeeHobby.setVisibility(View.GONE);
@@ -294,10 +294,11 @@ public class HostAndGuestActivity extends BaseActivity {
             View listItem = listAdapter.getView(i, null, listView);
             listItem.measure(0, 0);
             totalHeight += listItem.getMeasuredHeight();
-        }
+        }git
         ViewGroup.LayoutParams params = listView.getLayoutParams();
         params.height = totalHeight
-                + (listView.getDividerHeight() * (listAdapter.getCount()));
+                + (listView.getDividerHeight() * (listAdapter.getCount()-1));
+        listView.setLayoutParams(params);
     }
 
     private ViewPager.OnPageChangeListener mPageListener = new ViewPager.OnPageChangeListener() {

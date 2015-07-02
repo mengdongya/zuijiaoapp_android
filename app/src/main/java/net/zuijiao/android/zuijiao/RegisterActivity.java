@@ -194,6 +194,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
     }
 
     private void doRegister() {
+        createDialog();
         Router.getOAuthModule().registerEmailRoutine(mNickName, mUserAvatar, mEmail, mPwd, "male",
                 Optional.<String>empty(), Optional.<String>empty(), new LambdaExpression() {
 
@@ -216,6 +217,8 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                         intent.setClass(RegisterActivity.this, MainActivity.class);
                         startActivity(intent);
                         finalizeDialog();
+
+
                     }
                 }, new OneParameterExpression<Integer>() {
                     @Override

@@ -334,4 +334,5 @@
     <string name="notify_order_failed">很抱歉，您的预定未成功，请稍后重试，\n或者致电021-58313120</string>
     <string name="finish">完成</string>
     <string name="waiting_fo_you">等待您的赏位</string>
+    <string name="on_register" >正在注册</string>
 </resources>

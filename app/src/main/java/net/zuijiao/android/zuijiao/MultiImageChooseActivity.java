@@ -44,6 +44,7 @@ public class MultiImageChooseActivity extends BaseActivity {
     private int mMaxCount = 5;
     private static final int CACHE_SIZE = 50;
     //cached bitmap ;
+
     private HashMap<String, Bitmap> mCachedData = new HashMap<>();
     //id of cached bitmap ;
     private ArrayList<String> mCachedId = new ArrayList<String>();

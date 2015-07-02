@@ -56,7 +56,7 @@ public class SoftMap<K, V> extends HashMap<K, V> {
         // �?��叫真正的contain
         // temp.containsKey(key);
         /*
-		 * if(get(key)!=null) { return true; }else{ return false; }
+         * if(get(key)!=null) { return true; }else{ return false; }
 		 */
         return get(key) != null;
     }
@@ -76,6 +76,13 @@ public class SoftMap<K, V> extends HashMap<K, V> {
             temp.remove(poll.key);
             poll = (SoftValue<K, V>) queue.poll();
         }
+    }
+
+    @Override
+    public int size() {
+        if (temp == null)
+            return super.size();
+        return temp.size();
     }
 
     /**

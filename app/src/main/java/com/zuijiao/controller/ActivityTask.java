@@ -8,6 +8,7 @@ import android.app.Application;
 import android.content.ComponentName;
 import android.content.Context;
 import android.graphics.Typeface;
+import android.util.Log;
 
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
@@ -60,8 +61,12 @@ public class ActivityTask extends Application {
                             .build());
         }
         Router.setup(BuildConfig.Base_Url, BuildConfig.Request_Key, cacheDirectory, interceptor);
-        System.out.println(new Date().getTime());
+//        System.out.println(new Date().getTime());
+        int maxMemory = (int) Runtime.getRuntime().maxMemory();
+        int mCacheSize = maxMemory / 4;
+        Log.i("maxMemory", "sssss = " + mCacheSize);
     }
+
 
     public static ActivityTask getInstance() {
         if (mInstance == null) {

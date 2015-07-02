@@ -72,7 +72,6 @@
             android:layout_marginTop="10dip"
             android:layout_marginBottom="10dip"
             android:singleLine="false"
-            android:text="淮扬狮子头名扬天下，人尽皆知，殊不知但还流传着用鱼肉做的狮子头，口感更滑嫩鲜爽，色泽雪白，味道非常的显现，但就是一个险种偷着鲜美，花肉中透着让人无法香香的味道淮扬狮子头名扬天下，人尽皆知，殊不知但还流传着用鱼肉做的狮子头，口感更滑嫩鲜爽，色泽雪白，味道非常的显现，但就是一个险种偷着鲜美，花肉中透着让人无法香香的味道淮扬狮子头名扬天下，人尽皆知，殊不知但还流传着用鱼肉做的狮子头，口感更滑嫩鲜爽，色泽雪白，味道非常的显现，但就是一个险种偷着鲜美，花肉中透着让人无法香香的味道"
             android:textColor="@color/tv_deep_gray"
             android:textSize="@dimen/main_item_content_text_size" />
         <!--android:background="@drawable/bg_main_content_item_user"-->

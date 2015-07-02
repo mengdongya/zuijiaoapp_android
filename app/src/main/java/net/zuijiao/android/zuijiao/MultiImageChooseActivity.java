@@ -1,7 +1,9 @@
 package net.zuijiao.android.zuijiao;
 
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
@@ -21,9 +23,11 @@ import com.lidroid.xutils.view.annotation.ContentView;
 import com.lidroid.xutils.view.annotation.ViewInject;
 import com.zuijiao.controller.FileManager;
 import com.zuijiao.entity.SimpleImage;
+import com.zuijiao.utils.SoftMap;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -42,13 +46,13 @@ public class MultiImageChooseActivity extends BaseActivity {
     private Button mSureBtn = null;
     private List<SimpleImage> images = null;
     private int mMaxCount = 5;
-    private static final int CACHE_SIZE = 50;
+    private static final int CACHE_SIZE = 20;
     //cached bitmap ;
-    private HashMap<String, Bitmap> mCachedData = new HashMap<>();
+    private SoftMap<String, Bitmap> mCachedData = new SoftMap<>();
     //id of cached bitmap ;
     private ArrayList<String> mCachedId = new ArrayList<String>();
     private ArrayList<SimpleImage> mSelectedImage = new ArrayList<>();
-
+    private ContentResolver mResolver = null;
 
     @Override
     protected void registerViews() {
@@ -71,7 +75,9 @@ public class MultiImageChooseActivity extends BaseActivity {
         int maxMemory = (int) Runtime.getRuntime().maxMemory();
         int mCacheSize = maxMemory / 4;
         Log.i("memory>>>>>>>>>>>>>>>", "maxMemory == " + maxMemory);
+//        mGridView.setAdapter(mGridViewAdapter);
         mGridView.setOnItemClickListener(mGridListener);
+        mResolver = mContext.getContentResolver();
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -133,14 +139,15 @@ public class MultiImageChooseActivity extends BaseActivity {
             return;
         }
         for (SimpleImage image : images) {
-            if (mCachedData.size() >= 20) {
+            if (mCachedData.size() >= 10) {
                 break;
             }
             try {
                 Bitmap bitmap = MediaStore.Images.Thumbnails.getThumbnail(
-                        mContext.getContentResolver(),
+                        mResolver,
                         Integer.parseInt(image.id),
                         MediaStore.Images.Thumbnails.MINI_KIND, null);
+                bitmap = compressImage(bitmap);
                 if (bitmap != null) {
                     synchronized (mCachedData) {
                         mCachedData.put(image.id, bitmap);
@@ -159,9 +166,14 @@ public class MultiImageChooseActivity extends BaseActivity {
     }
 
 
+    private Bitmap getImageBitmap(int id) {
+
+        return null;
+    }
+
     private void addToCache(Bitmap bitmap, String id) {
         if (mCachedData == null) {
-            mCachedData = new HashMap<String, Bitmap>();
+            mCachedData = new SoftMap<String, Bitmap>();
         }
         if (mCachedId == null) {
             mCachedId = new ArrayList<String>();
@@ -181,8 +193,10 @@ public class MultiImageChooseActivity extends BaseActivity {
             }
             System.gc();
         }
-        mCachedId.add(id);
-        mCachedData.put(id, bitmap);
+        if (bitmap != null) {
+            mCachedId.add(id);
+            mCachedData.put(id, bitmap);
+        }
     }
 
     private BaseAdapter mGridViewAdapter = new BaseAdapter() {
@@ -227,9 +241,10 @@ public class MultiImageChooseActivity extends BaseActivity {
                     @Override
                     public void run() {
                         Bitmap bitmap = MediaStore.Images.Thumbnails.getThumbnail(
-                                mContext.getContentResolver(),
+                                mResolver,
                                 Integer.parseInt(image.id),
                                 MediaStore.Images.Thumbnails.MINI_KIND, null);
+                        bitmap = compressImage(bitmap);
                         addToCache(bitmap, image.id);
                         Message msg = mHandler.obtainMessage();
                         msg.what = Integer.parseInt(image.id);
@@ -280,47 +295,25 @@ public class MultiImageChooseActivity extends BaseActivity {
             }
         }
     };
-//            if(mGridView.getAdapter() == null){
 
-//                mGridView.setOnScrollListener(new AbsListView.OnScrollListener() {
-//                    @Override
-//                    public void onScrollStateChanged(AbsListView view, int scrollState) {
-//
-//                    }
-//
-//                    @Override
-//                    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-////                        int loadPreciousFrom = (firstVisibleItem - 20 )<0 ? 0 : firstVisibleItem - 20 ;
-////                        int loadPreciousTo =  (firstVisibleItem - 10 )<0 ? 0 : firstVisibleItem - 10 ;
-////                        mFileMng.addToLoadList(images.subList(loadPreciousFrom,loadPreciousTo));
-////                        int loadMoreFrom = firstVisibleItem + visibleItemCount +1> images.size() -1 ? images.size() -1 :firstVisibleItem + visibleItemCount +1 ;
-////                        int loadMoreTo = firstVisibleItem + visibleItemCount +11> images.size() -1 ? images.size() -1 :firstVisibleItem + visibleItemCount + 11 ;
-////                        mFileMng.addToLoadList(images.subList( loadMoreFrom,loadMoreTo) );
-//                    }
-//                });
-//            }else
-//                mGridViewAdapter.notifyDataSetInvalidated();
-//            SimpleImage image = (SimpleImage) msg.obj;
-//            ImageView imageView = (ImageView) mGridView.findViewWithTag(image.id);
-//            if(imageView!= null){
-//                imageView.setImageBitmap(mFileMng.getBitmapFromMemCache(image.id));
-//            }
-//            int position = images.indexOf(image) ;
-//            mGridViewAdapter.getView(position ,null ,mGridView) ;
-//            mGridView.getOnItemClickListener().onItemClick(mGridView);
-//            mGridViewAdapter.notifyDataSetChanged();
-//            for(SimpleImage image : images){
-//                if(image.id.equals(id)){
-//                    mGridViewAdapter.getView(images.indexOf(image) ,mGridView.getChildAt(images.indexOf(image)) , mGridView) ;
-//                    break ;
-//                }
-//            }
-
-    //            if(mGridView.getAdapter() == null)
-//                mGridView.setAdapter(mGridViewAdapter);
-//            else
-//                mGridViewAdapter.notifyDataSetChanged(); ;
-//        }
+    private Bitmap compressImage(Bitmap image) {
+        if (image.getByteCount() / 1024 < 400) {
+            return image;
+        }
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        image.compress(Bitmap.CompressFormat.JPEG, 100, baos);//质量压缩方法，这里100表示不压缩，把压缩后的数据存放到baos中
+        int options = 100;
+        while (baos.toByteArray().length / 1024 > 100) {    //循环判断如果压缩后图片是否大于100kb,大于继续压缩
+            baos.reset();//重置baos即清空baos
+            options -= 40;//每次都减少10
+            if (options < 50)
+                break;
+            image.compress(Bitmap.CompressFormat.JPEG, options, baos);//这里压缩options%，把压缩后的数据存放到baos中
+        }
+        ByteArrayInputStream isBm = new ByteArrayInputStream(baos.toByteArray());//把压缩后的数据baos存放到ByteArrayInputStream中
+        Bitmap bitmap = BitmapFactory.decodeStream(isBm, null, null);//把ByteArrayInputStream数据生成图片
+        return bitmap;
+    }
     private boolean selectedImageContainsCurrentImage(SimpleImage image) {
         for (SimpleImage si : mSelectedImage) {
             if (si.data.equals(image.data)) {

@@ -55,8 +55,8 @@
     <string name="honey_name">用户名</string>
     <string name="password">密码</string>
     <string name="password_confirm">密码确认</string>
-    <string name="notify_register">还没有嘴角账号，点击注册</string>
-    <string name="notify_register_part">还没有嘴角账号，点击注册</string>
+    <string name="notify_register">还没有嘴角账号？点此注册</string>
+    <string name="notify_register_part">还没有嘴角账号，点此注册</string>
     <string name="third_party_login">第三方账号登录</string>
     <string name="weibo">微博</string>
     <string name="weixin">微信</string>

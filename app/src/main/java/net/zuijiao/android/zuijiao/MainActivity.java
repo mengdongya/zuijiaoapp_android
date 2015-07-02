@@ -16,6 +16,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -38,16 +39,20 @@ import android.widget.Toast;
 import com.lidroid.xutils.view.annotation.ContentView;
 import com.lidroid.xutils.view.annotation.ViewInject;
 import com.readystatesoftware.viewbadger.BadgeView;
+import com.squareup.okhttp.Response;
 import com.squareup.picasso.Picasso;
 import com.umeng.fb.FeedbackAgent;
 import com.umeng.update.UmengUpdateAgent;
 import com.umeng.update.UmengUpdateListener;
 import com.umeng.update.UpdateResponse;
 import com.zuijiao.android.util.Optional;
+import com.zuijiao.android.util.functional.LambdaExpression;
 import com.zuijiao.android.util.functional.OneParameterExpression;
+import com.zuijiao.android.zuijiao.model.OrderAuth;
 import com.zuijiao.android.zuijiao.model.message.News;
 import com.zuijiao.android.zuijiao.model.message.NewsList;
 import com.zuijiao.android.zuijiao.model.user.TinyUser;
+import com.zuijiao.android.zuijiao.network.IRouterMessage;
 import com.zuijiao.android.zuijiao.network.Router;
 import com.zuijiao.controller.ActivityTask;
 import com.zuijiao.controller.MessageDef;
@@ -57,6 +62,9 @@ import com.zuijiao.entity.AuthorInfo;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
+
+import retrofit.Callback;
+import retrofit.RetrofitError;
 
 @ContentView(R.layout.activity_main)
 public final class MainActivity extends BaseActivity {
@@ -412,7 +420,7 @@ public final class MainActivity extends BaseActivity {
                 if (unReadNewsCount > 0) {
                     showBadgeView();
 //                    mTabTitleAdapter.notifyDataSetChanged();
-                } else {
+                }else{
                     removeBadgeView();
                 }
             }
@@ -464,16 +472,15 @@ public final class MainActivity extends BaseActivity {
             intent.setClass(mContext, MessageActivity.class);
             startActivity(intent);
             Router.getMessageModule().markAsRead(News.NotificationType.Notice, () -> {
-//                if (unReadNewsCount > 0) {
-//                    showBadgeView();
-//                }
+                if (unReadNewsCount > 0) {
+                    removeBadgeView();
+                }
             }, () -> {
-
             });
             Router.getMessageModule().markAsRead(News.NotificationType.Comment, () -> {
-//                if (unReadNewsCount == 0) {
-//                    removeBadgeView();
-//                }
+                if (unReadNewsCount == 0) {
+                    removeBadgeView();
+                }
             }, () -> {
             });
         }

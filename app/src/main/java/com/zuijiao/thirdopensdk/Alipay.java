@@ -29,9 +29,7 @@ public class Alipay {
             switch (msg.what) {
                 case SDK_PAY_FLAG: {
                     PayResult payResult = new PayResult((String) msg.obj);
-
                     String resultInfo = payResult.getResult();
-
                     String resultStatus = payResult.getResultStatus();
                     Intent intent = new Intent(mActivity, BanquetOrderCallbackActivity.class);
                     if (TextUtils.equals(resultStatus, "9000")) {

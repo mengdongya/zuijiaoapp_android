@@ -6,7 +6,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.os.Message;
-import android.provider.MediaStore;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -54,12 +53,8 @@ public class MultiImageChooseActivity extends BaseActivity {
     private ArrayList<String> mCachedId = new ArrayList<String>();
     private ArrayList<SimpleImage> mSelectedImage = new ArrayList<>();
     private ContentResolver mResolver = null;
-    private long cacheSize = 0;
-    private long maxSize = 0;
+    private final int maxSize = 40;
 
-    static {
-//        if((int) Runtime.getRuntime().maxMemory())
-    }
     @Override
     protected void registerViews() {
         setSupportActionBar(mToolbar);
@@ -78,9 +73,6 @@ public class MultiImageChooseActivity extends BaseActivity {
                 finish();
             }
         });
-        maxSize = (int) Runtime.getRuntime().maxMemory() / 4;
-        Log.i("memory", "maxMemory == " + maxSize);
-//        mGridView.setAdapter(mGridViewAdapter);
         mGridView.setOnItemClickListener(mGridListener);
         mResolver = mContext.getContentResolver();
         new Thread(new Runnable() {
@@ -101,8 +93,6 @@ public class MultiImageChooseActivity extends BaseActivity {
         }
     }
 
-    //    private ArrayList<String> mSelectedId = new ArrayList<>();
-//    private ArrayList<String> mSelectedPath = new ArrayList<>();
     private AdapterView.OnItemClickListener mGridListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -113,10 +103,8 @@ public class MultiImageChooseActivity extends BaseActivity {
             } else {
                 if (mSelectedImage.size() >= mMaxCount) {
                     Toast.makeText(mContext, String.format(getString(R.string.image_count_upper_limit), mMaxCount), Toast.LENGTH_SHORT).show();
-//                    ((ToggleButton) view).setChecked(false);
                 } else {
                     mSelectedImage.add(image);
-//                    ((ToggleButton) view).setChecked(true);
                 }
             }
             mGridViewAdapter.getView(position, view, parent);
@@ -145,24 +133,11 @@ public class MultiImageChooseActivity extends BaseActivity {
             return;
         }
         for (SimpleImage image : images) {
-            if (mCachedData.size() >= 2) {
+            if (mCachedData.size() >= 12) {
                 break;
             }
             try {
-                Bitmap bitmap = getImageBitmap(image.id);
-//                Bitmap bitmap = MediaStore.Images.Thumbnails.getThumbnail(
-//                        mResolver,
-//                        Integer.parseInt(image.id),
-//                        MediaStore.Images.Thumbnails.MINI_KIND, null);
-//                bitmap = compressImage(bitmap);
-//                if (bitmap != null) {
-//                    synchronized (mCachedData) {
-//                        mCachedData.put(image.id, bitmap);
-//                    }
-//                    synchronized (mCachedId) {
-//                        mCachedId.add(image.id);
-//                    }
-//                }
+                Bitmap bitmap = mFileMng.getImageBmpById(image.id, mResolver);
                 addToCache(bitmap, image.id);
             } catch (Throwable t) {
                 t.printStackTrace();
@@ -175,70 +150,11 @@ public class MultiImageChooseActivity extends BaseActivity {
     }
 
 
-    private Bitmap getImageBitmap(String id) {
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inJustDecodeBounds = true;
-        Bitmap bitmap = MediaStore.Images.Thumbnails.getThumbnail(
-                mResolver,
-                Integer.parseInt(id),
-                MediaStore.Images.Thumbnails.MINI_KIND, options);
-//        int height = options.outHeight * 200 / options.outWidth;
-        options.outWidth = 200;
-//        options.outHeight = height;
-        options.inJustDecodeBounds = false;
-//        int inSampleSize = options.outWidth / 200;
-//        options.inSampleSize = inSampleSize ;
-        int width = 200;
-        int height = 200;
-        final int minSideLength = Math.min(width, height);
-        options.inSampleSize = computeSampleSize(options, minSideLength,
-                width * height);
-        bitmap = MediaStore.Images.Thumbnails.getThumbnail(
-                mResolver,
-                Integer.parseInt(id),
-                MediaStore.Images.Thumbnails.MINI_KIND, options);
-        Log.i("multiImageChoose", "bitmapSize= " + bitmap.getByteCount());
-        return bitmap;
-    }
+//    private Bitmap getImageBitmap(String id) {
+//
+//    }
 
-    public static int computeSampleSize(BitmapFactory.Options options,
-                                        int minSideLength, int maxNumOfPixels) {
-        int initialSize = computeInitialSampleSize(options, minSideLength,
-                maxNumOfPixels);
 
-        int roundedSize;
-        if (initialSize <= 8) {
-            roundedSize = 1;
-            while (roundedSize < initialSize) {
-                roundedSize <<= 1;
-            }
-        } else {
-            roundedSize = (initialSize + 7) / 8 * 8;
-        }
-        return roundedSize;
-    }
-
-    private static int computeInitialSampleSize(BitmapFactory.Options options,
-                                                int minSideLength, int maxNumOfPixels) {
-        double w = options.outWidth;
-        double h = options.outHeight;
-
-        int lowerBound = (maxNumOfPixels == -1) ? 1 : (int) Math.ceil(Math
-                .sqrt(w * h / maxNumOfPixels));
-        int upperBound = (minSideLength == -1) ? 128 : (int) Math.min(Math
-                .floor(w / minSideLength), Math.floor(h / minSideLength));
-        if (upperBound < lowerBound) {
-            // return the larger one when there is no overlapping zone.
-            return lowerBound;
-        }
-        if ((maxNumOfPixels == -1) && (minSideLength == -1)) {
-            return 1;
-        } else if (minSideLength == -1) {
-            return lowerBound;
-        } else {
-            return upperBound;
-        }
-    }
     private void addToCache(Bitmap bitmap, String id) {
         if (mCachedData == null) {
             mCachedData = new HashMap<String, Bitmap>();
@@ -247,22 +163,10 @@ public class MultiImageChooseActivity extends BaseActivity {
             mCachedId = new ArrayList<String>();
         }
         int i = 0;
-        if (mCachedId.size() >= CACHE_SIZE) {
-
-//            while (mCachedId.size() >= CACHE_SIZE) {
-//                String strId = mCachedId.get(0);
-//                Bitmap bm = mCachedData.get(strId);
-//                if (bm != null && !bm.isRecycled()) {
-//                    bm.recycle();
-//                }
-//                bm = null;
-//                mCachedData.remove(strId);
-//                mCachedId.remove(0);
-//            }
-            while (cacheSize > maxSize) {
+        if (mCachedData.size() > maxSize) {
+            while (mCachedData.size() > maxSize) {
                 String strId = mCachedId.get(0);
                 Bitmap bm = mCachedData.get(strId);
-                cacheSize -= bm.getByteCount();
                 if (bm != null && !bm.isRecycled()) {
                     bm.recycle();
                 }
@@ -319,7 +223,7 @@ public class MultiImageChooseActivity extends BaseActivity {
                 getThreadPool().execute(new Runnable() {
                     @Override
                     public void run() {
-                        Bitmap bitmap = getImageBitmap(image.id);
+                        Bitmap bitmap = mFileMng.getImageBmpById(image.id, mResolver);
 //                        Bitmap bitmap = MediaStore.Images.Thumbnails.getThumbnail(
 //                                mResolver,
 //                                Integer.parseInt(image.id),

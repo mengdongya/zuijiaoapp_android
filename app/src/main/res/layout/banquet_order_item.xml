@@ -38,7 +38,7 @@
                 android:singleLine="true"
                 android:text="Sonian的台味厨房"
                 android:gravity="center_vertical|left"
-                android:textColor="@color/tv_deep_gray"
+                android:textColor="@color/black"
                 android:textSize="18sp" />
 
             <TextView
@@ -48,8 +48,8 @@
                 android:layout_marginTop="10dip"
                 android:layout_below="@id/banquet_order_item_name"
                 android:text="4月18日 周六 18：0"
-                android:textColor="@color/bg_light_gray"
-                android:textSize="16dip" />
+                android:textColor="@color/tv_introduction_gray"
+                android:textSize="14dip" />
 
             <TextView
                 android:id="@+id/banquet_order_item_status"

@@ -292,8 +292,8 @@ public class HostAndGuestActivity extends BaseActivity {
         else
             gender = getString(R.string.gender_keep_secret);
         strBuilder.append(gender);
-        strBuilder.append("\n");
         if (bHost) {
+            strBuilder.append("\n");
             String qualification = mAttendee.getQualification();
             if (qualification != null) {
                 strBuilder.append(qualification + " ");

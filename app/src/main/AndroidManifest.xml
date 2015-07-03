@@ -13,6 +13,7 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
     <!--umeng add -->
     <uses-permission android:name="android.permission.READ_LOGS" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -388,6 +389,18 @@
         <service android:name="net.zuijiao.android.zuijiao.UmengAgentPushService" />
         <!--umeng feedback-->
         <activity android:name="com.umeng.fb.ConversationActivity" />
+
+
+
+        <!-- alipay sdk begin -->
+        <activity
+            android:name="com.alipay.sdk.app.H5PayActivity"
+            android:configChanges="orientation|keyboardHidden|navigation"
+            android:exported="false"
+            android:screenOrientation="behind"
+            android:windowSoftInputMode="adjustResize|stateHidden" >
+        </activity>
+        <!-- alipay sdk end -->
     </application>
 
 </manifest>

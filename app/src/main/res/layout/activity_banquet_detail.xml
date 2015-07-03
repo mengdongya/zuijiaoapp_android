@@ -49,8 +49,8 @@
                 android:text="Sonian的台味厨房"
                 android:singleLine="false"
                 android:id="@+id/banquet_detail_banquet_title"
-                android:textSize="16sp"
-                android:textColor="@color/tv_deep_gray"
+                android:textSize="18sp"
+                android:textColor="@color/black"
                 android:layout_gravity="center_horizontal"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="10dip"
@@ -227,8 +227,8 @@
                     android:lineSpacingExtra="5dip"
                     android:layout_marginTop="10dip"
                     android:gravity="center_horizontal"
-                    android:textColor="@color/tv_deep_gray"
-                    android:textSize="15sp"
+                    android:textColor="@color/black"
+                    android:textSize="18sp"
                     android:text="山楂梅子洋柿子\n乌龙温泉蛋\n禅院素鸭配桂花糖藕\n颐和四季有机色拉配秘制酱汁\n红茶孜然薯格羊排\n茶油冬菜龙俐鱼\n烟熏鸭脯养生小炒" />
 
             </LinearLayout>
@@ -307,7 +307,8 @@
 
                 <TextView
                     android:layout_height="wrap_content"
-                    android:textSize="15sp"
+                    android:textSize="14sp"
+                    android:textColor="@color/tv_deep_gray"
                     android:layout_centerVertical="true"
                     android:layout_width="match_parent"
                     android:layout_marginLeft="20dip"
@@ -340,7 +341,8 @@
 
                 <TextView
                     android:layout_height="wrap_content"
-                    android:textSize="15sp"
+                    android:textSize="14sp"
+                    android:textColor="@color/tv_deep_gray"
                     android:id="@+id/banquet_detail_date_text"
                     android:layout_centerVertical="true"
                     android:layout_width="match_parent"

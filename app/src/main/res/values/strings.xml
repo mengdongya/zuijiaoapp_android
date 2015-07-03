@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">嘴角</string>
-    <string name="current_version_code">1.2.0</string>
-    <string name="welcome_word">发现最美的味道</string>
+    <string name="current_version_code">2.0.0</string>
+    <string name="welcome_word">无家，不知味</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="drawer_open">open</string>
@@ -279,6 +279,7 @@
     <string name="detail">详情</string>
     <string name="all_comments">所有%d条评论</string>
     <string name="order_msg">订单信息</string>
+    <string name="detail_order">订单详情</string>
     <string name="time">时间</string>
     <string name="price">价格</string>
     <string name="address">地址</string>

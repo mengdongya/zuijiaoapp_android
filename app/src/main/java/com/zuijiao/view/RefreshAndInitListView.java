@@ -277,7 +277,7 @@ public class RefreshAndInitListView extends ListView implements
         mPullLoading = true;
         mFooterView.setState(XListViewFooter.STATE_LOADING);
         if (mListViewListener != null) {
-            mListViewListener.onLoadMore();
+                mListViewListener.onLoadMore();
         }
     }
 

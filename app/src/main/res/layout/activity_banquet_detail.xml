@@ -49,7 +49,7 @@
                 android:text="Sonian的台味厨房"
                 android:singleLine="false"
                 android:id="@+id/banquet_detail_banquet_title"
-                android:textSize="16sp"
+                android:textSize="18sp"
                 android:textColor="@color/black"
                 android:layout_gravity="center_horizontal"
                 android:layout_height="wrap_content"

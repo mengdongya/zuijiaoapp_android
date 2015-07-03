@@ -266,19 +266,25 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
                 mBottomDate.setText(formatDate(mBanquent.getTime()));
                 break;
             case SoldOut:
-                mBottomOrderView.setVisibility(View.GONE);
-                mFinishText.setVisibility(View.VISIBLE);
-                mFinishText.setText(getString(R.string.banquet_status_sold_out));
+//                mBottomOrderView.setVisibility(View.GONE);
+//                mFinishText.setVisibility(View.VISIBLE);
+//                mFinishText.setText(getString(R.string.banquet_status_sold_out));
+                mOrderBtn.setText(getString(R.string.banquet_status_sold_out));
+                mOrderBtn.setEnabled(false);
                 break;
             case OverTime:
-                mBottomOrderView.setVisibility(View.GONE);
-                mFinishText.setVisibility(View.VISIBLE);
-                mFinishText.setText(getString(R.string.banquet_status_over_time));
+//                mBottomOrderView.setVisibility(View.GONE);
+//                mFinishText.setVisibility(View.VISIBLE);
+//                mFinishText.setText(getString(R.string.banquet_status_over_time));
+                mOrderBtn.setText(getString(R.string.banquet_status_over_time));
+                mOrderBtn.setEnabled(false);
                 break;
             case End:
-                mBottomOrderView.setVisibility(View.GONE);
-                mFinishText.setVisibility(View.VISIBLE);
-                mFinishText.setText(getString(R.string.banquet_status_end));
+//                mBottomOrderView.setVisibility(View.GONE);
+//                mFinishText.setVisibility(View.VISIBLE);
+//                mFinishText.setText(getString(R.string.banquet_status_end));
+                mOrderBtn.setText(getString(R.string.banquet_status_end));
+                mOrderBtn.setEnabled(false);
                 break;
         }
 

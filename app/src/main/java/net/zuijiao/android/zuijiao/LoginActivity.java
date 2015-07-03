@@ -252,7 +252,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
     private void initRegisterTextview() {
         String str = getResources().getString(R.string.notify_register);
         SpannableStringBuilder style = new SpannableStringBuilder(str);
-        style.setSpan(new ForegroundColorSpan(Color.RED), str.length() - 4,
+        style.setSpan(new ForegroundColorSpan(Color.rgb(137,60,52)), str.length() - 4,
                 str.length(), Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
         TextView tvColor = (TextView) findViewById(R.id.tv_login_register);
         tvColor.setText(style);

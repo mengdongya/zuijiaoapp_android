@@ -340,4 +340,7 @@
     <string name="no_finished_order">没有已完成的赏位单</string>
     <string name="no_order">没有赏位记录</string>
     <string name="banquet_format_time">%1$02d : %2$02d</string>
+    <string name="host">料理人</string>
+    <string name="guest">赏味人</string>
+    <string name="order_detail">预定详情</string>
 </resources>

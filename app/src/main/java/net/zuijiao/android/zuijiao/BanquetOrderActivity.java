@@ -24,6 +24,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.alipay.sdk.auth.AlipaySDK;
 import com.lidroid.xutils.view.annotation.ContentView;
 import com.lidroid.xutils.view.annotation.ViewInject;
 import com.zuijiao.android.util.functional.OneParameterExpression;
@@ -124,7 +125,8 @@ public class BanquetOrderActivity extends BaseActivity implements View.OnClickLi
             finish();
             return;
         }
-        getSupportActionBar().setTitle(mBanquent.getTitle());
+//        getSupportActionBar().setTitle(mBanquent.getTitle());
+        getSupportActionBar().setTitle(getString(R.string.detail_order));
         payWayRes = getResources().getStringArray(R.array.pay_way);
         payWayStr = getResources().getStringArray(R.array.pay_way_str);
         mPayWayList.setAdapter(mPayWayAdapter);
@@ -189,7 +191,8 @@ public class BanquetOrderActivity extends BaseActivity implements View.OnClickLi
                         if (mSelectedPayWay == 0) {
                             new WeixinPay(BanquetOrderActivity.this).pay(orderAuth);
                         } else {
-                            new Alipay(BanquetOrderActivity.this).pay(orderAuth.getQuery());
+                                new Alipay(BanquetOrderActivity.this).pay(orderAuth.getQuery());
+
                         }
                         finalizeDialog();
                     }
@@ -296,6 +299,9 @@ public class BanquetOrderActivity extends BaseActivity implements View.OnClickLi
                             imm.hideSoftInputFromWindow(editText.getApplicationWindowToken(), 0);
                         if (mRemark != null && !mRemark.equals("")) {
                             mBanquetRemark.setText(mRemark);
+                            mBanquetRemark.setTextColor(getResources().getColor(R.color.tv_deep_gray));
+                        }else{
+                            mBanquetRemark.setText(getString(R.string.none));
                             mBanquetRemark.setTextColor(getResources().getColor(R.color.tv_deep_gray));
                         }
                     }

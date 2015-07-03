@@ -195,6 +195,21 @@ public class OrderListFragment extends Fragment implements
             holder.title.setText(order.getTitle());
             String dateInfo = formatDate(order.getCreateTime());
             holder.date.setText(dateInfo + order.getAddress());
+            switch (order.getStatus()) {
+                case Canceled:
+                    holder.situation.setText(getString(R.string.canceled_banquet));
+                    break;
+                case Waiting:
+                    holder.situation.setText(getString(R.string.waiting_fo_you));
+                    break;
+                case Finished:
+                    holder.situation.setText(getString(R.string.finished_banquet));
+                    break;
+                default:
+                    holder.situation.setText(getString(R.string.waiting_banquet));
+                    break;
+            }
+
             return convertView;
         }
     };

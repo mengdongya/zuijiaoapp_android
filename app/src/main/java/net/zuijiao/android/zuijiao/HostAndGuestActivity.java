@@ -258,6 +258,7 @@ public class HostAndGuestActivity extends BaseActivity {
         } else {
             mAttendeeHobby.setVisibility(View.GONE);
         }
+
         switch (lastItem) {
             case 1:
                 mAttendeeCareer.findViewById(R.id.attendee_detail_info_item_view).setVisibility(View.GONE);

@@ -125,7 +125,8 @@ public class BanquetOrderActivity extends BaseActivity implements View.OnClickLi
             finish();
             return;
         }
-        getSupportActionBar().setTitle(mBanquent.getTitle());
+//        getSupportActionBar().setTitle(mBanquent.getTitle());
+        getSupportActionBar().setTitle(getString(R.string.detail_order));
         payWayRes = getResources().getStringArray(R.array.pay_way);
         payWayStr = getResources().getStringArray(R.array.pay_way_str);
         mPayWayList.setAdapter(mPayWayAdapter);

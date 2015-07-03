@@ -406,4 +406,6 @@
     <string name="com_facebook_loading">Loading...</string>
     <!-- umeng socialize strings ends-->
     <string name="on_register" >正在注册</string>
+    <string name="host">料理人</string>
+    <string name="guest">赏味人</string>
 </resources>

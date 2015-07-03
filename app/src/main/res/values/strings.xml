@@ -311,8 +311,8 @@
     <string name="get_history_list_failed">获取历史记录失败，请检查网络</string>
     <string name="total_attendee">共有%d人参加</string>
     <string name="banquet_order_notice">须知\n·下单成功后，暂不支持在线退单\n·如有疑问请致电：021-58313120</string>
-    <string name="canceled_banquet">已取消赏位</string>
-    <string name="finished_banquet">已完成赏位</string>
+    <string name="canceled_banquet">已取消赏味</string>
+    <string name="finished_banquet">已完成赏味</string>
     <string name="waiting_banquet">即将到来</string>
     <string name="none">无</string>
     <string name="order_num">订单号</string>
@@ -333,7 +333,7 @@
     <string name="input_phone_num">下单前必须预留手机号码</string>
     <string name="notify_order_failed">很抱歉，您的预定未成功，请稍后重试，\n或者致电021-58313120</string>
     <string name="finish">完成</string>
-    <string name="waiting_fo_you">等待您的赏位</string>
+    <string name="waiting_fo_you">等待您的赏味</string>
     <string name="notify_choose_avatar">请选择头像</string>
     <string name="host">料理人</string>
     <string name="guest">赏味人</string>

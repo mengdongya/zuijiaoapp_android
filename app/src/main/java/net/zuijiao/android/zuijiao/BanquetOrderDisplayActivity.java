@@ -75,7 +75,7 @@ public class BanquetOrderDisplayActivity extends BaseActivity {
                 status.setText(getString(R.string.canceled_banquet));
                 break;
             case Waiting:
-                status.setText(getString(R.string.waiting_banquet));
+                status.setText(getString(R.string.waiting_fo_you));
                 break;
             case Finished:
                 status.setText(getString(R.string.finished_banquet));

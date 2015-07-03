@@ -74,7 +74,7 @@
                 android:layout_margin="10dip"
                 android:gravity="right"
                 android:textColor="@color/tv_light_gray"
-                android:text="等待尚未" />
+                android:text="等待赏味" />
 
             <include
                 layout="@layout/order_detail_info_item"

@@ -45,7 +45,6 @@
                 android:id="@+id/banquet_order_item_date_location"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:singleLine="true"
                 android:layout_marginTop="10dip"
                 android:layout_below="@id/banquet_order_item_name"
                 android:text="4月18日 周六 18：0"

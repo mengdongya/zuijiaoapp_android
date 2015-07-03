@@ -43,23 +43,24 @@ public class BanquetOrderCallbackActivity extends BaseActivity implements View.O
     private TextView mNotifyTv;
     @ViewInject(R.id.order_callback_complete_info)
     private TextView mCompleteTv;
-    private boolean bSuccess = false;
+    private String bSuccess = null;
     private Banquent mBanquet;
     private String[] weekDays;
 
     @Override
     protected void registerViews() {
         setSupportActionBar(mToolbar);
-        getSupportActionBar().setTitle(getString(R.string.order_detail));
-        bSuccess = mTendIntent.getBooleanExtra("b_success", false);
+        bSuccess = mTendIntent.getStringExtra("b_success");
         weekDays = mContext.getResources().getStringArray(R.array.week_days);
         mFinishBtn.setOnClickListener(this);
         mCompleteTv.setOnClickListener(this);
-        if (bSuccess) {
+        if ("successed".equals(bSuccess)) {
             mBanquet = BanquetOrderActivity.mBanquent;
             showSuccess();
-        } else {
+        } else if("failed".equals(bSuccess)){
             showFailed();
+        }else{
+
         }
     }
 
@@ -132,6 +133,8 @@ public class BanquetOrderCallbackActivity extends BaseActivity implements View.O
                 });
                 break;
             case R.id.order_callback_finish_btn:
+                Intent intent = new Intent(BanquetOrderCallbackActivity.this,MainActivity.class);
+                startActivity(intent);
                 finish();
                 break;
             default:

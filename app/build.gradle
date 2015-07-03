@@ -71,4 +71,5 @@ dependencies {
     compile 'com.kyleduo.switchbutton:library:1.2.8'
     compile 'com.github.clans:fab:1.5.0'
     compile 'com.android.support:support-v4:21.+'
+    compile files('libs/android-support-v13.jar')
 }

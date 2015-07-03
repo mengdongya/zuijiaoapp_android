@@ -310,8 +310,8 @@
     <string name="remark_to_host">给料理人留言</string>
     <string name="center_dot">·</string>
     <string name="host_introduction">料理人介绍</string>
-    <string name="attended_banquet">已参加的私宴</string>
-    <string name="hosted_banquet">已举办的私宴</string>
+    <string name="attended_banquet">参加的料理</string>
+    <string name="hosted_banquet">拥有的料理</string>
     <string name="get_history_list_failed">获取历史记录失败，请检查网络</string>
     <string name="total_attendee">共有%d人参加</string>
     <string name="banquet_order_notice">须知\n·下单成功后，暂不支持在线退单\n·如有疑问请致电：021-58313120</string>

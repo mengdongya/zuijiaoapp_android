@@ -66,8 +66,8 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="10dip"
                 android:text="Sonian"
-                android:textColor="@color/tv_deep_gray"
-                android:textSize="18sp" />
+                android:textColor="@color/tv_introduction_gray"
+                android:textSize="14sp" />
 
             <TextView
                 android:id="@+id/host_guest_attendee_info"
@@ -77,8 +77,8 @@
                 android:layout_marginTop="10dip"
                 android:gravity="center_horizontal"
                 android:lineSpacingExtra="5dip"
-                android:textColor="@color/tv_deep_gray"
-                android:textSize="17sp" />
+                android:textColor="@color/tv_introduction_gray"
+                android:textSize="14sp" />
 
             <LinearLayout
                 android:id="@+id/host_guest_personal_introduction_group"
@@ -98,7 +98,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="10dip"
-                    android:textColor="@color/tv_deep_gray"
+                    android:textColor="@color/black"
                     android:textSize="18sp" />
 
                 <TextView
@@ -108,8 +108,8 @@
                     android:layout_gravity="center_horizontal"
                     android:layout_margin="10dip"
                     android:lineSpacingExtra="5dip"
-                    android:textColor="@color/tv_deep_gray"
-                    android:textSize="15sp" />
+                    android:textColor="@color/tv_introduction_gray"
+                    android:textSize="14sp" />
             </LinearLayout>
 
             <LinearLayout
@@ -130,7 +130,7 @@
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="10dip"
                     android:text="@string/detail_info"
-                    android:textColor="@color/tv_deep_gray"
+                    android:textColor="@color/black"
                     android:textSize="18sp" />
 
                 <include

@@ -82,5 +82,6 @@
     <color name="banquet_theme">#ff893c34</color>
     <color name="banquet_theme_dark">#ff602924</color>
     <color name="register_avatar_circle">#ff893c34</color>
+    <color name="tv_introduction_gray">#ff373737</color>
 
 </resources>

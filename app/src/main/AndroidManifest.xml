@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    android:versionCode="3"
+    android:versionCode="5"
     android:versionName="@string/current_version_code"
     package="net.zuijiao.android.zuijiao">
 
@@ -391,15 +391,13 @@
         <activity android:name="com.umeng.fb.ConversationActivity" />
 
 
-
         <!-- alipay sdk begin -->
         <activity
             android:name="com.alipay.sdk.app.H5PayActivity"
             android:configChanges="orientation|keyboardHidden|navigation"
             android:exported="false"
             android:screenOrientation="behind"
-            android:windowSoftInputMode="adjustResize|stateHidden" >
-        </activity>
+            android:windowSoftInputMode="adjustResize|stateHidden"></activity>
         <!-- alipay sdk end -->
     </application>
 

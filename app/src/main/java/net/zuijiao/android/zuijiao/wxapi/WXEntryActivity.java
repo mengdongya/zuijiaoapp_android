@@ -5,6 +5,8 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -46,6 +48,25 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
     private ProgressDialog mDialog = null;
     private String mRereshToken = null;
     private String mAccessToken = null;
+    private Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+
+            super.handleMessage(msg);
+            if (msg.what == 0x101) {
+                Toast.makeText(
+                        WXEntryActivity.this,
+                        getResources().getString(
+                                R.string.login_error), Toast.LENGTH_SHORT)
+                        .show();
+
+            }
+        }
+    };
+    private String openId = null;
+    private String code = null;
+    private String url = null;
+    private String token = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +78,8 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
             mApi.handleIntent(i, this);
 //            mApi = WXAPIFactory.createWXAPI(this, WEIXIN_ID, false);
         } else {
-            WXAPIFactory.createWXAPI(this, WEIXIN_ID, false).handleIntent(i, this);
+            mApi = WXAPIFactory.createWXAPI(this, WEIXIN_ID, false);
+            mApi.handleIntent(i, this);
         }
     }
 
@@ -73,11 +95,6 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
                 break;
         }
     }
-
-    private String openId = null;
-    private String code = null;
-    private String url = null;
-    private String token = null;
 
     @Override
     public void onResp(BaseResp resp) {
@@ -170,22 +187,6 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
                                         Toast.makeText(getApplicationContext(), getResources().getString(R.string.notify_net2), Toast.LENGTH_SHORT).show();
                                     }
                                 });
-//                                if(!ImageDownloader.download(headimgurl , getCacheDir().getPath() + File.separator + "head.jpg")) {
-//                                    Toast.makeText(getApplicationContext() ,R.string.notify_net2 , Toast.LENGTH_SHORT).show();
-//                                    return;
-//                                }
-//                                String mUserAvatar = UpyunUploadTask.avatarPath(new Date().getTime(), "jpg");
-//                                new UpyunUploadTask(getCacheDir().getPath() + File.separator + "head.jpg", mUserAvatar, null, new CompleteListener() {
-//                                    @Override
-//                                    public void result(boolean bComplete, String s, String s2) {
-//                                        if(bComplete){
-//
-//                                        }else{
-//                                            Toast.makeText(getApplicationContext() ,R.string.notify_net2 , Toast.LENGTH_SHORT).show();
-//                                        }
-//                                    }
-//                                }).execute();
-
 
                             } catch (ClientProtocolException e1) {
                                 e1.printStackTrace();
@@ -201,13 +202,10 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
                                 e0 = e;
                             } finally {
                                 if (e0 != null) {
-                                    Toast.makeText(
-                                            WXEntryActivity.this,
-                                            getResources().getString(
-                                                    R.string.login_error), Toast.LENGTH_SHORT)
-                                            .show();
+                                    mHandler.sendEmptyMessage(0x101);
                                 }
-                                mDialog.dismiss();
+                                if (mDialog != null)
+                                    mDialog.dismiss();
                                 finish();
                             }
                         }

@@ -70,6 +70,9 @@ public class Attendee {
 //
 //    }
     public ArrayList<String> getImageUrls() {
+        if (organizerInfo == null || organizerInfo.imageUrls == null) {
+            return null;
+        }
         ArrayList<String> arrayList = new ArrayList<>();
         for (String imageUrl : organizerInfo.imageUrls) {
             imageUrl = ImageUrlUtil.imageUrl(imageUrl);

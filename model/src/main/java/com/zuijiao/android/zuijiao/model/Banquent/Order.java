@@ -33,6 +33,8 @@ public class Order implements Serializable {
     private Float price;
     @SerializedName("status")
     private String status;
+    @SerializedName("time")
+    private Date holdTime;
 
     public Integer getIdentifier() {
         return identifier;
@@ -61,6 +63,10 @@ public class Order implements Serializable {
     public String getImageUrl() {
         return ImageUrlUtil.imageUrl(imageUrl);
 //        return imageUrl;
+    }
+
+    public Date getHoldTime() {
+        return holdTime;
     }
 
     public Date getCreateTime() {

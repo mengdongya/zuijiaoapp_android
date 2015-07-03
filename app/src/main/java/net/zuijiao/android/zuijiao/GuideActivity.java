@@ -1,6 +1,8 @@
 package net.zuijiao.android.zuijiao;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Build.VERSION;
 import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
@@ -32,6 +34,7 @@ import com.zuijiao.controller.ThirdPartySDKManager;
 import com.zuijiao.db.DBOpenHelper;
 import com.zuijiao.entity.AuthorInfo;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -126,8 +129,13 @@ public class GuideActivity extends BaseActivity {
                 R.layout.item_guide, null);
         ImageView imageView = (ImageView) view.findViewById(R.id.guide_image);
         ImageView textImage = (ImageView) view.findViewById(R.id.guide_text);
-        imageView.setImageResource(imageRes);
-        textImage.setImageResource(textRes);
+        InputStream imageIs = getResources().openRawResource(imageRes);
+        ;
+        InputStream textIs = getResources().openRawResource(textRes);
+        Bitmap bitmap2 = BitmapFactory.decodeStream(textIs);
+        Bitmap bitmap = BitmapFactory.decodeStream(imageIs);
+        imageView.setImageBitmap(bitmap);
+        textImage.setImageBitmap(bitmap2);
         return view;
     }
 

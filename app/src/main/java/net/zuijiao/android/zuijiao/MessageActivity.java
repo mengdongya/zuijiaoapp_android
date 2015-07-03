@@ -1,6 +1,5 @@
 package net.zuijiao.android.zuijiao;
 
-import android.content.Intent;
 import android.graphics.Color;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -8,7 +7,6 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 import android.util.TypedValue;
-import android.view.MenuItem;
 
 import com.lidroid.xutils.view.annotation.ContentView;
 import com.lidroid.xutils.view.annotation.ViewInject;
@@ -56,7 +54,7 @@ public class MessageActivity extends BaseActivity implements MessageFragment.OnM
         //selected tab text color
         mTabs.setSelectedTextColor(Color.parseColor("#eeeeee"));
         //unselected tab text color
-        mTabs.setTextColor(Color.parseColor("#eeeeee"));
+        mTabs.setTextColor(getResources().getColor(R.color.unselected_tab_text_color));
     }
 
     @Override

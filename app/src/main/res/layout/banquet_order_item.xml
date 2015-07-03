@@ -48,7 +48,7 @@
                 android:layout_marginTop="10dip"
                 android:layout_below="@id/banquet_order_item_name"
                 android:text="4月18日 周六 18：0"
-                android:textColor="@color/tv_introduction_gray"
+                android:textColor="@color/_555555"
                 android:textSize="14dip" />
 
             <TextView

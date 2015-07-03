@@ -261,15 +261,14 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
         setListViewHeightBasedOnChildren(mOrderedPersonShow);
         switch (BanquentStatus.fromString(mBanquent.getStatus())) {
             case Selling:
-                mBottomPrice.setText(String.valueOf(mBanquent.getPrice()));
-//                mBottomPrice.setText(String.format(getString(R.string.price_per_one), mBanquent.getPrice()));
-                mBottomDate.setText(formatDate(mBanquent.getTime()));
+
                 break;
             case SoldOut:
 //                mBottomOrderView.setVisibility(View.GONE);
 //                mFinishText.setVisibility(View.VISIBLE);
 //                mFinishText.setText(getString(R.string.banquet_status_sold_out));
                 mOrderBtn.setText(getString(R.string.banquet_status_sold_out));
+                mOrderBtn.setTextColor(getResources().getColor(R.color.tv_light_gray));
                 mOrderBtn.setEnabled(false);
                 break;
             case OverTime:
@@ -278,6 +277,7 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
 //                mFinishText.setText(getString(R.string.banquet_status_over_time));
                 mOrderBtn.setText(getString(R.string.banquet_status_over_time));
                 mOrderBtn.setEnabled(false);
+                mOrderBtn.setTextColor(getResources().getColor(R.color.tv_light_gray));
                 break;
             case End:
 //                mBottomOrderView.setVisibility(View.GONE);
@@ -285,9 +285,12 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
 //                mFinishText.setText(getString(R.string.banquet_status_end));
                 mOrderBtn.setText(getString(R.string.banquet_status_end));
                 mOrderBtn.setEnabled(false);
+                mOrderBtn.setTextColor(getResources().getColor(R.color.tv_light_gray));
                 break;
         }
-
+        mBottomPrice.setText(String.valueOf(mBanquent.getPrice()));
+//                mBottomPrice.setText(String.format(getString(R.string.price_per_one), mBanquent.getPrice()));
+        mBottomDate.setText(formatDate(mBanquent.getTime()));
     }
 
     private ArrayList<ImageView> initImages() {

@@ -28,6 +28,12 @@
                 android:layout_gravity="left"
                 android:text="@string/order_msg" />
 
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dip"
+                android:layout_marginTop="10dip"
+                android:background="@color/bg_light_gray" />
+
             <LinearLayout
                 android:layout_height="wrap_content"
                 android:minHeight="50dip"
@@ -126,11 +132,11 @@
                 android:textColor="@color/bg_light_gray"
                 android:layout_gravity="right" />
 
+
             <View
-                android:layout_width="match_parent"
                 android:layout_height="1dip"
-                android:layout_marginTop="10dip"
-                android:background="@color/bg_light_gray" />
+                android:layout_width="match_parent"
+                android:background="@color/bg_gray_white" />
 
             <LinearLayout
                 android:layout_height="wrap_content"
@@ -198,10 +204,10 @@
                     android:gravity="right" />
             </LinearLayout>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dip"
-                android:background="@color/bg_light_gray" />
+            <!--<View-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="1dip"-->
+            <!--android:background="@color/bg_light_gray" />-->
 
             <TextView
                 android:layout_height="wrap_content"
@@ -210,6 +216,12 @@
                 android:text="@string/choose_the_way_to_pay"
                 android:textColor="@color/bg_light_gray"
                 android:textSize="13sp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dip"
+                android:layout_marginTop="10dip"
+                android:background="@color/bg_light_gray" />
 
             <ListView
                 android:layout_marginTop="8dip"
@@ -252,7 +264,7 @@
             android:text="198"
             android:layout_marginLeft="10dip"
             android:layout_marginTop="5dip"
-            android:textColor="@color/banquet_theme"
+            android:textColor="@color/banquet_price_text"
             android:textSize="18sp" />
 
         <TextView
@@ -261,7 +273,7 @@
             android:layout_width="wrap_content"
             android:text="@string/price_unit"
             android:layout_marginLeft="3dip"
-            android:textColor="@color/banquet_theme"
+            android:textColor="@color/banquet_price_text"
             android:layout_alignBottom="@id/banquet_order_bottom_price"
             android:textSize="14sp" />
 

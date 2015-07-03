@@ -193,7 +193,7 @@ public class OrderListFragment extends Fragment implements
             Order order = orderList.get(position);
             Picasso.with(getActivity().getApplicationContext()).load(order.getImageUrl()).placeholder(R.drawable.empty_view_greeting).into(holder.image);
             holder.title.setText(order.getTitle());
-            String dateInfo = formatDate(order.getCreateTime());
+            String dateInfo = formatDate(order.getHoldTime());
             holder.date.setText(dateInfo + order.getAddress());
             switch (order.getStatus()) {
                 case Canceled:

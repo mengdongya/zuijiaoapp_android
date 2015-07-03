@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:myattr="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -66,7 +65,7 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="10dip"
                 android:text="Sonian"
-                android:textColor="@color/tv_introduction_gray"
+                android:textColor="@color/_555555"
                 android:textSize="14sp" />
 
             <TextView
@@ -77,7 +76,7 @@
                 android:layout_marginTop="10dip"
                 android:gravity="center_horizontal"
                 android:lineSpacingExtra="5dip"
-                android:textColor="@color/tv_introduction_gray"
+                android:textColor="@color/_555555"
                 android:textSize="14sp" />
 
             <LinearLayout
@@ -108,7 +107,7 @@
                     android:layout_gravity="center_horizontal"
                     android:layout_margin="10dip"
                     android:lineSpacingExtra="5dip"
-                    android:textColor="@color/tv_introduction_gray"
+                    android:textColor="@color/_555555"
                     android:textSize="14sp" />
             </LinearLayout>
 

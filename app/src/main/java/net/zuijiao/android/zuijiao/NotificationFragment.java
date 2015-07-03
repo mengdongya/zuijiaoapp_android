@@ -77,7 +77,7 @@ public class NotificationFragment extends Fragment implements MessageFragment.On
         //selected tab text color
         mTabs.setSelectedTextColor(Color.parseColor("#eeeeee"));
         //unselected tab text color
-        mTabs.setTextColor(Color.parseColor("#eeeeee"));
+        mTabs.setTextColor(getResources().getColor(R.color.unselected_tab_text_color));
     }
 
     public void setAllRead() {

@@ -16,7 +16,7 @@ android {
         applicationId "net.zuijiao.android.zuijiao"
         minSdkVersion 15
         targetSdkVersion 21
-        versionCode 4
+        versionCode 5
         versionName "1.2.1"
     }
 
@@ -33,8 +33,8 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-//            buildConfigField "String", "Base_Url", "\"http://api.zuijiao.net\""
-            buildConfigField "String", "Base_Url", "\"http://xielingyu3.zuijiaodev.com\""
+            buildConfigField "String", "Base_Url", "\"http://api.zuijiao.net\""
+//            buildConfigField "String", "Base_Url", "\"http://xielingyu3.zuijiaodev.com\""
             buildConfigField "String", "Web_View_Url", "\"http://mobile.views.zuijiao.net\""
             buildConfigField "String", "Avatar_Base_Url", "\"/Avatar\""
             buildConfigField "String", "Gourmet_Base_Url", "\"/Gourmet\""

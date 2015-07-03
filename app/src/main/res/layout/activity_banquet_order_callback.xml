@@ -53,7 +53,7 @@
                 android:gravity="center_horizontal"
                 android:lineSpacingExtra="5dip"
                 android:text="4月18日 周六 18:00\n上海市黄浦区知音苑"
-                android:textColor="@color/tv_introduction_gray"
+                android:textColor="@color/_555555"
                 android:textSize="14sp" />
 
             <TextView

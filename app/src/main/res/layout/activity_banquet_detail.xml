@@ -538,7 +538,7 @@
                 android:text="198"
                 android:layout_marginLeft="10dip"
                 android:layout_marginTop="5dip"
-                android:textColor="@color/banquet_theme"
+                android:textColor="@color/banquet_price_text"
                 android:textSize="18sp" />
 
             <TextView
@@ -547,7 +547,7 @@
                 android:layout_width="wrap_content"
                 android:text="@string/price_unit"
                 android:layout_marginLeft="3dip"
-                android:textColor="@color/banquet_theme"
+                android:textColor="@color/banquet_price_text"
                 android:layout_alignBottom="@id/banquet_detail_bottom_price"
                 android:textSize="14sp" />
 

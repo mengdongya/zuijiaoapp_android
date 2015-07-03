@@ -151,6 +151,7 @@ public class BanquetAdapter extends BaseAdapter implements AdapterView.OnItemCli
             });
             switch (BanquentStatus.fromString(banquent.getStatus())) {
                 case Selling:
+                    holder.finish.setVisibility(View.GONE);
                     break;
                 case SoldOut:
                     holder.finish.setText(R.string.banquet_status_sold_out);

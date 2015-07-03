@@ -107,6 +107,7 @@ public class HostAndGuestActivity extends BaseActivity {
     private void networkStep() {
         createDialog();
         if (bHost) {
+            getSupportActionBar().setTitle(getString(R.string.host));
             mAttendeeIntroductionTitle.setText(getString(R.string.host_introduction));
             mHistoryTitle.setText(getString(R.string.hosted_banquet));
             Router.getAccountModule().masterInfo(mAttendeeId, new OneParameterExpression<Attendee>() {
@@ -141,6 +142,7 @@ public class HostAndGuestActivity extends BaseActivity {
                 }
             });
         } else {
+            getSupportActionBar().setTitle(getString(R.string.guest));
             mHistoryTitle.setText(getString(R.string.attended_banquet));
             mAttendeeIntroductionTitle.setText(getString(R.string.personal_introduction));
             Router.getAccountModule().attendeeInfo(mAttendeeId, new OneParameterExpression<Attendee>() {

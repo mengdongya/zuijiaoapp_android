@@ -327,7 +327,7 @@
     <string name="complete_information">完善个人资料</string>
     <string name="banquet_status_sold_out">已卖光</string>
     <string name="banquet_status_end">已结束</string>
-    <string name="banquet_status_over_time">已过时</string>
+    <string name="banquet_status_over_time">已截止</string>
     <string name="use">使用</string>
     <string name="alert">提示</string>
     <string name="input_phone_num">下单前必须预留手机号码</string>

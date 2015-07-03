@@ -99,11 +99,11 @@ public class BanquetOrderCallbackActivity extends BaseActivity implements View.O
 
     private String formatDate(Date date) {
         StringBuilder strBuilder = new StringBuilder();
-        strBuilder.append(String.format(mContext.getString(R.string.month_day), date.getMonth(), date.getDate()));
+        strBuilder.append(String.format(mContext.getString(R.string.month_day), date.getMonth() + 1, date.getDate()));
         strBuilder.append(" ");
         strBuilder.append(weekDays[date.getDay()]);
         strBuilder.append(" ");
-        strBuilder.append(date.getHours() + ":00");
+        strBuilder.append(String.format(mContext.getString(R.string.banquet_format_time), date.getHours(), date.getMinutes()));
         strBuilder.append(" ");
         return strBuilder.toString();
     }

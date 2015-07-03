@@ -174,7 +174,7 @@ public class ImageChooseActivity extends BaseActivity {
             return;
         }
         for (SimpleImage image : images) {
-            if (mCachedData.size() >= 8) {
+            if (mCachedData.size() >= 2) {
                 break;
             }
             try {

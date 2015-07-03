@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 import com.zuijiao.android.zuijiao.model.Banquent.Banquent;
 import com.zuijiao.android.zuijiao.model.Banquent.BanquentCapacity;
+import com.zuijiao.android.zuijiao.model.Banquent.BanquentStatus;
 import com.zuijiao.android.zuijiao.model.Banquent.Banquents;
 
 import net.zuijiao.android.zuijiao.BanquetDetailActivity;
@@ -111,6 +112,7 @@ public class BanquetAdapter extends BaseAdapter implements AdapterView.OnItemCli
                 holder.description = (TextView) convertView.findViewById(R.id.banquet_item_description);
                 holder.status = (TextView) convertView.findViewById(R.id.banquet_item_status);
                 holder.price = (TextView) convertView.findViewById(R.id.banquet_item_price);
+                holder.finish = (TextView) convertView.findViewById(R.id.banquet_item_finished);
                 convertView.setTag(holder);
             } else {
                 holder = (ViewHolder) convertView.getTag();
@@ -126,9 +128,11 @@ public class BanquetAdapter extends BaseAdapter implements AdapterView.OnItemCli
                 Picasso.with(mContext).load(banquent.getMaster().getAvatarURL().get()).placeholder(R.drawable.default_user_head).into(holder.head);
             holder.title.setText(banquent.getTitle());
             String dateInfo = formatDate(banquent.getTime());
-            holder.detail.setText(dateInfo + banquent.getAddress());
+
+            holder.detail.setText(dateInfo + mContext.getString(R.string.center_dot) + banquent.getAddress());
             holder.description.setText(banquent.getDesc());
-            holder.price.setText(String.format(mContext.getString(R.string.price_per_one), banquent.getPrice()));
+//            holder.price.setText(String.format(mContext.getString(R.string.price_per_one), banquent.getPrice()));
+            holder.price.setText(String.valueOf(banquent.getPrice()));
             BanquentCapacity banquentCapacity = banquent.getBanquentCapacity();
             if (banquentCapacity.getMin() == banquentCapacity.getMax()) {
                 holder.status.setText(String.format(mContext.getString(R.string.banquent_capacity_simple), banquentCapacity.getMax(), banquentCapacity.getCount()));
@@ -145,6 +149,22 @@ public class BanquetAdapter extends BaseAdapter implements AdapterView.OnItemCli
                     mContext.startActivity(intent);
                 }
             });
+            switch (BanquentStatus.fromString(banquent.getStatus())) {
+                case Selling:
+                    break;
+                case SoldOut:
+                    holder.finish.setText(R.string.banquet_status_sold_out);
+                    holder.finish.setVisibility(View.VISIBLE);
+                    break;
+                case OverTime:
+                    holder.finish.setText(R.string.banquet_status_over_time);
+                    holder.finish.setVisibility(View.VISIBLE);
+                    break;
+                case End:
+                    holder.finish.setText(R.string.banquet_status_end);
+                    holder.finish.setVisibility(View.VISIBLE);
+                    break;
+            }
             return convertView;
         }
     }
@@ -170,11 +190,11 @@ public class BanquetAdapter extends BaseAdapter implements AdapterView.OnItemCli
 
     private String formatDate(Date date) {
         StringBuilder strBuilder = new StringBuilder();
-        strBuilder.append(String.format(mContext.getString(R.string.month_day), date.getMonth(), date.getDate()));
+        strBuilder.append(String.format(mContext.getString(R.string.month_day), date.getMonth() + 1, date.getDate()));
         strBuilder.append(" ");
         strBuilder.append(weekDays[date.getDay()]);
         strBuilder.append(" ");
-        strBuilder.append(date.getHours() + ":00");
+        strBuilder.append(String.format(mContext.getString(R.string.banquet_format_time), date.getHours(), date.getMinutes()));
         strBuilder.append(" ");
         return strBuilder.toString();
     }
@@ -188,5 +208,6 @@ public class BanquetAdapter extends BaseAdapter implements AdapterView.OnItemCli
         TextView description;
         TextView price;
         TextView status;
+        TextView finish;
     }
 }

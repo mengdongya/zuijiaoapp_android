@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import com.lidroid.xutils.view.annotation.ViewInject;
 import com.squareup.picasso.Picasso;
+import com.zuijiao.android.util.functional.LambdaExpression;
 import com.zuijiao.android.util.functional.OneParameterExpression;
 import com.zuijiao.android.zuijiao.model.Banquent.Order;
 import com.zuijiao.android.zuijiao.model.Banquent.OrderStatus;
@@ -44,6 +45,8 @@ public class OrderListFragment extends Fragment implements
     private List<Order> orderList;
     private Integer lastedId = null;
     private String[] weekDays;
+    private TextView mBlankText;
+    private int[] mBlankTextRes = {R.string.no_coming_order, R.string.no_finished_order, R.string.no_order};
 
     public OrderListFragment(int index) {
         super();
@@ -68,6 +71,7 @@ public class OrderListFragment extends Fragment implements
         mRefreshLayout = (SwipeRefreshLayout) mContentView.findViewById(R.id.order_fragment_swipe_refresh);
         mListView = (RefreshAndInitListView) mContentView.findViewById(R.id.banquet_order_list);
         emptyView = mContentView.findViewById(R.id.order_empty_content);
+        mBlankText = (TextView) mContentView.findViewById(R.id.order_list_blank_text);
         mListView.setPullRefreshEnable(false);
         mListView.setPullLoadEnable(false);
         mRefreshLayout.setOnRefreshListener(this);
@@ -78,6 +82,36 @@ public class OrderListFragment extends Fragment implements
     }
 
     private void networkStep(boolean bRefresh) {
+        if (!Router.getInstance().getCurrentUser().isPresent()) {
+            ((BaseActivity) getActivity()).tryLoginFirst(new LambdaExpression() {
+                @Override
+                public void action() {
+                    if (!Router.getInstance().getCurrentUser().isPresent()) {
+                        if (orderList != null)
+                            orderList.clear();
+                        mAdapter.notifyDataSetChanged();
+                        mRefreshLayout.setRefreshing(false);
+                        ((BaseActivity) getActivity()).notifyLogin(new LambdaExpression() {
+                            @Override
+                            public void action() {
+                                if (Router.getInstance().getCurrentUser().isPresent()) {
+                                    networkStep(bRefresh);
+                                }
+                            }
+                        });
+                    } else {
+                        networkStep(bRefresh);
+                    }
+                }
+            }, new OneParameterExpression<Integer>() {
+                @Override
+                public void action(Integer integer) {
+                    Toast.makeText(getActivity(), R.string.notify_net2, Toast.LENGTH_LONG).show();
+                    mRefreshLayout.setRefreshing(false);
+                }
+            });
+            return;
+        }
         OrderStatus status;
         switch (tabIndex) {
             case 0:
@@ -98,9 +132,10 @@ public class OrderListFragment extends Fragment implements
             public void action(Orders orders) {
                 if (bRefresh) {
                     orderList = orders.getOrderList();
-                    if (orderList.size() == 0)
+                    if (orderList.size() == 0) {
                         emptyView.setVisibility(View.VISIBLE);
-                    else
+                        mBlankText.setText(mBlankTextRes[tabIndex]);
+                    } else
                         emptyView.setVisibility(View.GONE);
                     lastedId = null;
                 } else {
@@ -199,11 +234,11 @@ public class OrderListFragment extends Fragment implements
 
     private String formatDate(Date date) {
         StringBuilder strBuilder = new StringBuilder();
-        strBuilder.append(String.format(getString(R.string.month_day), date.getMonth(), date.getDate()));
+        strBuilder.append(String.format(getString(R.string.month_day), date.getMonth() + 1, date.getDate()));
         strBuilder.append(" ");
         strBuilder.append(weekDays[date.getDay()]);
         strBuilder.append(" ");
-        strBuilder.append(date.getHours() + ":00");
+        strBuilder.append(String.format(getString(R.string.banquet_format_time), date.getHours(), date.getMinutes()));
         strBuilder.append(" ");
         return strBuilder.toString();
     }

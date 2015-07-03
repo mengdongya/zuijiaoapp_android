@@ -143,7 +143,8 @@ public class BanquetOrderActivity extends BaseActivity implements View.OnClickLi
     private void initViewsByBanquet() {
         mBanquetTime.setText(formatDate(mBanquent.getTime()));
         mBanquetPrice.setText(String.format(getString(R.string.price_per_one), mBanquent.getPrice()));
-        mBottomPrice.setText(String.format(getString(R.string.price_per_one), mBanquent.getPrice()));
+//        mBottomPrice.setText(String.format(getString(R.string.price_per_one), mBanquent.getPrice()));
+        mBottomPrice.setText(String.valueOf(mBanquent.getPrice()));
         mBottomPayWay.setText(getString(R.string.use) + payWayRes[mSelectedPayWay]);
         mBanquetLocation.setText(mBanquent.getAddress());
     }
@@ -218,11 +219,11 @@ public class BanquetOrderActivity extends BaseActivity implements View.OnClickLi
 
     private String formatDate(Date date) {
         StringBuilder strBuilder = new StringBuilder();
-        strBuilder.append(String.format(mContext.getString(R.string.month_day), date.getMonth(), date.getDate()));
+        strBuilder.append(String.format(mContext.getString(R.string.month_day), date.getMonth() + 1, date.getDate()));
         strBuilder.append(" ");
         strBuilder.append(weekDays[date.getDay()]);
         strBuilder.append(" ");
-        strBuilder.append(date.getHours() + ":00");
+        strBuilder.append(String.format(mContext.getString(R.string.banquet_format_time), date.getHours(), date.getMinutes()));
         strBuilder.append(" ");
         return strBuilder.toString();
     }

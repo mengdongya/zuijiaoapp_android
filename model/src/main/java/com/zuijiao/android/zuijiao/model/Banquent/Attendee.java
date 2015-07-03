@@ -62,9 +62,19 @@ public class Attendee {
         return null;
     }
 
+    //    public ArrayList<String> getImageUrls() {
+//        if (organizerInfo != null)
+//            ?
+//            return organizerInfo.imageUrls;
+//        return null;
+//
+//    }
     public ArrayList<String> getImageUrls() {
-        if (organizerInfo != null)
-            return organizerInfo.imageUrls;
-        return null;
+        ArrayList<String> arrayList = new ArrayList<>();
+        for (String imageUrl : organizerInfo.imageUrls) {
+            imageUrl = ImageUrlUtil.imageUrl(imageUrl);
+            arrayList.add(imageUrl);
+        }
+        return arrayList;
     }
 }

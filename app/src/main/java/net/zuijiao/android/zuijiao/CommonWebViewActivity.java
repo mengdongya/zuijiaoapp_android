@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
@@ -55,8 +56,18 @@ public class CommonWebViewActivity extends BaseActivity {
                 super.onPageFinished(view, url);
                 view.setVisibility(View.VISIBLE);
             }
+
         };
         mWebView.setWebViewClient(mWvClient);
+        mWebView.setWebChromeClient(new WebChromeClient() {
+            @Override
+            public void onReceivedTitle(WebView view, String title) {
+                super.onReceivedTitle(view, title);
+                if (title != null) {
+                    mToolbar.setTitle(title);
+                }
+            }
+        });
         mWebView.loadUrl(contentUrl);
 
     }

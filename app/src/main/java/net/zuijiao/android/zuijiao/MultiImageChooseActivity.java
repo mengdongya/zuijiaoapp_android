@@ -133,7 +133,7 @@ public class MultiImageChooseActivity extends BaseActivity {
             return;
         }
         for (SimpleImage image : images) {
-            if (mCachedData.size() >= 12) {
+            if (mCachedData.size() >= 2) {
                 break;
             }
             try {
@@ -298,6 +298,7 @@ public class MultiImageChooseActivity extends BaseActivity {
         Bitmap bitmap = BitmapFactory.decodeStream(isBm, null, null);//把ByteArrayInputStream数据生成图片
         return bitmap;
     }
+
     private boolean selectedImageContainsCurrentImage(SimpleImage image) {
         for (SimpleImage si : mSelectedImage) {
             if (si.data.equals(image.data)) {

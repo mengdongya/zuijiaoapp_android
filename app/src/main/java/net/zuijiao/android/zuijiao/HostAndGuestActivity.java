@@ -178,6 +178,7 @@ public class HostAndGuestActivity extends BaseActivity {
 
     private void registerViewsByAttendee() {
         final ArrayList<String> imageUrls = mAttendee.getImageUrls();
+        mToolbar.setTitle(mAttendee.getNickname());
         if (imageUrls != null && imageUrls.size() != 0) {
             for (int i = 0; i < imageUrls.size(); i++) {
                 ImageView image = new ImageView(this);
@@ -204,14 +205,18 @@ public class HostAndGuestActivity extends BaseActivity {
             mViewPagerAdapter = new ImageViewPagerAdapter(mImageList);
             mImageIndex.setText(1 + "/" + mImageList.size());
             mHostImages.setAdapter(mViewPagerAdapter);
-            if (mAttendee.getAvatarURL().isPresent())
+            if (mAttendee.getAvatarURL().isPresent()) {
                 Picasso.with(mContext).load(mAttendee.getAvatarURL().get()).placeholder(R.drawable.default_user_head).into(mHostHead);
+                mHostHead.setOnClickListener(mHeadListener);
+            }
             mGuestHead.setVisibility(View.GONE);
         } else {
             mHostImageContainer.setVisibility(View.GONE);
             mGuestHead.setVisibility(View.VISIBLE);
-            if (mAttendee.getAvatarURL().isPresent())
+            if (mAttendee.getAvatarURL().isPresent()) {
                 Picasso.with(mContext).load(mAttendee.getAvatarURL().get()).placeholder(R.drawable.default_user_head).into(mGuestHead);
+                mGuestHead.setOnClickListener(mHeadListener);
+            }
         }
         mAttendeeName.setText(mAttendee.getNickname());
         String profile = buildAttendeeProfile();
@@ -242,12 +247,12 @@ public class HostAndGuestActivity extends BaseActivity {
         } else {
             mAttendeeLanguage.setVisibility(View.GONE);
         }
-        if (mAttendee.getProfile().getEducationBackground().isPresent() && !mAttendee.getProfile().getEducationBackground().equals("")) {
+        if (mAttendee.getProfile().getEducationBackground().isPresent() && !mAttendee.getProfile().getEducationBackground().get().equals("")) {
             ((TextView) mAttendeeEducation.findViewById(R.id.attendee_detail_info_item_content)).setText(mAttendee.getProfile().getEducationBackground().get());
         } else {
             mAttendeeEducation.setVisibility(View.GONE);
         }
-        if (mAttendee.getProfile().getHobby().isPresent() && !mAttendee.getProfile().getHobby().equals("")) {
+        if (mAttendee.getProfile().getHobby().isPresent() && !mAttendee.getProfile().getHobby().get().equals("")) {
             ((TextView) mAttendeeHobby.findViewById(R.id.attendee_detail_info_item_content)).setText(mAttendee.getProfile().getHobby().get());
         } else {
             mAttendeeHobby.setVisibility(View.GONE);
@@ -326,7 +331,18 @@ public class HostAndGuestActivity extends BaseActivity {
             startActivity(intent);
         }
     };
-
+    private View.OnClickListener mHeadListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            if (mAttendee != null && mAttendee.getAvatarURL().isPresent()) {
+                Intent intent = new Intent(mContext, BigImageActivity.class);
+                ArrayList<String> arrayList = new ArrayList<>();
+                arrayList.add(mAttendee.getAvatarURL().get());
+                intent.putStringArrayListExtra("cloud_images", arrayList);
+                startActivity(intent);
+            }
+        }
+    };
     private BaseAdapter mHistoryAdapter = new BaseAdapter() {
         @Override
         public int getCount() {
@@ -381,11 +397,11 @@ public class HostAndGuestActivity extends BaseActivity {
 
     private String formatDate(Date date) {
         StringBuilder strBuilder = new StringBuilder();
-        strBuilder.append(String.format(mContext.getString(R.string.month_day), date.getMonth(), date.getDate()));
+        strBuilder.append(String.format(mContext.getString(R.string.month_day), date.getMonth() + 1, date.getDate()));
         strBuilder.append(" ");
         strBuilder.append(weekDays[date.getDay()]);
         strBuilder.append(" ");
-        strBuilder.append(date.getHours() + ":00");
+        strBuilder.append(String.format(mContext.getString(R.string.banquet_format_time), date.getHours(), date.getMinutes()));
         strBuilder.append(" ");
         return strBuilder.toString();
     }

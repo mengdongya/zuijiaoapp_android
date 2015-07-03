@@ -8,7 +8,6 @@
     <android.support.v4.view.ViewPager
         android:id="@+id/guide_viewpager"
         android:layout_width="match_parent"
-        android:layout_marginBottom="90dip"
         android:layout_height="match_parent" />
 
     <LinearLayout
@@ -48,19 +47,27 @@
             android:layout_marginLeft="5dip"
             android:layout_marginRight="5dip"
             android:background="@drawable/wizard_index_selected" />
+
+        <View
+            android:layout_width="5dip"
+            android:layout_height="5dip"
+            android:layout_marginLeft="5dip"
+            android:layout_marginRight="5dip"
+            android:background="@drawable/wizard_index_selected" />
     </LinearLayout>
 
     <Button
         android:id="@+id/guide_btn"
         android:layout_width="wrap_content"
-        android:layout_height="30dip"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="20dip"
         android:layout_above="@+id/guide_dots"
         android:layout_centerHorizontal="true"
-        android:background="@color/transparent"
+        android:background="@drawable/guide_start_bg"
         android:text="@string/wizard_btn_text"
         android:visibility="invisible"
-        android:textColor="@color/toolbar" />
+        android:textSize="20sp"
+        android:textColor="@color/white" />
 
     <ProgressBar
         android:id="@+id/guide_progressbar"

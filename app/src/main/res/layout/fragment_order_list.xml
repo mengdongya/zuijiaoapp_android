@@ -18,6 +18,7 @@
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
             android:singleLine="false"
+            android:id="@+id/order_list_blank_text"
             android:text="@string/no_favor"
             android:lineSpacingExtra="5dip"
             android:textColor="@color/bg_light_gray"

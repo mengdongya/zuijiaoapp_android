@@ -54,12 +54,14 @@ public class PreferenceManager {
                 PreferencesDef.FILE_NAME, Activity.MODE_PRIVATE);
         boolean bFirstLaunch = sp.getBoolean(
                 PreferencesDef.IS_APP_FIRST_LAUNCH, true);
+        boolean bVersion2 = sp.getBoolean(PreferencesDef.B_VERSION2, true);
         String strUserKry = sp.getString(PreferencesDef.USER_KEY, "");
         if (mPreferInfo == null) {
             mPreferInfo = new PreferenceInfo();
         }
         mPreferInfo.setAppFirstLaunch(bFirstLaunch);
         mPreferInfo.setUserKey(strUserKry);
+        mPreferInfo.setVersion2FirstLaunch(bVersion2);
         return mPreferInfo;
     }
 
@@ -221,7 +223,8 @@ public class PreferenceManager {
 
     public interface PreferencesDef {
         public static final String FILE_NAME = "settings";
-        public static final String IS_APP_FIRST_LAUNCH = "boolean_first_launch";
+        public static final String IS_APP_FIRST_LAUNCH = "boolean_first_launch_version2";
+        public static final String B_VERSION2 = "is_version2";
         public static final String USER_KEY = "str_user_key";
         public static final String USER_ID = "str_user_id";
     }
@@ -235,6 +238,7 @@ public class PreferenceManager {
         private boolean isAppFirstLaunch = true;
         private String userKey = "";
         private String userId = "";
+        private boolean version2FirstLaunch = true;
 
         public String getUserKey() {
             return userKey;
@@ -252,6 +256,9 @@ public class PreferenceManager {
             this.isAppFirstLaunch = isAppFirstLaunch;
         }
 
+        public void setVersion2FirstLaunch(boolean b) {
+            this.version2FirstLaunch = b;
+        }
         public String getUserId() {
             return userId;
         }
@@ -260,5 +267,8 @@ public class PreferenceManager {
             this.userId = userId;
         }
 
+        public boolean isVersion2FirstLaunch() {
+            return version2FirstLaunch;
+        }
     }
 }

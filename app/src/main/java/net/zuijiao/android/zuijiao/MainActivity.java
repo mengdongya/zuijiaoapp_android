@@ -16,7 +16,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -39,20 +38,16 @@ import android.widget.Toast;
 import com.lidroid.xutils.view.annotation.ContentView;
 import com.lidroid.xutils.view.annotation.ViewInject;
 import com.readystatesoftware.viewbadger.BadgeView;
-import com.squareup.okhttp.Response;
 import com.squareup.picasso.Picasso;
 import com.umeng.fb.FeedbackAgent;
 import com.umeng.update.UmengUpdateAgent;
 import com.umeng.update.UmengUpdateListener;
 import com.umeng.update.UpdateResponse;
 import com.zuijiao.android.util.Optional;
-import com.zuijiao.android.util.functional.LambdaExpression;
 import com.zuijiao.android.util.functional.OneParameterExpression;
-import com.zuijiao.android.zuijiao.model.OrderAuth;
 import com.zuijiao.android.zuijiao.model.message.News;
 import com.zuijiao.android.zuijiao.model.message.NewsList;
 import com.zuijiao.android.zuijiao.model.user.TinyUser;
-import com.zuijiao.android.zuijiao.network.IRouterMessage;
 import com.zuijiao.android.zuijiao.network.Router;
 import com.zuijiao.controller.ActivityTask;
 import com.zuijiao.controller.MessageDef;
@@ -62,9 +57,6 @@ import com.zuijiao.entity.AuthorInfo;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
-
-import retrofit.Callback;
-import retrofit.RetrofitError;
 
 @ContentView(R.layout.activity_main)
 public final class MainActivity extends BaseActivity {
@@ -169,7 +161,7 @@ public final class MainActivity extends BaseActivity {
             mDrawerLayout.closeDrawer(Gravity.LEFT);
         }
     };
-    private int[] mTabImages = {R.drawable.setting_home, R.drawable.setting_recommend, R.drawable.setting_favor, R.drawable.setting_msg};
+    private int[] mTabImages = {R.drawable.setting_home, R.drawable.setting_recommend, R.drawable.setting_favor, R.drawable.setting_orders};
     private int[] mTabTitles = {R.string.main_page, R.string.recommend_page, R.string.favor_page, R.string.my_order};
     private View mLocationView = null;
     private BadgeView mBadgeView = null;

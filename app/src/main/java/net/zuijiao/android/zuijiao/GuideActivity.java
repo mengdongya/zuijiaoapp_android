@@ -16,7 +16,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.lidroid.xutils.view.annotation.ContentView;
@@ -94,13 +93,11 @@ public class GuideActivity extends BaseActivity {
 
     private void initPager() {
         viewList = new ArrayList<View>();
-        int[] images = new int[]{R.drawable.welcome1, R.drawable.welcome2,
-                R.drawable.welcome3};
-//        int [] texts = new int[]{R.drawable.welcome_text1 ,R.drawable.welcome_text2 ,R.drawable.welcome_text3} ;
-        String[] textHead = getResources().getStringArray(R.array.welcome_text1);
-        String[] textNotes = getResources().getStringArray(R.array.welcome_text2);
+        int[] images = new int[]{R.drawable.guide_image1, R.drawable.guide_image2,
+                R.drawable.guide_image3, R.drawable.guide_image4};
+        int[] texts = new int[]{R.drawable.guide_text1, R.drawable.guide_text2, R.drawable.guide_text3, R.drawable.guide_text4};
         for (int i = 0; i < images.length; i++) {
-            viewList.add(initView(images[i], textHead[i], textNotes[i]));
+            viewList.add(initView(images[i], texts[i]));
         }
         View view = LayoutInflater.from(this).inflate(R.layout.guide_last_item, null);
         viewList.add(view);
@@ -115,24 +112,22 @@ public class GuideActivity extends BaseActivity {
         mDotsLayout.getChildAt(0).setBackgroundResource(R.drawable.wizard_index_selected);
         mDotsLayout.getChildAt(1).setBackgroundResource(R.drawable.wizard_index_unselected);
         mDotsLayout.getChildAt(2).setBackgroundResource(R.drawable.wizard_index_unselected);
+        mDotsLayout.getChildAt(3).setBackgroundResource(R.drawable.wizard_index_unselected);
     }
 
     private View initDot() {
-
         ImageView dot = (ImageView) LayoutInflater.from(
                 getApplicationContext()).inflate(R.layout.layout_dot, null);
         return dot;
     }
 
-    private View initView(int imageRes, String title, String note) {
+    private View initView(int imageRes, int textRes) {
         View view = LayoutInflater.from(getApplicationContext()).inflate(
                 R.layout.item_guide, null);
         ImageView imageView = (ImageView) view.findViewById(R.id.guide_image);
-        TextView textView1 = (TextView) view.findViewById(R.id.wizard_text1);
-        TextView textView2 = (TextView) view.findViewById(R.id.wizard_text2);
+        ImageView textImage = (ImageView) view.findViewById(R.id.guide_text);
         imageView.setImageResource(imageRes);
-        textView1.setText(title);
-        textView2.setText(note);
+        textImage.setImageResource(textRes);
         return view;
     }
 

@@ -50,7 +50,7 @@
                 android:singleLine="false"
                 android:id="@+id/banquet_detail_banquet_title"
                 android:textSize="16sp"
-                android:textColor="@color/tv_deep_gray"
+                android:textColor="@color/black"
                 android:layout_gravity="center_horizontal"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="10dip"
@@ -63,8 +63,8 @@
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 android:id="@+id/banquet_detail_banquet_description"
-                android:textSize="13sp"
-                android:textColor="@color/bg_light_gray"
+                android:textSize="14sp"
+                android:textColor="@color/_555555"
                 android:layout_marginTop="10dip"
                 android:lineSpacingExtra="5dip"
                 android:text="2011年从台湾飞到上海定居并拓展新事业 她是Stage Talent创始人、资深时尚活动公关和媒体专家... 在这些华丽惊艳的Title后 Sonian也是一个带着深深台湾味觉记忆的生活美食家. 来「嘴角」吧 与Sonian相遇在「Sonian的台味厨房」"
@@ -215,8 +215,8 @@
                     android:lineSpacingExtra="5dip"
                     android:layout_marginTop="10dip"
                     android:gravity="center_horizontal"
-                    android:textColor="@color/tv_deep_gray"
-                    android:textSize="17sp"
+                    android:textColor="@color/black"
+                    android:textSize="18sp"
                     android:text="菜单\nmenu" />
 
                 <TextView
@@ -227,8 +227,8 @@
                     android:lineSpacingExtra="5dip"
                     android:layout_marginTop="10dip"
                     android:gravity="center_horizontal"
-                    android:textColor="@color/tv_deep_gray"
-                    android:textSize="15sp"
+                    android:textColor="@color/_555555"
+                    android:textSize="14sp"
                     android:text="山楂梅子洋柿子\n乌龙温泉蛋\n禅院素鸭配桂花糖藕\n颐和四季有机色拉配秘制酱汁\n红茶孜然薯格羊排\n茶油冬菜龙俐鱼\n烟熏鸭脯养生小炒" />
 
             </LinearLayout>
@@ -254,8 +254,8 @@
                     android:lineSpacingExtra="5dip"
                     android:layout_marginTop="10dip"
                     android:gravity="center_horizontal"
-                    android:textColor="@color/tv_deep_gray"
-                    android:textSize="17sp"
+                    android:textColor="@color/black"
+                    android:textSize="18sp"
                     android:text="特色\nCharacteristic" />
 
                 <TextView
@@ -266,8 +266,8 @@
                     android:lineSpacingExtra="5dip"
                     android:layout_marginTop="10dip"
                     android:gravity="center_horizontal"
-                    android:textColor="@color/tv_deep_gray"
-                    android:textSize="15sp"
+                    android:textColor="@color/_555555"
+                    android:textSize="14sp"
                     android:text="我家有， 一直节课路数的印象，超静音空气净化器" />
             </LinearLayout>
 
@@ -286,8 +286,8 @@
                 android:lineSpacingExtra="5dip"
                 android:layout_marginTop="10dip"
                 android:gravity="center_horizontal"
-                android:textColor="@color/tv_deep_gray"
-                android:textSize="17sp"
+                android:textColor="@color/black"
+                android:textSize="18sp"
                 android:text="赏位说明\nInstruction" />
 
             <RelativeLayout
@@ -307,7 +307,8 @@
 
                 <TextView
                     android:layout_height="wrap_content"
-                    android:textSize="15sp"
+                    android:textSize="14sp"
+                    android:textColor="@color/_555555"
                     android:layout_centerVertical="true"
                     android:layout_width="match_parent"
                     android:layout_marginLeft="20dip"
@@ -340,11 +341,12 @@
 
                 <TextView
                     android:layout_height="wrap_content"
-                    android:textSize="15sp"
+                    android:textSize="14sp"
                     android:id="@+id/banquet_detail_date_text"
                     android:layout_centerVertical="true"
                     android:layout_width="match_parent"
                     android:layout_marginLeft="20dip"
+                    android:textColor="@color/_555555"
                     android:text="4月18日 周六 18：00"
                     android:layout_toRightOf="@id/banquet_detail_date_icon" />
 
@@ -373,12 +375,13 @@
 
                 <TextView
                     android:layout_height="wrap_content"
-                    android:textSize="15sp"
+                    android:textSize="14sp"
                     android:id="@+id/banquet_detail_price_text"
                     android:layout_centerVertical="true"
                     android:layout_width="match_parent"
                     android:layout_marginLeft="20dip"
                     android:text="198元/位"
+                    android:textColor="@color/_555555"
                     android:layout_toRightOf="@id/banquet_detail_price_icon" />
 
                 <View
@@ -406,11 +409,12 @@
 
                 <TextView
                     android:layout_height="wrap_content"
-                    android:textSize="15sp"
+                    android:textSize="14sp"
                     android:layout_centerVertical="true"
                     android:id="@+id/banquet_detail_request_text"
                     android:layout_width="match_parent"
                     android:layout_marginLeft="20dip"
+                    android:textColor="@color/_555555"
                     android:text="这里是活动要求， 可换行， 这里是活动要求，可换行，里是活动要求，可换行，里是活动要求，可换行，里是活动要求，可换行， 这里是活动要求， 可换行"
                     android:layout_toRightOf="@id/banquet_detail_request_icon" />
 
@@ -455,6 +459,7 @@
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 android:verticalSpacing="5dip"
+                android:layout_marginBottom="10dip"
                 android:horizontalSpacing="10dip"
                 android:numColumns="5" />
 
@@ -530,11 +535,21 @@
                 android:id="@+id/banquet_detail_bottom_price"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
-                android:text="198元/位"
+                android:text="198"
                 android:layout_marginLeft="10dip"
                 android:layout_marginTop="5dip"
-                android:textColor="@color/banquet_red"
-                android:textSize="17sp" />
+                android:textColor="@color/banquet_theme"
+                android:textSize="18sp" />
+
+            <TextView
+                android:layout_toRightOf="@id/banquet_detail_bottom_price"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:text="@string/price_unit"
+                android:layout_marginLeft="3dip"
+                android:textColor="@color/banquet_theme"
+                android:layout_alignBottom="@id/banquet_detail_bottom_price"
+                android:textSize="14sp" />
 
             <TextView
                 android:id="@+id/banquet_detail_bottom_date"

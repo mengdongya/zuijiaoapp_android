@@ -3,6 +3,8 @@ package net.zuijiao.android.zuijiao;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.method.LinkMovementMethod;
+import android.text.util.Linkify;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -45,6 +47,8 @@ public class BanquetOrderDisplayActivity extends BaseActivity {
     private View mOrderDate;
     @ViewInject(R.id.order_display_clickable_group)
     private View clickableView;
+    @ViewInject(R.id.order_notice)
+    private TextView mNoticeText;
     private Order mOrder;
     private String[] weekDays;
 
@@ -89,6 +93,8 @@ public class BanquetOrderDisplayActivity extends BaseActivity {
         fillGenInfo(mOrderPhone, getString(R.string.mobile_phone), mOrder.getPhoneNumber());
         fillGenInfo(mOrderRemark, getString(R.string.remark), mOrder.getRemark());
         fillGenInfo(mOrderDate, getString(R.string.order_time), mOrder.getCreateTime().toLocaleString());
+        mNoticeText.setAutoLinkMask(Linkify.PHONE_NUMBERS);
+        mNoticeText.setMovementMethod(LinkMovementMethod.getInstance());
         clickableView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -126,11 +132,11 @@ public class BanquetOrderDisplayActivity extends BaseActivity {
 
     private String formatDate(Date date) {
         StringBuilder strBuilder = new StringBuilder();
-        strBuilder.append(String.format(mContext.getString(R.string.month_day), date.getMonth(), date.getDate()));
+        strBuilder.append(String.format(mContext.getString(R.string.month_day), date.getMonth() + 1, date.getDate()));
         strBuilder.append(" ");
         strBuilder.append(weekDays[date.getDay()]);
         strBuilder.append(" ");
-        strBuilder.append(date.getHours() + ":00");
+        strBuilder.append(String.format(mContext.getString(R.string.banquet_format_time), date.getHours(), date.getMinutes()));
         strBuilder.append(" ");
         return strBuilder.toString();
     }

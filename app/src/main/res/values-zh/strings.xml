@@ -131,7 +131,7 @@
     <string name="UMUpdateCheck">2.6.0.1.20150312</string>
     <string name="recommendation_count"> %d份推荐</string>
     <string name="splite_dot">·</string>
-    <string name="month_day">%1$d月%2$d日</string>
+    <string name="month_day">%1$02d月%2$02d日</string>
     <string name="year_month_day">%1$4d年%2$d月%3$d日</string>
     <string name="notify_delete_comment">是否删除评论</string>
     <string name="delete">删除</string>
@@ -297,7 +297,7 @@
     <string name="click_bind_mobile_phone">点击设置手机号</string>
     <string name="my_order">我的赏味单</string>
     <string name="coming_soon">即将开始</string>
-    <string name="leaving_for_evaluated">待评价</string>
+    <string name="leaving_for_evaluated">已完成</string>
     <string name="whole">全部</string>
     <string name="to_evaluate">去评价</string>
     <string name="honey_name1">昵称</string>
@@ -338,6 +338,11 @@
     <string name="notify_order_failed">很抱歉，您的预定未成功，请稍后重试，\n或者致电021-58313120</string>
     <string name="finish">完成</string>
     <string name="waiting_fo_you">等待您的赏位</string>
+    <string name="notify_choose_avatar">请选择头像</string>
+    <string name="price_unit">元/位</string>
+    <string name="no_coming_order">没有即将开始的赏位单</string>
+    <string name="no_finished_order">没有已完成的赏位单</string>
+    <string name="no_order">没有赏位记录</string>
     <!-- umeng socialize strings begin-->
     <!--<string name="pull_to_refresh_pull_label" translatable="false">向下拉动可以刷新</string>-->
     <!--<string name="pull_to_refresh_release_label" translatable="false">松开可以刷新</string>-->

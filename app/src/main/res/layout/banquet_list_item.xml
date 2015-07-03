@@ -24,6 +24,18 @@
             android:scaleType="centerCrop"
             android:src="@drawable/shanghai" />
 
+        <TextView
+            android:background="@drawable/banquet_list_item_status_bg"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_marginLeft="8dip"
+            android:id="@+id/banquet_item_finished"
+            android:layout_marginTop="5dip"
+            android:visibility="gone"
+            android:textColor="@color/white"
+            android:textSize="15sp"
+            android:text="@string/banquet_status_end" />
+
         <com.zuijiao.view.RoundImageView
             android:layout_width="50dip"
             myattr:border_thickness="1dip"
@@ -47,7 +59,7 @@
             android:layout_marginTop="10dip"
             android:layout_marginLeft="10dip"
             android:layout_below="@id/banquet_item_image"
-            android:textColor="@color/tv_deep_gray"
+            android:textColor="@color/black"
             android:textSize="18sp" />
 
         <TextView
@@ -69,10 +81,8 @@
             android:maxLines="4"
             android:lineSpacingExtra="5dip"
             android:ellipsize="end"
-            android:layout_marginTop="10dip"
-            android:layout_marginLeft="10dip"
-            android:layout_marginRight="10dip"
-            android:textColor="@color/bg_light_gray"
+            android:layout_margin="10dip"
+            android:textColor="@color/_555555"
             android:layout_below="@id/banquet_item_detail"
             android:textSize="@dimen/main_item_content_text_size" />
 
@@ -81,11 +91,23 @@
             android:layout_width="wrap_content"
             android:layout_marginBottom="10dip"
             android:id="@+id/banquet_item_price"
-            android:textSize="16sp"
+            android:textSize="18sp"
+            android:text="10"
+            android:gravity="bottom"
             android:textColor="@color/banquet_theme"
             android:layout_marginLeft="10dip"
-            android:layout_below="@id/banquet_item_description"
-            android:layout_marginTop="10dip" />
+            android:layout_below="@id/banquet_item_description" />
+
+        <TextView
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:textSize="14sp"
+            android:layout_alignBottom="@id/banquet_item_price"
+            android:text="@string/price_unit"
+            android:layout_marginLeft="3dip"
+            android:gravity="bottom"
+            android:textColor="@color/banquet_theme"
+            android:layout_toRightOf="@id/banquet_item_price" />
 
         <TextView
             android:layout_height="wrap_content"

@@ -261,7 +261,8 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
         setListViewHeightBasedOnChildren(mOrderedPersonShow);
         switch (BanquentStatus.fromString(mBanquent.getStatus())) {
             case Selling:
-                mBottomPrice.setText(String.format(getString(R.string.price_per_one), mBanquent.getPrice()));
+                mBottomPrice.setText(String.valueOf(mBanquent.getPrice()));
+//                mBottomPrice.setText(String.format(getString(R.string.price_per_one), mBanquent.getPrice()));
                 mBottomDate.setText(formatDate(mBanquent.getTime()));
                 break;
             case SoldOut:
@@ -460,11 +461,11 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
 
     private String formatDate(Date date) {
         StringBuilder strBuilder = new StringBuilder();
-        strBuilder.append(String.format(mContext.getString(R.string.month_day), date.getMonth(), date.getDate()));
+        strBuilder.append(String.format(mContext.getString(R.string.month_day), date.getMonth() + 1, date.getDate()));
         strBuilder.append(" ");
         strBuilder.append(weekDays[date.getDay()]);
         strBuilder.append(" ");
-        strBuilder.append(date.getHours() + ":00");
+        strBuilder.append(String.format(mContext.getString(R.string.banquet_format_time), date.getHours(), date.getMinutes()));
         strBuilder.append(" ");
         return strBuilder.toString();
     }

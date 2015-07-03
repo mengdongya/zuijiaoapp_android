@@ -236,15 +236,34 @@
         android:layout_gravity="bottom"
         android:layout_width="match_parent">
 
+        <!--<TextView-->
+        <!--android:id="@+id/banquet_order_bottom_price"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:text="198元/位"-->
+        <!--android:layout_marginLeft="10dip"-->
+        <!--android:layout_marginTop="5dip"-->
+        <!--android:textColor="@color/banquet_theme"-->
+        <!--android:textSize="17sp" />-->
         <TextView
             android:id="@+id/banquet_order_bottom_price"
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
-            android:text="198元/位"
+            android:text="198"
             android:layout_marginLeft="10dip"
             android:layout_marginTop="5dip"
             android:textColor="@color/banquet_theme"
-            android:textSize="17sp" />
+            android:textSize="18sp" />
+
+        <TextView
+            android:layout_toRightOf="@id/banquet_order_bottom_price"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:text="@string/price_unit"
+            android:layout_marginLeft="3dip"
+            android:textColor="@color/banquet_theme"
+            android:layout_alignBottom="@id/banquet_order_bottom_price"
+            android:textSize="14sp" />
 
         <TextView
             android:id="@+id/banquet_order_bottom_pay_way"

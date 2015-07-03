@@ -98,6 +98,7 @@ public class HostAndGuestActivity extends BaseActivity {
         ((TextView) mAttendeeLanguage.findViewById(R.id.attendee_detail_info_item_title)).setText(getString(R.string.my_language));
         ((TextView) mAttendeeEducation.findViewById(R.id.attendee_detail_info_item_title)).setText(getString(R.string.education));
         ((TextView) mAttendeeHobby.findViewById(R.id.attendee_detail_info_item_title)).setText(getString(R.string.interest_hobby));
+
         mHostImages.setOnPageChangeListener(mPageListener);
         mHistoryList.setOnItemClickListener(mItemListener);
         networkStep();
@@ -221,8 +222,10 @@ public class HostAndGuestActivity extends BaseActivity {
             mAttendeeIntroduction.setText(mAttendee.getProfile().getSelfIntroduction().get());
         else
             mIntroductionContainer.setVisibility(View.GONE);
+        int lastItem = 0;
         if (mAttendee.getProfile().getCareer().isPresent() && !mAttendee.getProfile().getCareer().get().equals("")) {
             ((TextView) mAttendeeCareer.findViewById(R.id.attendee_detail_info_item_content)).setText(mAttendee.getProfile().getCareer().get());
+            lastItem = 1;
         } else {
             mAttendeeCareer.setVisibility(View.GONE);
         }
@@ -239,18 +242,35 @@ public class HostAndGuestActivity extends BaseActivity {
                 }
             }
             ((TextView) mAttendeeLanguage.findViewById(R.id.attendee_detail_info_item_content)).setText(languages);
+            lastItem = 2;
         } else {
             mAttendeeLanguage.setVisibility(View.GONE);
         }
         if (mAttendee.getProfile().getEducationBackground().isPresent() && !mAttendee.getProfile().getEducationBackground().get().equals("")) {
             ((TextView) mAttendeeEducation.findViewById(R.id.attendee_detail_info_item_content)).setText(mAttendee.getProfile().getEducationBackground().get());
+            lastItem = 3;
         } else {
             mAttendeeEducation.setVisibility(View.GONE);
         }
         if (mAttendee.getProfile().getHobby().isPresent() && !mAttendee.getProfile().getHobby().get().equals("")) {
             ((TextView) mAttendeeHobby.findViewById(R.id.attendee_detail_info_item_content)).setText(mAttendee.getProfile().getHobby().get());
+            lastItem = 4;
         } else {
             mAttendeeHobby.setVisibility(View.GONE);
+        }
+        switch (lastItem) {
+            case 1:
+                mAttendeeCareer.findViewById(R.id.attendee_detail_info_item_view).setVisibility(View.GONE);
+                break;
+            case 2:
+                mAttendeeLanguage.findViewById(R.id.attendee_detail_info_item_view).setVisibility(View.GONE);
+                break;
+            case 3:
+                mAttendeeEducation.findViewById(R.id.attendee_detail_info_item_view).setVisibility(View.GONE);
+                break;
+            case 4:
+                mAttendeeHobby.findViewById(R.id.attendee_detail_info_item_view).setVisibility(View.GONE);
+                break;
         }
     }
 

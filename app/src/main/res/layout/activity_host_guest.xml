@@ -210,11 +210,11 @@
                 android:layout_width="match_parent"
                 android:orientation="vertical">
 
-                <View
-                    android:layout_height="1dip"
-                    android:layout_marginTop="10dip"
-                    android:background="@color/bg_light_gray2"
-                    android:layout_width="match_parent" />
+                <!--<View-->
+                    <!--android:layout_height="1dip"-->
+                    <!--android:layout_marginTop="10dip"-->
+                    <!--android:background="@color/bg_light_gray2"-->
+                    <!--android:layout_width="match_parent" />-->
 
                 <TextView
                     android:text="已经举办的私宴"

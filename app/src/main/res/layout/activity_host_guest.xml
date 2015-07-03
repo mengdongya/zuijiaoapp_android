@@ -1,27 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:myattr="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <include
-        layout="@layout/toolbar"
-        android:id="@+id/host_guest_tool_bar" />
+        android:id="@+id/host_guest_tool_bar"
+        layout="@layout/toolbar" />
 
     <ScrollView
-        android:layout_height="match_parent"
-        android:layout_width="match_parent">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
         <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_width="match_parent">
+            android:orientation="vertical">
 
             <RelativeLayout
                 android:id="@+id/host_guest_host_image_container"
-                android:layout_height="256dip"
-                android:layout_width="match_parent">
+                android:layout_width="match_parent"
+                android:layout_height="256dip">
 
                 <android.support.v4.view.ViewPager
                     android:id="@+id/host_guest_host_images"
@@ -30,212 +30,206 @@
                     android:gravity="center" />
 
                 <com.zuijiao.view.RoundImageView
-                    android:layout_height="64dip"
                     android:id="@+id/host_guest_host_head"
                     android:layout_width="64dip"
-                    myattr:border_thickness="1dip"
-                    myattr:border_outside_color="#eeeeee"
-                    myattr:border_inside_color="#eeeeee"
-                    android:src="@drawable/default_user_head"
+                    android:layout_height="64dip"
+                    android:layout_alignParentBottom="true"
                     android:layout_centerHorizontal="true"
-                    android:layout_alignParentBottom="true" />
+                    android:src="@drawable/default_user_head" />
 
                 <TextView
                     android:id="@+id/host_guest_images_index"
-                    android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
-                    android:textColor="@color/white"
+                    android:layout_height="wrap_content"
                     android:layout_alignParentBottom="true"
                     android:layout_alignParentRight="true"
-                    android:textSize="15sp"
-                    android:background="@drawable/banquet_detail_image_index_bg"
                     android:layout_marginBottom="20dip"
-                    android:layout_marginRight="40dip" />
+                    android:layout_marginRight="40dip"
+                    android:background="@drawable/banquet_detail_image_index_bg"
+                    android:textColor="@color/white"
+                    android:textSize="15sp" />
             </RelativeLayout>
 
             <com.zuijiao.view.RoundImageView
-                android:layout_height="64dip"
                 android:id="@+id/host_guest_guest_head"
                 android:layout_width="64dip"
+                android:layout_height="64dip"
+                android:layout_gravity="center_horizontal"
                 android:layout_marginTop="10dip"
-                myattr:border_thickness="1dip"
-                android:visibility="gone"
-                myattr:border_outside_color="#333333"
-                myattr:border_inside_color="#333333"
                 android:src="@drawable/default_user_head"
-                android:layout_gravity="center_horizontal" />
+                android:visibility="gone" />
 
             <TextView
                 android:id="@+id/host_guest_attendee_name"
-                android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:text="Sonian"
                 android:layout_marginTop="10dip"
-                android:textSize="18sp"
-                android:textColor="@color/tv_deep_gray" />
+                android:text="Sonian"
+                android:textColor="@color/tv_deep_gray"
+                android:textSize="18sp" />
 
             <TextView
                 android:id="@+id/host_guest_attendee_info"
-                android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:gravity="center_horizontal"
                 android:layout_marginTop="10dip"
+                android:gravity="center_horizontal"
                 android:lineSpacingExtra="5dip"
-                android:textSize="17sp"
-                android:textColor="@color/tv_deep_gray" />
+                android:textColor="@color/tv_deep_gray"
+                android:textSize="17sp" />
 
             <LinearLayout
-                android:layout_height="wrap_content"
-                android:layout_width="match_parent"
                 android:id="@+id/host_guest_personal_introduction_group"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:orientation="vertical">
 
                 <View
+                    android:layout_width="match_parent"
                     android:layout_height="1dip"
                     android:layout_marginTop="10dip"
-                    android:background="@color/bg_light_gray2"
-                    android:layout_width="match_parent" />
+                    android:background="@color/bg_light_gray2" />
 
                 <TextView
                     android:id="@+id/host_guest_introduction_title"
-                    android:layout_marginTop="10dip"
-                    android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:textSize="18sp"
-                    android:textColor="@color/tv_deep_gray" />
+                    android:layout_marginTop="10dip"
+                    android:textColor="@color/tv_deep_gray"
+                    android:textSize="18sp" />
 
                 <TextView
                     android:id="@+id/host_guest_introduction"
-                    android:layout_margin="10dip"
-                    android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:textSize="15sp"
+                    android:layout_margin="10dip"
                     android:lineSpacingExtra="5dip"
-                    android:textColor="@color/tv_deep_gray" />
+                    android:textColor="@color/tv_deep_gray"
+                    android:textSize="15sp" />
             </LinearLayout>
 
             <LinearLayout
-                android:layout_height="wrap_content"
-                android:layout_width="match_parent"
                 android:id="@+id/host_guest_detail_group"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:orientation="vertical">
 
                 <View
+                    android:layout_width="match_parent"
                     android:layout_height="1dip"
                     android:layout_marginTop="10dip"
-                    android:background="@color/bg_light_gray2"
-                    android:layout_width="match_parent" />
+                    android:background="@color/bg_light_gray2" />
 
                 <TextView
-                    android:layout_marginTop="10dip"
-                    android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:textSize="18sp"
+                    android:layout_marginTop="10dip"
                     android:text="@string/detail_info"
-                    android:textColor="@color/tv_deep_gray" />
+                    android:textColor="@color/tv_deep_gray"
+                    android:textSize="18sp" />
 
                 <include
-                    layout="@layout/attendee_detail_info_item"
-                    android:id="@+id/attendee_detail_career_item" />
+                    android:id="@+id/attendee_detail_career_item"
+                    layout="@layout/attendee_detail_info_item" />
 
                 <include
-                    layout="@layout/attendee_detail_info_item"
-                    android:id="@+id/attendee_detail_language_item" />
+                    android:id="@+id/attendee_detail_language_item"
+                    layout="@layout/attendee_detail_info_item" />
 
                 <include
-                    layout="@layout/attendee_detail_info_item"
-                    android:id="@+id/attendee_detail_education_item" />
+                    android:id="@+id/attendee_detail_education_item"
+                    layout="@layout/attendee_detail_info_item" />
 
                 <include
-                    layout="@layout/attendee_detail_info_item"
-                    android:id="@+id/attendee_detail_hobby_item" />
+                    android:id="@+id/attendee_detail_hobby_item"
+                    layout="@layout/attendee_detail_info_item" />
 
 
             </LinearLayout>
 
             <LinearLayout
-                android:layout_height="wrap_content"
                 android:layout_width="match_parent"
-                android:visibility="gone"
-                android:orientation="vertical">
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
 
                 <View
+                    android:layout_width="match_parent"
                     android:layout_height="1dip"
                     android:layout_marginTop="10dip"
-                    android:background="@color/bg_light_gray2"
-                    android:layout_width="match_parent" />
+                    android:background="@color/bg_light_gray2" />
 
                 <TextView
                     android:id="@+id/banquet_detail_review_title"
-                    android:text="评价\nReviews"
-                    android:singleLine="false"
-                    android:textSize="18sp"
-                    android:textColor="@color/tv_deep_gray"
-                    android:layout_gravity="center_horizontal"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="10dip"
+                    android:layout_gravity="center_horizontal"
                     android:layout_marginLeft="10dip"
-                    android:gravity="center_horizontal"
+                    android:layout_marginRight="10dip"
                     android:layout_marginTop="10dip"
-                    android:layout_width="wrap_content" />
+                    android:gravity="center_horizontal"
+                    android:singleLine="false"
+                    android:text="评价\nReviews"
+                    android:textColor="@color/tv_deep_gray"
+                    android:textSize="18sp" />
 
                 <include
-                    layout="@layout/banquet_comment_item"
-                    android:id="@+id/banquet_detail_lastest_comment" />
+                    android:id="@+id/banquet_detail_lastest_comment"
+                    layout="@layout/banquet_comment_item" />
 
                 <Button
-                    android:text="@string/all_comments"
-                    style="?android:attr/buttonStyleSmall"
                     android:id="@+id/banquet_detail_comment_btn"
+                    style="?android:attr/buttonStyleSmall"
+                    android:layout_width="wrap_content"
                     android:layout_height="35dip"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="10dip"
+                    android:background="@drawable/banquet_detail_about_cuisine_btn_bg"
+                    android:gravity="center"
                     android:paddingLeft="5dip"
                     android:paddingRight="5dip"
-                    android:layout_marginTop="10dip"
-                    android:layout_width="wrap_content"
-                    android:textSize="14sp"
+                    android:text="@string/all_comments"
                     android:textColor="@color/white"
-                    android:gravity="center"
-                    android:background="@drawable/banquet_detail_about_cuisine_btn_bg"
-                    android:layout_gravity="center_horizontal" />
+                    android:textSize="14sp" />
 
             </LinearLayout>
 
             <LinearLayout
-                android:layout_height="wrap_content"
                 android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:orientation="vertical">
 
                 <View
+                    android:layout_width="match_parent"
                     android:layout_height="1dip"
                     android:layout_marginTop="10dip"
-                    android:background="@color/bg_light_gray2"
-                    android:layout_width="match_parent" />
+                    android:background="@color/bg_light_gray2" />
 
                 <TextView
-                    android:text="已经举办的私宴"
                     android:id="@+id/host_guest_history_title"
-                    android:singleLine="false"
-                    android:textSize="18sp"
-                    android:textColor="@color/tv_deep_gray"
-                    android:layout_gravity="center_horizontal"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="10dip"
+                    android:layout_gravity="center_horizontal"
                     android:layout_marginLeft="10dip"
-                    android:gravity="center_horizontal"
+                    android:layout_marginRight="10dip"
                     android:layout_marginTop="10dip"
-                    android:layout_width="wrap_content" />
+                    android:gravity="center_horizontal"
+                    android:singleLine="false"
+                    android:text="已经举办的私宴"
+                    android:textColor="@color/tv_deep_gray"
+                    android:textSize="18sp" />
 
                 <ListView
-                    android:divider="@null"
-                    android:layout_marginTop="10dip"
                     android:id="@+id/host_guest_history_list"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_width="match_parent" />
+                    android:layout_marginTop="10dip"
+                    android:divider="@null" />
             </LinearLayout>
         </LinearLayout>
     </ScrollView>

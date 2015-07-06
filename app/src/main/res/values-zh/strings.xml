@@ -37,7 +37,7 @@
     <string name="share_url">http://mobile.views.zuijiao.net/zuijiao/share/cuisine</string>
     <string name="zuijiao_team">嘴角团队</string>
     <string name="wizard_page">欢迎页</string>
-    <string name="version_code">V%s</string>
+    <string name="version_code">V2.0.0</string>
     <string name="logout_confirm_title">是否退出登录</string>
     <string name="logout">退出登录</string>
     <string name="logout_msg">已经退出登录</string>

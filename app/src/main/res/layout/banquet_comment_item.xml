@@ -31,7 +31,7 @@
         android:layout_marginLeft="5dip"
         android:layout_toRightOf="@id/banquet_comment_item_head"
         android:layout_below="@id/banquet_comment_item_user_name"
-        android:text="2015-4.5:Sonian的太危险厨房" />
+        android:text="2015-4.5:Sonian的台位厨房" />
 
     <LinearLayout
         android:layout_height="wrap_content"

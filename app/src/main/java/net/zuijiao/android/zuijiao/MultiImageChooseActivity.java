@@ -250,7 +250,7 @@ public class MultiImageChooseActivity extends BaseActivity {
         if (mImageThreadPool == null) {
             synchronized (ExecutorService.class) {
                 if (mImageThreadPool == null) {
-                    mImageThreadPool = Executors.newFixedThreadPool(5);
+                    mImageThreadPool = Executors.newFixedThreadPool(3);
                 }
             }
         }

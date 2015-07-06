@@ -128,9 +128,9 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity
-            android:label="ssss"
             android:name="net.zuijiao.android.zuijiao.BanquetOrderDisplayActivity"
             android:screenOrientation="portrait"
+            android:label="@string/order_message"
             android:theme="@style/AppTheme" />
         <activity
             android:name="net.zuijiao.android.zuijiao.BanquetCommentActivity"

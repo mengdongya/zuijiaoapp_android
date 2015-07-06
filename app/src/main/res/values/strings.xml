@@ -331,7 +331,7 @@
     <string name="use">使用</string>
     <string name="alert">提示</string>
     <string name="input_phone_num">下单前必须预留手机号码</string>
-    <string name="notify_order_failed">很抱歉，您的预定未成功，请稍后重试，\n或者致电021-58313120</string>
+    <string name="notify_order_failed">很抱歉，您的预订未成功，请稍后重试，\n或者致电021-58313120</string>
     <string name="finish">完成</string>
     <string name="waiting_fo_you">等待您的赏味</string>
     <string name="notify_choose_avatar">请选择头像</string>
@@ -342,6 +342,7 @@
     <string name="banquet_format_time">%1$02d : %2$02d</string>
     <string name="host">料理人</string>
     <string name="guest">赏味人</string>
-    <string name="detail_order">预定详情</string>
+    <string name="detail_order">预订详情</string>
     <string name="on_register">正在注册</string>
+    <string name="order_message">订单详情</string>
 </resources>

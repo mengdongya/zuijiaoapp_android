@@ -215,7 +215,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="1dip"
                     android:layout_marginTop="10dip"
-                    android:background="@color/bg_light_gray2" />
+                    />
 
                 <TextView
                     android:id="@+id/banquet_detail_review_title"
@@ -261,7 +261,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="1dip"
                     android:layout_marginTop="10dip"
-                    android:background="@color/bg_light_gray2" />
+                    />
 
                 <TextView
                     android:id="@+id/host_guest_history_title"

@@ -11,7 +11,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -74,6 +76,12 @@ public class HostAndGuestActivity extends BaseActivity {
     private View mAttendeeHobby;
     @ViewInject(R.id.host_guest_history_title)
     private TextView mHistoryTitle;
+
+    @ViewInject(R.id.ll_host_comment_stars)
+    private LinearLayout mCommentStars;
+    @ViewInject(R.id.host_comment_list)
+    private LinearLayout mHostCommentList;
+
     private ArrayList<ImageView> mImageList = new ArrayList<>();
     private ImageViewPagerAdapter mViewPagerAdapter;
     private List<Banquent> banquentList;
@@ -110,6 +118,8 @@ public class HostAndGuestActivity extends BaseActivity {
         if (bHost) {
             getSupportActionBar().setTitle(getString(R.string.host));
             mAttendeeIntroductionTitle.setText(getString(R.string.host_introduction));
+            mCommentStars.setVisibility(View.VISIBLE);
+            mHostCommentList.setVisibility(View.VISIBLE);
             mHistoryTitle.setText(getString(R.string.hosted_banquet));
             Router.getAccountModule().masterInfo(mAttendeeId, new OneParameterExpression<Attendee>() {
                 @Override
@@ -145,6 +155,8 @@ public class HostAndGuestActivity extends BaseActivity {
         } else {
             getSupportActionBar().setTitle(getString(R.string.guest));
             mHistoryTitle.setText(getString(R.string.attended_banquet));
+            mCommentStars.setVisibility(View.GONE);
+            mHostCommentList.setVisibility(View.GONE);
             mAttendeeIntroductionTitle.setText(getString(R.string.personal_introduction));
             Router.getAccountModule().attendeeInfo(mAttendeeId, new OneParameterExpression<Attendee>() {
                 @Override

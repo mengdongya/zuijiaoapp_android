@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:orientation="horizontal"
+    android:layout_height="30dip"
+    android:gravity="center"
+    android:layout_marginTop="10dip">
+
+    <TextView
+        android:text="(20)"
+        android:visibility="invisible"
+        android:textColor="@color/bg_light_gray2"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_width="wrap_content"
+        android:textSize="14sp" />
+
+    <ImageButton
+        android:background="@drawable/star_bright"
+        android:layout_width="25dip"
+        android:layout_height="25dip"
+        android:layout_marginRight="10dip"
+        />
+    <ImageButton
+        android:background="@drawable/star_bright"
+        android:layout_width="25dip"
+        android:layout_height="25dip"
+        android:layout_marginRight="10dip"
+        />
+    <ImageButton
+        android:background="@drawable/star_bright"
+        android:layout_width="25dip"
+        android:layout_height="25dip"
+        android:layout_marginRight="10dip"
+        />
+    <ImageButton
+        android:background="@drawable/star_bright"
+        android:layout_width="25dip"
+        android:layout_height="25dip"
+        android:layout_marginRight="10dip"
+        />
+    <ImageButton
+        android:background="@drawable/star_gloomy"
+        android:layout_width="25dip"
+        android:layout_height="25dip"
+        android:layout_marginRight="10dip"
+        />
+
+    <TextView
+        android:text="(20)"
+        android:id="@+id/banquet_detail_host_score"
+        android:textColor="@color/bg_light_gray2"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_width="wrap_content"
+        android:textSize="14sp" />
+
+</LinearLayout>

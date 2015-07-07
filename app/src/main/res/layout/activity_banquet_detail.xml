@@ -119,9 +119,10 @@
                     android:text="Sinian" />
             </LinearLayout>
 
+            <include layout="@layout/host_comment_stars"
+                android:id="@+id/banquet_detail_star_container"/>
 
-            <LinearLayout
-                android:visibility="gone"
+            <!--<LinearLayout
                 android:id="@+id/banquet_detail_star_container"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dip"
@@ -177,7 +178,8 @@
                     android:layout_gravity="center_vertical"
                     android:layout_width="wrap_content"
                     android:textSize="14sp" />
-            </LinearLayout>
+
+            </LinearLayout>-->
 
             <Button
                 style="?android:attr/buttonStyleSmall"

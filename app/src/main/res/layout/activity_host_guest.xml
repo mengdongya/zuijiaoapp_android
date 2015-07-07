@@ -67,59 +67,9 @@
                 android:text="Sonian"
                 android:textColor="@color/_555555"
                 android:textSize="14sp" />
-
-            <LinearLayout
+            <include
                 android:id="@+id/ll_host_comment_stars"
-                android:layout_width="match_parent"
-                android:orientation="horizontal"
-                android:layout_height="30dip"
-                android:gravity="center_vertical"
-                android:layout_marginTop="10dip"
-               >
-                <ImageButton
-                    android:background="@drawable/star_bright"
-                    android:layout_width="30dip"
-                    android:layout_height="30dip"
-                    android:layout_marginLeft="85dip"
-                    android:layout_marginRight="5dip"
-                    android:clickable="true" />
-                <ImageButton
-                    android:background="@drawable/star_bright"
-                    android:layout_width="30dip"
-                    android:layout_height="30dip"
-                    android:layout_marginLeft="5dip"
-                    android:layout_marginRight="5dip"
-                    android:clickable="true" />
-                <ImageButton
-                    android:background="@drawable/star_bright"
-                    android:layout_width="30dip"
-                    android:layout_height="30dip"
-                    android:layout_marginLeft="5dip"
-                    android:layout_marginRight="5dip"
-                    android:clickable="true" />
-                <ImageButton
-                    android:background="@drawable/star_bright"
-                    android:layout_width="30dip"
-                    android:layout_height="30dip"
-                    android:layout_marginLeft="5dip"
-                    android:layout_marginRight="5dip"
-                    android:clickable="true" />
-                <ImageButton
-                    android:background="@drawable/star_gloomy"
-                    android:layout_width="30dip"
-                    android:layout_height="30dip"
-                    android:layout_marginLeft="5dip"
-                    android:layout_marginRight="30dip"
-                    android:clickable="true" />
-
-                <TextView
-                    android:id="@+id/host_comment_count"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:paddingRight="30dip"
-                    android:text="(20)" />
-                </LinearLayout>
+                layout="@layout/host_comment_stars"/>
 
             <TextView
                 android:id="@+id/host_guest_attendee_info"

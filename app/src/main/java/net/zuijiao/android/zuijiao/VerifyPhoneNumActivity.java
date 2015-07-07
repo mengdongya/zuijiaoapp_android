@@ -25,16 +25,13 @@ import com.zuijiao.android.util.functional.LambdaExpression;
 import com.zuijiao.android.util.functional.OneParameterExpression;
 import com.zuijiao.android.zuijiao.network.Router;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 /**
  * Created by xiaqibo on 2015/5/5.
  */
 @ContentView(R.layout.activity_verify_phone)
 public class VerifyPhoneNumActivity extends BaseActivity {
     //phone num format checker
-    private static Pattern regex = Pattern.compile("^(((13[0-9])|(15([0-3]|[5-9]))|(18[0,5-9]))\\d{8})|(0\\d{2}-\\d{8})|(0\\d{3}-\\d{7})$");
+//    private static Pattern regex = Pattern.compile("^(((13[0-9])|(15([0-9]))|(18[0-9]))\\d{8})|(0\\d{2}-\\d{8})|(0\\d{3}-\\d{7})$");
     @ViewInject(R.id.verify_number_toolbar)
     private Toolbar mToolbar = null;
     @ViewInject(R.id.verify_number_et_number)
@@ -51,9 +48,11 @@ public class VerifyPhoneNumActivity extends BaseActivity {
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             int second = msg.arg1;
+            mPhoneNumEditor.setEnabled(false);
             if (second == 0) {
                 mSendBtn.setText(getString(R.string.re_send_verification_code));
                 mSendBtn.setEnabled(true);
+                mPhoneNumEditor.setEnabled(true);
                 return;
             }
             mSendBtn.setText(String.format(getString(R.string.re_send_verification_code_delayed), msg.arg1));
@@ -64,14 +63,18 @@ public class VerifyPhoneNumActivity extends BaseActivity {
     };
 
     public static boolean checkMobileNumber(String mobileNumber) {
-        boolean flag = false;
-        try {
-            Matcher matcher = regex.matcher(mobileNumber);
-            flag = matcher.matches();
-        } catch (Exception e) {
-            flag = false;
-        }
-        return flag;
+//        boolean flag = false;
+//        try {
+//            Matcher matcher = regex.matcher(mobileNumber);
+//            flag = matcher.matches();
+//        } catch (Exception e) {
+//            flag = false;
+//        }
+        if (mobileNumber == null)
+            return false;
+        if (mobileNumber.startsWith("1") && mobileNumber.length() == 11)
+            return true;
+        return false;
     }
 
     @Override
@@ -107,22 +110,28 @@ public class VerifyPhoneNumActivity extends BaseActivity {
         mSendBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mSendBtn.setEnabled(false);
-                Router.getCommonModule().requestSecurityCode(mPhoneNumEditor.getText().toString().trim(), new LambdaExpression() {
-                    @Override
-                    public void action() {
-                        Message msg = Message.obtain();
-                        msg.arg1 = 60;
-                        mHandler.sendMessage(msg);
-                        mSendBtn.setText(getString(R.string.re_send_verification_code));
-                        securityCodeSent = true;
-                    }
-                }, new LambdaExpression() {
-                    @Override
-                    public void action() {
-                        mSendBtn.setEnabled(true);
-                    }
-                });
+
+                String phoneNum = mPhoneNumEditor.getText().toString().trim();
+                if (checkMobileNumber(phoneNum)) {
+                    mSendBtn.setEnabled(false);
+                    mPhoneNumEditor.setEnabled(false);
+                    Router.getCommonModule().requestSecurityCode(mPhoneNumEditor.getText().toString().trim(), new LambdaExpression() {
+                        @Override
+                        public void action() {
+                            Message msg = Message.obtain();
+                            msg.arg1 = 60;
+                            mHandler.sendMessage(msg);
+                            mSendBtn.setText(getString(R.string.re_send_verification_code));
+                            securityCodeSent = true;
+                        }
+                    }, new LambdaExpression() {
+                        @Override
+                        public void action() {
+                            mSendBtn.setEnabled(true);
+                        }
+                    });
+                } else
+                    Toast.makeText(mContext, getString(R.string.input_telephone), Toast.LENGTH_SHORT).show();
             }
         });
     }

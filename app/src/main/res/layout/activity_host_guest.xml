@@ -20,6 +20,7 @@
             <RelativeLayout
                 android:id="@+id/host_guest_host_image_container"
                 android:layout_width="match_parent"
+                android:visibility="gone"
                 android:layout_height="256dip">
 
                 <android.support.v4.view.ViewPager
@@ -64,7 +65,6 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="10dip"
-                android:text="Sonian"
                 android:textColor="@color/_555555"
                 android:textSize="14sp" />
 
@@ -220,7 +220,7 @@
                     android:gravity="center_horizontal"
                     android:singleLine="false"
                     android:text="已经举办的私宴"
-                    android:textColor="@color/tv_deep_gray"
+                    android:textColor="@color/black"
                     android:textSize="18sp" />
 
                 <ListView

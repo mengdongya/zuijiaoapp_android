@@ -100,8 +100,8 @@ public class FriendFragment extends Fragment {
             }
             SocialEntity user = data.get(position);
             holder.userName.setText(user.getNickName());
-            if (user.getAvatarURL().isPresent())
-                Picasso.with(mActivity.getApplicationContext()).load(user.getAvatarURL().get()).placeholder(R.drawable.default_user_head).into(holder.headView);
+            if (user.getAvatarURLSmall().isPresent())
+                Picasso.with(mActivity.getApplicationContext()).load(user.getAvatarURLSmall().get()).placeholder(R.drawable.default_user_head).into(holder.headView);
             else holder.headView.setImageResource(R.drawable.default_user_head);
             String location = DBOpenHelper.getmInstance(mActivity.getApplicationContext()).getLocationByIds(user.getProvinceId(), user.getCityId());
             if (location == null || location.equals("")) {

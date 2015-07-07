@@ -53,7 +53,7 @@ public class MultiImageChooseActivity extends BaseActivity {
     private ArrayList<String> mCachedId = new ArrayList<String>();
     private ArrayList<SimpleImage> mSelectedImage = new ArrayList<>();
     private ContentResolver mResolver = null;
-    private final int maxSize = 40;
+    private final int maxSize = 80;
 
     @Override
     protected void registerViews() {
@@ -315,6 +315,11 @@ public class MultiImageChooseActivity extends BaseActivity {
         synchronized (mCachedData) {
             try {
                 Bitmap bitmap = mCachedData.get(id);
+                if (bitmap == null || bitmap.isRecycled()) {
+                    mCachedId.remove(id);
+                    mCachedData.remove(id);
+                    return null;
+                }
                 return bitmap;
             } catch (Throwable t) {
                 t.printStackTrace();

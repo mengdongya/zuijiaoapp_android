@@ -360,9 +360,9 @@ public class MessageFragment extends Fragment implements FragmentDataListener,
             }
             Message msg = mData.get(position);
             holder.userName.setText(msg.getFromUser().getNickName());
-            if (msg.getFromUser().getAvatarURL().isPresent())
+            if (msg.getFromUser().getAvatarURLSmall().isPresent())
                 Picasso.with(parent.getContext())
-                        .load(msg.getFromUser().getAvatarURL().get())
+                        .load(msg.getFromUser().getAvatarURLSmall().get())
                         .placeholder(R.drawable.default_user_head)
                         .into(holder.userhead);
             if (mType == 1)

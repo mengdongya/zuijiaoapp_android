@@ -46,7 +46,7 @@ public class User implements Serializable, Cloneable {
         this.nickname = nickname;
     }
 
-    public Optional<String> getAvatarURL() {
+    public Optional<String> getAvatarURLSmall() {
 //        return Optional.ofNullable(avatarURL);
 //        if (avatarURL != null) {
 //            if (avatarURL.length() > 0 && avatarURL.startsWith("http"))
@@ -55,7 +55,18 @@ public class User implements Serializable, Cloneable {
 //                return Optional.of(Router.PicBaseUrl + avatarURL);
 //            }
 //        }
+        String avatarUrlTest = ImageUrlUtil.imageUrl(avatarURL);
+        if (avatarUrlTest != null && !avatarUrlTest.startsWith("http://pic.zuijiao"))
+            avatarUrlTest = avatarUrlTest + "_avatar";
+////        avatarURL += "_avatar" ;
+//        System.out.println("avatar = " + avatarUrlTest );
+//        Optional optional = Optional.ofNullable(ImageUrlUtil.imageUrl(avatarUrlTest));
+//        System.out.println("optional = "+optional.get());
+        return Optional.ofNullable(avatarUrlTest);
+//        return Optional.ofNullable(ImageUrlUtil.imageUrl(avatarURL +"_avatar"));
+    }
 
+    public Optional<String> getAvatarURL() {
         return Optional.ofNullable(ImageUrlUtil.imageUrl(avatarURL));
     }
 

@@ -124,8 +124,8 @@ public class BanquetAdapter extends BaseAdapter implements AdapterView.OnItemCli
                 position -= 1;
             Banquent banquent = mBanquentList.get(position);
             Picasso.with(mContext).load(banquent.getSurfaceImageUrl()).placeholder(R.drawable.empty_view_greeting).into(holder.image);
-            if (banquent.getMaster().getAvatarURL().isPresent())
-                Picasso.with(mContext).load(banquent.getMaster().getAvatarURL().get()).placeholder(R.drawable.default_user_head).into(holder.head);
+            if (banquent.getMaster().getAvatarURLSmall().isPresent())
+                Picasso.with(mContext).load(banquent.getMaster().getAvatarURLSmall().get()).placeholder(R.drawable.default_user_head).into(holder.head);
             holder.title.setText(banquent.getTitle());
             String dateInfo = formatDate(banquent.getTime());
 

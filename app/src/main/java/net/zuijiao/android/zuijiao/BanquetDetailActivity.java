@@ -180,7 +180,11 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
             TinyUser user = mBanquent.getAttendees().get(position);
             ImageView userHead = (ImageView) contentView.findViewById(R.id.user_info_favor_item_image);
             TextView userName = (TextView) contentView.findViewById(R.id.user_info_favor_item_text);
-            Picasso.with(mContext).load(user.getAvatarURL().get()).placeholder(R.drawable.default_user_head).into(userHead);
+            if (user.getAvatarURLSmall().isPresent() && !user.getAvatarURLSmall().get().equals("http://pic.zuijiao.net")) {
+                String url = user.getAvatarURLSmall().get();
+                Log.i("outofmemory", url);
+                Picasso.with(mContext).load(user.getAvatarURLSmall().get()).placeholder(R.drawable.default_user_head).into(userHead);
+            }
 //            userName.setText(user.getNickName());
             userName.setVisibility(View.GONE);
             return contentView;
@@ -189,6 +193,7 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
 
     @Override
     protected void registerViews() {
+        Log.i("outofmemory ", "oncreate");
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         if (mTendIntent != null) {
@@ -214,8 +219,8 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
     private void initViewsByBanquet() {
         mBanquetTitle.setText(mBanquent.getTitle());
         mBanquetDescription.setText(mBanquent.getDesc());
-        if (mBanquent.getMaster().getAvatarURL().isPresent())
-            Picasso.with(mContext).load(mBanquent.getMaster().getAvatarURL().get()).placeholder(R.drawable.default_user_head).into(mHostHead);
+        if (mBanquent.getMaster().getAvatarURLSmall().isPresent())
+            Picasso.with(mContext).load(mBanquent.getMaster().getAvatarURLSmall().get()).placeholder(R.drawable.default_user_head).into(mHostHead);
         mHostName.setText(mBanquent.getMaster().getNickName());
         String menu = formatMenuContent();
         if (menu.equals("")) {

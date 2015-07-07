@@ -41,8 +41,13 @@ public class Attendee {
         return nickname;
     }
 
-    public Optional<String> getAvatarURL() {
+    public Optional<String> getAvatarURLSmall() {
 //        return Optional.ofNullable(avatarURL);
+        return Optional.ofNullable(ImageUrlUtil.imageUrl(avatarURL + "_avatar"));
+
+    }
+
+    public Optional<String> getAvatarURL() {
         return Optional.ofNullable(ImageUrlUtil.imageUrl(avatarURL));
     }
 

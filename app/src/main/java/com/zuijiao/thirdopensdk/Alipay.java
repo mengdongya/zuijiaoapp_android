@@ -5,17 +5,10 @@ import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
-import android.util.Log;
-import android.view.View;
 import android.widget.Toast;
 
 import com.alipay.sdk.app.PayTask;
-import com.alipay.sdk.auth.AlipaySDK;
-import com.zuijiao.android.util.functional.OneParameterExpression;
-import com.zuijiao.android.zuijiao.model.OrderAuth;
-import com.zuijiao.android.zuijiao.network.Router;
 
-import net.zuijiao.android.zuijiao.BanquetOrderActivity;
 import net.zuijiao.android.zuijiao.BanquetOrderCallbackActivity;
 
 
@@ -43,13 +36,13 @@ public class Alipay {
                     Intent intent = new Intent(mActivity, BanquetOrderCallbackActivity.class);
                     if (TextUtils.equals(resultStatus, "9000")) {
 
-                        intent.putExtra("b_success", "successed");
+                        intent.putExtra("b_success", true);
                         mActivity.startActivity(intent);
-                    }else if(TextUtils.equals(resultStatus, "8000")){
-                        intent.putExtra("b_success", "wait");
+                    } else if (TextUtils.equals(resultStatus, "8000")) {
+//                        intent.putExtra("b_success", "wait");
                         mActivity.startActivity(intent);
-                    } else{
-                        intent.putExtra("b_success", "failed");
+                    } else {
+                        intent.putExtra("b_success", false);
                         mActivity.startActivity(intent);
                     }
                     break;
@@ -91,13 +84,13 @@ public class Alipay {
             public void run() {
                 PayTask payTask = new PayTask(mActivity);
                 boolean isExist = payTask.checkAccountIfExist();
-              Message msg = new Message();
+                Message msg = new Message();
                 msg.what = SDK_CHECK_FLAG;
                 msg.obj = isExist;
                 mHandler.sendMessage(msg);
             }
         };
-      Thread checkThread = new Thread(checkRunnable);
+        Thread checkThread = new Thread(checkRunnable);
         checkThread.start();
     }
 

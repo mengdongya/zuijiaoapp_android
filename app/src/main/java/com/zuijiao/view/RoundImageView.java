@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.PorterDuff.Mode;
@@ -13,9 +14,13 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.NinePatchDrawable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.widget.ImageView;
 
 import net.zuijiao.android.zuijiao.R;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 
 public class RoundImageView extends ImageView {
     private int mBorderThickness = 0;
@@ -68,7 +73,20 @@ public class RoundImageView extends ImageView {
         if (drawable.getClass() == NinePatchDrawable.class)
             return;
         Bitmap b = ((BitmapDrawable) drawable).getBitmap();
-        Bitmap bitmap = b.copy(Bitmap.Config.ARGB_8888, true);
+        Log.i("testimage", "bitmap.height = " + b.getHeight() + "bitmap.width" + b.getWidth() + "bitmap.size" + b.getByteCount());
+        Bitmap bitmap = null;
+        if (b.getWidth() > 2000 || b.getHeight() > 2000) {
+            return;
+        }
+        try {
+            bitmap = b.copy(Bitmap.Config.ARGB_8888, true);
+        } catch (Exception e) {
+            e.printStackTrace();
+            bitmap = b;
+        } catch (Error r) {
+            r.printStackTrace();
+            bitmap = b;
+        }
         if (defaultWidth == 0) {
             defaultWidth = getWidth();
         }
@@ -105,6 +123,20 @@ public class RoundImageView extends ImageView {
                 / 2 - radius, null);
     }
 
+
+    private Bitmap compressImage(Bitmap image) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        image.compress(Bitmap.CompressFormat.JPEG, 100, baos);//质量压缩方法，这里100表示不压缩，把压缩后的数据存放到baos中
+        int options = 100;
+        while (baos.toByteArray().length / 1024 > 100) {  //循环判断如果压缩后图片是否大于100kb,大于继续压缩
+            baos.reset();//重置baos即清空baos
+            image.compress(Bitmap.CompressFormat.JPEG, options, baos);//这里压缩options%，把压缩后的数据存放到baos中
+            options -= 10;//每次都减少10
+        }
+        ByteArrayInputStream isBm = new ByteArrayInputStream(baos.toByteArray());//把压缩后的数据baos存放到ByteArrayInputStream中
+        Bitmap bitmap = BitmapFactory.decodeStream(isBm, null, null);//把ByteArrayInputStream数据生成图片
+        return bitmap;
+    }
 
     public Bitmap getCroppedRoundBitmap(Bitmap bmp, int radius) {
         Bitmap scaledSrcBmp;

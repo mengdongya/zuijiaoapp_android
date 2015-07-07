@@ -559,7 +559,7 @@
                 android:text="14月18日 周六 18：00"
                 android:layout_marginLeft="10dip"
                 android:layout_alignParentBottom="true"
-                android:textColor="@color/bg_light_gray2"
+                android:textColor="@color/bg_light_gray"
                 android:textSize="13sp" />
 
             <Button

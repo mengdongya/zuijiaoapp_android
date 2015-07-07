@@ -455,9 +455,9 @@ public class DBOpenHelper extends SQLiteOpenHelper {
                     ContentValues values = new ContentValues();
                     values.put(DBConstans.COLUMN_USER_ID, user.getIdentifier());
                     String avatar = "";
-                    if (user.getAvatarURL().isPresent()) {
-                        avatar = user.getAvatarURL().toString();
-                        values.put(DBConstans.COLUMN_USER_HEAD_SERVICE, user.getAvatarURL().toString());
+                    if (user.getAvatarURLSmall().isPresent()) {
+                        avatar = user.getAvatarURLSmall().toString();
+                        values.put(DBConstans.COLUMN_USER_HEAD_SERVICE, user.getAvatarURLSmall().toString());
                     }
                     values.put(DBConstans.COLUMN_USER_NAME, user.getNickName());
                     db.insert(DBConstans.TABLE_USER, null, values);

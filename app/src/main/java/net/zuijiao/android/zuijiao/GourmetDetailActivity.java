@@ -655,9 +655,9 @@ public class GourmetDetailActivity extends BaseActivity implements
         }
         floatHolder.mFoodName1.setText(gourmet.getName());
         floatHolder.mPrivateText1.setVisibility(gourmet.getIsPrivate() ? View.VISIBLE : View.GONE);
-        if (gourmet.getUser().getAvatarURL().isPresent())
+        if (gourmet.getUser().getAvatarURLSmall().isPresent())
             Picasso.with(getApplicationContext())
-                    .load(gourmet.getUser().getAvatarURL().get())
+                    .load(gourmet.getUser().getAvatarURLSmall().get())
                     .placeholder(R.drawable.default_user_head)
                     .into(floatHolder.mUserHead1);
         floatHolder.mUserName1.setText(gourmet.getUser().getNickName());
@@ -665,9 +665,9 @@ public class GourmetDetailActivity extends BaseActivity implements
         floatHolder.mCreateTime1.setText(String.format(getString(R.string.format_create_time), StrUtil.formatTime(gourmet.getDate(), getApplicationContext())));
         topHolder.mFoodName1.setText(gourmet.getName());
         topHolder.mPrivateText1.setVisibility(gourmet.getIsPrivate() ? View.VISIBLE : View.GONE);
-        if (gourmet.getUser().getAvatarURL().isPresent())
+        if (gourmet.getUser().getAvatarURLSmall().isPresent())
             Picasso.with(getApplicationContext())
-                    .load(gourmet.getUser().getAvatarURL().get())
+                    .load(gourmet.getUser().getAvatarURLSmall().get())
                     .placeholder(R.drawable.default_user_head)
                     .into(topHolder.mUserHead1);
         topHolder.mUserName1.setText(gourmet.getUser().getNickName());
@@ -1016,9 +1016,9 @@ public class GourmetDetailActivity extends BaseActivity implements
             WouldLikeToEatUser user = mWouldLikeToEatList.get().getUsers().get(position);
             if (mWouldLikeToEatList.get().getCount() <= 5 || (mWouldLikeToEatList.get().getCount() > 5 && position <= 3)) {
                 contentView = mInflater.inflate(R.layout.food_detail_favor_item, null);
-                if (user.getAvatarURL().isPresent()) {
+                if (user.getAvatarURLSmall().isPresent()) {
                     Picasso.with(parent.getContext())
-                            .load(user.getAvatarURL().get())
+                            .load(user.getAvatarURLSmall().get())
                             .placeholder(R.drawable.default_user_head)
                             .into((ImageView) contentView.findViewById(R.id.would_like_eat_head));
                 } else {

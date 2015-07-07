@@ -12,7 +12,7 @@ public class ParcelableUser extends User implements Parcelable {
 
 
     public ParcelableUser(User user) {
-        setAvatarURL(user.getAvatarURL().get());
+        setAvatarURL(user.getAvatarURLSmall().get());
         setBirthday(user.getBirthday().get());
         setGender(user.getGender());
         setNickname(user.getNickname().get());

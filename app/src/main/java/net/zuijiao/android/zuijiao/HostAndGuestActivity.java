@@ -5,6 +5,7 @@ import android.app.ActionBar;
 import android.content.Intent;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -183,6 +184,7 @@ public class HostAndGuestActivity extends BaseActivity {
         final ArrayList<String> imageUrls = mAttendee.getImageUrls();
         mToolbar.setTitle(mAttendee.getNickname());
         if (imageUrls != null && imageUrls.size() != 0) {
+            mHostImageContainer.setVisibility(View.VISIBLE);
             for (int i = 0; i < imageUrls.size(); i++) {
                 ImageView image = new ImageView(this);
                 image.setLayoutParams(new ActionBar.LayoutParams(ActionBar.LayoutParams.MATCH_PARENT,
@@ -208,16 +210,18 @@ public class HostAndGuestActivity extends BaseActivity {
             mViewPagerAdapter = new ImageViewPagerAdapter(mImageList);
             mImageIndex.setText(1 + "/" + mImageList.size());
             mHostImages.setAdapter(mViewPagerAdapter);
-            if (mAttendee.getAvatarURL().isPresent()) {
-                Picasso.with(mContext).load(mAttendee.getAvatarURL().get()).placeholder(R.drawable.default_user_head).into(mHostHead);
+            if (mAttendee.getAvatarURLSmall().isPresent()) {
+                Log.i("outofmemory", mAttendee.getAvatarURLSmall().get());
+                Picasso.with(mContext).load(mAttendee.getAvatarURLSmall().get()).placeholder(R.drawable.default_user_head).into(mHostHead);
                 mHostHead.setOnClickListener(mHeadListener);
             }
-            mGuestHead.setVisibility(View.GONE);
+//            mGuestHead.setVisibility(View.GONE);
         } else {
-            mHostImageContainer.setVisibility(View.GONE);
+//            mHostImageContainer.setVisibility(View.GONE);
             mGuestHead.setVisibility(View.VISIBLE);
-            if (mAttendee.getAvatarURL().isPresent()) {
-                Picasso.with(mContext).load(mAttendee.getAvatarURL().get()).placeholder(R.drawable.default_user_head).into(mGuestHead);
+            mGuestHead.setVisibility(View.VISIBLE);
+            if (mAttendee.getAvatarURLSmall().isPresent()) {
+                Picasso.with(mContext).load(mAttendee.getAvatarURLSmall().get()).placeholder(R.drawable.default_user_head).into(mGuestHead);
                 mGuestHead.setOnClickListener(mHeadListener);
             }
         }
@@ -356,7 +360,7 @@ public class HostAndGuestActivity extends BaseActivity {
     private View.OnClickListener mHeadListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            if (mAttendee != null && mAttendee.getAvatarURL().isPresent()) {
+            if (mAttendee != null && mAttendee.getAvatarURLSmall().isPresent()) {
                 Intent intent = new Intent(mContext, BigImageActivity.class);
                 ArrayList<String> arrayList = new ArrayList<>();
                 arrayList.add(mAttendee.getAvatarURL().get());

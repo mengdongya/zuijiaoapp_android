@@ -444,8 +444,8 @@ public class EditUserInfoActivity extends BaseActivity {
             return;
         }
         mTmpFullUser = mFullUser.clone();
-        if (mTmpFullUser.getAvatarURL().isPresent())
-            Picasso.with(mContext).load(mTmpFullUser.getAvatarURL().get()).placeholder(R.drawable.default_user_head).into(mUserHead);
+        if (mTmpFullUser.getAvatarURLSmall().isPresent())
+            Picasso.with(mContext).load(mTmpFullUser.getAvatarURLSmall().get()).placeholder(R.drawable.default_user_head).into(mUserHead);
         mBaseInfoAdapter = new GeneralUserInfoAdapter(getResources().getStringArray(R.array.user_base_info_title), BASE_INFO_ADAPTER);
         mBaseInfoList.setAdapter(mBaseInfoAdapter);
         setListViewHeightBasedOnChildren(mBaseInfoList);
@@ -634,10 +634,10 @@ public class EditUserInfoActivity extends BaseActivity {
                             bAnyInfoChanged = true;
                             if (Router.getInstance().getCurrentUser().isPresent()) {
                                 Router.getInstance().getCurrentUser().get().setAvatarURL(etAvatar);
-                                mPreferMng.saveAvatarPath(Router.getInstance().getCurrentUser().get().getAvatarURL().get());
-                                mFullUser.setAvatarURL(Router.getInstance().getCurrentUser().get().getAvatarURL().get());
+                                mPreferMng.saveAvatarPath(Router.getInstance().getCurrentUser().get().getAvatarURLSmall().get());
+                                mFullUser.setAvatarURL(Router.getInstance().getCurrentUser().get().getAvatarURLSmall().get());
                                 Picasso.with(mContext)
-                                        .load(Router.getInstance().getCurrentUser().get().getAvatarURL().get())
+                                        .load(Router.getInstance().getCurrentUser().get().getAvatarURLSmall().get())
                                         .placeholder(R.drawable.default_user_head)
                                         .into(mUserHead);
                             }

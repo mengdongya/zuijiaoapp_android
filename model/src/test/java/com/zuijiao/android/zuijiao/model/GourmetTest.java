@@ -102,7 +102,7 @@ public class GourmetTest {
         // check user
         assertThat(gourmet.getUser().getIdentifier(), is(239));
         assertThat(gourmet.getUser().getNickName(), is("2"));
-        assertThat(gourmet.getUser().getAvatarURL(), is(Optional.of("")));
+        assertThat(gourmet.getUser().getAvatarURLSmall(), is(Optional.of("")));
 
         Gourmet gourmetWithImage = model.getGourmets().get(1);
         assertThat(gourmetWithImage.getImageURLs().get(0), is("http://pic.zuijiao.net/debug/Gourmet/239_jklj_20150377-111416-1.jpeg"));

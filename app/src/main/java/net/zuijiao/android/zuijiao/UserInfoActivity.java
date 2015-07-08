@@ -295,8 +295,8 @@ public final class UserInfoActivity extends BaseActivity implements View.OnClick
         if (mFullUser.getIdentifier().equals(mPreferMng.getStoredUserId())) {
             mFileMng.setFullUser(mFullUser);
         }
-        if (mFullUser.getAvatarURL().isPresent())
-            Picasso.with(mContext).load(mFullUser.getAvatarURL().get()).placeholder(R.drawable.default_user_head).into(mUserHead);
+        if (mFullUser.getAvatarURLSmall().isPresent())
+            Picasso.with(mContext).load(mFullUser.getAvatarURLSmall().get()).placeholder(R.drawable.default_user_head).into(mUserHead);
         mUserName.setText(mFullUser.getNickname().get());
         int follower = 0, following = 0, recommendation = 0, favor = 0;
         if (mFullUser.getFriendShip() != null) {
@@ -377,8 +377,8 @@ public final class UserInfoActivity extends BaseActivity implements View.OnClick
                 });
             } else getUserInfo(null);
         }
-        if (mTinyUser.getAvatarURL().isPresent())
-            Picasso.with(mContext).load(mTinyUser.getAvatarURL().get()).placeholder(R.drawable.default_user_head).into(mUserHead);
+        if (mTinyUser.getAvatarURLSmall().isPresent())
+            Picasso.with(mContext).load(mTinyUser.getAvatarURLSmall().get()).placeholder(R.drawable.default_user_head).into(mUserHead);
         mUserName.setText(mTinyUser.getNickName());
         mBtnFans.setText(String.format(getString(R.string.fans_count), 0));
         mBtnFavor.setText(String.format(getString(R.string.favorite_count), 0));
@@ -435,7 +435,7 @@ public final class UserInfoActivity extends BaseActivity implements View.OnClick
                     if (mFullUser != null) {
                         avatarUrl = mFullUser.getAvatarURL().get();
                     } else {
-                        avatarUrl = mTinyUser.getAvatarURL().get();
+                        avatarUrl = mTinyUser.getAvatarUrl().get();
                     }
                 } catch (Exception e) {
                     System.out.print("no avatar url");

@@ -175,25 +175,31 @@ public class FileManager {
     }
 
     public Bitmap getImageBmpById(String id, ContentResolver resolver) {
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inJustDecodeBounds = true;
-        Bitmap bitmap = MediaStore.Images.Thumbnails.getThumbnail(
-                resolver,
-                Integer.parseInt(id),
-                MediaStore.Images.Thumbnails.MINI_KIND, options);
-        options.outWidth = 200;
-        options.inJustDecodeBounds = false;
-        int width = 200;
-        int height = 200;
-        final int minSideLength = Math.min(width, height);
-        options.inSampleSize = computeSampleSize(options, minSideLength,
-                width * height);
-        bitmap = MediaStore.Images.Thumbnails.getThumbnail(
-                resolver,
-                Integer.parseInt(id),
-                MediaStore.Images.Thumbnails.MINI_KIND, options);
-        Log.i("multiImageChoose", "bitmapSize= " + bitmap.getByteCount());
-        return bitmap;
+        try {
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inJustDecodeBounds = true;
+            Bitmap bitmap = MediaStore.Images.Thumbnails.getThumbnail(
+                    resolver,
+                    Integer.parseInt(id),
+                    MediaStore.Images.Thumbnails.MINI_KIND, options);
+            options.outWidth = 200;
+            options.inJustDecodeBounds = false;
+            int width = 200;
+            int height = 200;
+            final int minSideLength = Math.min(width, height);
+            options.inSampleSize = computeSampleSize(options, minSideLength,
+                    width * height);
+            bitmap = MediaStore.Images.Thumbnails.getThumbnail(
+                    resolver,
+                    Integer.parseInt(id),
+                    MediaStore.Images.Thumbnails.MINI_KIND, options);
+            Log.i("multiImageChoose", "bitmapSize= " + bitmap.getByteCount());
+            return bitmap;
+        } catch (Throwable t) {
+            t.printStackTrace();
+            Log.i("FilManager", "getImageBmpById crushed");
+            return null;
+        }
     }
 
     public static int computeSampleSize(BitmapFactory.Options options,

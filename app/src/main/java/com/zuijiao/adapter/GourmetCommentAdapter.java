@@ -77,9 +77,9 @@ public class GourmetCommentAdapter extends BaseAdapter {
         }
         holder.time.setText(StrUtil.formatTime(comment.getPostDate(), mContext));
         holder.userName.setText(comment.getUser().getNickName());
-        if (comment.getUser().getAvatarURL().isPresent())
+        if (comment.getUser().getAvatarURLSmall().isPresent())
             Picasso.with(mContext)
-                    .load(comment.getUser().getAvatarURL().get())
+                    .load(comment.getUser().getAvatarURLSmall().get())
                     .placeholder(R.drawable.default_user_head)
 //                    .error(R.drawable.empty_view_greeting)
                     .into(holder.head);

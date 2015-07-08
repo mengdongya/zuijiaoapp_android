@@ -19,6 +19,7 @@ import com.zuijiao.android.util.functional.OneParameterExpression;
 import com.zuijiao.android.zuijiao.model.Banquent.Banquent;
 import com.zuijiao.android.zuijiao.model.user.User;
 import com.zuijiao.android.zuijiao.network.Router;
+import com.zuijiao.controller.MessageDef;
 
 import java.util.Date;
 
@@ -43,7 +44,7 @@ public class BanquetOrderCallbackActivity extends BaseActivity implements View.O
     private TextView mNotifyTv;
     @ViewInject(R.id.order_callback_complete_info)
     private TextView mCompleteTv;
-    private String bSuccess = null;
+    private boolean bSuccess = false;
     private Banquent mBanquet;
     private String[] weekDays;
 
@@ -51,17 +52,18 @@ public class BanquetOrderCallbackActivity extends BaseActivity implements View.O
     protected void registerViews() {
         setSupportActionBar(mToolbar);
         getSupportActionBar().setTitle(getString(R.string.detail_order));
-        bSuccess = mTendIntent.getStringExtra("b_success");
+        bSuccess = mTendIntent.getBooleanExtra("b_success", false);
         weekDays = mContext.getResources().getStringArray(R.array.week_days);
         mFinishBtn.setOnClickListener(this);
         mCompleteTv.setOnClickListener(this);
-        if ("successed".equals(bSuccess)) {
+        if (bSuccess) {
             mBanquet = BanquetOrderActivity.mBanquent;
+            Intent intent = new Intent();
+            intent.setAction(MessageDef.ACTION_ORDER_CREATED);
+            sendBroadcast(intent);
             showSuccess();
-        } else if("failed".equals(bSuccess)){
+        } else {
             showFailed();
-        }else{
-
         }
     }
 
@@ -135,7 +137,7 @@ public class BanquetOrderCallbackActivity extends BaseActivity implements View.O
                 });
                 break;
             case R.id.order_callback_finish_btn:
-                Intent intent = new Intent(BanquetOrderCallbackActivity.this,MainActivity.class);
+                Intent intent = new Intent(BanquetOrderCallbackActivity.this, MainActivity.class);
                 startActivity(intent);
                 finish();
                 break;

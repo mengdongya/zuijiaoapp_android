@@ -269,7 +269,7 @@ public class GourmetDisplayFragment extends Fragment
     }
 
     private void fetchRecommendData(boolean isRefresh) {
-        if (!mDisplayUser.isPresent()) {
+        if (mDisplayUser == null || !mDisplayUser.isPresent()) {
             mDisplayUser = Router.getInstance().getCurrentUser();
             if (!mDisplayUser.isPresent()) {
                 ((BaseActivity) getActivity()).tryLoginFirst(new LambdaExpression() {

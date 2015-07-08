@@ -148,7 +148,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
                     auth.setEmail(mEmail);
                     auth.setPlatform("");
                     try {
-                        auth.setHeadPath(user.getAvatarURL().get());
+                        auth.setHeadPath(user.getAvatarURLSmall().get());
                     } catch (NoSuchElementException e) {
                         e.printStackTrace();
                         auth.setHeadPath("");

@@ -92,9 +92,9 @@ public class FavorPersonListActivity extends BaseActivity {
             } else {
                 holder = (ViewHolder) convertView.getTag();
             }
-            if (user.getAvatarURL().isPresent())
+            if (user.getAvatarURLSmall().isPresent())
                 Picasso.with(getApplicationContext())
-                        .load(user.getAvatarURL().get())
+                        .load(user.getAvatarURLSmall().get())
                         .placeholder(R.drawable.default_user_head)
                         .into(holder.head);
             String location = DBOpenHelper.getmInstance(getApplicationContext()).getLocationByIds(user.getProvinceID(), user.getCityID());

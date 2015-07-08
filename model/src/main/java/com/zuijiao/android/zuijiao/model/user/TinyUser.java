@@ -22,7 +22,7 @@ public class TinyUser implements Serializable {
         return nickName;
     }
 
-    public Optional<String> getAvatarURL() {
+    public Optional<String> getAvatarURLSmall() {
 //        if (avatarURL != null) {
 //            if (avatarURL.length() > 0 && avatarURL.startsWith("http"))
 //                return Optional.ofNullable(avatarURL);
@@ -31,6 +31,17 @@ public class TinyUser implements Serializable {
 //            }
 //        }
 //        return Optional.empty();
+        String avatarUrlTest = ImageUrlUtil.imageUrl(avatarURL);
+        if (avatarUrlTest != null && !avatarUrlTest.startsWith("http://pic.zuijiao"))
+            avatarUrlTest = avatarUrlTest + "_avatar";
+////        avatarURL += "_avatar" ;
+//        System.out.println("avatar = " + avatarUrlTest );
+//        Optional optional = Optional.ofNullable(ImageUrlUtil.imageUrl(avatarUrlTest));
+//        System.out.println("optional = "+optional.get());
+        return Optional.ofNullable(avatarUrlTest);
+    }
+
+    public Optional<String> getAvatarUrl() {
         return Optional.ofNullable(ImageUrlUtil.imageUrl(avatarURL));
     }
 

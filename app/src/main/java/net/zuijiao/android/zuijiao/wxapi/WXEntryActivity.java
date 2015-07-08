@@ -165,8 +165,8 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
                                         userInfo.setHeadPath(headimgurl);
                                         if (!isNew) {
                                             String avataUrl = null;
-                                            if (Router.getInstance().getCurrentUser().get().getAvatarURL().isPresent()) {
-                                                avataUrl = Router.getInstance().getCurrentUser().get().getAvatarURL().get();
+                                            if (Router.getInstance().getCurrentUser().get().getAvatarURLSmall().isPresent()) {
+                                                avataUrl = Router.getInstance().getCurrentUser().get().getAvatarURLSmall().get();
                                                 userInfo.setHeadPath(avataUrl);
                                             }
                                         }

@@ -9,4 +9,6 @@ public interface MessageDef {
     public static final String ACTION_REFRESH_RECOMMENDATION = "net.zuijiao.android.refresh_recommendation";
     public static final String ACTION_PUSH_RECEIVED = "net.zuijiao.android.push_received";
 
+    public static final String ACTION_ORDER_CREATED = "net.zuijiao.android.banquet.order.created";
+
 }

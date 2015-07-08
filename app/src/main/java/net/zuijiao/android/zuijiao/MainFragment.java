@@ -126,4 +126,12 @@ public class MainFragment extends Fragment {
     }
 
 
+    public void refreshBanquetList() {
+        try {
+            banquetFragment.onRefresh();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 }

@@ -5,7 +5,6 @@ import com.zuijiao.android.util.functional.OneParameterExpression;
 import com.zuijiao.android.zuijiao.model.Banquent.Attendee;
 import com.zuijiao.android.zuijiao.model.user.User;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 
 /**
@@ -62,8 +61,8 @@ public enum RouterAccount {
         if (user.getContactInfo().isPresent())
             email = user.getContactInfo().get().getEmail();
 
-        if (user.getAvatarURL().isPresent())
-            avatarUrl = user.getAvatarURL().get();
+        if (user.getAvatarURLSmall().isPresent())
+            avatarUrl = user.getAvatarURLSmall().get();
 
         if (user.getNickname().isPresent())
             nickname = user.getNickname().get();

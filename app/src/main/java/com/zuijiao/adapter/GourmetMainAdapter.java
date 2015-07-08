@@ -101,8 +101,8 @@ public class GourmetMainAdapter extends BaseAdapter {
         } else if (gourmet.getImageURLs().size() == 0) {
             holder.image_food.setVisibility(View.GONE);
         }
-        if (gourmet.getUser().getAvatarURL().isPresent())
-            Picasso.with(mContext).load(gourmet.getUser().getAvatarURL().get()).placeholder(R.drawable.default_user_head).into(holder.image_user_head);
+        if (gourmet.getUser().getAvatarURLSmall().isPresent())
+            Picasso.with(mContext).load(gourmet.getUser().getAvatarURLSmall().get()).placeholder(R.drawable.default_user_head).into(holder.image_user_head);
         holder.image_user_head.setOnClickListener(new UserHeadClickListener(gourmet.getUser()));
         if (gourmet.getTags() == null || gourmet.getTags().size() == 0) {
             holder.label.setVisibility(View.GONE);

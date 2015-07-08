@@ -306,6 +306,8 @@ public final class MainActivity extends BaseActivity {
                 onRecommendationChanged();
             } else if (intent.getAction().equals(MessageDef.ACTION_PUSH_RECEIVED)) {
                 onPushReceived();
+            } else if (intent.getAction().equals(MessageDef.ACTION_ORDER_CREATED)) {
+                onOrderCreated();
             }
         }
     };
@@ -317,6 +319,7 @@ public final class MainActivity extends BaseActivity {
         filter.addAction(MessageDef.ACTION_GET_THIRD_PARTY_USER);
         filter.addAction(MessageDef.ACTION_REFRESH_RECOMMENDATION);
         filter.addAction(MessageDef.ACTION_PUSH_RECEIVED);
+        filter.addAction(MessageDef.ACTION_ORDER_CREATED);
         registerReceiver(mReceiver, filter);
         FeedbackAgent agent = new FeedbackAgent(this);
         agent.sync();
@@ -412,7 +415,7 @@ public final class MainActivity extends BaseActivity {
                 if (unReadNewsCount > 0) {
                     showBadgeView();
 //                    mTabTitleAdapter.notifyDataSetChanged();
-                }else{
+                } else {
                     removeBadgeView();
                 }
             }
@@ -534,6 +537,10 @@ public final class MainActivity extends BaseActivity {
 //            mTabTitleAdapter.notifyDataSetChanged();
             }
         }, null);
+    }
+
+    private void onOrderCreated() {
+        mMainFragment.refreshBanquetList();
     }
 
     protected void onUserInfoGot() {

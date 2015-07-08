@@ -67,13 +67,13 @@ public class WXPayEntryActivity extends Activity implements IWXAPIEventHandler {
         Intent intent = new Intent(this, BanquetOrderCallbackActivity.class);
         switch (resp.errCode) {
             case BaseResp.ErrCode.ERR_OK:
-                intent.putExtra("b_success", "successed");
+                intent.putExtra("b_success", true);
                 startActivity(intent);
                 finish();
                 break;
             default:
                 Log.d("wxPay", "failed");
-                intent.putExtra("b_success", "failed");
+                intent.putExtra("b_success", false);
                 startActivity(intent);
                 finish();
                 break;

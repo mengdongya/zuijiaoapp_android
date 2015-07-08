@@ -115,8 +115,8 @@ public class ThirdPartySDKManager implements AbsSDK.LoginListener {
                 Toast.makeText(mContext, mContext.getString(R.string.login_success), Toast.LENGTH_SHORT).show();
                 if (!isNew) {
                     String avataUrl = null;
-                    if (Router.getInstance().getCurrentUser().get().getAvatarURL().isPresent()) {
-                        avataUrl = Router.getInstance().getCurrentUser().get().getAvatarURL().get();
+                    if (Router.getInstance().getCurrentUser().get().getAvatarURLSmall().isPresent()) {
+                        avataUrl = Router.getInstance().getCurrentUser().get().getAvatarURLSmall().get();
                         authInfo.setHeadPath(avataUrl);
                     }
                     authInfo.setUserName(Router.getInstance().getCurrentUser().get().getNickName());

@@ -103,6 +103,8 @@ public class GuideActivity extends BaseActivity {
             viewList.add(initView(images[i], texts[i]));
         }
         View view = LayoutInflater.from(this).inflate(R.layout.guide_last_item, null);
+        Bitmap bitmap = BitmapFactory.decodeStream(getResources().openRawResource(R.drawable.guide_image5));
+        ((ImageView) (view.findViewById(R.id.guide_last_item_bg))).setImageBitmap(bitmap);
         viewList.add(view);
         //initDots(images.length);
     }
@@ -130,7 +132,6 @@ public class GuideActivity extends BaseActivity {
         ImageView imageView = (ImageView) view.findViewById(R.id.guide_image);
         ImageView textImage = (ImageView) view.findViewById(R.id.guide_text);
         InputStream imageIs = getResources().openRawResource(imageRes);
-        ;
         InputStream textIs = getResources().openRawResource(textRes);
         Bitmap bitmap2 = BitmapFactory.decodeStream(textIs);
         Bitmap bitmap = BitmapFactory.decodeStream(imageIs);

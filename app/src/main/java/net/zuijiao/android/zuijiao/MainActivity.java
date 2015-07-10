@@ -61,6 +61,7 @@ import com.zuijiao.controller.MessageDef;
 import com.zuijiao.controller.PreferenceManager;
 import com.zuijiao.db.DBOpenHelper;
 import com.zuijiao.entity.AuthorInfo;
+import com.zuijiao.utils.StrUtil;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -388,8 +389,8 @@ public final class MainActivity extends BaseActivity {
             mThirdPartyUserName.setVisibility(View.GONE);
             mThirdPartyUserHead.setVisibility(View.GONE);
         }
-        mUserInfoArea.setOnClickListener((View v) -> {
-        });
+//        mUserInfoArea.setOnClickListener((View v) -> {
+//        });
         mSettingList.setOnItemClickListener(mSettingListener);
         titles = getResources().getStringArray(R.array.fragment_title);
         mToolBar.setTitle(titles[0]);
@@ -456,84 +457,44 @@ public final class MainActivity extends BaseActivity {
      * @param intent
      */
     private void startNewActivity(Intent intent) {
-        int opentype = intent.getIntExtra("opentype", 0);
-        if (opentype != 0) {
-            String content_url = intent.getStringExtra("content_url");
-            if (content_url != null && !content_url.equals("")) {
-                Intent intent1 = new Intent();
-                intent1.putExtra("content_url", content_url);
-                if (opentype == 1) {
-                    intent1.setClass(this, CommonWebViewActivity.class);
-                    startActivity(intent1);
-                }
-                if (opentype == 2) {
+        String content_url = intent.getStringExtra("content_url");
+        if (content_url != null && !content_url.equals("")) {
+            if (StrUtil.isNumer(content_url)) {
+                int openinfo = Integer.parseInt(content_url);
+                if (openinfo != 0) {
                     createDialog();
-                    int infoid = intent.getIntExtra("infoid", 0);
-                    System.out.println("infoid:" + infoid);
                     tryLoginFirst(new LambdaExpression() {
                         @Override
                         public void action() {
-                            Router.getGourmetModule().fetchOurChoice(infoid
-                                    , null
-                                    , 1
-                                    , new OneParameterExpression<Gourmets>() {
+                            Router.getBanquentModule().theme(openinfo, new OneParameterExpression<Banquent>() {
                                 @Override
-                                public void action(Gourmets gourmets) {
-                                    List<Gourmet> gourmetList = gourmets.getGourmets();
-                                    if (gourmetList.size() != 0) {
-                                        Gourmet gourmet = gourmetList.get(0);
-                                        Intent intent = new Intent(mContext, GourmetDetailActivity.class);
-                                        intent.putExtra("selected_gourmet", gourmet);
-                                        startActivity(intent);
-                                    }
-
+                                public void action(Banquent banquent) {
+                                    Intent intent = new Intent(mContext, BanquetDetailActivity.class);
+                                    intent.putExtra("banquet", banquent);
+                                    startActivity(intent);
                                     finalizeDialog();
                                 }
                             }, new OneParameterExpression<String>() {
                                 @Override
-                                public void action(String errorMessage) {
-
+                                public void action(String errorMsg) {
+                                    Toast.makeText(mContext, getString(R.string.notify_net2), Toast.LENGTH_SHORT).show();
+                                    finalizeDialog();
                                 }
                             });
-//                            Router.getGourmetModule().fetchGourmetInformation(infoid, new OneParameterExpression<Gourmet>() {
-//                                @Override
-//                                public void action(Gourmet gourmet) {
-//                                    Intent intent = new Intent(mContext, GourmetDetailActivity.class);
-//                                    intent.putExtra("selected_gourmet", gourmet);
-//                                    startActivity(intent);
-//                                    finalizeDialog();
-//                                }
-//                            }, new OneParameterExpression<String>() {
-//                                @Override
-//                                public void action(String s) {
-//                                    System.out.println("s:" + s);
-//                                    Toast.makeText(mContext, s, Toast.LENGTH_SHORT).show();
-//                                    finalizeDialog();
-//                                }
-//                            });
-//                            Router.getBanquentModule().theme(infoid, new OneParameterExpression<Banquent>() {
-//                                @Override
-//                                public void action(Banquent banquent) {
-//                                    Intent intent = new Intent(mContext, BanquetDetailActivity.class);
-//                                    intent.putExtra("banquet", banquent);
-//                                    startActivity(intent);
-//                                    finalizeDialog();
-//                                }
-//                            }, new OneParameterExpression<String>() {
-//                                @Override
-//                                public void action(String errorMsg) {
-//                                    Toast.makeText(mContext, getString(R.string.notify_net2), Toast.LENGTH_SHORT).show();
-//                                    finalizeDialog();
-//                                }
-//                            });
                         }
                     }, new OneParameterExpression<Integer>() {
                         @Override
                         public void action(Integer integer) {
                             Toast.makeText(mContext, getString(R.string.notify_net2), Toast.LENGTH_SHORT).show();
+                            finalizeDialog();
                         }
                     });
                 }
+            } else {
+                Intent intent1 = new Intent();
+                intent1.putExtra("content_url", content_url);
+                intent1.setClass(this, CommonWebViewActivity.class);
+                startActivity(intent1);
             }
         }
     }

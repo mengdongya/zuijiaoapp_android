@@ -64,6 +64,7 @@
                 android:textSize="14sp" />
 
             <TextView
+                android:id="@+id/banquet_order_item_review"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:singleLine="true"

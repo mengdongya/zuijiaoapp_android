@@ -181,6 +181,7 @@ public class GourmetDetailActivity extends BaseActivity implements
         mToolbarHeight = (int) getResources().getDimension(R.dimen.toolbar_height);
         try {
             gourmet = (Gourmet) mTendIntent.getSerializableExtra("selected_gourmet");
+            System.out.println("gourmet.id:" + gourmet.getIdentifier());
         } catch (Exception e) {
             e.printStackTrace();
         }

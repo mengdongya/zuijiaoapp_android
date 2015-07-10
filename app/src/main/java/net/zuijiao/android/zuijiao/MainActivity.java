@@ -16,6 +16,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -40,23 +41,31 @@ import com.lidroid.xutils.view.annotation.ViewInject;
 import com.readystatesoftware.viewbadger.BadgeView;
 import com.squareup.picasso.Picasso;
 import com.umeng.fb.FeedbackAgent;
+import com.umeng.message.UmengRegistrar;
 import com.umeng.update.UmengUpdateAgent;
 import com.umeng.update.UmengUpdateListener;
 import com.umeng.update.UpdateResponse;
 import com.zuijiao.android.util.Optional;
+import com.zuijiao.android.util.functional.LambdaExpression;
 import com.zuijiao.android.util.functional.OneParameterExpression;
+import com.zuijiao.android.zuijiao.model.Banquent.Banquent;
+import com.zuijiao.android.zuijiao.model.Gourmet;
+import com.zuijiao.android.zuijiao.model.Gourmets;
 import com.zuijiao.android.zuijiao.model.message.News;
 import com.zuijiao.android.zuijiao.model.message.NewsList;
 import com.zuijiao.android.zuijiao.model.user.TinyUser;
 import com.zuijiao.android.zuijiao.network.Router;
 import com.zuijiao.controller.ActivityTask;
+import com.zuijiao.controller.FileManager;
 import com.zuijiao.controller.MessageDef;
 import com.zuijiao.controller.PreferenceManager;
+import com.zuijiao.db.DBOpenHelper;
 import com.zuijiao.entity.AuthorInfo;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @ContentView(R.layout.activity_main)
 public final class MainActivity extends BaseActivity {
@@ -98,6 +107,8 @@ public final class MainActivity extends BaseActivity {
     private String[] titles = null;
     public static int unReadNewsCount = 0;
     private static final int BACK_STACK_DURATION = 2000;
+
+
     private OnItemClickListener mTabsListener = new OnItemClickListener() {
 
         @Override
@@ -333,11 +344,14 @@ public final class MainActivity extends BaseActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
+        getString(R.string.guest);
         return true;
     }
 
     @Override
     protected void registerViews() {
+        String device_token = UmengRegistrar.getRegistrationId(mContext);
+        Log.i("deviceToken", device_token);
         setSupportActionBar(mToolBar);
 //        mToolBar.setOnMenuItemClickListener(onMenuItemClick);
         mLocationView = LayoutInflater.from(this).inflate(
@@ -422,6 +436,111 @@ public final class MainActivity extends BaseActivity {
         }, errorMsg -> {
             //do nothing
         });
+        startNewActivity(mTendIntent);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        startNewActivity(intent);
+        super.onNewIntent(intent);
+    }
+
+    /**
+     * start activity from notification
+     *
+     * @param intent
+     */
+    private void startNewActivity(Intent intent) {
+        int opentype = intent.getIntExtra("opentype", 0);
+        if (opentype != 0) {
+            String content_url = intent.getStringExtra("content_url");
+            if (content_url != null && !content_url.equals("")) {
+                Intent intent1 = new Intent();
+                intent1.putExtra("content_url", content_url);
+                if (opentype == 1) {
+                    intent1.setClass(this, CommonWebViewActivity.class);
+                    startActivity(intent1);
+                }
+                if (opentype == 2) {
+                    createDialog();
+                    int infoid = intent.getIntExtra("infoid", 0);
+                    System.out.println("infoid:" + infoid);
+                    tryLoginFirst(new LambdaExpression() {
+                        @Override
+                        public void action() {
+                            Router.getGourmetModule().fetchOurChoice(infoid
+                                    , null
+                                    , 1
+                                    , new OneParameterExpression<Gourmets>() {
+                                @Override
+                                public void action(Gourmets gourmets) {
+                                    List<Gourmet> gourmetList = gourmets.getGourmets();
+                                    if (gourmetList.size() != 0) {
+                                        Gourmet gourmet = gourmetList.get(0);
+                                        Intent intent = new Intent(mContext, GourmetDetailActivity.class);
+                                        intent.putExtra("selected_gourmet", gourmet);
+                                        startActivity(intent);
+                                    }
+
+                                    finalizeDialog();
+                                }
+                            }, new OneParameterExpression<String>() {
+                                @Override
+                                public void action(String errorMessage) {
+
+                                }
+                            });
+//                            Router.getGourmetModule().fetchGourmetInformation(infoid, new OneParameterExpression<Gourmet>() {
+//                                @Override
+//                                public void action(Gourmet gourmet) {
+//                                    Intent intent = new Intent(mContext, GourmetDetailActivity.class);
+//                                    intent.putExtra("selected_gourmet", gourmet);
+//                                    startActivity(intent);
+//                                    finalizeDialog();
+//                                }
+//                            }, new OneParameterExpression<String>() {
+//                                @Override
+//                                public void action(String s) {
+//                                    System.out.println("s:" + s);
+//                                    Toast.makeText(mContext, s, Toast.LENGTH_SHORT).show();
+//                                    finalizeDialog();
+//                                }
+//                            });
+//                            Router.getBanquentModule().theme(infoid, new OneParameterExpression<Banquent>() {
+//                                @Override
+//                                public void action(Banquent banquent) {
+//                                    Intent intent = new Intent(mContext, BanquetDetailActivity.class);
+//                                    intent.putExtra("banquet", banquent);
+//                                    startActivity(intent);
+//                                    finalizeDialog();
+//                                }
+//                            }, new OneParameterExpression<String>() {
+//                                @Override
+//                                public void action(String errorMsg) {
+//                                    Toast.makeText(mContext, getString(R.string.notify_net2), Toast.LENGTH_SHORT).show();
+//                                    finalizeDialog();
+//                                }
+//                            });
+                        }
+                    }, new OneParameterExpression<Integer>() {
+                        @Override
+                        public void action(Integer integer) {
+                            Toast.makeText(mContext, getString(R.string.notify_net2), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+            }
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
     }
 
     private BadgeView initBadgeView() {

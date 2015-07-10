@@ -95,10 +95,12 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
     private TextView mInstructStatus;
     @ViewInject(R.id.banquet_detail_ordered_person)
     private GridView mOrderedPersonShow;
-    @ViewInject(R.id.banquet_detail_review_title)
-    private TextView mReviewTitle;
-    //    @ViewInject(R.id.banquet_detail_lastest_comment)
-//    private View mLastComment;
+    @ViewInject(R.id.banquet_detail_review_container)
+    private LinearLayout mReviewContainer;
+//    @ViewInject(R.id.banquet_detail_review_title)
+//    private TextView mReviewTitle;
+    @ViewInject(R.id.banquet_detail_lastest_comment)
+    private View mLastComment;
     @ViewInject(R.id.banquet_detail_comment_btn)
     private Button mAllCommentBtn;
     @ViewInject(R.id.banquet_detail_bottom_price)
@@ -296,6 +298,7 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
         mBottomPrice.setText(String.valueOf(mBanquent.getPrice()));
 //                mBottomPrice.setText(String.format(getString(R.string.price_per_one), mBanquent.getPrice()));
         mBottomDate.setText(formatDate(mBanquent.getTime()));
+        mReviewContainer.setVisibility(View.VISIBLE);
     }
 
     private ArrayList<ImageView> initImages() {

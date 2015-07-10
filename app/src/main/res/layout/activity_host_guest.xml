@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:myattr="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -20,8 +21,8 @@
             <RelativeLayout
                 android:id="@+id/host_guest_host_image_container"
                 android:layout_width="match_parent"
-                android:visibility="gone"
-                android:layout_height="256dip">
+                android:layout_height="256dip"
+                android:visibility="gone">
 
                 <android.support.v4.view.ViewPager
                     android:id="@+id/host_guest_host_images"
@@ -71,46 +72,56 @@
             <LinearLayout
                 android:id="@+id/ll_host_comment_stars"
                 android:layout_width="match_parent"
-                android:orientation="horizontal"
                 android:layout_height="30dip"
-                android:gravity="center_vertical"
                 android:layout_marginTop="10dip"
-               >
-                <ImageButton
-                    android:background="@drawable/star_bright"
-                    android:layout_width="30dip"
-                    android:layout_height="30dip"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+
+                <!--<ImageButton-->
+                <!--android:background="@drawable/star_bright"-->
+                <!--android:layout_width="30dip"-->
+                <!--android:layout_height="30dip"-->
+                <!--android:layout_marginLeft="85dip"-->
+                <!--android:layout_marginRight="5dip"-->
+                <!--android:clickable="true" />-->
+                <!--<ImageButton-->
+                <!--android:background="@drawable/star_bright"-->
+                <!--android:layout_width="30dip"-->
+                <!--android:layout_height="30dip"-->
+                <!--android:layout_marginLeft="5dip"-->
+                <!--android:layout_marginRight="5dip"-->
+                <!--android:clickable="true" />-->
+                <!--<ImageButton-->
+                <!--android:background="@drawable/star_bright"-->
+                <!--android:layout_width="30dip"-->
+                <!--android:layout_height="30dip"-->
+                <!--android:layout_marginLeft="5dip"-->
+                <!--android:layout_marginRight="5dip"-->
+                <!--android:clickable="true" />-->
+                <!--<ImageButton-->
+                <!--android:background="@drawable/star_bright"-->
+                <!--android:layout_width="30dip"-->
+                <!--android:layout_height="30dip"-->
+                <!--android:layout_marginLeft="5dip"-->
+                <!--android:layout_marginRight="5dip"-->
+                <!--android:clickable="true" />-->
+                <!--<ImageButton-->
+                <!--android:background="@drawable/star_gloomy"-->
+                <!--android:layout_width="30dip"-->
+                <!--android:layout_height="30dip"-->
+                <!--android:layout_marginLeft="5dip"-->
+                <!--android:layout_marginRight="30dip"-->
+                <!--android:clickable="true" />-->
+                <com.zuijiao.view.ReviewRatingBar
+                    android:id="@+id/host_comment_tatingbar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
                     android:layout_marginLeft="85dip"
-                    android:layout_marginRight="5dip"
-                    android:clickable="true" />
-                <ImageButton
-                    android:background="@drawable/star_bright"
-                    android:layout_width="30dip"
-                    android:layout_height="30dip"
-                    android:layout_marginLeft="5dip"
-                    android:layout_marginRight="5dip"
-                    android:clickable="true" />
-                <ImageButton
-                    android:background="@drawable/star_bright"
-                    android:layout_width="30dip"
-                    android:layout_height="30dip"
-                    android:layout_marginLeft="5dip"
-                    android:layout_marginRight="5dip"
-                    android:clickable="true" />
-                <ImageButton
-                    android:background="@drawable/star_bright"
-                    android:layout_width="30dip"
-                    android:layout_height="30dip"
-                    android:layout_marginLeft="5dip"
-                    android:layout_marginRight="5dip"
-                    android:clickable="true" />
-                <ImageButton
-                    android:background="@drawable/star_gloomy"
-                    android:layout_width="30dip"
-                    android:layout_height="30dip"
-                    android:layout_marginLeft="5dip"
-                    android:layout_marginRight="30dip"
-                    android:clickable="true" />
+                    myattr:imageSize="30"
+                    myattr:isIndicator="true"
+                    myattr:ratingBarType="host_score"></com.zuijiao.view.ReviewRatingBar>
 
                 <TextView
                     android:id="@+id/host_comment_count"
@@ -119,7 +130,7 @@
                     android:gravity="center"
                     android:paddingRight="30dip"
                     android:text="(20)" />
-                </LinearLayout>
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/host_guest_attendee_info"
@@ -204,18 +215,19 @@
 
             </LinearLayout>
 
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dip"
+                android:layout_marginTop="10dip"
+                android:background="@color/bg_light_gray2" />
+
             <LinearLayout
-                android:id="@+id/host_comment_list"
+                android:id="@+id/banquet_detail_review_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@drawable/bg_white_round"
                 android:orientation="vertical"
-                >
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dip"
-                    android:layout_marginTop="10dip"
-                    android:background="@color/bg_light_gray2" />
+                android:visibility="gone">
 
                 <TextView
                     android:id="@+id/banquet_detail_review_title"
@@ -227,7 +239,7 @@
                     android:layout_marginTop="10dip"
                     android:gravity="center_horizontal"
                     android:singleLine="false"
-                    android:text="评价\nReviews"
+                    android:text="@string/receive_comments"
                     android:textColor="@color/tv_deep_gray"
                     android:textSize="18sp" />
 
@@ -235,22 +247,30 @@
                     android:id="@+id/banquet_detail_lastest_comment"
                     layout="@layout/banquet_comment_item" />
 
-                <Button
-                    android:id="@+id/banquet_detail_comment_btn"
-                    style="?android:attr/buttonStyleSmall"
-                    android:layout_width="wrap_content"
-                    android:layout_height="35dip"
-                    android:layout_gravity="center_horizontal"
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dip"
                     android:layout_marginTop="10dip"
-                    android:background="@drawable/banquet_detail_about_cuisine_btn_bg"
-                    android:gravity="center"
-                    android:paddingLeft="5dip"
-                    android:paddingRight="5dip"
-                    android:text="@string/all_comments"
-                    android:textColor="@color/white"
-                    android:textSize="14sp" />
+                    android:background="@color/bg_light_gray2" />
 
             </LinearLayout>
+
+            <Button
+                android:id="@+id/banquet_detail_comment_btn"
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="match_parent"
+                android:layout_height="40dip"
+                android:background="@drawable/bg_white_round_corner"
+                android:gravity="center"
+                android:text="@string/show_all_comments"
+                android:textColor="@color/logout_btn_normal"
+                android:textSize="18sp"
+                android:visibility="visible" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dip"
+                android:background="@color/bg_light_gray2" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -261,7 +281,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="1dip"
                     android:layout_marginTop="10dip"
-                    android:background="@color/bg_light_gray2" />
+                    android:background="@color/bg_light_gray2"
+                    android:visibility="gone" />
 
                 <TextView
                     android:id="@+id/host_guest_history_title"

@@ -341,23 +341,25 @@ public class FileManager {
     public static List<SimpleImage> getImageList(Context context) {
         Date beginDate = new Date();
         System.out.println("getimagebegin :" + beginDate.getTime());
-        List<SimpleImage> list = new ArrayList<SimpleImage>();
         Cursor cursor = MediaStore.Images.Media.query(context.getContentResolver(),
                 MediaStore.Images.Media.EXTERNAL_CONTENT_URI, STORE_IMAGES, null, MediaStore.Images.Media.DATE_ADDED);
+        if (cursor == null || !cursor.moveToNext())
+            return new ArrayList<SimpleImage>();
+        List<SimpleImage> list = new ArrayList<SimpleImage>();
         SimpleImage image = null;
         while (cursor.moveToNext()) {
             String id = cursor.getString(1);
             String displayname = cursor.getString(0);
             String data = cursor.getString(2);
             long size = cursor.getLong(3);
-            if (size < 10000) {
+            if (size < 1024 * 10) {
                 continue;
             }
             image = new SimpleImage();
             image.name = displayname;
             image.id = id;
             image.data = data;
-            list.add(0, image);
+            list.add(0,image);
         }
         cursor.close();
         System.out.println("getimageend :" + new Date().getTime() + "duration == " + (new Date().getTime() - beginDate.getTime()));

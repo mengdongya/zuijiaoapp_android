@@ -246,12 +246,12 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
 
     public void onResume() {
         super.onResume();
-        MobclickAgent.onResume(this);
+//        MobclickAgent.onResume(this);
     }
 
     public void onPause() {
         super.onPause();
-        MobclickAgent.onPause(this);
+//        MobclickAgent.onPause(this);
     }
 
 }

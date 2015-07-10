@@ -11,11 +11,14 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.squareup.picasso.Picasso;
 import com.zuijiao.android.zuijiao.model.Banquent.Banquent;
 import com.zuijiao.android.zuijiao.model.Banquent.BanquentCapacity;
 import com.zuijiao.android.zuijiao.model.Banquent.BanquentStatus;
 import com.zuijiao.android.zuijiao.model.Banquent.Banquents;
+import com.zuijiao.controller.ActivityTask;
 
 import net.zuijiao.android.zuijiao.BanquetDetailActivity;
 import net.zuijiao.android.zuijiao.CommonWebViewActivity;
@@ -42,6 +45,10 @@ public class BanquetAdapter extends BaseAdapter implements AdapterView.OnItemCli
         this.mContext = context;
         weekDays = mContext.getResources().getStringArray(R.array.week_days);
         mInflater = LayoutInflater.from(mContext);
+//        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(mContext)
+//                .defaultDisplayImageOptions(((ActivityTask)mContext.getApplicationContext()).getDefaultDisplayImageOptions()).memoryCacheExtraOptions(400, 400)
+//                .threadPoolSize(5).build();
+//        ImageLoader.getInstance().init(config);
     }
 
     @Override
@@ -88,6 +95,7 @@ public class BanquetAdapter extends BaseAdapter implements AdapterView.OnItemCli
                 mBannerContainer = mInflater.inflate(R.layout.banquet_banner, null);
                 ImageView bannerView = (ImageView) mBannerContainer.findViewById(R.id.banquet_banner);
                 Picasso.with(mContext).load(mBanquents.getBannerImageUrl()).placeholder(R.drawable.empty_view_greeting).into(bannerView);
+                //ImageLoader.getInstance().displayImage(mBanquents.getBannerImageUrl(), bannerView);
                 bannerView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {

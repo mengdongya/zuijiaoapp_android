@@ -95,6 +95,7 @@ public class BanquetOrderDisplayActivity extends BaseActivity {
         fillGenInfo(mOrderDate, getString(R.string.order_time), mOrder.getCreateTime().toLocaleString());
         mNoticeText.setAutoLinkMask(Linkify.PHONE_NUMBERS);
         mNoticeText.setMovementMethod(LinkMovementMethod.getInstance());
+        System.out.println("mOrder.getBanquentIdentifier():"+mOrder.getBanquentIdentifier());
         clickableView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

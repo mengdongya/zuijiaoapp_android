@@ -195,6 +195,26 @@ public class OrderListFragment extends Fragment implements
             holder.title.setText(order.getTitle());
             String dateInfo = formatDate(order.getHoldTime());
             holder.date.setText(dateInfo + order.getAddress());
+            if (tabIndex > 0) {
+                holder.review.setVisibility(View.VISIBLE);
+                if (position % 2 == 0) {
+                    holder.review.setText(getString(R.string.to_evaluate));
+                    holder.review.setEnabled(true);
+                    holder.review.setTextColor(getResources().getColor(R.color.tv_orange_red));
+                    holder.review.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Intent intent = new Intent();
+                            intent.setClass(getActivity(), ReviewActivity.class);
+                            startActivity(intent);
+                        }
+                    });
+                } else {
+                    holder.review.setText(getString(R.string.over_evaluate));
+                    holder.review.setEnabled(false);
+                    holder.review.setTextColor(getResources().getColor(R.color.tv_light_gray));
+                }
+            }
             switch (order.getStatus()) {
                 case Canceled:
                     holder.situation.setText(getString(R.string.canceled_banquet));
@@ -241,6 +261,8 @@ public class OrderListFragment extends Fragment implements
         TextView date;
         @ViewInject(R.id.banquet_order_item_status)
         TextView situation;
+        @ViewInject(R.id.banquet_order_item_review)
+        TextView review;
 
         public ViewHolder(View convertView) {
             com.lidroid.xutils.ViewUtils.inject(this, convertView);

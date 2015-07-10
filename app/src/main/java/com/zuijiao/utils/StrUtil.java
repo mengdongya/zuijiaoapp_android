@@ -7,12 +7,21 @@ import net.zuijiao.android.zuijiao.R;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
+ * get format string
  * Created by xiaqibo on 2015/4/1.
  */
 public class StrUtil {
 
+    /**
+     * change tag list to string
+     *
+     * @param list
+     * @return
+     */
     public static String buildTags(List<String> list) {
         StringBuilder stringBuilder = new StringBuilder();
         for (String item : list) {
@@ -22,6 +31,12 @@ public class StrUtil {
         return stringBuilder.toString();
     }
 
+    /**
+     * chang string too tag list
+     *
+     * @param tag
+     * @return
+     */
     public static List<String> retriveTags(String tag) {
         String[] tags = tag.split("\n");
         ArrayList<String> tagsArray = new ArrayList<String>();
@@ -31,7 +46,13 @@ public class StrUtil {
         return tagsArray;
     }
 
-
+    /**
+     * format date to string ,used in gourmet detail activity
+     *
+     * @param date
+     * @param context
+     * @return
+     */
     public static String formatTime(Date date, Context context) {
         String result = null;
         Date currentDate = new Date();
@@ -111,5 +132,19 @@ public class StrUtil {
                     return 28;
         }
         return 30;
+    }
+
+    /**
+     *  if str are num
+     * @param str
+     * @return
+     */
+    public static boolean isNumer(String str){
+        Pattern pattern =Pattern.compile("[0-9]*");
+        Matcher isNum = pattern.matcher(str);
+        if(!isNum.matches()){
+            return  false;
+        }
+        return true;
     }
 }

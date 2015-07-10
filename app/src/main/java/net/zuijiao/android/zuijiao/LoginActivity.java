@@ -38,6 +38,9 @@ import com.zuijiao.entity.AuthorInfo;
 import java.security.NoSuchAlgorithmException;
 import java.util.NoSuchElementException;
 
+/**
+ * log in activity ,called from sidebar of main activity ;
+ */
 @ContentView(R.layout.activity_login)
 public class LoginActivity extends BaseActivity implements OnClickListener {
     @ViewInject(R.id.iv_weixin)
@@ -61,6 +64,10 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
     private String mEmail = null;
     private String mPassword = null;
 
+
+    /**
+     * receive broad cast from third-party sdk log in result ;
+     */
     protected BroadcastReceiver mReceiver = new BroadcastReceiver() {
 
         @Override
@@ -139,6 +146,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
             }
 
             mDialog = ProgressDialog.show(LoginActivity.this, null, getResources().getString(R.string.on_loading));
+            // login by zuijiao account ;
             Router.getOAuthModule().loginEmailRoutine(mEmail, mPassword, Optional.<String>empty(), Optional.<String>empty(), new LambdaExpression() {
                 @Override
                 public void action() {
@@ -208,6 +216,11 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
         }
     }
 
+    /**
+     * login call back
+     *
+     * @param intent
+     */
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
@@ -221,6 +234,13 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
         }
     }
 
+    /**
+     * login call back
+     *
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -242,8 +262,10 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
         }
     }
 
+    /**
+     * login call back
+     */
     private void onLoginFinish() {
-//        super.onLoginFinish();
         if (mLoginType != ThirdPartySDKManager.CLOUD_TYPE_WEIXIN) {
             mDialog = ProgressDialog.show(LoginActivity.this, null, getResources().getString(R.string.on_loading));
         }
@@ -252,7 +274,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
     private void initRegisterTextview() {
         String str = getResources().getString(R.string.notify_register);
         SpannableStringBuilder style = new SpannableStringBuilder(str);
-        style.setSpan(new ForegroundColorSpan(Color.rgb(137,60,52)), str.length() - 4,
+        style.setSpan(new ForegroundColorSpan(Color.rgb(137, 60, 52)), str.length() - 4,
                 str.length(), Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
         TextView tvColor = (TextView) findViewById(R.id.tv_login_register);
         tvColor.setText(style);

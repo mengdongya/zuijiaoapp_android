@@ -19,6 +19,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
+ * customer push service ,base on umneg push service ,started when application is created ;
  * Created by xiaqibo on 2015/5/21.
  */
 public class UmengAgentPushService extends UmengBaseIntentService {
@@ -33,11 +34,17 @@ public class UmengAgentPushService extends UmengBaseIntentService {
         UMessage msg = null;
         try {
             JSONObject jsonObject = new JSONObject(message);
+            System.out.println(jsonObject.toString());
             JSONObject js = jsonObject.getJSONObject("body");
             String title = js.getString("title");
             String text = js.getString("text");
             String ticker = js.getString("ticker");
-            showNotification(title, text, ticker);
+            String content_url = new String();
+            if (jsonObject.has("extra")) {
+                JSONObject jsonObject1 = jsonObject.getJSONObject("extra");
+                content_url = jsonObject1.getString("content_url");
+            }
+            showNotification(title, text, ticker, content_url);
             msg = new UMessage(jsonObject);
             UTrack.getInstance(context).trackMsgClick(msg);
             Intent notifyMessageReceived = new Intent(MessageDef.ACTION_PUSH_RECEIVED);
@@ -47,7 +54,15 @@ public class UmengAgentPushService extends UmengBaseIntentService {
         }
     }
 
-    private void showNotification(String title, String text, String ticker) {
+    /**
+     * register and show notifications
+     *
+     * @param title
+     * @param text
+     * @param ticker
+     * @param content_url
+     */
+    private void showNotification(String title, String text, String ticker, String content_url) {
         Bitmap btm = BitmapFactory.decodeResource(getResources(),
                 R.drawable.icon);
         int smallIcon = 0;
@@ -66,6 +81,15 @@ public class UmengAgentPushService extends UmengBaseIntentService {
         mBuilder.setAutoCancel(true);
         Intent resultIntent = new Intent(getApplicationContext(),
                 MainActivity.class);
+        /**
+         * content_url: 0 :open app from launcher.
+         *              string :open webview from notification.
+         *              only num :open activity from notification.
+         */
+        if (!content_url.equals("") && content_url != null) {
+            resultIntent.putExtra("content_url", content_url);
+        }
+        resultIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent resultPendingIntent = PendingIntent.getActivity(
                 getApplicationContext(), 0, resultIntent,
                 PendingIntent.FLAG_UPDATE_CURRENT);

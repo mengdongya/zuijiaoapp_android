@@ -34,6 +34,7 @@ import java.util.List;
 
 /**
  * Created by xiaqibo on 2015/4/30.
+ * edit tags for gourmet,called from edit-gourmet-activity
  */
 @ContentView(R.layout.activity_edit_label)
 public class LabelActivity extends BaseActivity {
@@ -126,6 +127,9 @@ public class LabelActivity extends BaseActivity {
         }
     }
 
+    /**
+     * fetch recommended tags
+     */
     private void fetchHotLabels() {
         Router.getCommonModule().gourmetTags(new OneParameterExpression<List<String>>() {
             @Override
@@ -136,17 +140,6 @@ public class LabelActivity extends BaseActivity {
         }, null);
     }
 
-    //    new OneParameterExpression<String>() {
-//        @Override
-//        public void action(String s) {
-//            mHotLabels = new ArrayList<>();
-//            mHotLabels.add("xihuanni");
-//            mHotLabels.add("nashuangyandongren");
-//            mHotLabels.add("xiaoshenggengmiren");
-//            mHotLabels.add("yuanzaike");
-//            mLvHotLabels.setAdapter(new HotLabelAdapter());
-//        }
-//    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.label_edit, menu);
@@ -190,7 +183,8 @@ public class LabelActivity extends BaseActivity {
             logoutView.findViewById(R.id.delete_label_btn_confirm).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    LabelActivity.this.getParent().onBackPressed();
+                    mAddedText.clear();
+                    onBackPressed();
                 }
             });
             dialog.show();
@@ -207,6 +201,9 @@ public class LabelActivity extends BaseActivity {
         }
     };
 
+    /**
+     * hot tags list adapter
+     */
     private class HotLabelAdapter extends BaseAdapter {
         @Override
         public int getCount() {
@@ -237,7 +234,12 @@ public class LabelActivity extends BaseActivity {
         }
     }
 
-
+    /**
+     * add one tag to wrap view
+     *
+     * @param label
+     * @return
+     */
     private boolean addOneLabel(String label) {
         bLabelChanged = true;
         if (mAddedText.size() == 5) {

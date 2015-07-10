@@ -65,4 +65,13 @@
     <declare-styleable name="NumberPicker">
         <attr name="solidColor" format="color" />
     </declare-styleable>
+    <declare-styleable name="ReviewRatingBar">
+        <attr name="imageSize" format="integer" />
+        <attr name="isIndicator" format="boolean" />
+        <attr name="ratingBarType" format="enum">
+            <enum name="reviewList" value="1"/>
+            <enum name="review" value="2"/>
+            <enum name="host_score" value="3"/>
+        </attr>
+    </declare-styleable>
 </resources>

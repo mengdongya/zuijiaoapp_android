@@ -20,6 +20,9 @@ import net.zuijiao.android.zuijiao.BanquetOrderCallbackActivity;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+/**
+ * weixin pay call back activity,called when weixin pay is finished
+ */
 public class WXPayEntryActivity extends Activity implements IWXAPIEventHandler {
     protected final String WEIXIN_ID = "wx908961ddfd5cade9";
     protected final String WEIXIN_PWD = "b04cac11c4477cf5e07ecffd6ca6bf86";
@@ -61,6 +64,11 @@ public class WXPayEntryActivity extends Activity implements IWXAPIEventHandler {
         }
     }
 
+    /**
+     * dispatch pay result
+     *
+     * @param resp
+     */
     @Override
     public void onResp(BaseResp resp) {
         Log.i(Tag, "onResp");

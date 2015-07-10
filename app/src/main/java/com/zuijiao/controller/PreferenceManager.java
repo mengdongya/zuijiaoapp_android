@@ -11,6 +11,9 @@ import com.zuijiao.entity.AuthorInfo;
 
 import java.util.Date;
 
+/**
+ * managment of shared-preference
+ */
 public class PreferenceManager {
     private static final String LOGTAG = "PreferenceManager";
     private static PreferenceInfo mPreferInfo = null;
@@ -259,6 +262,7 @@ public class PreferenceManager {
         public void setVersion2FirstLaunch(boolean b) {
             this.version2FirstLaunch = b;
         }
+
         public String getUserId() {
             return userId;
         }

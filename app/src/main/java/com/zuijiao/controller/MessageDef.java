@@ -1,5 +1,8 @@
 package com.zuijiao.controller;
 
+/**
+ * definition of broadcast action
+ */
 public interface MessageDef {
 
     public static final String ACTION_LOGIN_FINISH = "net.zuijiao.android.login.finish";

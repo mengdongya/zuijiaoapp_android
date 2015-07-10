@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * choose the languages ,called from edit-user-info-activity
  * Created by xiaqibo on 2015/5/5.
  */
 @ContentView(R.layout.activity_language_choose)
@@ -84,6 +85,7 @@ public class LanguagesChooseActivity extends BaseActivity {
         if (selectedCode == null) {
             selectedCode = new ArrayList<>();
         }
+        //check if languages is cached when app launched ,if not ,fetch when activity is created ,
         mLanguages = Cache.INSTANCE.languages;
         if (mLanguages == null) {
             Router.getCommonModule().languages(new OneParameterExpression<Languages>() {

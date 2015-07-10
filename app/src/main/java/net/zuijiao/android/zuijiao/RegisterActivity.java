@@ -42,11 +42,15 @@ import java.io.OutputStream;
 import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 
+/**
+ * activity for registering zuijiao account ,called from login-activity ;
+ */
 @ContentView(R.layout.activity_register)
 public class RegisterActivity extends BaseActivity implements View.OnClickListener {
     private static final int CHOOSE_GALLERY_REQ = 7001;
     private static final int TAKE_PHOTO_REQ = 7002;
     private static final int PHOTO_ZOOM_REQ = 7003;
+    //check if the email address isn't must wrong
     private final static String EMAIL_REGEX = "^[\\w_\\.+-]*[\\w_\\.-]\\@([\\w]+\\.)+[\\w]+[\\w]$";
     @ViewInject(R.id.register_toolbar)
     private Toolbar mToolbar = null;
@@ -92,6 +96,13 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
         mHeadChooseImage.setOnClickListener(this);
     }
 
+    /**
+     * receive image user choose for avatar
+     *
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

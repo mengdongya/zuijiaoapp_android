@@ -5,6 +5,9 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
 
+/**
+ * display customized text-view group
+ */
 public class WordWrapView extends ViewGroup {
     private static final int PADDING_HOR = 11;
     private static final int PADDING_VERTICAL = 0;

@@ -8,7 +8,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
@@ -35,7 +34,6 @@ import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
@@ -48,7 +46,6 @@ import com.sina.weibo.sdk.auth.sso.SsoHandler;
 import com.squareup.picasso.Picasso;
 import com.umeng.socialize.bean.SHARE_MEDIA;
 import com.umeng.socialize.bean.SocializeEntity;
-import com.umeng.socialize.bean.StatusCode;
 import com.umeng.socialize.controller.UMServiceFactory;
 import com.umeng.socialize.controller.UMSocialService;
 import com.umeng.socialize.controller.listener.SocializeListeners;
@@ -69,6 +66,10 @@ import com.zuijiao.android.zuijiao.model.user.WouldLikeToEatUser;
 import com.zuijiao.android.zuijiao.model.user.WouldLikeToEatUsers;
 import com.zuijiao.android.zuijiao.network.Router;
 import com.zuijiao.controller.MessageDef;
+import com.zuijiao.thirdopensdk.QQApi;
+import com.zuijiao.thirdopensdk.WeiboApi;
+import com.zuijiao.thirdopensdk.WeixinApi;
+import com.zuijiao.utils.AdapterViewHeightCalculator;
 import com.zuijiao.utils.StrUtil;
 import com.zuijiao.view.GourmetDetailScrollView;
 import com.zuijiao.view.GourmetDetailScrollView.OnScrollListener;
@@ -76,6 +77,9 @@ import com.zuijiao.view.WordWrapView;
 
 import java.util.ArrayList;
 
+/**
+ * show the detail information of a gourmet ;
+ */
 @SuppressLint("ShowToast")
 @ContentView(R.layout.activity_gourmet_detail)
 public class GourmetDetailActivity extends BaseActivity implements
@@ -84,14 +88,13 @@ public class GourmetDetailActivity extends BaseActivity implements
     public static final int EDIT_GOURMET_REQ = 4001;
     public static final int MORE_COMMENT_REQ = 4002;
     public static final String SCOPE = "all";
-    protected static final String REDIRECT_URL = "https://api.weibo.com/oauth2/default.html";
     private static final int SHARE_TO_WEIBO = 0;
     private static final int SHARE_TO_WECHAT = 1;
     private static final int SHARE_TO_FRIEND_CIRCLE = 2;
     private static final int SHARE_TO_QQ = 3;
     private static final int SHARE_TO_QQ_SPACE = 4;
-    protected final String WEIBO_ID = "2632486726";// key
-    final UMSocialService mController = UMServiceFactory.getUMSocialService("com.umeng.share");
+    //share by umengSDK
+    private final UMSocialService mController = UMServiceFactory.getUMSocialService("com.umeng.share");
     @ViewInject(R.id.food_detail_toolbar)
     private Toolbar mToolbar;
     @ViewInject(R.id.food_detail_container)
@@ -167,6 +170,8 @@ public class GourmetDetailActivity extends BaseActivity implements
     private int rootBottom = Integer.MIN_VALUE;
     private boolean withImage = true;
 
+    private int mToolbarHeight = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -181,6 +186,7 @@ public class GourmetDetailActivity extends BaseActivity implements
         mToolbarHeight = (int) getResources().getDimension(R.dimen.toolbar_height);
         try {
             gourmet = (Gourmet) mTendIntent.getSerializableExtra("selected_gourmet");
+            System.out.println("gourmet.id:" + gourmet.getIdentifier());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -191,8 +197,7 @@ public class GourmetDetailActivity extends BaseActivity implements
         mResource = getResources();
         mInflater = LayoutInflater.from(this);
         mScrollView.setOnScrollListener(this);
-
-//        mScrollView.postInvalidate();
+        //listen to the root view layout changes
         rootView.getViewTreeObserver().addOnGlobalLayoutListener(
                 new ViewTreeObserver.OnGlobalLayoutListener() {
                     @Override
@@ -216,7 +221,6 @@ public class GourmetDetailActivity extends BaseActivity implements
         mEtComment.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.i("my_scrollview", "start");
                 mReplyId = null;
                 mEtComment.setHint(getString(R.string.comment_hint));
             }
@@ -367,6 +371,10 @@ public class GourmetDetailActivity extends BaseActivity implements
         return super.onOptionsItemSelected(item);
     }
 
+
+    /**
+     * call the list of the share ways , including qq friend ,qq space ,weibo ,wechat space ,wechat friend
+     */
     private void createShareWindow() {
 
         View view = null;
@@ -420,6 +428,11 @@ public class GourmetDetailActivity extends BaseActivity implements
         backgroundAlpha(0.5f);
     }
 
+    /**
+     * show half alpha of the background when share dialog is shown ;
+     *
+     * @param bgAlpha
+     */
     public void backgroundAlpha(float bgAlpha) {
         WindowManager.LayoutParams lp = getWindow().getAttributes();
         lp.alpha = bgAlpha; //0.0-1.0
@@ -433,40 +446,41 @@ public class GourmetDetailActivity extends BaseActivity implements
         }
     }
 
-
+    /**
+     * share to different way
+     *
+     * @param action
+     */
     private void distributeShareAction(int action) {
         mController.setShareContent(String.format(getString(R.string.share_content), gourmet.getName()));
-//        mController.setShareImage(new UMImage(mContext, R.drawable.shanghai));
-//        mController.setShareImage(new UMImage(mContext ,gourmet.getImageURLs().get(0)));
         mController.setShareMedia(new UMImage(mContext,
                 BuildConfig.Web_View_Url + mShareUrl + gourmet.getIdentifier()));
         switch (action) {
             case SHARE_TO_WEIBO:
                 mController.getConfig().setSsoHandler(new SinaSsoHandler());
-                mController.getConfig().setSinaCallbackUrl("https://api.weibo.com/oauth2/default.html");
+                mController.getConfig().setSinaCallbackUrl(WeiboApi.REDIRECT_URL);
                 performShare(SHARE_MEDIA.SINA);
                 break;
             case SHARE_TO_WECHAT:
-                UMWXHandler wxHandler = new UMWXHandler(this, "wx908961ddfd5cade9", "b04cac11c4477cf5e07ecffd6ca6bf86");
+                UMWXHandler wxHandler = new UMWXHandler(this, WeixinApi.WEIXIN_ID, WeixinApi.WEIXIN_PWD);
                 wxHandler.addToSocialSDK();
                 performShare(SHARE_MEDIA.WEIXIN);
                 break;
             case SHARE_TO_FRIEND_CIRCLE:
-                UMWXHandler wxCircleHandler = new UMWXHandler(this, "wx908961ddfd5cade9", "b04cac11c4477cf5e07ecffd6ca6bf86");
+                UMWXHandler wxCircleHandler = new UMWXHandler(this, WeixinApi.WEIXIN_ID, WeixinApi.WEIXIN_PWD);
                 wxCircleHandler.setToCircle(true);
                 wxCircleHandler.addToSocialSDK();
                 performShare(SHARE_MEDIA.WEIXIN_CIRCLE);
                 break;
             case SHARE_TO_QQ:
                 UMQQSsoHandler qqSsoHandler = new UMQQSsoHandler(this,
-                        "1103495820", "NlMKnzZYdhg4TmwE");
-//                qqSsoHandler.setTargetUrl("http://www.umeng.com/social");
+                        QQApi.QQ_ID, QQApi.QQ_PWD);
                 qqSsoHandler.addToSocialSDK();
                 performShare(SHARE_MEDIA.QQ);
                 break;
             case SHARE_TO_QQ_SPACE:
                 QZoneSsoHandler qZoneSsoHandler = new QZoneSsoHandler(this,
-                        "1103495820", "NlMKnzZYdhg4TmwE");
+                        QQApi.QQ_ID, QQApi.QQ_PWD);
                 qZoneSsoHandler.addToSocialSDK();
                 performShare(SHARE_MEDIA.QZONE);
                 break;
@@ -483,17 +497,14 @@ public class GourmetDetailActivity extends BaseActivity implements
 
             @Override
             public void onComplete(SHARE_MEDIA platform, int eCode, SocializeEntity entity) {
-                String showText = platform.toString();
-                if (eCode == StatusCode.ST_CODE_SUCCESSED) {
-                    showText += "success!";
-                } else {
-                    showText += "failed";
-                }
-                //Toast.makeText(mContext, showText, Toast.LENGTH_SHORT).show();
             }
         });
     }
 
+    /**
+     * re-fetch the gourmet information ;
+     */
+    @Deprecated
     private void refreshGourmet() {
         createDialog();
         Router.getGourmetModule().fetchGourmetInformation(gourmet.getIdentifier(), new OneParameterExpression<Gourmet>() {
@@ -511,6 +522,9 @@ public class GourmetDetailActivity extends BaseActivity implements
         });
     }
 
+    /**
+     * delete a gourmet
+     */
     private void deleteGourmet() {
         View confirmView = LayoutInflater.from(getApplicationContext()).inflate(
                 R.layout.logout_dialog, null);
@@ -549,6 +563,9 @@ public class GourmetDetailActivity extends BaseActivity implements
         dialog.show();
     }
 
+    /**
+     *
+     */
     private void editGourmet() {
         Intent intent = new Intent();
         intent.setClass(mContext, EditGourmetActivity.class);
@@ -558,6 +575,9 @@ public class GourmetDetailActivity extends BaseActivity implements
         startActivityForResult(intent, EDIT_GOURMET_REQ);
     }
 
+    /**
+     * get the list of person who would like to eat the gourmet
+     */
     private void fetchWouldLikeList() {
         createDialog();
         Router.getGourmetModule().fetchWouldLikeToListByGourmetId(gourmet.getIdentifier(), 500, new OneParameterExpression<WouldLikeToEatUsers>() {
@@ -611,7 +631,7 @@ public class GourmetDetailActivity extends BaseActivity implements
                     } else {
                         mMoreCommentBtn.setVisibility(View.GONE);
                     }
-                    setListViewHeightBasedOnChildren(mCommentList);
+                    AdapterViewHeightCalculator.setListViewHeightBasedOnChildren(mCommentList);
                 }
                 finalizeDialog();
             }
@@ -624,7 +644,9 @@ public class GourmetDetailActivity extends BaseActivity implements
         });
     }
 
-
+    /**
+     * register the float black view group
+     */
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     private void registerTopView() {
         floatHolder = new TopViewHolder();
@@ -673,6 +695,11 @@ public class GourmetDetailActivity extends BaseActivity implements
         topHolder.mUserName1.setText(gourmet.getUser().getNickName());
     }
 
+    /**
+     * listen to the scroll-view scrollY ,and change to top view position;
+     *
+     * @param scrollY
+     */
     @Override
     public void onScroll(int scrollY) {
         int mBuyLayout2ParentTop = Math.max(scrollY, mFloatView.getTop());
@@ -682,61 +709,21 @@ public class GourmetDetailActivity extends BaseActivity implements
     }
 
 
-    public void setListViewHeightBasedOnChildren(ListView listView) {
-        ListAdapter listAdapter = listView.getAdapter();
-        if (listAdapter == null) {
-            return;
-        }
-        int totalHeight = 0;
-        for (int i = 0; i < listAdapter.getCount(); i++) {
-            View listItem = listAdapter.getView(i, null, listView);
-            listItem.measure(0, 0);
-            totalHeight += listItem.getMeasuredHeight();
-        }
-        ViewGroup.LayoutParams params = listView.getLayoutParams();
-        params.height = totalHeight
-                + (listView.getDividerHeight() * (listAdapter.getCount()));
-    }
-
-    private int[] variesToolbarRes = {
-            R.color.toolbar,
-            R.color.toolbar1,
-            R.color.toolbar2,
-            R.color.toolbar3,
-            R.color.toolbar4,
-            R.color.toolbar5,
-            R.color.toolbar6,
-            R.color.toolbar7,
-            R.color.toolbar8,};
-    private int mToolbarHeight = 0;
-
+    /**
+     * judge if the scroll-view's position is on the top ,and change toolbar background ;
+     *
+     * @param top
+     */
     @Override
     public void onTopChange(int top) {
         if (top <= mToolbarHeight) {
             mToolbar.setBackgroundColor(mResource.getColor(R.color.toolbar));
-//        } else if(top > mToolbarHeight && top <= mToolbarHeight *2 ){
-//            int index = 8 - (top - mToolbarHeight)/(mToolbarHeight / 8 ) ;
-//            index = index > 8 ? 8: index ;
-//            System.out.println(index);
-//            mToolbar.setBackgroundColor(mResource.getColor(variesToolbarRes[index]));
         } else {
             mToolbar.setBackgroundDrawable(mResource.getDrawable(R.drawable.transparent_gradient));
-//            if(top > mScrollView.getBottomY()){
-//                Matrix matrix = new Matrix() ;
-//                matrix.postScale(1.5f, 1.5f ,540 , 500 ) ;
-//                matrix.postTranslate(0 , 0) ;
-//                setImageViewMatrix(matrix);
-//            }
         }
     }
 
-    private void setImageViewMatrix(Matrix matrix) {
-        ImageView imageView = mImageList.get(mImagePager.getCurrentItem());
-        if (null != imageView) {
-            imageView.setImageMatrix(matrix);
-        }
-    }
-
+    //init viewpager index indicator
     private void initDots(int count) {
         mImageIndex.removeAllViews();
         if (count <= 1) {
@@ -760,26 +747,32 @@ public class GourmetDetailActivity extends BaseActivity implements
         return dot;
     }
 
-
+    /**
+     * do when comment commit btn is pressed
+     */
     private OnClickListener mCommentCommitListener = new OnClickListener() {
         @Override
         public void onClick(View v) {
+            //check is logged in ;
             if (!Router.getInstance().getCurrentUser().isPresent()) {
-                View contentView = mInflater.inflate(R.layout.alert_login_dialog, null);
-                TextView tv = (TextView) contentView.findViewById(R.id.fire_login);
-                final AlertDialog dialog = new AlertDialog.Builder(GourmetDetailActivity.this).setView(contentView).create();
-                tv.setOnClickListener(new OnClickListener() {
+                tryLoginFirst(new LambdaExpression() {
                     @Override
-                    public void onClick(View v) {
-                        Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-                        startActivity(intent);
-                        dialog.dismiss();
-                        finalizeDialog();
+                    public void action() {
+                        if (!Router.getInstance().getCurrentUser().isPresent()) {
+                            notifyLogin(null);
+                        } else {
+                            onClick(v);
+                        }
+                    }
+                }, new OneParameterExpression<Integer>() {
+                    @Override
+                    public void action(Integer integer) {
+                        Toast.makeText(mContext, R.string.notify_net2, Toast.LENGTH_SHORT).show();
                     }
                 });
-                dialog.show();
                 return;
             }
+            //do commit
             String comment = mEtComment.getText().toString().trim();
             if (comment.equals("")) {
                 Toast.makeText(getApplicationContext(), mResource.getString(R.string.notify_empty_comment), Toast.LENGTH_SHORT);
@@ -826,24 +819,31 @@ public class GourmetDetailActivity extends BaseActivity implements
             }
         }
     };
+
+    /**
+     * listen to the comment list click issue
+     */
     private AdapterView.OnItemClickListener mCommentListListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
             if (!Router.getInstance().getCurrentUser().isPresent()) {
-                View contentView = mInflater.inflate(R.layout.alert_login_dialog, null);
-                TextView tv = (TextView) contentView.findViewById(R.id.fire_login);
-                final AlertDialog dialog = new AlertDialog.Builder(GourmetDetailActivity.this).setView(contentView).create();
-                tv.setOnClickListener(new OnClickListener() {
+                tryLoginFirst(new LambdaExpression() {
                     @Override
-                    public void onClick(View v) {
-                        Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-                        startActivity(intent);
-                        dialog.dismiss();
-                        finalizeDialog();
+                    public void action() {
+                        if (!Router.getInstance().getCurrentUser().isPresent())
+                            notifyLogin(null);
+                        else
+                            onItemClick(parent, view, position, id);
+                    }
+                }, new OneParameterExpression<Integer>() {
+                    @Override
+                    public void action(Integer integer) {
+                        Toast.makeText(mContext, R.string.notify_net2, Toast.LENGTH_SHORT).show();
                     }
                 });
-                dialog.show();
             } else {
+                //if the clicked item is created by myself ,delete it
                 if (Router.getInstance().getCurrentUser().get().getIdentifier().equals(mComments.getCommentList().get(position).getUser().getIdentifier())) {
                     View deleteView = LayoutInflater.from(getApplicationContext()).inflate(
                             R.layout.alert_delete_comment, null);
@@ -881,6 +881,8 @@ public class GourmetDetailActivity extends BaseActivity implements
             }
         }
     };
+
+
     private OnClickListener userHeadListener = new OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -890,26 +892,49 @@ public class GourmetDetailActivity extends BaseActivity implements
             startActivity(intent);
         }
     };
+
+    /**
+     * favor a gourmet or cancel favor
+     */
     private OnClickListener favorListener = new OnClickListener() {
         @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
         @Override
         public void onClick(View v) {
             Log.i("my_scrollview", "start");
             if (!Router.getInstance().getCurrentUser().isPresent()) {
-                View contentView = mInflater.inflate(R.layout.alert_login_dialog, null);
-                TextView tv = (TextView) contentView.findViewById(R.id.fire_login);
-                final AlertDialog dialog = new AlertDialog.Builder(GourmetDetailActivity.this).setView(contentView).create();
-                tv.setOnClickListener(new OnClickListener() {
+                tryLoginFirst(new LambdaExpression() {
                     @Override
-                    public void onClick(View v) {
-                        Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-                        startActivity(intent);
-                        dialog.dismiss();
-                        finalizeDialog();
+                    public void action() {
+                        if (!Router.getInstance().getCurrentUser().isPresent()) {
+                            notifyLogin(null);
+                        } else {
+                            onClick(v);
+                        }
+                    }
+                }, new OneParameterExpression<Integer>() {
+                    @Override
+                    public void action(Integer integer) {
+                        Toast.makeText(mContext, R.string.notify_net2, Toast.LENGTH_SHORT).show();
                     }
                 });
-                dialog.show();
-            } else {
+                return;
+            }
+//            if (!Router.getInstance().getCurrentUser().isPresent()) {
+//                View contentView = mInflater.inflate(R.layout.alert_login_dialog, null);
+//                TextView tv = (TextView) contentView.findViewById(R.id.fire_login);
+//                final AlertDialog dialog = new AlertDialog.Builder(GourmetDetailActivity.this).setView(contentView).create();
+//                tv.setOnClickListener(new OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//                        Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+//                        startActivity(intent);
+//                        dialog.dismiss();
+//                        finalizeDialog();
+//                    }
+//                });
+//                dialog.show();
+//            }
+            else {
                 if (!gourmet.getWasMarked()) {
                     createDialog();
                     Router.getGourmetModule().favoriteAdd(gourmet.getIdentifier(), new LambdaExpression() {
@@ -917,12 +942,6 @@ public class GourmetDetailActivity extends BaseActivity implements
                         public void action() {
                             gourmet.setWasMarked(true);
                             fetchWouldLikeList();
-//                        View view = mInflater.inflate(R.layout.favor_feedback, null);
-//                        Toast toast = new Toast(getApplicationContext());
-//                        toast.setDuration(Toast.LENGTH_SHORT);
-//                        toast.setView(view);
-//                        toast.setGravity(Gravity.CENTER, 0, 0);
-//                        toast.show();
                             Toast.makeText(getApplicationContext(), getString(R.string.favor_feedback), Toast.LENGTH_SHORT).show();
                             topHolder.mFavorBtn2.setBackground(mResource.getDrawable(R.drawable.bg_favor_marked));
                             topHolder.mFavorBtn2.setImageResource(R.drawable.faviro_clicked);
@@ -965,7 +984,9 @@ public class GourmetDetailActivity extends BaseActivity implements
     };
     private Resources mResource = null;
 
-
+    /**
+     * would like to eat list listener ;
+     */
     private AdapterView.OnItemClickListener mGvListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -982,14 +1003,13 @@ public class GourmetDetailActivity extends BaseActivity implements
             }
         }
     };
+    /**
+     * would like to list adapter
+     */
     private BaseAdapter mGdAdapter = new BaseAdapter() {
         private WouldLikeToEatUser users = null;
         private int totalCount = 0;
 
-//        public void setData(WouldLikeToEatUser users) {
-//            this.users = users;
-//            notifyDataSetChanged();
-//        }
 
         @Override
         public int getCount() {
@@ -1033,6 +1053,10 @@ public class GourmetDetailActivity extends BaseActivity implements
             return contentView;
         }
     };
+
+    /**
+     * gourmet images' viewpager change listener ;
+     */
     private ViewPager.OnPageChangeListener mPageListener = new ViewPager.OnPageChangeListener() {
         @Override
         public void onPageSelected(int arg0) {

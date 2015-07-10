@@ -22,6 +22,9 @@ import net.zuijiao.android.zuijiao.R;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 
+/**
+ * round image view ,all avatar display using
+ */
 public class RoundImageView extends ImageView {
     private int mBorderThickness = 0;
     private Context mContext;
@@ -114,7 +117,7 @@ public class RoundImageView extends ImageView {
                     : defaultHeight) / 2 - mBorderThickness;
             drawCircleBorder(canvas, radius + mBorderThickness / 2,
                     mBorderOutsideColor);
-        } else {// û�б߿�
+        } else {
             radius = (defaultWidth < defaultHeight ? defaultWidth
                     : defaultHeight) / 2;
         }

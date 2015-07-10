@@ -19,7 +19,6 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -37,6 +36,7 @@ import java.util.Date;
 
 /**
  * Created by xiaqibo on 2015/6/15.
+ * the activity you can make a banquet order , and call the third party payment ;
  */
 @ContentView(R.layout.activity_banquet_order)
 public class BanquetOrderActivity extends BaseActivity implements View.OnClickListener {
@@ -130,7 +130,6 @@ public class BanquetOrderActivity extends BaseActivity implements View.OnClickLi
         payWayRes = getResources().getStringArray(R.array.pay_way);
         payWayStr = getResources().getStringArray(R.array.pay_way_str);
         mPayWayList.setAdapter(mPayWayAdapter);
-//        setListViewHeightBasedOnChildren(mPayWayList);
         mPayWayList.setOnItemClickListener(mPayWaySwitcher);
         if (phoneNum != null && !phoneNum.equals("")) {
             mBanquetPhone.setText(phoneNum);
@@ -220,6 +219,12 @@ public class BanquetOrderActivity extends BaseActivity implements View.OnClickLi
         }
     }
 
+    /**
+     * show date as a specified format;
+     *
+     * @param date
+     * @return formatted date
+     */
     private String formatDate(Date date) {
         StringBuilder strBuilder = new StringBuilder();
         strBuilder.append(String.format(mContext.getString(R.string.month_day), date.getMonth() + 1, date.getDate()));
@@ -229,24 +234,6 @@ public class BanquetOrderActivity extends BaseActivity implements View.OnClickLi
         strBuilder.append(String.format(mContext.getString(R.string.banquet_format_time), date.getHours(), date.getMinutes()));
         strBuilder.append(" ");
         return strBuilder.toString();
-    }
-
-    public void setListViewHeightBasedOnChildren(ListView listView) {
-        ListAdapter listAdapter = listView.getAdapter();
-        if (listAdapter == null) {
-            return;
-        }
-        int totalHeight = 0;
-        for (int i = 0; i < listAdapter.getCount(); i++) {
-            View listItem = listAdapter.getView(i, null, listView);
-            if (listItem == null)
-                continue;
-            listItem.measure(0, 0);
-            totalHeight += listItem.getMeasuredHeight();
-        }
-        ViewGroup.LayoutParams params = listView.getLayoutParams();
-        params.height = totalHeight
-                + (listView.getDividerHeight() * (listAdapter.getCount()));
     }
 
 

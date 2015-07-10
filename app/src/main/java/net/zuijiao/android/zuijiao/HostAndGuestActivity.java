@@ -11,10 +11,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -32,6 +32,7 @@ import com.zuijiao.android.zuijiao.model.common.Language;
 import com.zuijiao.android.zuijiao.model.user.Profile;
 import com.zuijiao.android.zuijiao.network.Cache;
 import com.zuijiao.android.zuijiao.network.Router;
+import com.zuijiao.utils.AdapterViewHeightCalculator;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -76,11 +77,15 @@ public class HostAndGuestActivity extends BaseActivity {
     private View mAttendeeHobby;
     @ViewInject(R.id.host_guest_history_title)
     private TextView mHistoryTitle;
+    @ViewInject(R.id.banquet_detail_review_container)
+    private LinearLayout mReviewContainer;
+    @ViewInject(R.id.banquet_detail_comment_btn)
+    private Button mAllComment;
 
     @ViewInject(R.id.ll_host_comment_stars)
     private LinearLayout mCommentStars;
-    @ViewInject(R.id.host_comment_list)
-    private LinearLayout mHostCommentList;
+//    @ViewInject(R.id.host_comment_list)
+//    private LinearLayout mHostCommentList;
 
     private ArrayList<ImageView> mImageList = new ArrayList<>();
     private ImageViewPagerAdapter mViewPagerAdapter;
@@ -110,6 +115,7 @@ public class HostAndGuestActivity extends BaseActivity {
 
         mHostImages.setOnPageChangeListener(mPageListener);
         mHistoryList.setOnItemClickListener(mItemListener);
+        mAllComment.setOnClickListener(mHeadListener);
         networkStep();
     }
 
@@ -119,7 +125,7 @@ public class HostAndGuestActivity extends BaseActivity {
             getSupportActionBar().setTitle(getString(R.string.host));
             mAttendeeIntroductionTitle.setText(getString(R.string.host_introduction));
             mCommentStars.setVisibility(View.VISIBLE);
-            mHostCommentList.setVisibility(View.VISIBLE);
+            // mHostCommentList.setVisibility(View.VISIBLE);
             mHistoryTitle.setText(getString(R.string.hosted_banquet));
             Router.getAccountModule().masterInfo(mAttendeeId, new OneParameterExpression<Attendee>() {
                 @Override
@@ -141,7 +147,7 @@ public class HostAndGuestActivity extends BaseActivity {
                 public void action(Banquents banquents) {
                     banquentList = banquents.getBanquentList();
                     mHistoryList.setAdapter(mHistoryAdapter);
-                    setListViewHeightBasedOnChildren(mHistoryList);
+                    AdapterViewHeightCalculator.setListViewHeightBasedOnChildren(mHistoryList);
                     finalizeDialog();
                 }
             }
@@ -152,11 +158,13 @@ public class HostAndGuestActivity extends BaseActivity {
                     finalizeDialog();
                 }
             });
+            mReviewContainer.setVisibility(View.VISIBLE);
         } else {
             getSupportActionBar().setTitle(getString(R.string.guest));
             mHistoryTitle.setText(getString(R.string.attended_banquet));
             mCommentStars.setVisibility(View.GONE);
-            mHostCommentList.setVisibility(View.GONE);
+            mReviewContainer.setVisibility(View.GONE);
+            // mHostCommentList.setVisibility(View.GONE);
             mAttendeeIntroductionTitle.setText(getString(R.string.personal_introduction));
             Router.getAccountModule().attendeeInfo(mAttendeeId, new OneParameterExpression<Attendee>() {
                 @Override
@@ -178,7 +186,7 @@ public class HostAndGuestActivity extends BaseActivity {
                 public void action(Banquents banquents) {
                     banquentList = banquents.getBanquentList();
                     mHistoryList.setAdapter(mHistoryAdapter);
-                    setListViewHeightBasedOnChildren(mHistoryList);
+                    AdapterViewHeightCalculator.setListViewHeightBasedOnChildren(mHistoryList);
                     finalizeDialog();
                 }
             }
@@ -327,21 +335,6 @@ public class HostAndGuestActivity extends BaseActivity {
         return strBuilder.toString();
     }
 
-    public void setListViewHeightBasedOnChildren(ListView listView) {
-        ListAdapter listAdapter = listView.getAdapter();
-        if (listAdapter == null) {
-            return;
-        }
-        int totalHeight = 0;
-        for (int i = 0; i < listAdapter.getCount(); i++) {
-            View listItem = listAdapter.getView(i, null, listView);
-            listItem.measure(0, 0);
-            totalHeight += listItem.getMeasuredHeight();
-        }
-        ViewGroup.LayoutParams params = listView.getLayoutParams();
-        params.height = totalHeight
-                + (listView.getDividerHeight() * (listAdapter.getCount()));
-    }
 
     private ViewPager.OnPageChangeListener mPageListener = new ViewPager.OnPageChangeListener() {
         @Override
@@ -372,12 +365,22 @@ public class HostAndGuestActivity extends BaseActivity {
     private View.OnClickListener mHeadListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            if (mAttendee != null && mAttendee.getAvatarURLSmall().isPresent()) {
-                Intent intent = new Intent(mContext, BigImageActivity.class);
-                ArrayList<String> arrayList = new ArrayList<>();
-                arrayList.add(mAttendee.getAvatarURL().get());
-                intent.putStringArrayListExtra("cloud_images", arrayList);
-                startActivity(intent);
+            switch (v.getId()) {
+                case R.id.host_guest_host_head:
+                case R.id.host_guest_guest_head:
+                    if (mAttendee != null && mAttendee.getAvatarURLSmall().isPresent()) {
+                        Intent intent = new Intent(mContext, BigImageActivity.class);
+                        ArrayList<String> arrayList = new ArrayList<>();
+                        arrayList.add(mAttendee.getAvatarURL().get());
+                        intent.putStringArrayListExtra("cloud_images", arrayList);
+                        startActivity(intent);
+                    }
+                    break;
+                case R.id.banquet_detail_comment_btn:
+                    Intent intent = new Intent();
+                    intent.setClass(mContext, BanquetCommentActivity.class);
+                    startActivity(intent);
+                    break;
             }
         }
     };

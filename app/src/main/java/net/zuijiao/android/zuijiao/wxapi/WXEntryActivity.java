@@ -1,7 +1,6 @@
 package net.zuijiao.android.zuijiao.wxapi;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -40,9 +39,12 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 
+/**
+ * weixin api call back activity ,for majority api except pay api
+ */
 public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
-    protected final String WEIXIN_ID = "wx908961ddfd5cade9";
-    protected final String WEIXIN_PWD = "b04cac11c4477cf5e07ecffd6ca6bf86";
+    //    protected final String WEIXIN_ID = "wx908961ddfd5cade9";
+//    protected final String WEIXIN_PWD = "b04cac11c4477cf5e07ecffd6ca6bf86";
     private final String Tag = "WXEntryActivity";
     private IWXAPI mApi = null;
     private ProgressDialog mDialog = null;
@@ -78,7 +80,7 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
             mApi.handleIntent(i, this);
 //            mApi = WXAPIFactory.createWXAPI(this, WEIXIN_ID, false);
         } else {
-            mApi = WXAPIFactory.createWXAPI(this, WEIXIN_ID, false);
+            mApi = WXAPIFactory.createWXAPI(this, WeixinApi.WEIXIN_ID, false);
             mApi.handleIntent(i, this);
         }
     }
@@ -96,6 +98,11 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
         }
     }
 
+    /**
+     * called when return from we-chat app ;
+     *
+     * @param resp
+     */
     @Override
     public void onResp(BaseResp resp) {
         Log.i(Tag, "onResp");
@@ -103,12 +110,12 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
             finish();
             return;
         }
-        if (resp.getType() == ConstantsAPI.COMMAND_PAY_BY_WX) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle(R.string.banquet);
-            builder.setMessage(getString(R.string.banquet, resp.errStr + ";code=" + String.valueOf(resp.errCode)));
-            builder.show();
-        }
+//        if (resp.getType() == ConstantsAPI.COMMAND_PAY_BY_WX) {
+//            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+//            builder.setTitle(R.string.banquet);
+//            builder.setMessage(getString(R.string.banquet, resp.errStr + ";code=" + String.valueOf(resp.errCode)));
+//            builder.show();
+//        }
         switch (resp.errCode) {
             case BaseResp.ErrCode.ERR_OK:
                 Bundle bundle = new Bundle();
@@ -119,7 +126,7 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
                 code = sp.code;
                 if (openId == null) {
                     // // 获取token
-                    url = String.format("https://api.weixin.qq.com/sns/oauth2/access_token?appid=%s&secret=%s&code=%s&grant_type=authorization_code", WEIXIN_ID, WEIXIN_PWD, code);
+                    url = String.format("https://api.weixin.qq.com/sns/oauth2/access_token?appid=%s&secret=%s&code=%s&grant_type=authorization_code", WeixinApi.WEIXIN_ID, WeixinApi.WEIXIN_PWD, code);
                     final HttpClient client = new DefaultHttpClient();
                     final HttpGet httpget = new HttpGet(url);
                     httpget.setHeader("encoding", "UTF-8");
@@ -246,12 +253,12 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
 
     public void onResume() {
         super.onResume();
-        MobclickAgent.onResume(this);
+//        MobclickAgent.onResume(this);
     }
 
     public void onPause() {
         super.onPause();
-        MobclickAgent.onPause(this);
+//        MobclickAgent.onPause(this);
     }
 
 }

@@ -22,6 +22,7 @@ import java.util.Date;
 
 /**
  * Created by xiaqibo on 2015/6/25.
+ * display a banquet order detail information , called by my order list ;
  */
 @ContentView(R.layout.activity_banquet_order_display)
 public class BanquetOrderDisplayActivity extends BaseActivity {
@@ -45,6 +46,7 @@ public class BanquetOrderDisplayActivity extends BaseActivity {
     private View mOrderRemark;
     @ViewInject(R.id.order_detail_oder_time)
     private View mOrderDate;
+    //click to show the banquet detail activity
     @ViewInject(R.id.order_display_clickable_group)
     private View clickableView;
     @ViewInject(R.id.order_notice)
@@ -95,6 +97,7 @@ public class BanquetOrderDisplayActivity extends BaseActivity {
         fillGenInfo(mOrderDate, getString(R.string.order_time), mOrder.getCreateTime().toLocaleString());
         mNoticeText.setAutoLinkMask(Linkify.PHONE_NUMBERS);
         mNoticeText.setMovementMethod(LinkMovementMethod.getInstance());
+        System.out.println("mOrder.getBanquentIdentifier():"+mOrder.getBanquentIdentifier());
         clickableView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

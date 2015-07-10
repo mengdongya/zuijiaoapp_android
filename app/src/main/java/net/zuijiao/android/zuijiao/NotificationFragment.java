@@ -16,8 +16,10 @@ import android.view.ViewGroup;
 import com.zuijiao.view.PagerSlidingTab;
 
 /**
+ * not used
  * Created by xiaqibo on 2015/5/5.
  */
+@Deprecated
 @SuppressLint("ValidFragment")
 public class NotificationFragment extends Fragment implements MessageFragment.OnMessageFetch {
     private ViewPager mViewPager = null;

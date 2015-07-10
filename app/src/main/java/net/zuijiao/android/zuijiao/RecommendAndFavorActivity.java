@@ -9,6 +9,9 @@ import com.zuijiao.android.util.Optional;
 import com.zuijiao.android.zuijiao.model.user.TinyUser;
 
 /**
+ * display user's recommendation or favor gourmet ,
+ * called from user-info-activity ,
+ * including one gourmet display fragment
  * Created by xiaqibo on 2015/4/22.
  */
 @ContentView(R.layout.activity_recommend_and_favor)

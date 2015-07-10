@@ -281,7 +281,7 @@
     <string name="cuisine_name">料理人&#160;|&#160;%s</string>
     <string name="about_cuisine">关于料理人</string>
     <string name="detail">详情</string>
-    <string name="all_comments">所有%d条评论</string>
+    <string name="all_comments">所有%d条评价</string>
     <string name="order_msg">订单信息</string>
     <string name="time">时间</string>
     <string name="price">价格</string>
@@ -349,6 +349,15 @@
     <string name="host">料理人</string>
     <string name="guest">赏味人</string>
     <string name="order_message">订单详情</string>
+    <string name="support_more_city_soon">请相信我们会很快支持更多的城市</string>
+    <string name="over_evaluate">已评价</string>
+    <string name="review_content_hint">说说对本次赏味的体验吧</string>
+    <string name="notify_review_score_empty">请选择评分</string>
+    <string name="notify_review_content_empty">评价内容不能为空</string>
+    <string name="evaluate">评价</string>
+    <string name="send">发送</string>
+    <string name="receive_comments">收到%d条评价</string>
+    <string name="show_all_comments">查看全部评价</string>
     <!-- umeng socialize strings begin-->
     <!--<string name="pull_to_refresh_pull_label" translatable="false">向下拉动可以刷新</string>-->
     <!--<string name="pull_to_refresh_release_label" translatable="false">松开可以刷新</string>-->

@@ -26,6 +26,8 @@ import com.zuijiao.android.util.functional.OneParameterExpression;
 import com.zuijiao.android.zuijiao.network.Router;
 
 /**
+ * verify phone number activity ,called from edit-user-info-activity or banquet-order-activity ;
+ * <p>
  * Created by xiaqibo on 2015/5/5.
  */
 @ContentView(R.layout.activity_verify_phone)
@@ -63,13 +65,6 @@ public class VerifyPhoneNumActivity extends BaseActivity {
     };
 
     public static boolean checkMobileNumber(String mobileNumber) {
-//        boolean flag = false;
-//        try {
-//            Matcher matcher = regex.matcher(mobileNumber);
-//            flag = matcher.matches();
-//        } catch (Exception e) {
-//            flag = false;
-//        }
         if (mobileNumber == null)
             return false;
         if (mobileNumber.startsWith("1") && mobileNumber.length() == 11)
@@ -87,6 +82,7 @@ public class VerifyPhoneNumActivity extends BaseActivity {
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         bFromOrder = mTendIntent.getBooleanExtra("from_order", false);
+        //register text watcher for the edit-text
         mPhoneNumEditor.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -188,6 +184,13 @@ public class VerifyPhoneNumActivity extends BaseActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * keep the phone number as user personal information ,
+     * called when activity is created by banquet-order-activity;
+     *
+     * @param securityCode
+     * @param dialog
+     */
     private void keepPhoneNum(String securityCode, AlertDialog dialog) {
         createDialog();
         Router.getAccountModule().updatePhoneNumber(mPhoneNumEditor.getText().toString().trim(), securityCode, new LambdaExpression() {
@@ -214,6 +217,9 @@ public class VerifyPhoneNumActivity extends BaseActivity {
         });
     }
 
+    /**
+     * show keep phone number dialog
+     */
     private void showKeepDialog() {
         View logoutView = LayoutInflater.from(getApplicationContext()).inflate(
                 R.layout.logout_dialog, null);

@@ -19,20 +19,15 @@ import com.umeng.update.UmengUpdateAgent;
 import com.umeng.update.UmengUpdateListener;
 import com.umeng.update.UpdateResponse;
 
+/**
+ * display some information about zuijiao app , called from the side menu of main activity ;
+ */
 @ContentView(R.layout.activity_concerning)
 public class ConcerningActivity extends BaseActivity {
     @ViewInject(R.id.concerning_toolbar)
     private Toolbar mToolbar = null;
-    //    @ViewInject(R.id.user_protocol)
-//    private TextView mTextUserProtocol = null;
-//    @ViewInject(R.id.zuijiao_team)
-//    private TextView mTextOurTeam = null;
     @ViewInject(R.id.concerning_tv_version_code)
     private TextView mTextVersionCode = null;
-    //    @ViewInject(R.id.zuijiao_welcome)
-//    private TextView mTextGuide = null;
-//    @ViewInject(R.id.check_new_version)
-//    private TextView mCheckVersion = null ;
     @ViewInject(R.id.concerning_item_list_view)
     private ListView mListView = null;
     private int[] mItemRes = {R.string.user_protocol, R.string.zuijiao_team, R.string.wizard_page, R.string.check_new_version};
@@ -95,6 +90,9 @@ public class ConcerningActivity extends BaseActivity {
             startActivity(intent);
         }
     };
+    /**
+     * register the concerning items ;
+     */
     private BaseAdapter mAdapter = new BaseAdapter() {
         @Override
         public int getCount() {

@@ -1,8 +1,6 @@
 package net.zuijiao.android.zuijiao;
 
-import android.annotation.TargetApi;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
@@ -14,7 +12,6 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -33,10 +30,15 @@ import com.zuijiao.android.zuijiao.network.Router;
 import com.zuijiao.controller.MessageDef;
 import com.zuijiao.db.DBOpenHelper;
 import com.zuijiao.entity.SimpleImage;
+import com.zuijiao.utils.AdapterViewHeightCalculator;
 
 import java.util.ArrayList;
 import java.util.Date;
 
+/**
+ * display user information ,called from main-activity side bar
+ * or by some other user avatar like in gourmet list , gourmet detail and so on;
+ */
 @ContentView(R.layout.activity_user_info)
 public final class UserInfoActivity extends BaseActivity implements View.OnClickListener {
     private static final int EDIT_USER_INFO_REQ = 5001;
@@ -56,19 +58,14 @@ public final class UserInfoActivity extends BaseActivity implements View.OnClick
     private Button mBtnFollow;
     @ViewInject(R.id.user_info_fans)
     private Button mBtnFans;
-
+    // tiny user , get from precious activity
     private TinyUser mTinyUser = null;
+    //user info ,including all information of one user ,get from net work request
     private User mFullUser = null;
-//    private User mUser = null ;
-//    private ParcelableUser mParcelableUser = null ;
 
-    //    private boolean bSelf = false;
-//    private AdapterView.OnItemClickListener mUserInfoItemListener = new AdapterView.OnItemClickListener() {
-//        @Override
-//        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//            Toast.makeText(getApplicationContext(), "parent" + position, Toast.LENGTH_SHORT).show();
-//        }
-//    };
+    /**
+     * user taste adapter
+     */
     private BaseAdapter mFlavorAdapter = new BaseAdapter() {
         @Override
         public int getCount() {
@@ -104,6 +101,10 @@ public final class UserInfoActivity extends BaseActivity implements View.OnClick
             return contentView;
         }
     };
+
+    /**
+     * user info adapter , including three part .
+     */
     private BaseAdapter mInfoAdapter = new BaseAdapter() {
 
         @Override
@@ -162,7 +163,7 @@ public final class UserInfoActivity extends BaseActivity implements View.OnClick
                     gdView.setFocusable(false);
                     gdView.setFocusableInTouchMode(false);
                     gdView.setAdapter(mFlavorAdapter);
-                    setListViewHeightBasedOnChildren(gdView);
+                    AdapterViewHeightCalculator.setGridViewHeightBasedOnChildren(gdView);
                 } else {
                     content.setText(getString(R.string.no_hobby));
                 }
@@ -208,6 +209,14 @@ public final class UserInfoActivity extends BaseActivity implements View.OnClick
         super.onActivityResult(requestCode, resultCode, data);
     }
 
+    /**
+     * register the menu item listener
+     * if the user is self , click to edit user info ,
+     * if not ,click to follow or un-follow this gay
+     *
+     * @param item
+     * @return
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -316,6 +325,11 @@ public final class UserInfoActivity extends BaseActivity implements View.OnClick
         mInfoAdapter.notifyDataSetChanged();
     }
 
+    /**
+     * get full-user information from net work ,
+     *
+     * @param expression
+     */
     private void getUserInfo(final LambdaExpression expression) {
         OneParameterExpression<User> successExpression = new OneParameterExpression<User>() {
             @Override
@@ -391,10 +405,13 @@ public final class UserInfoActivity extends BaseActivity implements View.OnClick
         mUserHead.setOnClickListener(this);
         mInfoList.setAdapter(mInfoAdapter);
         mInfoList.setItemsCanFocus(true);
-//        mInfoList.setOnItemClickListener(mUserInfoItemListener);
     }
 
-
+    /**
+     * register views listener ;
+     *
+     * @param view
+     */
     @Override
     public void onClick(View view) {
         Intent intent = new Intent();
@@ -451,21 +468,4 @@ public final class UserInfoActivity extends BaseActivity implements View.OnClick
         startActivity(intent);
     }
 
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    public void setListViewHeightBasedOnChildren(GridView gdView) {
-        ListAdapter listAdapter = gdView.getAdapter();
-        if (listAdapter == null) {
-            return;
-        }
-        int totalHeight = 0;
-        for (int i = 0; i < listAdapter.getCount(); i += 5) {
-            View listItem = listAdapter.getView(i, null, gdView);
-            listItem.measure(0, 0);
-            totalHeight += listItem.getMeasuredHeight();
-        }
-        ViewGroup.LayoutParams params = gdView.getLayoutParams();
-        params.height = totalHeight
-                + (gdView.getVerticalSpacing() * (listAdapter.getCount()));
-
-    }
 }

@@ -27,7 +27,8 @@ android {
 
     buildTypes {
         debug {
-            buildConfigField "String", "Base_Url", "\"http://xielingyu3.zuijiaodev.com\""
+            buildConfigField "String", "Base_Url", "\"http://api.zuijiaodev.com\""
+//            buildConfigField "String", "Base_Url", "\"http://xielingyu3.zuijiaodev.com\""
 //            buildConfigField "String", "Base_Url", "\"http://api.zuijiao.net\""
             buildConfigField "String", "Avatar_Base_Url", "\"/debug/Avatar\""
             buildConfigField "String", "Gourmet_Base_Url", "\"/debug/Gourmet\""
@@ -78,4 +79,5 @@ dependencies {
     compile 'com.github.clans:fab:1.5.0'
     compile 'com.android.support:support-v4:21.+'
     compile files('libs/android-support-v13.jar')
+    compile files('libs/universal-image-loader-1.9.3-with-sources.jar')
 }

@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * show user's fans or followers , called from userActivity;
  * Created by xiaqibo on 2015/4/21.
  */
 @ContentView(R.layout.activity_friend)

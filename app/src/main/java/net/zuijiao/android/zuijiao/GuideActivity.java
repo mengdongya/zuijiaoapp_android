@@ -3,8 +3,6 @@ package net.zuijiao.android.zuijiao;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.Build.VERSION;
-import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.view.PagerAdapter;
@@ -86,12 +84,12 @@ public class GuideActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        if (VERSION.SDK_INT >= VERSION_CODES.KITKAT) {
-//            getWindow().addFlags(
-//                    WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+//        if (VERSION.SDK_INT >= VERSION_CODES.KITKAT) {
+////            getWindow().addFlags(
+////                    WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
 //            getWindow().addFlags(
 //                    WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
-        }
+//        }
     }
 
     private void initPager() {

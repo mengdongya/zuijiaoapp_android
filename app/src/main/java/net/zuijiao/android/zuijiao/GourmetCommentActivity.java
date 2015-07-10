@@ -12,7 +12,6 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.lidroid.xutils.view.annotation.ContentView;
@@ -24,6 +23,8 @@ import com.zuijiao.android.zuijiao.model.Comments;
 import com.zuijiao.android.zuijiao.network.Router;
 
 /**
+ * display whole comments of a gourmet ,
+ * called from gourmet detail activity when comments size is above 10 ;
  * Created by xiaqibo on 2015/5/29.
  */
 @ContentView(R.layout.activity_gourmet_comment)
@@ -68,91 +69,105 @@ public class GourmetCommentActivity extends BaseActivity {
         finish();
     }
 
+
+    /**
+     * commit button listener ;
+     */
     private View.OnClickListener mCommitListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             if (!Router.getInstance().getCurrentUser().isPresent()) {
-                View contentView = mInflater.inflate(R.layout.alert_login_dialog, null);
-                TextView tv = (TextView) contentView.findViewById(R.id.fire_login);
-                final AlertDialog dialog = new AlertDialog.Builder(GourmetCommentActivity.this).setView(contentView).create();
-                tv.setOnClickListener(new View.OnClickListener() {
+                tryLoginFirst(new LambdaExpression() {
                     @Override
-                    public void onClick(View v) {
-                        Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-                        startActivity(intent);
-                        dialog.dismiss();
-                        finalizeDialog();
+                    public void action() {
+                        if (!Router.getInstance().getCurrentUser().isPresent()) {
+                            notifyLogin(null);
+                        } else {
+                            doComment();
+                        }
+                    }
+                }, new OneParameterExpression<Integer>() {
+                    @Override
+                    public void action(Integer integer) {
+                        Toast.makeText(mContext, R.string.notify_net2, Toast.LENGTH_SHORT).show();
                     }
                 });
-                dialog.show();
-                return;
-            }
-            String comment = mEtComment.getText().toString().trim();
-            if (comment.equals("")) {
-                Toast.makeText(getApplicationContext(), getString(R.string.notify_empty_comment), Toast.LENGTH_SHORT);
-                return;
-            }
-            InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-            if (imm != null) {
-                imm.hideSoftInputFromWindow(getWindow().getDecorView().getWindowToken(),
-                        0);
-            }
-            mEtComment.setHint(getString(R.string.comment_hint));
-            mEtComment.setText("");
-            createDialog();
-            if (mReplyId != null) {
-                Router.getGourmetModule().replyCommentTo(mReplyId, comment, new LambdaExpression() {
-                    @Override
-                    public void action() {
-                        fetchCommentList();
-                        bModified = true;
-                        Toast.makeText(getApplicationContext(), getString(R.string.reply_success), Toast.LENGTH_SHORT).show();
-                        finalizeDialog();
-                    }
-                }, new LambdaExpression() {
-                    @Override
-                    public void action() {
-                        Toast.makeText(getApplicationContext(), getString(R.string.reply_failed), Toast.LENGTH_SHORT).show();
-                        finalizeDialog();
-                    }
-                });
-            } else {
-                Router.getGourmetModule().postComment(mIdentify, comment, new LambdaExpression() {
-                    @Override
-                    public void action() {
-                        bModified = true;
-                        fetchCommentList();
-                        Toast.makeText(getApplicationContext(), getString(R.string.comment_success), Toast.LENGTH_SHORT).show();
-                        finalizeDialog();
-                    }
-                }, new LambdaExpression() {
-                    @Override
-                    public void action() {
-                        Toast.makeText(getApplicationContext(), getString(R.string.comment_failed), Toast.LENGTH_SHORT).show();
-                        finalizeDialog();
-                    }
-                });
-            }
+            } else
+                doComment();
+
         }
     };
+
+    /**
+     * commit a comment
+     */
+    private void doComment() {
+        String comment = mEtComment.getText().toString().trim();
+        if (comment.equals("")) {
+            Toast.makeText(getApplicationContext(), getString(R.string.notify_empty_comment), Toast.LENGTH_SHORT);
+            return;
+        }
+        InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+        if (imm != null) {
+            imm.hideSoftInputFromWindow(getWindow().getDecorView().getWindowToken(),
+                    0);
+        }
+        mEtComment.setHint(getString(R.string.comment_hint));
+        mEtComment.setText("");
+        createDialog();
+        if (mReplyId != null) {
+            Router.getGourmetModule().replyCommentTo(mReplyId, comment, new LambdaExpression() {
+                @Override
+                public void action() {
+                    fetchCommentList();
+                    bModified = true;
+                    Toast.makeText(getApplicationContext(), getString(R.string.reply_success), Toast.LENGTH_SHORT).show();
+                    finalizeDialog();
+                }
+            }, new LambdaExpression() {
+                @Override
+                public void action() {
+                    Toast.makeText(getApplicationContext(), getString(R.string.reply_failed), Toast.LENGTH_SHORT).show();
+                    finalizeDialog();
+                }
+            });
+        } else {
+            Router.getGourmetModule().postComment(mIdentify, comment, new LambdaExpression() {
+                @Override
+                public void action() {
+                    bModified = true;
+                    fetchCommentList();
+                    Toast.makeText(getApplicationContext(), getString(R.string.comment_success), Toast.LENGTH_SHORT).show();
+                    finalizeDialog();
+                }
+            }, new LambdaExpression() {
+                @Override
+                public void action() {
+                    Toast.makeText(getApplicationContext(), getString(R.string.comment_failed), Toast.LENGTH_SHORT).show();
+                    finalizeDialog();
+                }
+            });
+        }
+    }
+
     private AdapterView.OnItemClickListener mCommentListListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             if (!Router.getInstance().getCurrentUser().isPresent()) {
-                View contentView = mInflater.inflate(R.layout.alert_login_dialog, null);
-                TextView tv = (TextView) contentView.findViewById(R.id.fire_login);
-                final AlertDialog dialog = new AlertDialog.Builder(GourmetCommentActivity.this).setView(contentView).create();
-                tv.setOnClickListener(new View.OnClickListener() {
+                tryLoginFirst(new LambdaExpression() {
                     @Override
-                    public void onClick(View v) {
-                        Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-                        startActivity(intent);
-                        dialog.dismiss();
-                        finalizeDialog();
-
+                    public void action() {
+                        if (!Router.getInstance().getCurrentUser().isPresent())
+                            notifyLogin(null);
+                        else
+                            onItemClick(parent, view, position, id);
+                    }
+                }, new OneParameterExpression<Integer>() {
+                    @Override
+                    public void action(Integer integer) {
+                        Toast.makeText(mContext, R.string.notify_net2, Toast.LENGTH_SHORT).show();
                     }
                 });
-                dialog.show();
             } else {
                 if (Router.getInstance().getCurrentUser().get().getIdentifier().equals(mComments.getCommentList().get(position).getUser().getIdentifier())) {
                     View deleteView = LayoutInflater.from(getApplicationContext()).inflate(

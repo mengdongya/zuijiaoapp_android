@@ -16,6 +16,9 @@ import com.zuijiao.thirdopensdk.WeixinApi;
 
 import net.zuijiao.android.zuijiao.R;
 
+/**
+ * management of third-party login
+ */
 public class ThirdPartySDKManager implements AbsSDK.LoginListener {
     public static final int CLOUD_TYPE_NONE = 0;
     public static final int CLOUD_TYPE_QQ = 1;

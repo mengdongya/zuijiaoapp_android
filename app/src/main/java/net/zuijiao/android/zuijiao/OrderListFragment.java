@@ -30,6 +30,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
+ * show one status of my order , included in my order fragment
  * Created by xiaqibo on 2015/6/16.
  */
 @SuppressLint("ValidFragment")
@@ -41,6 +42,10 @@ public class OrderListFragment extends Fragment implements
     private RefreshAndInitListView mListView;
     private SwipeRefreshLayout mRefreshLayout;
     private View emptyView;
+    //different index shows different status of order
+    //index =0 : status coming
+    //index =1 : to be evaluated
+    //index =2 : all order
     private int tabIndex = 0;
     private List<Order> orderList;
     private Integer lastedId = null;
@@ -81,7 +86,15 @@ public class OrderListFragment extends Fragment implements
         return mContentView;
     }
 
+    /**
+     * fetch order list
+     *
+     * @param bRefresh
+     */
     private void networkStep(boolean bRefresh) {
+        /**
+         * check if current user is exist ,if not ,try login first or notify login
+         */
         if (!Router.getInstance().getCurrentUser().isPresent()) {
             ((BaseActivity) getActivity()).tryLoginFirst(new LambdaExpression() {
                 @Override
@@ -163,6 +176,9 @@ public class OrderListFragment extends Fragment implements
         });
     }
 
+    /**
+     * orders list adapter
+     */
     private BaseAdapter mAdapter = new BaseAdapter() {
         @Override
         public int getCount() {
@@ -195,6 +211,26 @@ public class OrderListFragment extends Fragment implements
             holder.title.setText(order.getTitle());
             String dateInfo = formatDate(order.getHoldTime());
             holder.date.setText(dateInfo + order.getAddress());
+            if (tabIndex > 0) {
+                holder.review.setVisibility(View.VISIBLE);
+                if (position % 2 == 0) {
+                    holder.review.setText(getString(R.string.to_evaluate));
+                    holder.review.setEnabled(true);
+                    holder.review.setTextColor(getResources().getColor(R.color.tv_orange_red));
+                    holder.review.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Intent intent = new Intent();
+                            intent.setClass(getActivity(), ReviewActivity.class);
+                            startActivity(intent);
+                        }
+                    });
+                } else {
+                    holder.review.setText(getString(R.string.over_evaluate));
+                    holder.review.setEnabled(false);
+                    holder.review.setTextColor(getResources().getColor(R.color.tv_light_gray));
+                }
+            }
             switch (order.getStatus()) {
                 case Canceled:
                     holder.situation.setText(getString(R.string.canceled_banquet));
@@ -241,6 +277,8 @@ public class OrderListFragment extends Fragment implements
         TextView date;
         @ViewInject(R.id.banquet_order_item_status)
         TextView situation;
+        @ViewInject(R.id.banquet_order_item_review)
+        TextView review;
 
         public ViewHolder(View convertView) {
             com.lidroid.xutils.ViewUtils.inject(this, convertView);

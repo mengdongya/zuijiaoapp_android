@@ -8,6 +8,7 @@ import android.widget.TextView;
 import net.zuijiao.android.zuijiao.R;
 
 /**
+ * watcher of edit text input length
  * Created by xiaqibo on 2015/5/5.
  */
 public class MyTextWatcher implements TextWatcher {

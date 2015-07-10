@@ -1,5 +1,8 @@
 package com.zuijiao.entity;
 
+/**
+ * entity of authorcated user information
+ */
 public class AuthorInfo {
     private String mUid = null;
     private String mUserName = null;

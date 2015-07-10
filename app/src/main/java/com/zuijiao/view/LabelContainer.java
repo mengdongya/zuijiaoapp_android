@@ -7,6 +7,9 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
+/**
+ * for gourmet tags ,used in gourmet-main-adapter
+ */
 public class LabelContainer extends ViewGroup {
     private Context mContext = null;
 
@@ -21,7 +24,7 @@ public class LabelContainer extends ViewGroup {
     }
 
     private final static String TAG = "MyViewGroup";
-
+    //view margin
     private final static int VIEW_MARGIN = 30;
     private Canvas mCanvas = null;
     private int heightMeasured = 0;

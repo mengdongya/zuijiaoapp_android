@@ -13,8 +13,10 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 /**
+ * designed for user avatar download ,not used current
  * Created by xiaqibo on 2015/6/30.
  */
+
 public class ImageDownloader {
 
     public static boolean download(String url, String desFilePath) {

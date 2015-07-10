@@ -16,7 +16,7 @@
         android:textColor="@color/tv_deep_gray" />
 
     <ImageView
-        android:id="@+id/loaction_choose_image"
+        android:id="@+id/loaction_choose_simage"
         android:layout_width="match_parent"
         android:layout_height="172dip"
         android:scaleType="fitXY"
@@ -32,7 +32,7 @@
         android:layout_height="match_parent"
         android:gravity="center_horizontal|bottom"
         android:singleLine="true"
-        android:text="请相信我们会很很快支撑更多的城市"
+        android:text="@string/support_more_city_soon"
         android:textColor="#888888"
         android:textSize="12dip" />
 

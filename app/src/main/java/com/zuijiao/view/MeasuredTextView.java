@@ -11,6 +11,9 @@ import android.widget.TextView;
 
 import net.zuijiao.android.zuijiao.R;
 
+/**
+ * calculate height oof the text-view
+ */
 public class MeasuredTextView extends TextView {
     private Context context = null;
     private TextPaint mPaint = null;

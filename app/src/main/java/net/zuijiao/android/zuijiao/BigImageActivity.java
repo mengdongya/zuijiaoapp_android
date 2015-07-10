@@ -21,17 +21,24 @@ import com.zuijiao.view.MyViewPager;
 import java.io.File;
 import java.util.ArrayList;
 
+/**
+ * the activity used to  display a big image , including one or several PicFragment
+ */
 @ContentView(R.layout.activity_big_image)
 public class BigImageActivity extends BaseActivity {
     @ViewInject(R.id.big_image_container)
     private MyViewPager mViewPager = null;
     private ViewPagerAdapter mAdapter = null;
     private ArrayList<PictureFragment> mFragmentList = null;
+    //local images
     private ArrayList<SimpleImage> mImages = null;
+    //cloud images
     private ArrayList<String> mImageUrls = null;
     private int mFirstShowIndex = 0;
     @ViewInject(R.id.big_image_toolbar)
     private Toolbar mToolbar = null;
+
+    //when preview the editing gourmet images comes to be true ;
     private boolean mCanDelete = false;
     private int mTotalCount = 0;
 
@@ -107,8 +114,6 @@ public class BigImageActivity extends BaseActivity {
     @Override
     protected void registerViews() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-//            getWindow().addFlags(
-//                    WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
             getWindow().addFlags(
                     WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
         }
@@ -166,6 +171,7 @@ public class BigImageActivity extends BaseActivity {
         }
     }
 
+    //pic-fragment adapter
     private class ViewPagerAdapter extends FragmentStatePagerAdapter {
         private int mCount = 0;
         private int destroyPosition = 0;

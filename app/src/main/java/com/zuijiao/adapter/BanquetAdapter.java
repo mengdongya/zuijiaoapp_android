@@ -25,10 +25,12 @@ import net.zuijiao.android.zuijiao.CommonWebViewActivity;
 import net.zuijiao.android.zuijiao.HostAndGuestActivity;
 import net.zuijiao.android.zuijiao.R;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 /**
+ * banquet display adapter and listener, for banquet list in main-fragment
  * Created by xiaqibo on 2015/6/9.
  */
 public class BanquetAdapter extends BaseAdapter implements AdapterView.OnItemClickListener {
@@ -89,6 +91,9 @@ public class BanquetAdapter extends BaseAdapter implements AdapterView.OnItemCli
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder holder;
+        /**
+         * judge if banner view exist
+         */
         if (position == 0 && showBanner()) {
             View view = null;
             if (mBannerContainer == null) {
@@ -109,6 +114,9 @@ public class BanquetAdapter extends BaseAdapter implements AdapterView.OnItemCli
             }
             return mBannerContainer;
         } else {
+            /**
+             * show banquet list
+             */
             if (convertView == null) {
                 convertView = mInflater.inflate(R.layout.banquet_list_item, null);
                 Log.i("banquet_adapter", "inflater" + (count++));
@@ -186,13 +194,25 @@ public class BanquetAdapter extends BaseAdapter implements AdapterView.OnItemCli
         return false;
     }
 
+    /**
+     * refresh called
+     *
+     * @param banquents
+     */
     public void setData(Banquents banquents) {
         this.mBanquents = banquents;
         this.mBanquentList = mBanquents.getBanquentList();
         notifyDataSetChanged();
     }
 
+    /**
+     * load more calledd
+     *
+     * @param banquents
+     */
     public void addData(Banquents banquents) {
+        if (mBanquentList == null)
+            mBanquentList = new ArrayList<>();
         this.mBanquentList.addAll(banquents.getBanquentList());
         notifyDataSetChanged();
     }

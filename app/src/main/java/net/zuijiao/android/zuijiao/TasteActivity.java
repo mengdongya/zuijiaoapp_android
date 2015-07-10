@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * edit taste tag ,called from edit-user-info-activity;
  * Created by xiaqibo on 2015/5/14.
  */
 
@@ -34,7 +35,7 @@ public class TasteActivity extends BaseActivity {
     @ViewInject(R.id.taste_toolbar)
     private Toolbar mToolbar = null;
     private MenuItem mMenuBtn = null;
-
+    //all taste tag ,cached when app is launched
     private List<TasteTag> tasteTags = Cache.INSTANCE.tasteTags;
 
     @Override
@@ -77,26 +78,21 @@ public class TasteActivity extends BaseActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    //taste tag list listener ;
     private AdapterView.OnItemClickListener mListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
             if (mUserTaste.contains(tasteTags.get(position).getName())) {
                 mUserTaste.remove(tasteTags.get(position).getName());
-            }
-//            else if (mUserTaste.size() >= 5) {
-//                Toast.makeText(mContext, getString(R.string.taste_count_upper_limit), Toast.LENGTH_SHORT).show();
-//                return;
-//            }
-//
-            else {
+            } else {
                 mUserTaste.add(tasteTags.get(position).getName());
             }
             mMenuBtn.setTitle(String.format(getString(R.string.sure_with_num), mUserTaste.size(), tasteTags.size()));
             mAdapter.getView(position, view, parent);
-//            mAdapter.notifyDataSetChanged();
         }
     };
+    // taste tag adapter
     private BaseAdapter mAdapter = new BaseAdapter() {
         @Override
         public int getCount() {

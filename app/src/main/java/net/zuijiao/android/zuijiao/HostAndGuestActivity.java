@@ -15,7 +15,6 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -33,6 +32,7 @@ import com.zuijiao.android.zuijiao.model.common.Language;
 import com.zuijiao.android.zuijiao.model.user.Profile;
 import com.zuijiao.android.zuijiao.network.Cache;
 import com.zuijiao.android.zuijiao.network.Router;
+import com.zuijiao.utils.AdapterViewHeightCalculator;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -147,7 +147,7 @@ public class HostAndGuestActivity extends BaseActivity {
                 public void action(Banquents banquents) {
                     banquentList = banquents.getBanquentList();
                     mHistoryList.setAdapter(mHistoryAdapter);
-                    setListViewHeightBasedOnChildren(mHistoryList);
+                    AdapterViewHeightCalculator.setListViewHeightBasedOnChildren(mHistoryList);
                     finalizeDialog();
                 }
             }
@@ -186,7 +186,7 @@ public class HostAndGuestActivity extends BaseActivity {
                 public void action(Banquents banquents) {
                     banquentList = banquents.getBanquentList();
                     mHistoryList.setAdapter(mHistoryAdapter);
-                    setListViewHeightBasedOnChildren(mHistoryList);
+                    AdapterViewHeightCalculator.setListViewHeightBasedOnChildren(mHistoryList);
                     finalizeDialog();
                 }
             }
@@ -335,21 +335,6 @@ public class HostAndGuestActivity extends BaseActivity {
         return strBuilder.toString();
     }
 
-    public void setListViewHeightBasedOnChildren(ListView listView) {
-        ListAdapter listAdapter = listView.getAdapter();
-        if (listAdapter == null) {
-            return;
-        }
-        int totalHeight = 0;
-        for (int i = 0; i < listAdapter.getCount(); i++) {
-            View listItem = listAdapter.getView(i, null, listView);
-            listItem.measure(0, 0);
-            totalHeight += listItem.getMeasuredHeight();
-        }
-        ViewGroup.LayoutParams params = listView.getLayoutParams();
-        params.height = totalHeight
-                + (listView.getDividerHeight() * (listAdapter.getCount()));
-    }
 
     private ViewPager.OnPageChangeListener mPageListener = new ViewPager.OnPageChangeListener() {
         @Override
@@ -397,7 +382,6 @@ public class HostAndGuestActivity extends BaseActivity {
                     startActivity(intent);
                     break;
             }
-
         }
     };
     private BaseAdapter mHistoryAdapter = new BaseAdapter() {

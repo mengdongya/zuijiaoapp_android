@@ -16,6 +16,9 @@ import android.view.ViewGroup;
 
 import com.zuijiao.view.PagerSlidingTab;
 
+/**
+ * display the common gourmet and banquet list ,has two sub-fragment ;
+ */
 @SuppressLint("ValidFragment")
 public class MainFragment extends Fragment {
     private ViewPager mViewPager = null;
@@ -34,6 +37,14 @@ public class MainFragment extends Fragment {
         this.mContext = context;
     }
 
+    /**
+     * init two sub-fragment on create ;
+     *
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View contentView = inflater.inflate(R.layout.fragment_notification, null);
@@ -81,6 +92,12 @@ public class MainFragment extends Fragment {
         mTabs.setTextColor(getResources().getColor(R.color.unselected_tab_text_color));
     }
 
+    /**
+     * judge if the float button of gourmet fragment is opened ,
+     * if yes ,close up and expend back event
+     *
+     * @return
+     */
     public boolean onBackPressed() {
         if (mViewPager.getCurrentItem() == 1 && gourmetFragment.holdBackEvent()) {
             gourmetFragment.closeFloatMenu();
@@ -89,7 +106,9 @@ public class MainFragment extends Fragment {
         return false;
     }
 
-
+    /**
+     * view pager adapter
+     */
     public class MainPagerAdapter extends FragmentPagerAdapter {
         public MainPagerAdapter(FragmentManager fm) {
             super(fm);

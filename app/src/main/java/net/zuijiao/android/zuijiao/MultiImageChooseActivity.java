@@ -306,17 +306,15 @@ public class MultiImageChooseActivity extends BaseActivity {
 //    private ExecutorService mImageThreadPool = null;
 //
 //    public ExecutorService getThreadPool() {
-//        if (mImageThreadPool == null) {
-//            synchronized (ExecutorService.class) {
-//                if (mImageThreadPool == null) {
-//                    mImageThreadPool = Executors.newFixedThreadPool(3);
-//                }
-//            }
+//    if (mImageThreadPool == null) {
+//        synchronized (ExecutorService.class) {
+//            mImageThreadPool = Executors.newFixedThreadPool(5);
 //        }
-//        return mImageThreadPool;
 //    }
-
-//    private Handler mHandler = new Handler() {
+//    return mImageThreadPool;
+//}
+// 
+//   private Handler mHandler = new Handler() {
 //        @Override
 //        public void handleMessage(Message msg) {
 //            super.handleMessage(msg);

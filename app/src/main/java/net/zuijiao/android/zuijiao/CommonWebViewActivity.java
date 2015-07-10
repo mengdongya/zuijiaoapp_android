@@ -11,6 +11,9 @@ import android.webkit.WebViewClient;
 import com.lidroid.xutils.view.annotation.ContentView;
 import com.lidroid.xutils.view.annotation.ViewInject;
 
+/**
+ * display a designated web content
+ */
 @ContentView(R.layout.activity_feedback)
 public class CommonWebViewActivity extends BaseActivity {
     @ViewInject(R.id.wv_feedback_content)
@@ -59,6 +62,7 @@ public class CommonWebViewActivity extends BaseActivity {
 
         };
         mWebView.setWebViewClient(mWvClient);
+        //get web view title
         mWebView.setWebChromeClient(new WebChromeClient() {
             @Override
             public void onReceivedTitle(WebView view, String title) {

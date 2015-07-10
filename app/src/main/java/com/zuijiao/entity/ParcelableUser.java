@@ -8,6 +8,7 @@ import com.zuijiao.android.zuijiao.model.user.User;
 /**
  * Created by xiaqibo on 2015/4/22.
  */
+@Deprecated
 public class ParcelableUser extends User implements Parcelable {
 
 

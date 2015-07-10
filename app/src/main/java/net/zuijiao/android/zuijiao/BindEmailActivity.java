@@ -12,6 +12,7 @@ import com.lidroid.xutils.view.annotation.ViewInject;
 
 /**
  * Created by xiaqibo on 2015/5/19.
+ * bind a email address , not used current ;
  */
 
 @ContentView(R.layout.activity_bind_email)

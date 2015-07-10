@@ -30,6 +30,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
+ * show one status of my order , included in my order fragment
  * Created by xiaqibo on 2015/6/16.
  */
 @SuppressLint("ValidFragment")
@@ -41,6 +42,10 @@ public class OrderListFragment extends Fragment implements
     private RefreshAndInitListView mListView;
     private SwipeRefreshLayout mRefreshLayout;
     private View emptyView;
+    //different index shows different status of order
+    //index =0 : status coming
+    //index =1 : to be evaluated
+    //index =2 : all order
     private int tabIndex = 0;
     private List<Order> orderList;
     private Integer lastedId = null;
@@ -81,7 +86,15 @@ public class OrderListFragment extends Fragment implements
         return mContentView;
     }
 
+    /**
+     * fetch order list
+     *
+     * @param bRefresh
+     */
     private void networkStep(boolean bRefresh) {
+        /**
+         * check if current user is exist ,if not ,try login first or notify login
+         */
         if (!Router.getInstance().getCurrentUser().isPresent()) {
             ((BaseActivity) getActivity()).tryLoginFirst(new LambdaExpression() {
                 @Override
@@ -163,6 +176,9 @@ public class OrderListFragment extends Fragment implements
         });
     }
 
+    /**
+     * orders list adapter
+     */
     private BaseAdapter mAdapter = new BaseAdapter() {
         @Override
         public int getCount() {

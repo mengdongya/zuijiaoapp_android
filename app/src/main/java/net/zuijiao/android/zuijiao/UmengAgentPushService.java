@@ -11,7 +11,6 @@ import android.support.v4.app.NotificationCompat;
 import com.umeng.message.UTrack;
 import com.umeng.message.UmengBaseIntentService;
 import com.umeng.message.entity.UMessage;
-import com.zuijiao.controller.ActivityTask;
 import com.zuijiao.controller.MessageDef;
 import com.zuijiao.utils.OSUtil;
 
@@ -20,6 +19,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
+ * customer push service ,base on umneg push service ,started when application is created ;
  * Created by xiaqibo on 2015/5/21.
  */
 public class UmengAgentPushService extends UmengBaseIntentService {
@@ -35,7 +35,6 @@ public class UmengAgentPushService extends UmengBaseIntentService {
         try {
             JSONObject jsonObject = new JSONObject(message);
             JSONObject js = jsonObject.getJSONObject("body");
-            System.out.println("jsonObject:" + jsonObject.toString());
             String title = js.getString("title");
             String text = js.getString("text");
             String ticker = js.getString("ticker");
@@ -58,6 +57,13 @@ public class UmengAgentPushService extends UmengBaseIntentService {
         }
     }
 
+    /**
+     * register and show notifications
+     *
+     * @param title
+     * @param text
+     * @param ticker
+     */
     private void showNotification(String title, String text, String ticker, String content_url, String opentype, String infoid) {
         Bitmap btm = BitmapFactory.decodeResource(getResources(),
                 R.drawable.icon);

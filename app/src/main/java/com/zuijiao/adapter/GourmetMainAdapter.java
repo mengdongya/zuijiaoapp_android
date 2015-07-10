@@ -24,6 +24,7 @@ import net.zuijiao.android.zuijiao.UserInfoActivity;
 import java.util.List;
 
 /**
+ * gourmet adapter for gourmet-display-fragment
  * Created by xiaqibo on 2015/5/26.
  */
 public class GourmetMainAdapter extends BaseAdapter {

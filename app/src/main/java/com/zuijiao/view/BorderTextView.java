@@ -6,6 +6,7 @@ import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.widget.TextView;
 
+@Deprecated
 public class BorderTextView extends TextView {
     @Override
     protected void onDraw(Canvas canvas) {

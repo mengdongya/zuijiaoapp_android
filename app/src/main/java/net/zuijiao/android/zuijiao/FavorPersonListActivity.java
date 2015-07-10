@@ -22,6 +22,7 @@ import com.zuijiao.db.DBOpenHelper;
 import com.zuijiao.utils.StrUtil;
 
 /**
+ * show whole person who would like to eat a gourmet , called from gourmet detail
  * Created by xiaqibo on 2015/3/30.
  */
 @ContentView(R.layout.activity_favor_person)

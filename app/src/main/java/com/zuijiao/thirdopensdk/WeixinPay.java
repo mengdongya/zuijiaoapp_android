@@ -10,6 +10,7 @@ import com.zuijiao.android.zuijiao.model.OrderAuth;
 import java.util.Map;
 
 /**
+ * weixin pay
  * Created by xiaqibo on 2015/6/16.
  */
 public class WeixinPay {
@@ -26,7 +27,7 @@ public class WeixinPay {
         this.orderAuth = orderAuth;
         req = new PayReq();
         genPayReq();
-        mWXApi.registerApp(Constants.APP_ID);
+        mWXApi.registerApp(WeixinApi.WEIXIN_ID);
         mWXApi.sendReq(req);
     }
 

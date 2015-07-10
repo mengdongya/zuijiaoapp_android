@@ -26,6 +26,7 @@ import com.zuijiao.controller.PreferenceManager;
 import com.zuijiao.controller.ThirdPartySDKManager;
 
 /**
+ * setting activity ,called from main-activity side bar
  * Created by xiaqibo on 2015/5/4.
  */
 @ContentView(R.layout.activity_setting)
@@ -79,6 +80,9 @@ public class SettingActivity extends BaseActivity {
         mSb3.setOnCheckedChangeListener(new SBCheckedChangeListener());
     }
 
+    /**
+     * unused
+     */
     private void bindEmail() {
         if (mEmail.equals("")) {
             Intent intent = new Intent();
@@ -89,7 +93,11 @@ public class SettingActivity extends BaseActivity {
         }
     }
 
-
+    /**
+     * register switch button by configuration
+     *
+     * @param config
+     */
     private void registerSwitchButton(Configuration config) {
         mConfiguration = config;
         if (mConfiguration == null) {
@@ -102,6 +110,9 @@ public class SettingActivity extends BaseActivity {
         mSb3.setChecked(mConfiguration.isNotifyComment());
     }
 
+    /**
+     * do logout
+     */
     private void logout() {
         View logoutView = LayoutInflater.from(getApplicationContext()).inflate(
                 R.layout.logout_dialog, null);
@@ -152,6 +163,9 @@ public class SettingActivity extends BaseActivity {
 
     }
 
+    /**
+     * switcher listener ;
+     */
     private class SBCheckedChangeListener implements CompoundButton.OnCheckedChangeListener {
         private boolean bFromUser = true;
 

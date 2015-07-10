@@ -4,8 +4,10 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 /**
+ * entity of images from sd-card
  * Created by xiaqibo on 2015/5/4.
  */
+
 public class SimpleImage implements Parcelable {
 
     public String name;

@@ -22,7 +22,6 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -39,6 +38,7 @@ import com.zuijiao.android.zuijiao.model.user.User;
 import com.zuijiao.android.zuijiao.network.Cache;
 import com.zuijiao.android.zuijiao.network.Router;
 import com.zuijiao.controller.MessageDef;
+import com.zuijiao.utils.AdapterViewHeightCalculator;
 import com.zuijiao.utils.UpyunUploadTask;
 
 import java.io.File;
@@ -420,7 +420,7 @@ public class EditUserInfoActivity extends BaseActivity {
                 mContactInfoAdapter.notifyDataSetChanged();
                 mDetailInfoAdapter.notifyDataSetChanged();
                 mFavorAdapter.notifyDataSetChanged();
-                setListViewHeightBasedOnChildren(mFavorGridView);
+                AdapterViewHeightCalculator.setGridViewHeightBasedOnChildren(mFavorGridView);
                 finalizeDialog();
             }
         }, new LambdaExpression() {
@@ -448,18 +448,18 @@ public class EditUserInfoActivity extends BaseActivity {
             Picasso.with(mContext).load(mTmpFullUser.getAvatarURLSmall().get()).placeholder(R.drawable.default_user_head).into(mUserHead);
         mBaseInfoAdapter = new GeneralUserInfoAdapter(getResources().getStringArray(R.array.user_base_info_title), BASE_INFO_ADAPTER);
         mBaseInfoList.setAdapter(mBaseInfoAdapter);
-        setListViewHeightBasedOnChildren(mBaseInfoList);
+        AdapterViewHeightCalculator.setListViewHeightBasedOnChildren(mBaseInfoList);
         mFavorGridView.setAdapter(mFavorAdapter);
         mFavorGridView.setOnItemClickListener(mTasteItemListener);
-        setListViewHeightBasedOnChildren(mFavorGridView);
+        AdapterViewHeightCalculator.setGridViewHeightBasedOnChildren(mFavorGridView);
         mContactInfoAdapter = new GeneralUserInfoAdapter(getResources().getStringArray(R.array.user_contact_info_title), CONTACT_INFO_ADAPTER);
         mContactInfoList.setAdapter(mContactInfoAdapter);
         mContactInfoList.setOnItemClickListener(mContactListener);
-        setListViewHeightBasedOnChildren(mContactInfoList);
+        AdapterViewHeightCalculator.setListViewHeightBasedOnChildren(mContactInfoList);
         mDetailInfoAdapter = new GeneralUserInfoAdapter(getResources().getStringArray(R.array.user_detail_info_title), DETAIL_INFO_ADAPTER);
         mDetailInfoList.setAdapter(mDetailInfoAdapter);
         mDetailInfoList.setOnItemClickListener(mDetailListener);
-        setListViewHeightBasedOnChildren(mDetailInfoList);
+        AdapterViewHeightCalculator.setListViewHeightBasedOnChildren(mDetailInfoList);
         mBaseInfoList.setItemsCanFocus(true);
         mBaseInfoList.setOnItemClickListener(mUserInfoItemListener);
         mUserHead.setOnClickListener(mHeadListener);
@@ -661,39 +661,6 @@ public class EditUserInfoActivity extends BaseActivity {
         }).execute();
     }
 
-    public void setListViewHeightBasedOnChildren(ListView listView) {
-        ListAdapter listAdapter = listView.getAdapter();
-        if (listAdapter == null) {
-            return;
-        }
-        int totalHeight = 0;
-        for (int i = 0; i < listAdapter.getCount(); i++) {
-            View listItem = listAdapter.getView(i, null, listView);
-            listItem.measure(0, 0);
-            totalHeight += listItem.getMeasuredHeight();
-        }
-        ViewGroup.LayoutParams params = listView.getLayoutParams();
-        params.height = totalHeight
-                + (listView.getDividerHeight() * (listAdapter.getCount()));
-
-    }
-
-    public void setListViewHeightBasedOnChildren(GridView gdView) {
-        ListAdapter listAdapter = gdView.getAdapter();
-        if (listAdapter == null) {
-            return;
-        }
-        int totalHeight = 0;
-        for (int i = 0; i < listAdapter.getCount(); i += 5) {
-            View listItem = listAdapter.getView(i, null, gdView);
-            listItem.measure(0, 0);
-            totalHeight += listItem.getMeasuredHeight();
-        }
-        ViewGroup.LayoutParams params = gdView.getLayoutParams();
-        params.height = totalHeight
-                + (gdView.getVerticalSpacing() * (listAdapter.getCount() / 5));
-
-    }
 
     private String checkSet(String str) {
         if (str != null) {

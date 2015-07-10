@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.Random;
 
 /**
+ * do upload by upyun
  * Created by user on 4/10/15.
  */
 public final class UpyunUploadTask extends AsyncTask<Void, Void, String> {

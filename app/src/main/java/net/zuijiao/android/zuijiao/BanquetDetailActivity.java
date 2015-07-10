@@ -1,9 +1,7 @@
 package net.zuijiao.android.zuijiao;
 
-import android.annotation.TargetApi;
 import android.app.ActionBar;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Handler;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
@@ -19,7 +17,6 @@ import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,6 +32,7 @@ import com.zuijiao.android.zuijiao.model.Banquent.BanquentStatus;
 import com.zuijiao.android.zuijiao.model.user.TinyUser;
 import com.zuijiao.android.zuijiao.model.user.User;
 import com.zuijiao.android.zuijiao.network.Router;
+import com.zuijiao.utils.AdapterViewHeightCalculator;
 import com.zuijiao.view.BanquetDetailScrollView;
 
 import java.util.ArrayList;
@@ -42,6 +40,7 @@ import java.util.Date;
 
 /**
  * Created by xiaqibo on 2015/6/10.
+ * display the detail information of the banquet ;
  */
 @ContentView(R.layout.activity_banquet_detail)
 public class BanquetDetailActivity extends BaseActivity implements BanquetDetailScrollView.ScrollStateChangeListener, View.OnClickListener {
@@ -87,8 +86,6 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
     private TextView mInstructDate;
     @ViewInject(R.id.banquet_detail_price_text)
     private TextView mInstructPrice;
-    //    @ViewInject(R.id.banquet_detail_instruction_content_price)
-//    private RelativeLayout mInstructPrice;
     @ViewInject(R.id.banquet_detail_request_text)
     private TextView mInstructRequirement;
     @ViewInject(R.id.banquet_detail_instruct_status)
@@ -119,7 +116,6 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
     private View mBottomOrderView;
     private Banquent mBanquent;
     private String[] weekDays;
-
     private ImageViewPagerAdapter mViewPagerAdapter = null;
     private TranslateAnimation hideToolbarAnim = new TranslateAnimation(Animation.RELATIVE_TO_SELF, 0.0f,
             Animation.RELATIVE_TO_SELF, 0.0f, Animation.RELATIVE_TO_SELF,
@@ -158,6 +154,9 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
             startActivity(intent);
         }
     };
+    /**
+     * display ordered user's avatar
+     */
     private BaseAdapter mGridAdapter = new BaseAdapter() {
         @Override
         public int getCount() {
@@ -265,42 +264,39 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
         }
         mOrderedPersonShow.setAdapter(mGridAdapter);
         mOrderedPersonShow.setOnItemClickListener(mGridListener);
-        setListViewHeightBasedOnChildren(mOrderedPersonShow);
+        AdapterViewHeightCalculator.setGridViewHeightBasedOnChildren(mOrderedPersonShow);
         switch (BanquentStatus.fromString(mBanquent.getStatus())) {
             case Selling:
 
                 break;
             case SoldOut:
-//                mBottomOrderView.setVisibility(View.GONE);
-//                mFinishText.setVisibility(View.VISIBLE);
-//                mFinishText.setText(getString(R.string.banquet_status_sold_out));
                 mOrderBtn.setText(getString(R.string.banquet_status_sold_out));
                 mOrderBtn.setTextColor(getResources().getColor(R.color.tv_light_gray));
                 mOrderBtn.setEnabled(false);
                 break;
             case OverTime:
-//                mBottomOrderView.setVisibility(View.GONE);
-//                mFinishText.setVisibility(View.VISIBLE);
-//                mFinishText.setText(getString(R.string.banquet_status_over_time));
                 mOrderBtn.setText(getString(R.string.banquet_status_over_time));
                 mOrderBtn.setEnabled(false);
                 mOrderBtn.setTextColor(getResources().getColor(R.color.tv_light_gray));
                 break;
             case End:
-//                mBottomOrderView.setVisibility(View.GONE);
-//                mFinishText.setVisibility(View.VISIBLE);
-//                mFinishText.setText(getString(R.string.banquet_status_end));
                 mOrderBtn.setText(getString(R.string.banquet_status_end));
                 mOrderBtn.setEnabled(false);
                 mOrderBtn.setTextColor(getResources().getColor(R.color.tv_light_gray));
                 break;
         }
         mBottomPrice.setText(String.valueOf(mBanquent.getPrice()));
-//                mBottomPrice.setText(String.format(getString(R.string.price_per_one), mBanquent.getPrice()));
         mBottomDate.setText(formatDate(mBanquent.getTime()));
         mReviewContainer.setVisibility(View.VISIBLE);
     }
 
+
+    /**
+     * init the banquet display images ,
+     * which shown on top of the activity in a viewpager;
+     *
+     * @return image-view list
+     */
     private ArrayList<ImageView> initImages() {
         ArrayList<ImageView> mImageList = new ArrayList<>();
         if (mBanquent.getImageUrls() == null)
@@ -313,9 +309,6 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
             image.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    //                if (gourmet.getImageURLs().isEmpty()) {
-//                    return;
-//                }
                     Intent intent = new Intent(BanquetDetailActivity.this, BigImageActivity.class);
                     int currentImageIndex = mImagePages.getCurrentItem();
                     intent.putExtra("current_image_index", currentImageIndex);
@@ -333,16 +326,26 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
         return mImageList;
     }
 
+    /**
+     * listen to the scroll of the scroller view ;
+     *
+     * @param gapScrollY
+     */
     @Override
     public void onScroll(int gapScrollY) {
         Log.i("gapScrollY", "gapScrollY == " + gapScrollY);
         if (gapScrollY > 0) {
-            showToolbarAndBottomView();
+            showToolbar();
         } else {
-            hideToolbarAndBottomView();
+            hideToolbar();
         }
     }
 
+    /**
+     * form a list to a string ,split each item by \n
+     *
+     * @return formatted string
+     */
     private String formatMenuContent() {
         if (mBanquent.getMenu() == null || mBanquent.getMenu().size() == 0) {
             return "";
@@ -356,36 +359,28 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
         return strBuilder.toString();
     }
 
-    private void hideToolbarAndBottomView() {
+    private void hideToolbar() {
         if (mToolbar.getVisibility() == View.GONE)
             return;
-//        mBottomDivisionView.setVisibility(View.GONE);
         hideToolbarAnim.setDuration(500);
         mToolbar.startAnimation(hideToolbarAnim);
-//        hideBottomViewAnim.setDuration(500);
-//        mBottomView.startAnimation(hideBottomViewAnim);
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
                 mToolbar.setVisibility(View.GONE);
-//                mBottomView.setVisibility(View.GONE);
             }
         }, 500);
     }
 
-    private void showToolbarAndBottomView() {
+    private void showToolbar() {
         if (mToolbar.getVisibility() == View.VISIBLE)
             return;
-//        mBottomDivisionView.setVisibility(View.VISIBLE);
-//        showBottomViewAnim.setDuration(500);
         showToolbarAnim.setDuration(500);
         mToolbar.startAnimation(showToolbarAnim);
-//        mBottomView.startAnimation(showBottomViewAnim);
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
                 mToolbar.setVisibility(View.VISIBLE);
-//                mBottomView.setVisibility(View.VISIBLE);
             }
         }, 500);
     }
@@ -429,6 +424,12 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
         }
     }
 
+
+    /**
+     * before go to the order activity ,
+     * fetch user info and check if telephone num is filled in ,
+     * and used as default order connect way ;
+     */
     private void goToOrder() {
         Intent intent = new Intent();
         createDialog();
@@ -458,24 +459,12 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
     }
 
 
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    public void setListViewHeightBasedOnChildren(GridView gdView) {
-        ListAdapter listAdapter = gdView.getAdapter();
-        if (listAdapter == null) {
-            return;
-        }
-        int totalHeight = 0;
-        for (int i = 0; i < listAdapter.getCount(); i += 5) {
-            View listItem = listAdapter.getView(i, null, gdView);
-            listItem.measure(0, 0);
-            totalHeight += listItem.getMeasuredHeight();
-        }
-        ViewGroup.LayoutParams params = gdView.getLayoutParams();
-        params.height = totalHeight
-                + (gdView.getVerticalSpacing() * (listAdapter.getCount() / 5));
-
-    }
-
+    /**
+     * show the date in the specified format
+     *
+     * @param date
+     * @return formatted string
+     */
     private String formatDate(Date date) {
         StringBuilder strBuilder = new StringBuilder();
         strBuilder.append(String.format(mContext.getString(R.string.month_day), date.getMonth() + 1, date.getDate()));

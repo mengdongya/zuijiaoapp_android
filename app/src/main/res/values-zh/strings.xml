@@ -349,6 +349,7 @@
     <string name="host">料理人</string>
     <string name="guest">赏味人</string>
     <string name="order_message">订单详情</string>
+    <string name="support_more_city_soon">请相信我们会很快支持更多的城市</string>
     <string name="over_evaluate">已评价</string>
     <string name="review_content_hint">说说对本次赏味的体验吧</string>
     <string name="notify_review_score_empty">请选择评分</string>

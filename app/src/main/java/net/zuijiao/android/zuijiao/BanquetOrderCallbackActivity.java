@@ -2,10 +2,7 @@ package net.zuijiao.android.zuijiao;
 
 import android.content.Intent;
 import android.support.v7.widget.Toolbar;
-import android.text.SpannableString;
-import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
-import android.text.style.ClickableSpan;
 import android.text.util.Linkify;
 import android.view.View;
 import android.widget.Button;
@@ -25,6 +22,7 @@ import java.util.Date;
 
 /**
  * Created by xiaqibo on 2015/6/26.
+ * called after third party payment activity finished
  */
 @ContentView(R.layout.activity_banquet_order_callback)
 public class BanquetOrderCallbackActivity extends BaseActivity implements View.OnClickListener {
@@ -67,34 +65,24 @@ public class BanquetOrderCallbackActivity extends BaseActivity implements View.O
         }
     }
 
+    /**
+     * notify pay failed
+     */
     private void showFailed() {
         mBgImage.setImageResource(R.drawable.order_callback_failed_bg);
         mTitleTv.setVisibility(View.GONE);
         mWaitingTv.setVisibility(View.GONE);
         mDetailTv.setText(R.string.notify_order_failed);
         mDetailTv.setAutoLinkMask(Linkify.PHONE_NUMBERS);
-//        mDetailTv.setText(getClickableSpan());
         mDetailTv.setMovementMethod(LinkMovementMethod.getInstance());
         mNotifyTv.setVisibility(View.GONE);
         mCompleteTv.setVisibility(View.GONE);
     }
 
-    private SpannableString getClickableSpan() {
-        SpannableString spanableInfo = new SpannableString(
-                "This is a test, Click Me");
-        int start = 16;
-        int end = spanableInfo.length();
-        spanableInfo.setSpan(new ClickableSpan() {
-            @Override
-            public void onClick(View widget) {
-                Toast.makeText(mContext, "Click Success", Toast.LENGTH_SHORT)
-                        .show();
-            }
-        }, start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        return spanableInfo;
-    }
 
-
+    /**
+     * notify pay success
+     */
     private void showSuccess() {
 
         mTitleTv.setText(mBanquet.getTitle());
@@ -103,6 +91,12 @@ public class BanquetOrderCallbackActivity extends BaseActivity implements View.O
         mDetailTv.setText(detail);
     }
 
+    /**
+     * display date in a specified format
+     *
+     * @param date
+     * @return
+     */
     private String formatDate(Date date) {
         StringBuilder strBuilder = new StringBuilder();
         strBuilder.append(String.format(mContext.getString(R.string.month_day), date.getMonth() + 1, date.getDate()));

@@ -12,6 +12,10 @@ import android.widget.ScrollView;
 
 import net.zuijiao.android.zuijiao.R;
 
+/**
+ * used in gourmet detail activity ;
+ */
+
 public class GourmetDetailScrollView extends ScrollView {
     private static final int CHANGE_TOP = 1;
     private Handler handler = new Handler() {
@@ -137,6 +141,12 @@ public class GourmetDetailScrollView extends ScrollView {
         super.onOverScrolled(scrollX, scrollY, clampedX, clampedY);
     }
 
+    /**
+     * get use touch event
+     *
+     * @param ev
+     * @return
+     */
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
         switch (ev.getAction()) {
@@ -230,6 +240,9 @@ public class GourmetDetailScrollView extends ScrollView {
         onScrollListener.onTopChange(this.getTop());
     }
 
+    /**
+     * when the scrollview is beyond the bottom , call this function move back auto
+     */
     private void kickBack() {
         new Thread(new Runnable() {
             @Override
@@ -261,6 +274,7 @@ public class GourmetDetailScrollView extends ScrollView {
         }).start();
     }
 
+    @Deprecated
     public void moveToTop() {
         new Thread(new Runnable() {
             @Override

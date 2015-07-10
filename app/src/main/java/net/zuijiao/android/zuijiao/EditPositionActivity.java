@@ -23,6 +23,7 @@ import com.zuijiao.android.zuijiao.network.Router;
 import java.util.ArrayList;
 
 /**
+ * edit the location where the gourmet can eaten ;
  * Created by xiaqibo on 2015/4/30.
  */
 @ContentView(R.layout.activity_edit_location)
@@ -43,6 +44,9 @@ public class EditPositionActivity extends BaseActivity {
     private ArrayList<String> mAutoSearchList = new ArrayList<>();
     private Handler mHandler = new Handler();
     private String mRestaurantName = null;
+    /**
+     * auto fit locations by user input ,
+     */
     private Runnable restaurantSearchTask = new Runnable() {
         @Override
         public void run() {
@@ -73,6 +77,7 @@ public class EditPositionActivity extends BaseActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         mAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, mAutoSearchList);
         mSearchResultList.setAdapter(mAdapter);
+        //listen to the edited text and auto research restaurant
         mLocationEditor.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {

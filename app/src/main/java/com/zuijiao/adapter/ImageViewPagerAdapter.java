@@ -9,6 +9,7 @@ import java.util.List;
 
 /**
  * Created by xiaqibo on 2015/6/15.
+ * image viewpager adapter ,used in banquet-detail-activity,gourmet-detail-activity and host-and-guest-activity
  */
 public class ImageViewPagerAdapter extends PagerAdapter {
     private List<ImageView> data;

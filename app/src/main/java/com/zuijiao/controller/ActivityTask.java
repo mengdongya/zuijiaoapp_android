@@ -30,6 +30,9 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * customized application ,do initialization of cache and model module ,management of activities;
+ */
 public class ActivityTask extends Application {
     private static final String LOGTAG = "ActivityTask";
     public static Typeface boldFont = null;

@@ -8,8 +8,8 @@ import com.tencent.mm.sdk.openapi.IWXAPI;
 import com.tencent.mm.sdk.openapi.WXAPIFactory;
 
 public class WeixinApi extends AbsSDK {
-    protected final String WEIXIN_ID = "wx908961ddfd5cade9";
-    protected final String WEIXIN_PWD = "b04cac11c4477cf5e07ecffd6ca6bf86";
+    public static final String WEIXIN_ID = "wx908961ddfd5cade9";
+    public static final String WEIXIN_PWD = "b04cac11c4477cf5e07ecffd6ca6bf86";
     private Context mContext;
     public static IWXAPI mWeiXinApi = null;
 

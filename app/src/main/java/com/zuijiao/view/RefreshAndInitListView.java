@@ -23,6 +23,9 @@ import android.widget.TextView;
 
 import net.zuijiao.android.zuijiao.R;
 
+/**
+ * do refresh and init more .
+ */
 public class RefreshAndInitListView extends ListView implements
         OnScrollListener {
 

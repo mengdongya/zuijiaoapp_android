@@ -46,14 +46,6 @@ public class MyEditText2 extends EditText {
         } else {
             paint.setColor(Color.parseColor("#959595"));
         }
-//        if(this.isFocused() == true)
-//
-//            paint.setColor(Color.parseColor("#343434"));
-//
-//        else
-//
-//            paint.setColor(Color.rgb(0,0,0));
-
         canvas.drawLine(this.getLeft(), this.getBottom() - 2, this.getRight(), this.getBottom(), paint);
         super.onDraw(canvas);
 

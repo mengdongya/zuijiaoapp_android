@@ -39,6 +39,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * display notifications or comments , included in message-activity ;
+ */
 @SuppressLint("ValidFragment")
 public class MessageFragment extends Fragment implements FragmentDataListener,
         MyListViewListener {

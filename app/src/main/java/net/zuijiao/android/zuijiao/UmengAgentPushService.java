@@ -19,6 +19,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
+ * customer push service ,base on umneg push service ,started when application is created ;
  * Created by xiaqibo on 2015/5/21.
  */
 public class UmengAgentPushService extends UmengBaseIntentService {
@@ -47,6 +48,13 @@ public class UmengAgentPushService extends UmengBaseIntentService {
         }
     }
 
+    /**
+     * register and show notifications
+     *
+     * @param title
+     * @param text
+     * @param ticker
+     */
     private void showNotification(String title, String text, String ticker) {
         Bitmap btm = BitmapFactory.decodeResource(getResources(),
                 R.drawable.icon);

@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 
+@Deprecated
 public class BitmapUtils {
     private static Bitmap compressImage(Bitmap image) {
 

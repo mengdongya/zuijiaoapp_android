@@ -42,7 +42,9 @@ import net.zuijiao.android.zuijiao.R;
 
 import java.util.Locale;
 
-
+/**
+ * slide tab container , used in main fragment , friend activity ,message activity and so on
+ */
 public class PagerSlidingTab extends HorizontalScrollView {
 
     public interface IconTabProvider {

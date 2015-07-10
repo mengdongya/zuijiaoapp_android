@@ -17,12 +17,18 @@ import com.squareup.picasso.Picasso;
 
 import java.io.File;
 
+/**
+ * show one image in the whole screen ,included in big-image-activity
+ */
 @SuppressLint("ValidFragment")
 public class PictureFragment extends Fragment {
     private final String TAG = "PictrueFragment";
     private String mImageUrl;
     private Bitmap mBmp = null;
     private ImageView mImageView = null;
+    /**
+     * sign the image is local or cloud ,and use different way to load
+     */
     private boolean isLocalImage = false;
 
     @SuppressLint("ValidFragment")
@@ -31,7 +37,6 @@ public class PictureFragment extends Fragment {
         this.mImageUrl = imageUrl;
     }
 
-    //if the content image is at local
     public PictureFragment setType(boolean bLocal) {
         isLocalImage = bLocal;
         return this;
@@ -45,10 +50,10 @@ public class PictureFragment extends Fragment {
                 R.layout.fragment_picture, null);
         mImageView = (ImageView) view
                 .findViewById(R.id.scale_pic_item);
-
-//        final ProgressBar progressbar = (ProgressBar) view
-//                .findViewById(R.id.big_image_progressbar);
         File image = new File(mImageUrl);
+
+        //if is local exist image ,load it with a async-task
+        //if not , load by picasso
         if (isLocalImage && image.exists()) {
             if (mBmp != null) {
                 mImageView.setImageBitmap(mBmp);
@@ -74,6 +79,10 @@ public class PictureFragment extends Fragment {
         return mBmp;
     }
 
+
+    /**
+     * async task for loading local image
+     */
     private class LoadImageTask extends AsyncTask<String, Void, Void> {
         @Override
         protected Void doInBackground(String... params) {
@@ -104,16 +113,23 @@ public class PictureFragment extends Fragment {
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
             Log.d("pictureFragment", "LoadImageTask executed");
-            if (mBmp != null) {
+            if (mBmp != null && !mBmp.isRecycled()) {
                 mImageView.setImageBitmap(mBmp);
             } else {
                 Toast.makeText(getActivity().getApplicationContext(), "out of memory , try later ", Toast.LENGTH_SHORT).show();
-                ;
-                mImageView.setImageResource(R.drawable.empty_view_greeting);
+//                mImageView.setImageResource(R.drawable.empty_view_greeting);
             }
         }
     }
 
+    /**
+     * calculate the rate of compression
+     *
+     * @param options
+     * @param reqWidth
+     * @param reqHeight
+     * @return
+     */
     private int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
         int height = options.outHeight;
         int width = options.outWidth;

@@ -19,6 +19,9 @@ import com.zuijiao.view.PagerSlidingTab;
 import java.util.ArrayList;
 
 /**
+ * display kinds status of my banquet order list ,
+ * included in main activity
+ * and called from side bar of main activity ;
  * Created by xiaqibo on 2015/6/16.
  */
 @SuppressLint("ValidFragment")

@@ -349,6 +349,7 @@
     <string name="host">料理人</string>
     <string name="guest">赏味人</string>
     <string name="order_message">订单详情</string>
+    <string name="support_more_city_soon">请相信我们会很快支持更多的城市</string>
     <!-- umeng socialize strings begin-->
     <!--<string name="pull_to_refresh_pull_label" translatable="false">向下拉动可以刷新</string>-->
     <!--<string name="pull_to_refresh_release_label" translatable="false">松开可以刷新</string>-->

@@ -16,7 +16,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.umeng.analytics.MobclickAgent;
 import com.umeng.message.PushAgent;
 import com.zuijiao.android.util.Optional;
 import com.zuijiao.android.util.functional.LambdaExpression;
@@ -47,12 +46,16 @@ public abstract class BaseActivity extends ActionBarActivity {
     protected ThirdPartySDKManager authMng = null;
     protected String updateApkName = "zuijiao-update.apk";
     protected long mUpdateDownloadId = Integer.MIN_VALUE;
+
+    /**
+     * listen to the downloading of update package
+     */
+
     protected BroadcastReceiver mReceiver = new BroadcastReceiver() {
 
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction().equals(DownloadManager.ACTION_DOWNLOAD_COMPLETE)) {
-//                Toast.makeText(mContext , "download complete  ,click to update " , Toast.LENGTH_SHORT ).show();
                 long downId = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1);
                 if (mUpdateDownloadId == downId) {
                     String apDir = getExternalFilesDir("").getAbsolutePath();
@@ -91,12 +94,16 @@ public abstract class BaseActivity extends ActionBarActivity {
 
     public void onResume() {
         super.onResume();
-        MobclickAgent.onResume(this);
+//        if(BuildConfig.OpenUmengAgent){
+//            Log.i("openUmengAgent" ,BuildConfig.OpenUmengAgent + "") ;
+//            MobclickAgent.onResume(this);
+//        }
     }
 
     public void onPause() {
         super.onPause();
-        MobclickAgent.onPause(this);
+//        if(BuildConfig.OpenUmengAgent)
+//            MobclickAgent.onPause(this);
     }
 
     @Override
@@ -134,6 +141,12 @@ public abstract class BaseActivity extends ActionBarActivity {
         mDialog = null;
     }
 
+
+    /**
+     * save auth information in the shared-preference ,called when login finished
+     *
+     * @param auth AuthorInfo
+     */
     private void saveAuthInfo(AuthorInfo auth) {
         if (!Router.getInstance().getCurrentUser().isPresent()) {
             return;
@@ -151,9 +164,22 @@ public abstract class BaseActivity extends ActionBarActivity {
         PreferenceManager.getInstance(mContext).saveThirdPartyLoginMsg(authFromUser);
     }
 
+
+    /**
+     * do authentication before network operation ,
+     * at which case when logged in last time app
+     * launched but cannot authentic this time
+     * (due to network condition or something else),
+     * use the auth information stored in shared-preference
+     *
+     * @param successCallback LambdaExpression
+     * @param failureCallback OneParameterExpression
+     */
+
     protected void tryLoginFirst(LambdaExpression successCallback, OneParameterExpression<Integer> failureCallback) {
         AuthorInfo auth = PreferenceManager.getInstance(mContext).getThirdPartyLoginMsg();
         if (ThirdPartySDKManager.getInstance(mContext).isThirdParty(auth.getPlatform())) {
+            //auth by third party account
             Router.getOAuthModule().login(auth.getUid(), auth.getPlatform(),
                     Optional.<String>empty(),
                     Optional.of(auth.getToken()),
@@ -175,6 +201,7 @@ public abstract class BaseActivity extends ActionBarActivity {
         } else if ((auth.getEmail() != null) && (!auth.getEmail().equals(""))) {
             //2@2.2
             //c81e728d9d4c2f636f067f89cc14862c
+            //auth by zuijiao account
             RouterOAuth.INSTANCE.loginEmailRoutine(auth.getEmail(),
                     auth.getPassword(),
                     Optional.empty(),
@@ -198,6 +225,7 @@ public abstract class BaseActivity extends ActionBarActivity {
             );
 
         } else {
+            //visitor mode
             Router.getOAuthModule().visitor(new LambdaExpression() {
                                                 @Override
                                                 public void action() {
@@ -215,9 +243,16 @@ public abstract class BaseActivity extends ActionBarActivity {
                         }
                     });
         }
+        //download cache
         Cache.INSTANCE.setup();
     }
 
+
+    /**
+     * create dialog and notify visitor to login
+     *
+     * @param loginCallBack LambdaExpression @Nullable
+     */
     protected void notifyLogin(LambdaExpression loginCallBack) {
         if (mNotifyLoginDialog == null || !mNotifyLoginDialog.isShowing()) {
             this.mLoginCallBack = loginCallBack;
@@ -237,6 +272,13 @@ public abstract class BaseActivity extends ActionBarActivity {
         }
     }
 
+
+    /**
+     * show update dialog
+     *
+     * @param downloadUrl apk url
+     * @param message     dialog message ,including update information
+     */
     protected void showUpdateDialog(final String downloadUrl, final String message) {
         if (updateAlertDialog != null && updateAlertDialog.isShowing()) {
             return;
@@ -270,17 +312,8 @@ public abstract class BaseActivity extends ActionBarActivity {
         });
         if (!isFinishing())
             updateAlertDialog.show();
-//        AlertDialog updateAlertDialog = new AlertDialog.Builder(this).setTitle(R.string.app_name).setMessage(message).setNegativeButton(R.string.update_ok,
-//                            new DialogInterface.OnClickListener() {
-//                                @Override
-//                                public void onClick(DialogInterface dialog, int which) {
-//                                    dialog.dismiss();
-//
-//                                }
-//                }).setPositiveButton(R.string.dialog_no, null).create();
-//
-//            updateAlertDialog.show();
     }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -289,9 +322,16 @@ public abstract class BaseActivity extends ActionBarActivity {
             mLoginCallBack.action();
     }
 
+    /**
+     * replaced by xutils
+     */
+    @Deprecated
     protected void findViews() {
 
     }
 
+    /**
+     * register views
+     */
     protected abstract void registerViews();
 }

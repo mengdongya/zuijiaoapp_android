@@ -25,8 +25,8 @@ import java.net.URL;
 public class QQApi extends AbsSDK {
     private static Tencent mTencent;
     private Context mContext;
-    protected final String QQ_ID = "1103495820";
-    protected final String QQ_PWD = "NlMKnzZYdhg4TmwE";
+    public static final String QQ_ID = "1103495820";
+    public static final String QQ_PWD = "NlMKnzZYdhg4TmwE";
 
     public QQApi(Context context) {
         super();

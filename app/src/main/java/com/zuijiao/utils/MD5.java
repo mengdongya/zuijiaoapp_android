@@ -5,6 +5,9 @@ import java.io.InputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+/**
+ * encryption of password
+ */
 public class MD5 {
 
 
@@ -32,10 +35,7 @@ public class MD5 {
     }
 
 
-    public static String crypt(String str) throws NoSuchAlgorithmException
-
-
-    {
+    public static String crypt(String str) throws NoSuchAlgorithmException {
         if (str == null || str.length() == 0) {
             throw new IllegalArgumentException("String to encript cannot be null or zero length");
         }

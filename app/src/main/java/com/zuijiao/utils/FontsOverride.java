@@ -5,6 +5,11 @@ import android.graphics.Typeface;
 
 import java.lang.reflect.Field;
 
+/**
+ * change default font
+ */
+
+@Deprecated
 public final class FontsOverride {
 
     public static void setDefaultFont(Context context,

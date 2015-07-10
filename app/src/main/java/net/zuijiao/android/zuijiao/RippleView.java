@@ -42,6 +42,7 @@ import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
 import android.widget.RelativeLayout;
 
+@Deprecated
 public class RippleView extends RelativeLayout {
     private int WIDTH;
     private int HEIGHT;

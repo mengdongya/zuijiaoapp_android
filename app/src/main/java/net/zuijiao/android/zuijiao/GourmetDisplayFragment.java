@@ -44,6 +44,9 @@ import java.util.List;
 
 import static android.view.View.OnLongClickListener;
 
+/**
+ * display gourmet list ,used common gourmet list , favor gourmet list , recommendation gourmet list ;
+ */
 public class GourmetDisplayFragment extends Fragment
         implements MyListViewListener {
     public static final int UNDEFINE_PAGE = 0;
@@ -52,6 +55,7 @@ public class GourmetDisplayFragment extends Fragment
     public static final int RECOMMEND_PAGE = 3;
     private int mContentType = UNDEFINE_PAGE;
     private View mContentView = null;
+    //refreshable view
     private RefreshAndInitListView mListView = null;
     private FloatingActionMenu mAddMenu = null;
     private FloatingActionButton mFloatButtonA = null;
@@ -59,9 +63,11 @@ public class GourmetDisplayFragment extends Fragment
     private LayoutInflater mInflater = null;
     private GourmetMainAdapter mAdapter = null;
     private Context mContext = null;
+    //display when the list is empty
     private LinearLayout mPlaceHolder = null;
+    //display count of current page ;
     private TextView mFavorCount = null;
-    private boolean bLogin = false;
+    //related activity
     private BaseActivity mActivity = null;
     private boolean bFirstInit = true;
     public Optional<TinyUser> mDisplayUser = Optional.empty();
@@ -98,6 +104,7 @@ public class GourmetDisplayFragment extends Fragment
         mDisplayUser = Router.getInstance().getCurrentUser();
     }
 
+    //set the page display content type ;
     public void setType(int type) {
         this.mContentType = type;
     }

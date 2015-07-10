@@ -49,6 +49,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 /**
+ * create or edit yours gourmet
  * Created by xiaqibo on 2015/4/29.
  */
 @ContentView(R.layout.activity_edit_gourmet)
@@ -150,6 +151,9 @@ public class EditGourmetActivity extends BaseActivity implements View.OnClickLis
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * upload a image after compress it , and post the create or edit gourmet request
+     */
     private void uploadOnCompressed() {
         AsyncTask compressTask = new AsyncTask() {
             @Override
@@ -209,10 +213,16 @@ public class EditGourmetActivity extends BaseActivity implements View.OnClickLis
         compressTask.execute();
     }
 
-
+    /**
+     * get a reasonable size of the image;
+     *
+     * @param options
+     * @param reqWidth
+     * @param reqHeight
+     * @return
+     */
     private static int calculateInSampleSize(BitmapFactory.Options options,
                                              int reqWidth, int reqHeight) {
-        // Raw height and width of image
         final int height = options.outHeight;
         final int width = options.outWidth;
         int inSampleSize = 1;
@@ -227,6 +237,9 @@ public class EditGourmetActivity extends BaseActivity implements View.OnClickLis
         return inSampleSize;
     }
 
+    /**
+     * do edit a gourmet
+     */
     private void editGourmet() {
         createDialog();
         mEditAddress = filterNullStr(mEditAddress);
@@ -270,6 +283,9 @@ public class EditGourmetActivity extends BaseActivity implements View.OnClickLis
         return str;
     }
 
+    /**
+     * do create a gourmet
+     */
     private void addGourmet() {
         createDialog();
         mEditAddress = filterNullStr(mEditAddress);
@@ -296,6 +312,13 @@ public class EditGourmetActivity extends BaseActivity implements View.OnClickLis
                 });
     }
 
+
+    /**
+     * do upload images one by one
+     *
+     * @param image
+     * @param lambdaExpression
+     */
     private void uploadImageContinuously(SimpleImage image, LambdaExpression lambdaExpression) {
         String imageUrl = mImageUrls.get(mImages.indexOf(image));
         String msg = String.format(getString(R.string.upload_image), mImages.indexOf(image) + 1, mImages.size());
@@ -412,6 +435,13 @@ public class EditGourmetActivity extends BaseActivity implements View.OnClickLis
         }
     }
 
+    /**
+     * get edited information from another activity
+     *
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode != RESULT_OK) {
@@ -452,6 +482,9 @@ public class EditGourmetActivity extends BaseActivity implements View.OnClickLis
         }
     }
 
+    /**
+     * show the selected images thumbnails
+     */
     private BaseAdapter mSelectedImageListAdapter = new BaseAdapter() {
         @Override
         public int getCount() {
@@ -510,6 +543,9 @@ public class EditGourmetActivity extends BaseActivity implements View.OnClickLis
         }
     };
 
+    /**
+     * register to preview or delete the selected images ;
+     */
     private AdapterView.OnItemClickListener mGridListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {

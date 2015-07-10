@@ -21,6 +21,10 @@ import com.zuijiao.db.DBOpenHelper;
 
 import java.util.List;
 
+/**
+ * show when app is launched ,
+ * load shared-preference info and try to do login
+ */
 @ContentView(R.layout.activity_splash)
 public class SplashActivity extends BaseActivity {
     @ViewInject(R.id.splash_progressbar)
@@ -40,6 +44,7 @@ public class SplashActivity extends BaseActivity {
         if (mPreferInfo.isAppFirstLaunch()) {
             goToGuide();
         } else {
+            //do login
             tryLoginFirst(null, null);
             new Handler().postDelayed(new Runnable() {
                 @Override

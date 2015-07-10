@@ -2,6 +2,9 @@ package com.zuijiao.utils;
 
 import java.util.Date;
 
+/**
+ * os util
+ */
 public class OSUtil {
     private static final String LOGTAG = "OSUtil";
 
@@ -13,7 +16,7 @@ public class OSUtil {
         return version;
     }
 
-
+    @Deprecated
     public String getReadableDate(Date date) {
         Date curDate = new Date();
         long gapMillions = curDate.getTime() - date.getTime();

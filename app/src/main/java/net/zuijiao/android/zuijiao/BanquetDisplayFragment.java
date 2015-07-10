@@ -22,6 +22,7 @@ import java.lang.reflect.Field;
 
 /**
  * Created by xiaqibo on 2015/6/8.
+ * display the main list of banquet module
  */
 public class BanquetDisplayFragment extends Fragment implements RefreshAndInitListView.MyListViewListener {
     private RefreshAndInitListView mListView;

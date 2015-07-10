@@ -16,6 +16,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -40,6 +41,7 @@ import com.lidroid.xutils.view.annotation.ViewInject;
 import com.readystatesoftware.viewbadger.BadgeView;
 import com.squareup.picasso.Picasso;
 import com.umeng.fb.FeedbackAgent;
+import com.umeng.message.UmengRegistrar;
 import com.umeng.update.UmengUpdateAgent;
 import com.umeng.update.UmengUpdateListener;
 import com.umeng.update.UpdateResponse;
@@ -338,6 +340,8 @@ public final class MainActivity extends BaseActivity {
 
     @Override
     protected void registerViews() {
+        String device_token = UmengRegistrar.getRegistrationId(mContext);
+        Log.i("deviceToken", device_token);
         setSupportActionBar(mToolBar);
 //        mToolBar.setOnMenuItemClickListener(onMenuItemClick);
         mLocationView = LayoutInflater.from(this).inflate(

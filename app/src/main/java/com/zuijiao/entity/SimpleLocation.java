@@ -1,6 +1,7 @@
 package com.zuijiao.entity;
 
 /**
+ * entity of location info
  * Created by xiaqibo on 2015/4/27.
  */
 public class SimpleLocation {

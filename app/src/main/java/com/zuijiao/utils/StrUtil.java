@@ -9,10 +9,17 @@ import java.util.Date;
 import java.util.List;
 
 /**
+ * get format string
  * Created by xiaqibo on 2015/4/1.
  */
 public class StrUtil {
 
+    /**
+     * change tag list to string
+     *
+     * @param list
+     * @return
+     */
     public static String buildTags(List<String> list) {
         StringBuilder stringBuilder = new StringBuilder();
         for (String item : list) {
@@ -22,6 +29,12 @@ public class StrUtil {
         return stringBuilder.toString();
     }
 
+    /**
+     * chang string too tag list
+     *
+     * @param tag
+     * @return
+     */
     public static List<String> retriveTags(String tag) {
         String[] tags = tag.split("\n");
         ArrayList<String> tagsArray = new ArrayList<String>();
@@ -31,7 +44,13 @@ public class StrUtil {
         return tagsArray;
     }
 
-
+    /**
+     * format date to string ,used in gourmet detail activity
+     *
+     * @param date
+     * @param context
+     * @return
+     */
     public static String formatTime(Date date, Context context) {
         String result = null;
         Date currentDate = new Date();

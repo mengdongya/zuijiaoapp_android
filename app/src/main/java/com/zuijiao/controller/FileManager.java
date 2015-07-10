@@ -24,6 +24,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * manager some list and file in sd-card
+ */
 public class FileManager {
     public final static String APP_FOLDER_NAME = "Zuijiao";
     public final static String THIRD_PARTY_HEAD = "third_party_head.jpg";

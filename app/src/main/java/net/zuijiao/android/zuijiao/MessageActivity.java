@@ -13,6 +13,7 @@ import com.lidroid.xutils.view.annotation.ViewInject;
 import com.zuijiao.view.PagerSlidingTab;
 
 /**
+ * display notifications and comments , called from main activity menu button .
  * Created by xiaqibo on 2015/6/9.
  */
 @ContentView(R.layout.activity_message)
@@ -62,7 +63,9 @@ public class MessageActivity extends BaseActivity implements MessageFragment.OnM
 
     }
 
-
+    /**
+     * view-pager adapter
+     */
     public class MessagePagerAdapter extends FragmentPagerAdapter {
 
 
@@ -100,7 +103,6 @@ public class MessageActivity extends BaseActivity implements MessageFragment.OnM
             } else {
                 return new MessageFragment(mContext, MessageActivity.this);
             }
-//            return FriendFragment.newInstance(position);
         }
     }
 }

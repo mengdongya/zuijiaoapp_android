@@ -42,6 +42,9 @@ import com.zuijiao.db.DBOpenHelper;
 
 import java.util.List;
 
+/**
+ * display user's fans or followers , included in FriendActivity
+ */
 public class FriendFragment extends Fragment {
 
     private static final String ARG_POSITION = "position";
@@ -65,6 +68,7 @@ public class FriendFragment extends Fragment {
             startActivity(intent);
         }
     };
+
     public BaseAdapter mAdapter = new BaseAdapter() {
         @Override
         public int getCount() {

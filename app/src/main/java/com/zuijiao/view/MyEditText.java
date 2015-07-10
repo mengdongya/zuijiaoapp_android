@@ -41,11 +41,6 @@ public class MyEditText extends EditText {
         Paint paint = new Paint();
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeWidth(2);
-//        if(this.isFocused()){
-//            paint.setColor(mFocusedColor);
-//        }else{
-//            paint.setColor(mUnFocusedColor);
-//        }
         if (this.isFocused() == true)
 
             paint.setColor(Color.parseColor("#dd0000"));

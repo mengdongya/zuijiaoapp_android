@@ -28,6 +28,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
+/**
+ * choose location ,called from edit-user-info-activity ,use baidu location service
+ */
 @ContentView(R.layout.activity_location)
 public class LocationActivity extends BaseActivity {
     private static final int SELECT_CITY_REQ = 3001;
@@ -49,10 +52,10 @@ public class LocationActivity extends BaseActivity {
     @ViewInject(R.id.location_lv)
     private ListView mListView = null;
     private String[] mDirectCities = null;
-    //    private String mCurrentLocation = "";
     private ArrayList<SimpleLocation> locations = null;
     private int mProvinceId = -1;
     private String mProvinceName = null;
+    //location list adapter
     private BaseAdapter mAdapter = new BaseAdapter() {
         @Override
         public int getCount() {
@@ -117,7 +120,6 @@ public class LocationActivity extends BaseActivity {
                 intent.setClass(LocationActivity.this, LocationActivity.class);
                 intent.putExtra("province_id", location.getId());
                 intent.putExtra("province_name", location.getName());
-//                mProvinceId = location.getP_id();
                 mProvinceId = location.getId();
                 mProvinceName = location.getName();
                 startActivityForResult(intent, SELECT_CITY_REQ);
@@ -125,6 +127,13 @@ public class LocationActivity extends BaseActivity {
         }
     };
 
+    /**
+     * return from city choose ,use the same activity model but not the same instance
+     *
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == SELECT_CITY_REQ && resultCode == RESULT_OK) {
@@ -196,7 +205,12 @@ public class LocationActivity extends BaseActivity {
         });
     }
 
-
+    /**
+     * judge if the city is direct city like shanghai ,beijing ,chongqing and so on .
+     *
+     * @param str
+     * @return
+     */
     private boolean isDirectCity(String str) {
         if (mDirectCities == null) {
             mDirectCities = getResources().getStringArray(R.array.direct_city);
@@ -209,6 +223,9 @@ public class LocationActivity extends BaseActivity {
         return false;
     }
 
+    /**
+     * get provinces list ,including direct city from location.db
+     */
     private void getProvinceList() {
         locations = DBOpenHelper.getmInstance(mContext).getProvinceList();
         Collections.sort(locations, new Comparator<SimpleLocation>() {
@@ -234,6 +251,9 @@ public class LocationActivity extends BaseActivity {
         }
     }
 
+    /**
+     * baidu location service ;
+     */
     private void InitLocation() {
         mLocationClient = ((ActivityTask) getApplication()).mLocationClient;
         LocationClientOption option = new LocationClientOption();

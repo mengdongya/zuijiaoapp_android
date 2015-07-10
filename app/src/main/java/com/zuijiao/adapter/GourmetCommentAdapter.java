@@ -25,6 +25,7 @@ import net.zuijiao.android.zuijiao.R;
 import net.zuijiao.android.zuijiao.UserInfoActivity;
 
 /**
+ * gourmet comment adapter ,for gourmet-detail activity and gourmet-comment activity ;
  * Created by xiaqibo on 2015/5/29.
  */
 public class GourmetCommentAdapter extends BaseAdapter {

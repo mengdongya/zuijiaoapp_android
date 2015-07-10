@@ -13,6 +13,7 @@ import net.zuijiao.android.zuijiao.BanquetOrderCallbackActivity;
 
 
 /**
+ * ali pay
  * Created by mengdongya on 2015/6/29.
  */
 public class Alipay {

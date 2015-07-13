@@ -217,7 +217,11 @@
     <string name="mobile_phone">手机</string>
     <string name="industry">从事行业</string>
     <string name="industry_hint">输入从事行业</string>
-    <string name="detail_info">详细资料</string>
+    <string name="detail_info">详细</string>
+    <string name="detail_msg">料理人信息</string>
+    <string name="cooking">厨艺</string>
+    <string name="skilled">擅长</string>
+    <string name="place">场地</string>
     <string name="interest_hobby">兴趣爱好</string>
     <string name="interest_hobby_hint">输入兴趣爱好</string>
     <string name="education">所受教育</string>
@@ -309,9 +313,8 @@
     <string name="already_finished">已结束</string>
     <string name="remark_to_host">给料理人留言</string>
     <string name="center_dot">·</string>
-    <string name="host_introduction">料理人介绍</string>
-    <string name="attended_banquet">参加的料理</string>
-    <string name="hosted_banquet">拥有的料理</string>
+    <string name="host_introduction">关于我</string>
+    <string name="attended_banquet">参加了%d场料理</string>
     <string name="get_history_list_failed">获取历史记录失败，请检查网络</string>
     <string name="total_attendee">共有%d人参加</string>
     <string name="banquet_order_notice">须知\n·下单成功后，暂不支持在线退单\n·如有疑问请致电：021-58313120</string>
@@ -358,6 +361,7 @@
     <string name="send">发送</string>
     <string name="receive_comments">收到%d条评价</string>
     <string name="show_all_comments">查看全部评价</string>
+    <string name="show_all_banquet">查看全部料理</string>
     <!-- umeng socialize strings begin-->
     <!--<string name="pull_to_refresh_pull_label" translatable="false">向下拉动可以刷新</string>-->
     <!--<string name="pull_to_refresh_release_label" translatable="false">松开可以刷新</string>-->
@@ -424,6 +428,7 @@
     <string name="umeng_socialize_img_des"></string>
     <string name="umeng_socialize_share">分享</string>
     <string name="com_facebook_loading">Loading...</string>
+    <string name="hosted_banquet">举办了%2$d场料理，累计接待%3$d人</string>
     <!-- umeng socialize strings ends-->
 
 </resources>

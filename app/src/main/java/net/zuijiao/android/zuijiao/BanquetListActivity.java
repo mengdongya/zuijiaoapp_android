@@ -39,6 +39,11 @@ public class BanquetListActivity extends BaseActivity{
     @ViewInject(R.id.host_guest_history_list)
     private ListView mHistoryList;
 
+    @ViewInject(R.id.host_guest_history_title)
+    private TextView mHostAttendee;
+@ViewInject(R.id.host_history_title)
+    private TextView mHostHold;
+
     private List<Banquent> banquentList;
     private String[] weekDays;
     private Boolean isHold = false;
@@ -49,18 +54,18 @@ public class BanquetListActivity extends BaseActivity{
     protected void registerViews() {
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("gg");
+
         weekDays = mContext.getResources().getStringArray(R.array.week_days);
         if (mTendIntent != null) {
+            isHold = mTendIntent.getBooleanExtra("b_hold", false);
             mAttendeeId = mTendIntent.getIntExtra("attendee_id", -1);
         }
         if (mAttendeeId == -1) {
             finish();
             return;
         }
-
+        mHistoryList.setAdapter(mHistoryAdapter);
         mHistoryList.setOnItemClickListener(mItemListener);
-
         networkStep();
     }
 
@@ -68,30 +73,16 @@ public class BanquetListActivity extends BaseActivity{
         createDialog();
 
         if (isHold) {
-            Router.getAccountModule().attendeeInfo(mAttendeeId, new OneParameterExpression<Attendee>() {
-                @Override
-                public void action(Attendee attendee) {
-                    mAttendee = attendee;
-                    finalizeDialog();
-                }
-            }, new OneParameterExpression<String>() {
-                @Override
-                public void action(String s) {
-                    Toast.makeText(mContext, getString(R.string.notify_net2), Toast.LENGTH_SHORT).show();
-                    finalizeDialog();
-                }
-            });
-            Router.getBanquentModule().themesOfParticipator(mAttendeeId, null, 500, new OneParameterExpression<Banquents>() {
-
+            getSupportActionBar().setTitle(getString(R.string.hosted_banquet));
+            Router.getBanquentModule().themesOfParticipator(mAttendeeId,null,500,new OneParameterExpression<Banquents>() {
                 @Override
                 public void action(Banquents banquents) {
-                    /*banquentList = banquents.getBanquentList();
+                    banquentList = banquents.getBanquentList();
                     mHistoryList.setAdapter(mHistoryAdapter);
-                    AdapterViewHeightCalculator.setListViewHeightBasedOnChildren(mHistoryList);*/
+                    AdapterViewHeightCalculator.setListViewHeightBasedOnChildren(mHistoryList);
                     finalizeDialog();
                 }
-            }
-                    , new OneParameterExpression<String>() {
+            },new OneParameterExpression<String>(){
                 @Override
                 public void action(String s) {
                     Toast.makeText(mContext, getString(R.string.get_history_list_failed), Toast.LENGTH_SHORT).show();
@@ -99,19 +90,7 @@ public class BanquetListActivity extends BaseActivity{
                 }
             });
         }else{
-            Router.getAccountModule().attendeeInfo(mAttendeeId, new OneParameterExpression<Attendee>() {
-                @Override
-                public void action(Attendee attendee) {
-                    mAttendee = attendee;
-                    finalizeDialog();
-                }
-            }, new OneParameterExpression<String>() {
-                @Override
-                public void action(String s) {
-                    Toast.makeText(mContext, getString(R.string.notify_net2), Toast.LENGTH_SHORT).show();
-                    finalizeDialog();
-                }
-            });
+            getSupportActionBar().setTitle(R.string.attended_banquet);
             Router.getBanquentModule().themesOfParticipator(mAttendeeId, null, 500, new OneParameterExpression<Banquents>() {
                 @Override
                 public void action(Banquents banquents) {
@@ -157,18 +136,7 @@ public class BanquetListActivity extends BaseActivity{
             startActivity(intent);
         }
     };
-    private View.OnClickListener mHeadListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            if (mAttendee != null && mAttendee.getAvatarURLSmall().isPresent()) {
-                Intent intent = new Intent(mContext, BigImageActivity.class);
-                ArrayList<String> arrayList = new ArrayList<>();
-                arrayList.add(mAttendee.getAvatarURL().get());
-                intent.putStringArrayListExtra("cloud_images", arrayList);
-                startActivity(intent);
-            }
-        }
-    };
+
     private BaseAdapter mHistoryAdapter = new BaseAdapter() {
         @Override
         public int getCount() {
@@ -201,6 +169,7 @@ public class BanquetListActivity extends BaseActivity{
             Picasso.with(mContext).load(banquet.getSurfaceImageUrl()).placeholder(R.drawable.empty_view_greeting).into(holder.image);
             holder.title.setText(banquet.getTitle());
             holder.date.setText(formatDate(banquet.getTime()));
+            holder.price.setText(banquet.getPrice());
             holder.situation.setText(String.format(getString(R.string.total_attendee), banquet.getAttendees().size()));
             return convertView;
         }
@@ -219,6 +188,8 @@ public class BanquetListActivity extends BaseActivity{
         TextView title;
         @ViewInject(R.id.banquet_history_item_date)
         TextView date;
+        @ViewInject(R.id.banquet_history_item_price)
+        TextView price;
         @ViewInject(R.id.banquet_history_item_situation)
         TextView situation;
 

@@ -119,8 +119,6 @@
                     android:text="Sinian" />
             </LinearLayout>
 
-            <include layout="@layout/host_comment_stars"
-                android:id="@+id/banquet_detail_star_container"/>
 
             <!--<LinearLayout
                 android:id="@+id/banquet_detail_star_container"

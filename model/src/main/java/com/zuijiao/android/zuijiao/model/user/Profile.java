@@ -37,6 +37,16 @@ public class Profile implements Cloneable {
         this.career = career;
     }
 
+   /* @SerializedName("cooking")
+    private String cooking;
+    @SerializedName("skilled")
+    private ArrayList<String> skilled;
+    @SerializedName("place")
+    private String place;
+    @SerializedName("address")
+    private String address;*/
+
+
     @SerializedName("career")
     private String career;
     @SerializedName("introduce")
@@ -67,6 +77,39 @@ public class Profile implements Cloneable {
         }
         return Optional.ofNullable(birthday);
     }
+
+
+   /* public Optional<String> getCooking() {
+        return Optional.ofNullable(cooking);
+    }
+
+    public void setCooking(String cooking) {
+        this.cooking = cooking;
+    }
+
+    public Optional<ArrayList<String>> getSkilled() {
+        return Optional.ofNullable(skilled);
+    }
+
+    public void setSkilled(ArrayList<String> skilled) {
+        this.skilled = skilled;
+    }
+
+    public Optional<String> getPlace() {
+        return Optional.ofNullable(place);
+    }
+
+    public void setPlace(String place) {
+        this.place = place;
+    }
+
+    public Optional<String> getAddress() {
+        return Optional.ofNullable(address);
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }*/
 
     public Integer getProvinceId() {
         return provinceId;

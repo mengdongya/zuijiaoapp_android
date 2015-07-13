@@ -77,6 +77,39 @@ public class User implements Serializable, Cloneable {
     /**
      * @deprecated Using getProfile().getGender()
      */
+
+   /* @Deprecated
+    public Optional<ArrayList<String>> getSkilled(){
+        return profile.getSkilled();
+    }
+    @Deprecated
+    public void setSkilled(ArrayList<String> skilled){
+        profile.setSkilled(skilled);
+    }
+    @Deprecated
+    public Optional<String> getPlace(){
+        return profile.getPlace();
+    }
+    @Deprecated
+    public void setPlace(String place){
+        profile.setPlace(place);
+    }
+    @Deprecated
+    public Optional<String> getAddress(){
+        return profile.getAddress();
+    }
+    @Deprecated
+    public void setAddress(String address){
+        profile.setAddress(address);
+    }
+    @Deprecated
+    public Optional<String> getCooking(){
+        return profile.getCooking();
+    }
+    @Deprecated
+    public void setCooking(String cooking){
+        profile.setCooking(cooking);
+    }*/
     @Deprecated
     public String getGender() {
         return profile.getGender();
@@ -151,6 +184,8 @@ public class User implements Serializable, Cloneable {
     public Boolean getIsFollowing() {
         return friendShip.isFollowing();
     }
+
+
 
     // update methods
 

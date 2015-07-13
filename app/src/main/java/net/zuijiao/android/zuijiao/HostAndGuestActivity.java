@@ -45,8 +45,7 @@ import java.util.List;
 public class HostAndGuestActivity extends BaseActivity {
     @ViewInject(R.id.host_guest_tool_bar)
     private Toolbar mToolbar;
-    @ViewInject(R.id.host_guest_history_list)
-    private ListView mHistoryList;
+
     @ViewInject(R.id.host_guest_host_image_container)
     private RelativeLayout mHostImageContainer;
     @ViewInject(R.id.host_guest_host_head)
@@ -67,6 +66,14 @@ public class HostAndGuestActivity extends BaseActivity {
     private TextView mAttendeeIntroductionTitle;
     @ViewInject(R.id.host_guest_introduction)
     private TextView mAttendeeIntroduction;
+    @ViewInject(R.id.attendee_detail_cooking_item)
+    private View mAttendeeCooking;
+    @ViewInject(R.id.attendee_detail_skilled_item)
+    private View mAttendeeSkilled;
+    @ViewInject(R.id.attendee_detail_place_item)
+    private View mAttendeePlace;
+    @ViewInject(R.id.attendee_detail_address_item)
+    private View mAttendeeAddress;
     @ViewInject(R.id.attendee_detail_career_item)
     private View mAttendeeCareer;
     @ViewInject(R.id.attendee_detail_language_item)
@@ -75,17 +82,25 @@ public class HostAndGuestActivity extends BaseActivity {
     private View mAttendeeEducation;
     @ViewInject(R.id.attendee_detail_hobby_item)
     private View mAttendeeHobby;
+    @ViewInject(R.id.host_history_title)
+    private TextView mHostHold;
     @ViewInject(R.id.host_guest_history_title)
-    private TextView mHistoryTitle;
+    private TextView mHostAttendee;
     @ViewInject(R.id.banquet_detail_review_container)
     private LinearLayout mReviewContainer;
+    @ViewInject(R.id.banquet_detail_hold_btn)
+    private Button mHoldAllBanquet;
+    @ViewInject(R.id.banquet_detail_attendee_btn)
+    private Button mAttendeeBanquet;
     @ViewInject(R.id.banquet_detail_comment_btn)
     private Button mAllComment;
 
+    @ViewInject(R.id.host_detail_group)
+    private LinearLayout mhostMsg;
     @ViewInject(R.id.ll_host_comment_stars)
     private LinearLayout mCommentStars;
-//    @ViewInject(R.id.host_comment_list)
-//    private LinearLayout mHostCommentList;
+    @ViewInject(R.id.ll_host_hold_banquet)
+    private LinearLayout mHoldBanquet;
 
     private ArrayList<ImageView> mImageList = new ArrayList<>();
     private ImageViewPagerAdapter mViewPagerAdapter;
@@ -108,25 +123,48 @@ public class HostAndGuestActivity extends BaseActivity {
             finish();
             return;
         }
+        ((TextView) mAttendeeCooking.findViewById(R.id.attendee_detail_info_item_title)).setText(getString(R.string.cooking));
+        ((TextView) mAttendeeSkilled.findViewById(R.id.attendee_detail_info_item_title)).setText(getString(R.string.skilled));
+        ((TextView) mAttendeePlace.findViewById(R.id.attendee_detail_info_item_title)).setText(getString(R.string.place));
+        ((TextView) mAttendeeAddress.findViewById(R.id.attendee_detail_info_item_title)).setText(getString(R.string.address));
         ((TextView) mAttendeeCareer.findViewById(R.id.attendee_detail_info_item_title)).setText(getString(R.string.industry));
         ((TextView) mAttendeeLanguage.findViewById(R.id.attendee_detail_info_item_title)).setText(getString(R.string.my_language));
         ((TextView) mAttendeeEducation.findViewById(R.id.attendee_detail_info_item_title)).setText(getString(R.string.education));
         ((TextView) mAttendeeHobby.findViewById(R.id.attendee_detail_info_item_title)).setText(getString(R.string.interest_hobby));
 
         mHostImages.setOnPageChangeListener(mPageListener);
-        mHistoryList.setOnItemClickListener(mItemListener);
+        mHoldAllBanquet.setOnClickListener(mHeadListener);
+        mAttendeeBanquet.setOnClickListener(mHeadListener);
         mAllComment.setOnClickListener(mHeadListener);
         networkStep();
     }
 
     private void networkStep() {
         createDialog();
+        mAttendeeIntroductionTitle.setText(getString(R.string.host_introduction));
+        mHostAttendee.setText(getString(R.string.attended_banquet));
         if (bHost) {
+            mHostHold.setText(getString(R.string.hosted_banquet));
             getSupportActionBar().setTitle(getString(R.string.host));
-            mAttendeeIntroductionTitle.setText(getString(R.string.host_introduction));
             mCommentStars.setVisibility(View.VISIBLE);
             // mHostCommentList.setVisibility(View.VISIBLE);
-            mHistoryTitle.setText(getString(R.string.hosted_banquet));
+            Router.getBanquentModule().themesOfMaster(mAttendeeId, null, 500, new OneParameterExpression<Banquents>() {
+
+                @Override
+                public void action(Banquents banquents) {
+                    /*banquentList = banquents.getBanquentList();
+                    mHistoryList.setAdapter(mHistoryAdapter);
+                    AdapterViewHeightCalculator.setListViewHeightBasedOnChildren(mHistoryList);*/
+                    finalizeDialog();
+                }
+            }
+                    , new OneParameterExpression<String>() {
+                @Override
+                public void action(String s) {
+                    Toast.makeText(mContext, getString(R.string.get_history_list_failed), Toast.LENGTH_SHORT).show();
+                    finalizeDialog();
+                }
+            });
             Router.getAccountModule().masterInfo(mAttendeeId, new OneParameterExpression<Attendee>() {
                 @Override
                 public void action(Attendee attendee) {
@@ -141,31 +179,16 @@ public class HostAndGuestActivity extends BaseActivity {
                     finalizeDialog();
                 }
             });
-            Router.getBanquentModule().themesOfMaster(mAttendeeId, null, 500, new OneParameterExpression<Banquents>() {
-
-                @Override
-                public void action(Banquents banquents) {
-                    banquentList = banquents.getBanquentList();
-                    mHistoryList.setAdapter(mHistoryAdapter);
-                    AdapterViewHeightCalculator.setListViewHeightBasedOnChildren(mHistoryList);
-                    finalizeDialog();
-                }
-            }
-                    , new OneParameterExpression<String>() {
-                @Override
-                public void action(String s) {
-                    Toast.makeText(mContext, getString(R.string.get_history_list_failed), Toast.LENGTH_SHORT).show();
-                    finalizeDialog();
-                }
-            });
             mReviewContainer.setVisibility(View.VISIBLE);
         } else {
             getSupportActionBar().setTitle(getString(R.string.guest));
-            mHistoryTitle.setText(getString(R.string.attended_banquet));
             mCommentStars.setVisibility(View.GONE);
             mReviewContainer.setVisibility(View.GONE);
+            mhostMsg.setVisibility(View.GONE);
+            mHoldBanquet.setVisibility(View.GONE);
+            mHoldAllBanquet.setVisibility(View.GONE);
+            mAllComment.setVisibility(View.GONE);
             // mHostCommentList.setVisibility(View.GONE);
-            mAttendeeIntroductionTitle.setText(getString(R.string.personal_introduction));
             Router.getAccountModule().attendeeInfo(mAttendeeId, new OneParameterExpression<Attendee>() {
                 @Override
                 public void action(Attendee attendee) {
@@ -184,9 +207,9 @@ public class HostAndGuestActivity extends BaseActivity {
 
                 @Override
                 public void action(Banquents banquents) {
-                    banquentList = banquents.getBanquentList();
+                    /*banquentList = banquents.getBanquentList();
                     mHistoryList.setAdapter(mHistoryAdapter);
-                    AdapterViewHeightCalculator.setListViewHeightBasedOnChildren(mHistoryList);
+                    AdapterViewHeightCalculator.setListViewHeightBasedOnChildren(mHistoryList);*/
                     finalizeDialog();
                 }
             }
@@ -239,7 +262,6 @@ public class HostAndGuestActivity extends BaseActivity {
         } else {
 //            mHostImageContainer.setVisibility(View.GONE);
             mGuestHead.setVisibility(View.VISIBLE);
-            mGuestHead.setVisibility(View.VISIBLE);
             if (mAttendee.getAvatarURLSmall().isPresent()) {
                 Picasso.with(mContext).load(mAttendee.getAvatarURLSmall().get()).placeholder(R.drawable.default_user_head).into(mGuestHead);
                 mGuestHead.setOnClickListener(mHeadListener);
@@ -253,12 +275,12 @@ public class HostAndGuestActivity extends BaseActivity {
             mAttendeeIntroduction.setText(mAttendee.getProfile().getSelfIntroduction().get());
         else
             mIntroductionContainer.setVisibility(View.GONE);
-        int lastItem = 0;
+//        int lastItem = 0;
         if (mAttendee.getProfile().getCareer().isPresent() && !mAttendee.getProfile().getCareer().get().equals("")) {
             ((TextView) mAttendeeCareer.findViewById(R.id.attendee_detail_info_item_content)).setText(mAttendee.getProfile().getCareer().get());
-            lastItem = 1;
+//            lastItem = 1;
         } else {
-            mAttendeeCareer.setVisibility(View.GONE);
+//            mAttendeeCareer.setVisibility(View.GONE);
         }
         if (mAttendee.getProfile().getLanguages().isPresent() && mAttendee.getProfile().getLanguages().get().size() != 0) {
             String languages = "";
@@ -273,23 +295,23 @@ public class HostAndGuestActivity extends BaseActivity {
                 }
             }
             ((TextView) mAttendeeLanguage.findViewById(R.id.attendee_detail_info_item_content)).setText(languages);
-            lastItem = 2;
+//            lastItem = 2;
         } else {
-            mAttendeeLanguage.setVisibility(View.GONE);
+//            mAttendeeLanguage.setVisibility(View.GONE);
         }
         if (mAttendee.getProfile().getEducationBackground().isPresent() && !mAttendee.getProfile().getEducationBackground().get().equals("")) {
             ((TextView) mAttendeeEducation.findViewById(R.id.attendee_detail_info_item_content)).setText(mAttendee.getProfile().getEducationBackground().get());
-            lastItem = 3;
+//            lastItem = 3;
         } else {
-            mAttendeeEducation.setVisibility(View.GONE);
+//            mAttendeeEducation.setVisibility(View.GONE);
         }
         if (mAttendee.getProfile().getHobby().isPresent() && !mAttendee.getProfile().getHobby().get().equals("")) {
             ((TextView) mAttendeeHobby.findViewById(R.id.attendee_detail_info_item_content)).setText(mAttendee.getProfile().getHobby().get());
-            lastItem = 4;
+//            lastItem = 4;
         } else {
-            mAttendeeHobby.setVisibility(View.GONE);
+//            mAttendeeHobby.setVisibility(View.GONE);
         }
-        switch (lastItem) {
+        /*switch (lastItem) {
             case 1:
                 mAttendeeCareer.findViewById(R.id.attendee_detail_info_item_view).setVisibility(View.GONE);
                 break;
@@ -302,7 +324,7 @@ public class HostAndGuestActivity extends BaseActivity {
             case 4:
                 mAttendeeHobby.findViewById(R.id.attendee_detail_info_item_view).setVisibility(View.GONE);
                 break;
-        }
+        }*/
     }
 
     private String buildAttendeeProfile() {
@@ -354,22 +376,16 @@ public class HostAndGuestActivity extends BaseActivity {
     };
 
 
-    private AdapterView.OnItemClickListener mItemListener = new AdapterView.OnItemClickListener() {
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            Intent intent = new Intent(mContext, BanquetDetailActivity.class);
-            intent.putExtra("banquet", banquentList.get(position));
-            startActivity(intent);
-        }
-    };
+
     private View.OnClickListener mHeadListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+            Intent intent = null;
             switch (v.getId()) {
                 case R.id.host_guest_host_head:
                 case R.id.host_guest_guest_head:
                     if (mAttendee != null && mAttendee.getAvatarURLSmall().isPresent()) {
-                        Intent intent = new Intent(mContext, BigImageActivity.class);
+                        intent = new Intent(mContext, BigImageActivity.class);
                         ArrayList<String> arrayList = new ArrayList<>();
                         arrayList.add(mAttendee.getAvatarURL().get());
                         intent.putStringArrayListExtra("cloud_images", arrayList);
@@ -377,8 +393,22 @@ public class HostAndGuestActivity extends BaseActivity {
                     }
                     break;
                 case R.id.banquet_detail_comment_btn:
-                    Intent intent = new Intent();
+                    intent = new Intent();
                     intent.setClass(mContext, BanquetCommentActivity.class);
+                    startActivity(intent);
+                    break;
+                case R.id.banquet_detail_attendee_btn:
+                    intent = new Intent();
+                    intent.setClass(mContext,BanquetListActivity.class);
+                    intent.putExtra("b_hold",false);
+                    intent.putExtra("attendee_id",mAttendeeId);
+                    startActivity(intent);
+                    break;
+                case R.id.banquet_detail_hold_btn:
+                    intent = new Intent();
+                    intent.setClass(mContext,BanquetListActivity.class);
+                    intent.putExtra("b_hold",true);
+                    intent.putExtra("attendee_id",mAttendeeId);
                     startActivity(intent);
                     break;
             }

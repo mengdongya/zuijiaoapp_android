@@ -81,7 +81,6 @@ public class HostAndGuestActivity extends BaseActivity {
     private LinearLayout mReviewContainer;
     @ViewInject(R.id.banquet_detail_comment_btn)
     private Button mAllComment;
-
     @ViewInject(R.id.ll_host_comment_stars)
     private LinearLayout mCommentStars;
 //    @ViewInject(R.id.host_comment_list)

@@ -103,6 +103,7 @@ public class HostAndGuestActivity extends BaseActivity {
         if (mTendIntent != null) {
             bHost = mTendIntent.getBooleanExtra("b_host", false);
             mAttendeeId = mTendIntent.getIntExtra("attendee_id", -1);
+            //System.out.println("mAttendeeId:" + mAttendeeId);
         }
         if (mAttendeeId == -1) {
             finish();

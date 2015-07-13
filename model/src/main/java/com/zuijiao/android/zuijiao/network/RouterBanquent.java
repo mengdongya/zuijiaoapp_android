@@ -6,6 +6,7 @@ import com.zuijiao.android.zuijiao.model.Banquent.BanquentForTheme;
 import com.zuijiao.android.zuijiao.model.Banquent.Banquents;
 import com.zuijiao.android.zuijiao.model.Banquent.OrderStatus;
 import com.zuijiao.android.zuijiao.model.Banquent.Orders;
+import com.zuijiao.android.zuijiao.model.Banquent.Reviews;
 import com.zuijiao.android.zuijiao.model.OrderAuth;
 
 /**
@@ -74,4 +75,12 @@ public enum RouterBanquent {
         service.themesOfParticipator(identifier, maxId, count, CallbackFactory.getInstance().callback(successCallback, failureCallback));
     }
 
+    public void commentsofBanquent(
+            Integer sellerID
+            ,Integer maxID
+            ,Integer count
+            ,final  OneParameterExpression<Reviews> successCallback
+            ,final OneParameterExpression<String> failureCallback){
+        service.commentsofBanquent(sellerID, maxID, count, CallbackFactory.getInstance().callback(successCallback, failureCallback));
+    }
 }

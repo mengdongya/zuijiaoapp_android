@@ -3,6 +3,7 @@ package com.zuijiao.android.zuijiao.network;
 import com.zuijiao.android.zuijiao.model.Banquent.BanquentForTheme;
 import com.zuijiao.android.zuijiao.model.Banquent.Banquents;
 import com.zuijiao.android.zuijiao.model.Banquent.Orders;
+import com.zuijiao.android.zuijiao.model.Banquent.Reviews;
 import com.zuijiao.android.zuijiao.model.OrderAuth;
 
 import retrofit.Callback;
@@ -73,4 +74,10 @@ public interface IRouterBanquent {
             , Callback<Banquents> callback
     );
 
+    @POST(RootURL + "/ios/seller/{id}/comments")
+    void commentsofBanquent(@Path("id") Integer sellerId
+            ,@Query("maxID") Integer maxID
+            ,@Query("count") Integer count
+            ,Callback<Reviews> callback
+    );
 }

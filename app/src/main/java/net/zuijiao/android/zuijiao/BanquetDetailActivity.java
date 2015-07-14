@@ -73,10 +73,10 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
     private ImageView mHostHead;
     @ViewInject(R.id.banquet_detail_host_name)
     private TextView mHostName;
-    @ViewInject(R.id.banquet_detail_star_container)
+    /*@ViewInject(R.id.banquet_detail_star_container)
     private LinearLayout mStarContainer;
     @ViewInject(R.id.banquet_detail_host_score)
-    private TextView mHostScore;
+    private TextView mHostScore;*/
     @ViewInject(R.id.banquet_detail_about_host)
     private Button mAboutHostBtn = null;
     @ViewInject(R.id.banquet_detail_menu_title)

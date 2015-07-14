@@ -137,6 +137,10 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity
+            android:name="net.zuijiao.android.zuijiao.BanquetListActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
+        <activity
             android:name="net.zuijiao.android.zuijiao.BanquetOrderActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme"
@@ -257,6 +261,7 @@
             android:label="@string/evaluate"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
+
 
         <!--<activity-->
         <!--android:configChanges="keyboardHidden|orientation|screenSize"-->

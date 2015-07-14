@@ -54,8 +54,8 @@ import java.util.List;
 public class HostAndGuestActivity extends BaseActivity {
     @ViewInject(R.id.host_guest_tool_bar)
     private Toolbar mToolbar;
-    @ViewInject(R.id.host_guest_history_list)
-    private ListView mHistoryList;
+    //    @ViewInject(R.id.host_guest_history_list)
+//    private ListView mHistoryList;
     @ViewInject(R.id.host_guest_host_image_container)
     private RelativeLayout mHostImageContainer;
     @ViewInject(R.id.host_guest_host_head)
@@ -140,7 +140,7 @@ public class HostAndGuestActivity extends BaseActivity {
         ((TextView) mAttendeeHobby.findViewById(R.id.attendee_detail_info_item_title)).setText(getString(R.string.interest_hobby));
 
         mHostImages.setOnPageChangeListener(mPageListener);
-        mHistoryList.setOnItemClickListener(mItemListener);
+        //mHistoryList.setOnItemClickListener(mItemListener);
         mAllComment.setOnClickListener(mHeadListener);
         mCommentRatingbar.setStepSize(0.5f);
         networkStep();
@@ -172,8 +172,8 @@ public class HostAndGuestActivity extends BaseActivity {
                 @Override
                 public void action(Banquents banquents) {
                     banquentList = banquents.getBanquentList();
-                    mHistoryList.setAdapter(mHistoryAdapter);
-                    AdapterViewHeightCalculator.setListViewHeightBasedOnChildren(mHistoryList);
+                    //mHistoryList.setAdapter(mHistoryAdapter);
+                    //AdapterViewHeightCalculator.setListViewHeightBasedOnChildren(mHistoryList);
                     finalizeDialog();
                 }
             }
@@ -225,8 +225,8 @@ public class HostAndGuestActivity extends BaseActivity {
                 @Override
                 public void action(Banquents banquents) {
                     banquentList = banquents.getBanquentList();
-                    mHistoryList.setAdapter(mHistoryAdapter);
-                    AdapterViewHeightCalculator.setListViewHeightBasedOnChildren(mHistoryList);
+                    // mHistoryList.setAdapter(mHistoryAdapter);
+                    // AdapterViewHeightCalculator.setListViewHeightBasedOnChildren(mHistoryList);
                     finalizeDialog();
                 }
             }
@@ -449,8 +449,8 @@ public class HostAndGuestActivity extends BaseActivity {
                 case R.id.banquet_detail_comment_btn:
                     Intent intent = new Intent();
                     intent.setClass(mContext, BanquetCommentActivity.class);
-                    intent.putExtra("host_id",mAttendeeId);
-                    intent.putExtra("totalCount",mReviews.getTotalCount());
+                    intent.putExtra("host_id", mAttendeeId);
+                    intent.putExtra("totalCount", mReviews.getTotalCount());
                     startActivity(intent);
                     break;
             }

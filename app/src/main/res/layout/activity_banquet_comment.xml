@@ -8,8 +8,18 @@
         layout="@layout/toolbar"
         android:id="@+id/banquet_comment_tool_bar" />
 
-    <ListView
-        android:layout_height="match_parent"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/banquet_swipe_refresh"
+
         android:layout_width="match_parent"
-        android:id="@+id/banquet_comment_list_view" />
+        android:layout_height="match_parent"
+        android:layout_marginTop="5dip"
+        android:orientation="vertical">
+
+        <com.zuijiao.view.RefreshAndInitListView
+            android:id="@+id/banquet_comment_list_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:divider="@null" />
+    </android.support.v4.widget.SwipeRefreshLayout>
 </LinearLayout>

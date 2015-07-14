@@ -9,6 +9,13 @@ import java.util.List;
  * Created by yitianhao on 2015/7/13.
  */
 public class Reviews implements Serializable {
+    @SerializedName("itemTotalCount")
+    private Integer totalCount;
+
+    public Integer getTotalCount() {
+        return totalCount;
+    }
+
     @SerializedName("items")
     private List<Review> reviewList;
 

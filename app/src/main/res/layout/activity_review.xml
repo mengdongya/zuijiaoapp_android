@@ -9,15 +9,6 @@
         android:id="@+id/banquet_review_tool_bar"
         layout="@layout/toolbar" />
 
-    <!--<RatingBar-->
-    <!--android:id="@+id/review_ratingbar"-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_gravity="center_horizontal"-->
-    <!--android:layout_marginTop="20dip"-->
-    <!--android:stepSize="0.5"-->
-    <!--android:numStars="5"-->
-    <!--android:rating="0" />-->
     <com.zuijiao.view.ReviewRatingBar
         android:id="@+id/review_ratingbar"
         android:layout_width="wrap_content"

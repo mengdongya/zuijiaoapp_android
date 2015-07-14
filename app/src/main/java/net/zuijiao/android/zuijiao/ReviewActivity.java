@@ -10,8 +10,15 @@ import android.widget.Toast;
 
 import com.lidroid.xutils.view.annotation.ContentView;
 import com.lidroid.xutils.view.annotation.ViewInject;
+import com.zuijiao.android.util.functional.LambdaExpression;
+import com.zuijiao.android.util.functional.OneParameterExpression;
+import com.zuijiao.android.zuijiao.model.Banquent.Review;
+import com.zuijiao.android.zuijiao.model.Banquent.Reviews;
+import com.zuijiao.android.zuijiao.network.Router;
 import com.zuijiao.utils.MyTextWatcher;
 import com.zuijiao.view.ReviewRatingBar;
+
+import java.util.List;
 
 /**
  * Create by yitianhao on 2015/7/7
@@ -27,6 +34,8 @@ public class ReviewActivity extends BaseActivity {
     @ViewInject(R.id.review_ratingbar)
     private ReviewRatingBar mReviewRatingbar = null;
 
+    private int orderId;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,7 +49,33 @@ public class ReviewActivity extends BaseActivity {
         mEtReviewContent.addTextChangedListener(new MyTextWatcher(mTvDescriptionListener, 500, mContext));
         mReviewRatingbar.setRating(0);
         mReviewRatingbar.setNumStars(5);
-        mReviewRatingbar.setStepSize(0.5f);
+        mReviewRatingbar.setStepSize(1);
+        if (mTendIntent != null) {
+            orderId = mTendIntent.getIntExtra("orderId", -1);
+        }
+        if (orderId == -1) {
+            finish();
+            return;
+        }
+    }
+
+    private void networkStep() {
+        int score = (int)mReviewRatingbar.getRating();
+        String content = mEtReviewContent.getText().toString();
+        System.out.println("orderId:" + orderId + "," + content + "," + score);
+        Router.getBanquentModule().createComment(orderId, content, score, new LambdaExpression() {
+            @Override
+            public void action() {
+                Toast.makeText(mContext, getString(R.string.send_comment_success), Toast.LENGTH_SHORT).show();
+                setResult(MainActivity.COMMENT_SUCCESS);
+                finish();
+            }
+        }, new LambdaExpression() {
+            @Override
+            public void action() {
+                Toast.makeText(mContext, getString(R.string.notify_net2), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override
@@ -62,7 +97,39 @@ public class ReviewActivity extends BaseActivity {
                 Toast.makeText(mContext, getString(R.string.notify_review_content_empty), 0).show();
                 return super.onOptionsItemSelected(item);
             }
+            networkStep();
+
+//            Router.getBanquentModule().commentsofBanquent(29, null, 20, new OneParameterExpression<Reviews>() {
+//                @Override
+//                public void action(Reviews reviews) {
+//                    List<Review> reviewList = reviews.getReviewList();
+//                    System.out.println("test success");
+//                    for (Review review : reviewList) {
+//                        int id = review.getIdentifier();
+//                        String content = review.getContent();
+//                        String time = review.getCreatedAt();
+//                        System.out.println("Review:" + id + "," + content + "," + time);
+//                    }
+//
+//                }
+//            }, new OneParameterExpression<String>() {
+//                @Override
+//                public void action(String s) {
+//                    System.out.println("test error：" + s);
+//                }
+//            });
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        //setResult(MainActivity.COMMENT_SUCCESS);
+        super.onBackPressed();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
     }
 }

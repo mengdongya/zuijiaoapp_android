@@ -66,16 +66,19 @@
             <TextView
                 android:id="@+id/banquet_order_item_review"
                 android:layout_width="wrap_content"
+                android:paddingTop="30dip"
+                android:paddingLeft="40dip"
+                android:paddingRight="10dip"
                 android:layout_height="wrap_content"
                 android:singleLine="true"
-                android:layout_below="@id/banquet_order_item_date_location"
                 android:layout_marginTop="10dip"
                 android:layout_alignParentRight="true"
+                android:layout_alignBottom="@+id/banquet_order_item_status"
                 android:text="@string/to_evaluate"
                 android:visibility="gone"
-                android:textColor="@color/tv_orange_red"
-                android:layout_marginBottom="10dip"
-                android:textSize="16dip" />
+                android:gravity="center_vertical|right"
+                android:textColor="@color/banquet_theme"
+                android:textSize="16sp" />
         </RelativeLayout>
 
 

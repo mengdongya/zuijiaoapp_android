@@ -1,5 +1,6 @@
 package com.zuijiao.android.zuijiao.network;
 
+import com.zuijiao.android.util.functional.LambdaExpression;
 import com.zuijiao.android.util.functional.OneParameterExpression;
 import com.zuijiao.android.zuijiao.model.Banquent.Banquent;
 import com.zuijiao.android.zuijiao.model.Banquent.BanquentForTheme;
@@ -77,10 +78,19 @@ public enum RouterBanquent {
 
     public void commentsofBanquent(
             Integer sellerID
-            ,Integer maxID
-            ,Integer count
-            ,final  OneParameterExpression<Reviews> successCallback
-            ,final OneParameterExpression<String> failureCallback){
+            , Integer maxID
+            , Integer count
+            , final OneParameterExpression<Reviews> successCallback
+            , final OneParameterExpression<String> failureCallback) {
         service.commentsofBanquent(sellerID, maxID, count, CallbackFactory.getInstance().callback(successCallback, failureCallback));
+    }
+
+    public void createComment(
+            Integer orderId
+            , String content
+            , Integer score
+            , LambdaExpression successCallback
+            , LambdaExpression failureCallback) {
+        service.createComment(orderId, content, score, CallbackFactory.getInstance().callback(successCallback, failureCallback));
     }
 }

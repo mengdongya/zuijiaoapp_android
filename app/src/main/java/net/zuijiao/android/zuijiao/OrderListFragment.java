@@ -1,6 +1,7 @@
 package net.zuijiao.android.zuijiao;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -28,6 +29,8 @@ import com.zuijiao.view.RefreshAndInitListView;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import javax.crypto.Mac;
 
 /**
  * show one status of my order , included in my order fragment
@@ -189,7 +192,7 @@ public class OrderListFragment extends Fragment implements
 
         @Override
         public Object getItem(int position) {
-            return position;
+            return orderList.get(position);
         }
 
         @Override
@@ -212,24 +215,25 @@ public class OrderListFragment extends Fragment implements
             String dateInfo = formatDate(order.getHoldTime());
             holder.date.setText(dateInfo + order.getAddress());
             if (tabIndex > 0) {
-                holder.review.setVisibility(View.VISIBLE);
-                if (position % 2 == 0) {
+//                    holder.review.setText(getString(R.string.over_evaluate));
+//                    holder.review.setEnabled(false);
+//                    holder.review.setTextColor(getResources().getColor(R.color.tv_light_gray));
+                if (tabIndex == 1) {
+                    holder.review.setVisibility(View.VISIBLE);
                     holder.review.setText(getString(R.string.to_evaluate));
                     holder.review.setEnabled(true);
-                    holder.review.setTextColor(getResources().getColor(R.color.tv_orange_red));
+                    holder.review.setTextColor(getResources().getColor(R.color.banquet_theme));
                     holder.review.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
                             Intent intent = new Intent();
                             intent.setClass(getActivity(), ReviewActivity.class);
-                            startActivity(intent);
+                            intent.putExtra("orderId", order.getIdentifier());
+                            startActivityForResult(intent, MainActivity.COMMENT_REQUEST);
                         }
                     });
-                } else {
-                    holder.review.setText(getString(R.string.over_evaluate));
-                    holder.review.setEnabled(false);
-                    holder.review.setTextColor(getResources().getColor(R.color.tv_light_gray));
-                }
+                } else
+                    holder.review.setVisibility(View.GONE);
             }
             switch (order.getStatus()) {
                 case Canceled:

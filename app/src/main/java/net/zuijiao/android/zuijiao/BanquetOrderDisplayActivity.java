@@ -25,7 +25,7 @@ import java.util.Date;
  * display a banquet order detail information , called by my order list ;
  */
 @ContentView(R.layout.activity_banquet_order_display)
-public class BanquetOrderDisplayActivity extends BaseActivity {
+public class  BanquetOrderDisplayActivity extends BaseActivity {
     @ViewInject(R.id.order_display_toolbar)
     private Toolbar mToolbar = null;
     @ViewInject(R.id.banquet_order_display_image_view)

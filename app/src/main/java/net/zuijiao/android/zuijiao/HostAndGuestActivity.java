@@ -43,6 +43,8 @@ import com.zuijiao.utils.AdapterViewHeightCalculator;
 import com.zuijiao.view.ReviewRatingBar;
 import com.zuijiao.view.RoundImageView;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -258,8 +260,8 @@ public class HostAndGuestActivity extends BaseActivity {
             ImageView head = (RoundImageView) mLastestComment.findViewById(R.id.banquet_comment_item_head);
             ImageLoader.getInstance().displayImage("file://" + review.getReviewer().getAvatarUrl(), head);
             ((TextView) mLastestComment.findViewById(R.id.banquet_comment_item_user_name)).setText(review.getReviewer().getNickName());
-            ((TextView) mLastestComment.findViewById(R.id.banquet_comment_item_issue)).setText(review.getCreatedAt());
-            ((RatingBar) mLastestComment.findViewById(R.id.banquet_comment_item_stars)).setRating(review.getScore());
+            ((TextView) mLastestComment.findViewById(R.id.banquet_comment_item_issue)).setText(review.getEvent().getTitle()+" · "+formatDate(review.getCreatedAt()));
+            ((ReviewRatingBar) mLastestComment.findViewById(R.id.banquet_comment_item_stars)).setRating(review.getScore());
             ((TextView) mLastestComment.findViewById(R.id.banquet_comment_item_comment)).setText(review.getContent());
         } else {
             mEmptyIv.setVisibility(View.VISIBLE);

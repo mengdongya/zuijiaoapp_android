@@ -390,6 +390,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:scaleType="centerCrop"
+                    android:visibility="gone"
                     android:src="@drawable/empty_view_greeting" />
 
                 <Button
@@ -402,7 +403,7 @@
                     android:text="@string/show_all_comments"
                     android:textColor="@color/logout_btn_normal"
                     android:textSize="18sp"
-                    android:visibility="visible" />
+                    android:visibility="gone" />
             </LinearLayout>
         </LinearLayout>
     </ScrollView>

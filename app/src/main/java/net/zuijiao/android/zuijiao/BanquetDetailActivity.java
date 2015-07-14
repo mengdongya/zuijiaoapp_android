@@ -262,8 +262,8 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
             ImageView head = (RoundImageView) mLastComment.findViewById(R.id.banquet_comment_item_head);
             ImageLoader.getInstance().displayImage("file://" + review.getReviewer().getAvatarUrl(), head);
             ((TextView) mLastComment.findViewById(R.id.banquet_comment_item_user_name)).setText(review.getReviewer().getNickName());
-            ((TextView) mLastComment.findViewById(R.id.banquet_comment_item_issue)).setText(review.getCreatedAt());
-            ((RatingBar) mLastComment.findViewById(R.id.banquet_comment_item_stars)).setRating(review.getScore());
+            ((TextView) mLastComment.findViewById(R.id.banquet_comment_item_issue)).setText(review.getEvent().getTitle()+" · "+formatDate(review.getCreatedAt()));
+            ((ReviewRatingBar) mLastComment.findViewById(R.id.banquet_comment_item_stars)).setRating(review.getScore());
             ((TextView) mLastComment.findViewById(R.id.banquet_comment_item_comment)).setText(review.getContent());
         } else {
             mReviewContainer.setVisibility(View.GONE);
@@ -445,7 +445,7 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
         switch (v.getId()) {
             case R.id.banquet_detail_comment_btn:
                 intent.setClass(mContext, BanquetCommentActivity.class);
-                intent.putExtra("host_id",mBanquent.getMaster().getIdentifier());
+                intent.putExtra("host_id", mBanquent.getMaster().getIdentifier());
                 intent.putExtra("totalCount", mReviews.getTotalCount());
                 startActivity(intent);
                 break;

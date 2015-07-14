@@ -28,6 +28,7 @@ import com.zuijiao.view.RefreshAndInitListView;
 import com.zuijiao.view.ReviewRatingBar;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -45,11 +46,13 @@ public class BanquetCommentActivity extends BaseActivity implements RefreshAndIn
     private int host_id;
     private Reviews mReviews;
     private List<Review> reviewList;
+    private String[] weekDays;
 
     @Override
     protected void registerViews() {
         setSupportActionBar(mToolBar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        weekDays = mContext.getResources().getStringArray(R.array.week_days);
         ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(getApplicationContext())
                 .defaultDisplayImageOptions(((ActivityTask) getApplication()).getDefaultDisplayImageOptions()).memoryCacheExtraOptions(50, 50)
                 .threadPoolSize(5).build();
@@ -57,7 +60,7 @@ public class BanquetCommentActivity extends BaseActivity implements RefreshAndIn
         int totalCount = 0;
         if (mTendIntent != null) {
             host_id = mTendIntent.getIntExtra("host_id", -1);
-            totalCount = mTendIntent.getIntExtra("totalCount",0);
+            totalCount = mTendIntent.getIntExtra("totalCount", 0);
         }
         if (host_id == -1) {
             finish();
@@ -83,7 +86,7 @@ public class BanquetCommentActivity extends BaseActivity implements RefreshAndIn
         @Override
         public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
             Intent intent = new Intent(mContext, HostAndGuestActivity.class);
-            intent.putExtra("attendee_id",reviewList.get(position).getReviewer().getIdentifier());
+            intent.putExtra("attendee_id", reviewList.get(position - 1).getReviewer().getIdentifier());
             intent.putExtra("b_host", false);
             startActivity(intent);
         }
@@ -126,10 +129,10 @@ public class BanquetCommentActivity extends BaseActivity implements RefreshAndIn
             } else {
                 holder = (ViewHolder) convertView.getTag();
             }
-            Review review= reviewList.get(position);
+            Review review = reviewList.get(position);
             ImageLoader.getInstance().displayImage("file://" + review.getReviewer().getAvatarUrl(), holder.head);
             holder.name.setText(review.getReviewer().getNickName());
-            holder.issue.setText(review.getCreatedAt());
+            holder.issue.setText(review.getEvent().getTitle() + " · " + formatDate(review.getCreatedAt()));
             holder.stars.setRating(review.getScore());
             holder.comment.setText(review.getContent());
             return convertView;
@@ -155,7 +158,6 @@ public class BanquetCommentActivity extends BaseActivity implements RefreshAndIn
     }
 
     private void netWorkStep(boolean bRefresh) {
-        createDialog();
         if (bRefresh) {
             mRefreshLayout.setRefreshing(true);
             lastedId = null;
@@ -168,7 +170,7 @@ public class BanquetCommentActivity extends BaseActivity implements RefreshAndIn
                     reviewList = mReviews.getReviewList();
                     mAdapter.notifyDataSetChanged();
                 } else {
-                    if(reviewList==null) {
+                    if (reviewList == null) {
                         reviewList = new ArrayList<Review>();
                     }
                     reviewList.addAll(mReviews.getReviewList());
@@ -180,15 +182,30 @@ public class BanquetCommentActivity extends BaseActivity implements RefreshAndIn
                 else
                     mCommentList.setPullLoadEnable(true);
                 mRefreshLayout.setRefreshing(false);
-                finalizeDialog();
             }
         }, new OneParameterExpression<String>() {
             @Override
             public void action(String s) {
                 Toast.makeText(mContext, getString(R.string.notify_net2), Toast.LENGTH_SHORT).show();
-                finalizeDialog();
                 mRefreshLayout.setRefreshing(false);
             }
         });
+    }
+
+    /**
+     * show the date in the specified format
+     *
+     * @param date
+     * @return formatted string
+     */
+    private String formatDate(Date date) {
+        StringBuilder strBuilder = new StringBuilder();
+        strBuilder.append(String.format(mContext.getString(R.string.month_day), date.getMonth() + 1, date.getDate()));
+        strBuilder.append(" ");
+        strBuilder.append(weekDays[date.getDay()]);
+        strBuilder.append(" ");
+        strBuilder.append(String.format(mContext.getString(R.string.banquet_format_time), date.getHours(), date.getMinutes()));
+        strBuilder.append(" ");
+        return strBuilder.toString();
     }
 }

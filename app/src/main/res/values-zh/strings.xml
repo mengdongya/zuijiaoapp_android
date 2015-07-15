@@ -430,7 +430,7 @@
     <string name="umeng_socialize_img_des"></string>
     <string name="umeng_socialize_share">分享</string>
     <string name="com_facebook_loading">Loading...</string>
-    <string name="hosted_banquet">举办了%2$d场料理，累计接待%3$d人</string>
+    <string name="hosted_banquet">举办了%1$d场料理，累计接待%2$d人</string>
     <!-- umeng socialize strings ends-->
 
 </resources>

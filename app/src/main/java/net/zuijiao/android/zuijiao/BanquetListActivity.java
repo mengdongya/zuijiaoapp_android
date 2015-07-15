@@ -22,6 +22,7 @@ import com.zuijiao.android.util.functional.OneParameterExpression;
 import com.zuijiao.android.zuijiao.model.Banquent.Attendee;
 import com.zuijiao.android.zuijiao.model.Banquent.Banquent;
 import com.zuijiao.android.zuijiao.model.Banquent.Banquents;
+import com.zuijiao.android.zuijiao.model.Banquent.Order;
 import com.zuijiao.android.zuijiao.network.Router;
 import com.zuijiao.utils.AdapterViewHeightCalculator;
 
@@ -38,13 +39,10 @@ public class BanquetListActivity extends BaseActivity{
     private Toolbar mToolbar;
     @ViewInject(R.id.host_guest_history_list)
     private ListView mHistoryList;
+    @ViewInject(R.id.banquet_item_text)
+    private View holdAttendeeBanquet;
 
-    @ViewInject(R.id.host_guest_history_title)
-    private TextView mHostAttendee;
-@ViewInject(R.id.host_history_title)
-    private TextView mHostHold;
-
-    private List<Banquent> banquentList;
+    private ArrayList<Banquent> banquentList;
     private String[] weekDays;
     private Boolean isHold = false;
     private int mAttendeeId = -1;
@@ -64,6 +62,7 @@ public class BanquetListActivity extends BaseActivity{
             finish();
             return;
         }
+
         mHistoryList.setAdapter(mHistoryAdapter);
         mHistoryList.setOnItemClickListener(mItemListener);
         networkStep();
@@ -73,13 +72,20 @@ public class BanquetListActivity extends BaseActivity{
         createDialog();
 
         if (isHold) {
-            getSupportActionBar().setTitle(getString(R.string.hosted_banquet));
-            Router.getBanquentModule().themesOfParticipator(mAttendeeId,null,500,new OneParameterExpression<Banquents>() {
+
+            Router.getBanquentModule().themesOfMaster(mAttendeeId,null,500,new OneParameterExpression<Banquents>() {
                 @Override
                 public void action(Banquents banquents) {
+                    int banquetPeopleCount =0;
                     banquentList = banquents.getBanquentList();
+                    if (banquentList.size() != 0){
+                        for (int j= 0;j < banquentList.size();j++){
+                            banquetPeopleCount+=banquentList.get(j).getAttendees().size();
+                        }
+                    }
+                    getSupportActionBar().setTitle(String.format(getString(R.string.hosted_banquet),banquentList.size(),banquetPeopleCount));
                     mHistoryList.setAdapter(mHistoryAdapter);
-                    AdapterViewHeightCalculator.setListViewHeightBasedOnChildren(mHistoryList);
+                    // AdapterViewHeightCalculator.setListViewHeightBasedOnChildren(mHistoryList);
                     finalizeDialog();
                 }
             },new OneParameterExpression<String>(){
@@ -90,13 +96,13 @@ public class BanquetListActivity extends BaseActivity{
                 }
             });
         }else{
-            getSupportActionBar().setTitle(R.string.attended_banquet);
             Router.getBanquentModule().themesOfParticipator(mAttendeeId, null, 500, new OneParameterExpression<Banquents>() {
                 @Override
                 public void action(Banquents banquents) {
                     banquentList = banquents.getBanquentList();
+                    getSupportActionBar().setTitle(String.format(getString(R.string.attended_banquet),banquentList.size()));
                     mHistoryList.setAdapter(mHistoryAdapter);
-                    AdapterViewHeightCalculator.setListViewHeightBasedOnChildren(mHistoryList);
+//                    AdapterViewHeightCalculator.setListViewHeightBasedOnChildren(mHistoryList);
                     finalizeDialog();
                 }
             }
@@ -169,7 +175,7 @@ public class BanquetListActivity extends BaseActivity{
             Picasso.with(mContext).load(banquet.getSurfaceImageUrl()).placeholder(R.drawable.empty_view_greeting).into(holder.image);
             holder.title.setText(banquet.getTitle());
             holder.date.setText(formatDate(banquet.getTime()));
-            holder.price.setText(banquet.getPrice());
+            holder.price.setText(String.format(getString(R.string.price_per_one),banquet.getPrice()));
             holder.situation.setText(String.format(getString(R.string.total_attendee), banquet.getAttendees().size()));
             return convertView;
         }

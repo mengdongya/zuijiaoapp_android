@@ -2,6 +2,7 @@ package net.zuijiao.android.zuijiao;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -135,4 +136,12 @@ public class MyOrderFragment extends Fragment {
         }
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == MainActivity.COMMENT_SUCCESS) {
+            mGoneOrderFragment.onRefresh();
+            mWholeOrderFragment.onRefresh();
+        }
+    }
 }

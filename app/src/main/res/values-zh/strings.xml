@@ -361,6 +361,8 @@
     <string name="send">发送</string>
     <string name="receive_comments">收到%d条评价</string>
     <string name="show_all_comments">查看全部评价</string>
+    <string name="send_comment_success">评价发表成功</string>
+    <string name="toolbar_comments">%d条评价</string>
     <string name="show_all_banquet">查看全部料理</string>
     <!-- umeng socialize strings begin-->
     <!--<string name="pull_to_refresh_pull_label" translatable="false">向下拉动可以刷新</string>-->

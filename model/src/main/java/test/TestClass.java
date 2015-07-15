@@ -7,7 +7,10 @@ import com.zuijiao.android.util.HanyuPinyinHelper;
 import com.zuijiao.android.util.MD5;
 import com.zuijiao.android.util.Optional;
 import com.zuijiao.android.util.functional.LambdaExpression;
+import com.zuijiao.android.util.functional.OneParameterExpression;
 import com.zuijiao.android.zuijiao.model.Banquent.OrderStatus;
+import com.zuijiao.android.zuijiao.model.Banquent.Review;
+import com.zuijiao.android.zuijiao.model.Banquent.Reviews;
 import com.zuijiao.android.zuijiao.model.Gourmet;
 import com.zuijiao.android.zuijiao.model.Gourmets;
 import com.zuijiao.android.zuijiao.model.common.ConfigurationType;
@@ -109,7 +112,19 @@ public class TestClass {
 
 //            Router.getMessageModule().markAsRead(() -> System.out.println("succ"), () -> System.out.println("failed"));
 
-           // Router.getBanquentModule().commentsofBanquent();
+//            Router.getBanquentModule().commentsofBanquent(29, null, 20, new OneParameterExpression<Reviews>() {
+//                @Override
+//                public void action(Reviews reviews) {
+//                    List<Review> reviewList = reviews.getReviewList();
+//                    System.out.println("test success");
+//
+//                }
+//            }, new OneParameterExpression<String>() {
+//                @Override
+//                public void action(String s) {
+//                    System.out.println("test error");
+//                }
+//            });
         });
     }
 

@@ -1,21 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+    xmlns:myattr="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <com.zuijiao.view.BanquetDetailScrollView
-        android:scrollbars="none"
         android:id="@+id/banquet_detail_scroll_view"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_width="match_parent">
+        android:scrollbars="none">
 
         <LinearLayout
-            android:background="@color/white"
-            android:layout_height="match_parent"
             android:layout_width="match_parent"
-            android:paddingBottom="50dip"
-            android:orientation="vertical">
+            android:layout_height="match_parent"
+            android:background="@color/white"
+            android:orientation="vertical"
+            android:paddingBottom="50dip">
 
             <RelativeLayout
                 android:id="@+id/image_container"
@@ -23,494 +24,466 @@
                 android:layout_height="256dip">
 
                 <android.support.v4.view.ViewPager
-                    android:src="@drawable/shanghai"
                     android:id="@+id/banquet_detail_images"
                     android:layout_width="match_parent"
-                    android:scaleType="centerCrop"
                     android:layout_height="match_parent"
-                    android:gravity="center" />
+                    android:gravity="center"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/shanghai" />
 
                 <TextView
-                    android:text="1/3"
                     android:id="@+id/banquet_detail_images_index"
-                    android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
-                    android:textColor="@color/white"
+                    android:layout_height="wrap_content"
                     android:layout_alignParentBottom="true"
                     android:layout_alignParentRight="true"
-                    android:textSize="15sp"
-                    android:background="@drawable/banquet_detail_image_index_bg"
                     android:layout_marginBottom="20dip"
-                    android:layout_marginRight="20dip" />
+                    android:layout_marginRight="20dip"
+                    android:background="@drawable/banquet_detail_image_index_bg"
+                    android:text="1/3"
+                    android:textColor="@color/white"
+                    android:textSize="15sp" />
 
             </RelativeLayout>
 
             <TextView
-                android:text="Sonian的台味厨房"
-                android:singleLine="false"
                 android:id="@+id/banquet_detail_banquet_title"
-                android:textSize="18sp"
-                android:textColor="@color/black"
-                android:layout_gravity="center_horizontal"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="10dip"
+                android:layout_gravity="center_horizontal"
                 android:layout_marginLeft="10dip"
-                android:gravity="center_horizontal"
+                android:layout_marginRight="10dip"
                 android:layout_marginTop="10dip"
-                android:layout_width="wrap_content" />
+                android:gravity="center_horizontal"
+                android:singleLine="false"
+                android:text="Sonian的台味厨房"
+                android:textColor="@color/black"
+                android:textSize="18sp" />
 
             <TextView
-                android:layout_height="wrap_content"
-                android:layout_width="match_parent"
                 android:id="@+id/banquet_detail_banquet_description"
-                android:textSize="14sp"
-                android:textColor="@color/_555555"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dip"
+                android:layout_marginRight="10dip"
                 android:layout_marginTop="10dip"
                 android:lineSpacingExtra="5dip"
+                android:singleLine="false"
                 android:text="2011年从台湾飞到上海定居并拓展新事业 她是Stage Talent创始人、资深时尚活动公关和媒体专家... 在这些华丽惊艳的Title后 Sonian也是一个带着深深台湾味觉记忆的生活美食家. 来「嘴角」吧 与Sonian相遇在「Sonian的台味厨房」"
-                android:layout_marginRight="10dip"
-                android:layout_marginLeft="10dip"
-                android:singleLine="false" />
+                android:textColor="@color/_555555"
+                android:textSize="14sp" />
 
             <com.zuijiao.view.RoundImageView
                 android:id="@+id/banquet_detail_host_head"
-                android:layout_height="60dip"
                 android:layout_width="60dip"
+                android:layout_height="60dip"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="10dip"
                 android:src="@drawable/shanghai" />
 
             <LinearLayout
-                android:layout_height="wrap_content"
                 android:layout_width="match_parent"
-                android:paddingTop="10dip"
-                android:orientation="horizontal">
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingTop="10dip">
 
                 <TextView
-                    android:layout_height="wrap_content"
                     android:layout_width="0dip"
-                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:textSize="16sp"
+                    android:layout_weight="1"
                     android:gravity="right"
+                    android:text="料理人"
                     android:textColor="@color/tv_deep_gray"
-                    android:text="料理人" />
+                    android:textSize="16sp" />
 
                 <TextView
-                    android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:textSize="16sp"
                     android:layout_marginLeft="5dip"
                     android:layout_marginRight="5dip"
+                    android:text="|"
                     android:textColor="@color/tv_deep_gray"
-                    android:text="|" />
+                    android:textSize="16sp" />
 
                 <TextView
                     android:id="@+id/banquet_detail_host_name"
-                    android:layout_height="wrap_content"
                     android:layout_width="0dip"
-                    android:layout_weight="1"
-                    android:paddingRight="10dip"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:textSize="16sp"
+                    android:layout_weight="1"
                     android:gravity="left"
+                    android:paddingRight="10dip"
+                    android:text="Sinian"
                     android:textColor="@color/tv_deep_gray"
-                    android:text="Sinian" />
+                    android:textSize="16sp" />
             </LinearLayout>
 
 
-            <!--<LinearLayout
+            <LinearLayout
                 android:id="@+id/banquet_detail_star_container"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dip"
                 android:layout_width="match_parent"
-                android:gravity="center_horizontal"
-                android:orientation="horizontal">
+                android:layout_height="30dip"
+                android:layout_marginTop="10dip"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:visibility="gone">
 
-                <TextView
-                    android:text="(20)"
-                    android:visibility="invisible"
-                    android:textColor="@color/bg_light_gray2"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
+                <com.zuijiao.view.ReviewRatingBar
+                    android:id="@+id/banquet_comment_rtatingbar"
                     android:layout_width="wrap_content"
-                    android:textSize="14sp" />
-
-                <ImageView
-                    android:layout_height="25dip"
-                    android:layout_width="25dip"
-                    android:layout_marginRight="10dip"
-                    android:src="@drawable/star_bright" />
-
-                <ImageView
-                    android:layout_height="25dip"
-                    android:layout_marginRight="10dip"
-                    android:layout_width="25dip"
-                    android:src="@drawable/star_bright" />
-
-
-                <ImageView
-                    android:layout_height="25dip"
-                    android:layout_marginRight="10dip"
-                    android:layout_width="25dip"
-                    android:src="@drawable/star_bright" />
-
-                <ImageView
-                    android:layout_height="25dip"
-                    android:layout_marginRight="10dip"
-                    android:layout_width="25dip"
-                    android:src="@drawable/star_bright" />
-
-                <ImageView
-                    android:layout_height="25dip"
-                    android:layout_width="25dip"
-                    android:layout_marginRight="10dip"
-                    android:src="@drawable/star_bright" />
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="85dip"
+                    myattr:imageSize="30"
+                    myattr:isIndicator="true"
+                    myattr:ratingBarType="host_score"/>
 
                 <TextView
-                    android:text="(20)"
                     android:id="@+id/banquet_detail_host_score"
-                    android:textColor="@color/bg_light_gray2"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
                     android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="(20)"
+                    android:textColor="@color/bg_light_gray2"
                     android:textSize="14sp" />
 
-            </LinearLayout>-->
+            </LinearLayout>
 
             <Button
-                style="?android:attr/buttonStyleSmall"
                 android:id="@+id/banquet_detail_about_host"
-                android:text="@string/about_cuisine"
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="wrap_content"
                 android:layout_height="35dip"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="10dip"
+                android:background="@drawable/banquet_detail_about_cuisine_btn_bg"
+                android:gravity="center"
                 android:paddingLeft="5dip"
                 android:paddingRight="5dip"
-                android:textSize="14sp"
-                android:layout_marginTop="10dip"
-                android:layout_width="wrap_content"
+                android:text="@string/about_cuisine"
                 android:textColor="@color/white"
-                android:gravity="center"
-                android:background="@drawable/banquet_detail_about_cuisine_btn_bg"
-                android:layout_gravity="center_horizontal" />
+                android:textSize="14sp" />
 
             <LinearLayout
-                android:layout_height="wrap_content"
-                android:layout_width="match_parent"
                 android:id="@+id/banquet_detail_menu_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:orientation="vertical">
 
                 <View
+                    android:layout_width="match_parent"
                     android:layout_height="1dip"
                     android:layout_marginTop="10dip"
-                    android:layout_width="match_parent"
                     android:background="@color/bg_light_gray2" />
 
                 <TextView
                     android:id="@+id/banquet_detail_menu_title"
-                    android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:lines="2"
-                    android:lineSpacingExtra="5dip"
                     android:layout_marginTop="10dip"
                     android:gravity="center_horizontal"
+                    android:lineSpacingExtra="5dip"
+                    android:lines="2"
+                    android:text="菜单\nmenu"
                     android:textColor="@color/black"
-                    android:textSize="18sp"
-                    android:text="菜单\nmenu" />
+                    android:textSize="18sp" />
 
                 <TextView
                     android:id="@+id/banquet_detail_menu_content"
-                    android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:lineSpacingExtra="5dip"
                     android:layout_marginTop="10dip"
                     android:gravity="center_horizontal"
+                    android:lineSpacingExtra="5dip"
+                    android:text="山楂梅子洋柿子\n乌龙温泉蛋\n禅院素鸭配桂花糖藕\n颐和四季有机色拉配秘制酱汁\n红茶孜然薯格羊排\n茶油冬菜龙俐鱼\n烟熏鸭脯养生小炒"
                     android:textColor="@color/_555555"
-                    android:textSize="14sp"
-                    android:text="山楂梅子洋柿子\n乌龙温泉蛋\n禅院素鸭配桂花糖藕\n颐和四季有机色拉配秘制酱汁\n红茶孜然薯格羊排\n茶油冬菜龙俐鱼\n烟熏鸭脯养生小炒" />
+                    android:textSize="14sp" />
 
             </LinearLayout>
 
             <LinearLayout
-                android:layout_height="wrap_content"
-                android:layout_width="match_parent"
                 android:id="@+id/banquet_detail_char_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:orientation="vertical">
 
                 <View
+                    android:layout_width="match_parent"
                     android:layout_height="1dip"
                     android:layout_marginTop="10dip"
-                    android:layout_width="match_parent"
                     android:background="@color/bg_light_gray2" />
 
                 <TextView
                     android:id="@+id/banquet_detail_chara_title"
-                    android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:lines="2"
-                    android:lineSpacingExtra="5dip"
                     android:layout_marginTop="10dip"
                     android:gravity="center_horizontal"
+                    android:lineSpacingExtra="5dip"
+                    android:lines="2"
+                    android:text="特色\nCharacteristic"
                     android:textColor="@color/black"
-                    android:textSize="18sp"
-                    android:text="特色\nCharacteristic" />
+                    android:textSize="18sp" />
 
                 <TextView
                     android:id="@+id/banquet_detail_chara_content"
-                    android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:lineSpacingExtra="5dip"
                     android:layout_marginTop="10dip"
                     android:gravity="center_horizontal"
+                    android:lineSpacingExtra="5dip"
+                    android:text="我家有， 一直节课路数的印象，超静音空气净化器"
                     android:textColor="@color/_555555"
-                    android:textSize="14sp"
-                    android:text="我家有， 一直节课路数的印象，超静音空气净化器" />
+                    android:textSize="14sp" />
             </LinearLayout>
 
             <View
+                android:layout_width="match_parent"
                 android:layout_height="1dip"
                 android:layout_marginTop="10dip"
-                android:layout_width="match_parent"
                 android:background="@color/bg_light_gray2" />
 
             <TextView
                 android:id="@+id/banquet_detail_instruction_title"
-                android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:lines="2"
-                android:lineSpacingExtra="5dip"
                 android:layout_marginTop="10dip"
                 android:gravity="center_horizontal"
+                android:lineSpacingExtra="5dip"
+                android:lines="2"
+                android:text="赏味说明\nInstruction"
                 android:textColor="@color/black"
-                android:textSize="18sp"
-                android:text="赏味说明\nInstruction" />
+                android:textSize="18sp" />
 
             <RelativeLayout
                 android:id="@+id/banquet_detail_instruction_content_position"
-                android:layout_height="wrap_content"
                 android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="15dip"
-                android:paddingRight="8dip"
-                android:paddingLeft="8dip">
+                android:paddingLeft="8dip"
+                android:paddingRight="8dip">
 
                 <ImageView
-                    android:layout_height="20dip"
                     android:id="@+id/banquet_detail_location_icon"
                     android:layout_width="20dip"
+                    android:layout_height="20dip"
                     android:layout_centerVertical="true"
                     android:src="@drawable/banquet_detail_location" />
 
                 <TextView
-                    android:layout_height="wrap_content"
-                    android:textSize="14sp"
-                    android:textColor="@color/_555555"
-                    android:layout_centerVertical="true"
-                    android:layout_width="match_parent"
-                    android:layout_marginLeft="20dip"
                     android:id="@+id/banquet_detail_location_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="20dip"
+                    android:layout_toRightOf="@id/banquet_detail_location_icon"
                     android:text="上海市黄浦区之因缘"
-                    android:layout_toRightOf="@id/banquet_detail_location_icon" />
+                    android:textColor="@color/_555555"
+                    android:textSize="14sp" />
 
                 <View
-                    android:layout_height="1dip"
-                    android:layout_marginTop="10dip"
                     android:layout_width="match_parent"
+                    android:layout_height="1dip"
                     android:layout_below="@id/banquet_detail_location_text"
+                    android:layout_marginTop="10dip"
                     android:background="@color/bg_gray_white" />
             </RelativeLayout>
 
             <RelativeLayout
                 android:id="@+id/banquet_detail_instruction_content_date"
-                android:layout_height="wrap_content"
                 android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="15dip"
-                android:paddingRight="8dip"
-                android:paddingLeft="8dip">
+                android:paddingLeft="8dip"
+                android:paddingRight="8dip">
 
                 <ImageView
-                    android:layout_height="20dip"
                     android:id="@+id/banquet_detail_date_icon"
                     android:layout_width="20dip"
+                    android:layout_height="20dip"
                     android:layout_centerVertical="true"
                     android:src="@drawable/banquet_detail_date" />
 
                 <TextView
-                    android:layout_height="wrap_content"
-                    android:textSize="14sp"
                     android:id="@+id/banquet_detail_date_text"
-                    android:layout_centerVertical="true"
                     android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
                     android:layout_marginLeft="20dip"
-                    android:textColor="@color/_555555"
+                    android:layout_toRightOf="@id/banquet_detail_date_icon"
                     android:text="4月18日 周六 18：00"
-                    android:layout_toRightOf="@id/banquet_detail_date_icon" />
+                    android:textColor="@color/_555555"
+                    android:textSize="14sp" />
 
                 <View
-                    android:layout_height="1dip"
-                    android:layout_marginTop="10dip"
                     android:layout_width="match_parent"
+                    android:layout_height="1dip"
                     android:layout_below="@id/banquet_detail_date_text"
+                    android:layout_marginTop="10dip"
                     android:background="@color/bg_gray_white" />
             </RelativeLayout>
 
             <RelativeLayout
-                android:layout_height="wrap_content"
-                android:layout_width="match_parent"
-                android:layout_marginTop="15dip"
                 android:id="@+id/banquet_detail_instruction_content_price"
-                android:paddingRight="8dip"
-                android:paddingLeft="8dip">
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dip"
+                android:paddingLeft="8dip"
+                android:paddingRight="8dip">
 
                 <ImageView
-                    android:layout_height="20dip"
                     android:id="@+id/banquet_detail_price_icon"
                     android:layout_width="20dip"
+                    android:layout_height="20dip"
                     android:layout_centerVertical="true"
                     android:src="@drawable/banquet_detail_price" />
 
                 <TextView
-                    android:layout_height="wrap_content"
-                    android:textSize="14sp"
                     android:id="@+id/banquet_detail_price_text"
-                    android:layout_centerVertical="true"
                     android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
                     android:layout_marginLeft="20dip"
+                    android:layout_toRightOf="@id/banquet_detail_price_icon"
                     android:text="198元/位"
                     android:textColor="@color/_555555"
-                    android:layout_toRightOf="@id/banquet_detail_price_icon" />
+                    android:textSize="14sp" />
 
                 <View
-                    android:layout_height="1dip"
-                    android:layout_marginTop="10dip"
                     android:layout_width="match_parent"
+                    android:layout_height="1dip"
                     android:layout_below="@id/banquet_detail_price_text"
+                    android:layout_marginTop="10dip"
                     android:background="@color/bg_gray_white" />
             </RelativeLayout>
 
             <RelativeLayout
                 android:id="@+id/banquet_detail_instruction_content_requirement"
-                android:layout_height="wrap_content"
                 android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="15dip"
-                android:paddingRight="8dip"
-                android:paddingLeft="8dip">
+                android:paddingLeft="8dip"
+                android:paddingRight="8dip">
 
                 <ImageView
-                    android:layout_height="20dip"
                     android:id="@+id/banquet_detail_request_icon"
                     android:layout_width="20dip"
+                    android:layout_height="20dip"
                     android:layout_centerVertical="true"
                     android:src="@drawable/banquet_detail_requirment" />
 
                 <TextView
-                    android:layout_height="wrap_content"
-                    android:textSize="14sp"
-                    android:layout_centerVertical="true"
                     android:id="@+id/banquet_detail_request_text"
                     android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
                     android:layout_marginLeft="20dip"
-                    android:textColor="@color/_555555"
+                    android:layout_toRightOf="@id/banquet_detail_request_icon"
                     android:text="这里是活动要求， 可换行， 这里是活动要求，可换行，里是活动要求，可换行，里是活动要求，可换行，里是活动要求，可换行， 这里是活动要求， 可换行"
-                    android:layout_toRightOf="@id/banquet_detail_request_icon" />
+                    android:textColor="@color/_555555"
+                    android:textSize="14sp" />
 
                 <View
-                    android:layout_height="1dip"
-                    android:layout_marginTop="5dip"
                     android:layout_width="match_parent"
+                    android:layout_height="1dip"
                     android:layout_below="@id/banquet_detail_request_text"
+                    android:layout_marginTop="5dip"
                     android:background="@color/bg_gray_white" />
             </RelativeLayout>
 
             <RelativeLayout
-                android:layout_height="wrap_content"
-                android:layout_width="match_parent"
                 android:id="@+id/banquet_detail_instruction_content_status"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="15dip"
-                android:paddingRight="8dip"
-                android:paddingLeft="8dip">
+                android:paddingLeft="8dip"
+                android:paddingRight="8dip">
 
                 <ImageView
-                    android:layout_height="20dip"
                     android:id="@+id/banquet_detail_status_icon"
                     android:layout_width="20dip"
+                    android:layout_height="20dip"
                     android:layout_centerVertical="true"
                     android:src="@drawable/person_count" />
 
                 <TextView
                     android:id="@+id/banquet_detail_instruct_status"
-                    android:layout_height="wrap_content"
-                    android:textSize="15sp"
-                    android:layout_centerVertical="true"
                     android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
                     android:layout_marginLeft="20dip"
+                    android:layout_toRightOf="@id/banquet_detail_status_icon"
                     android:text="可接纳3-5人， 已经预订3人"
-                    android:layout_toRightOf="@id/banquet_detail_status_icon" />
+                    android:textSize="15sp" />
 
             </RelativeLayout>
 
             <GridView
-                android:layout_marginTop="10dip"
                 android:id="@+id/banquet_detail_ordered_person"
-                android:layout_height="wrap_content"
                 android:layout_width="match_parent"
-                android:verticalSpacing="5dip"
+                android:layout_height="wrap_content"
                 android:layout_marginBottom="10dip"
+                android:layout_marginTop="10dip"
                 android:horizontalSpacing="10dip"
-                android:numColumns="5" />
+                android:numColumns="5"
+                android:verticalSpacing="5dip" />
 
             <LinearLayout
                 android:id="@+id/banquet_detail_review_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:visibility="gone"
-                >
+                android:visibility="gone">
+
                 <View
+                    android:layout_width="match_parent"
                     android:layout_height="1dip"
-                    android:visibility="gone"
                     android:layout_marginTop="10dip"
                     android:background="@color/bg_light_gray2"
-                    android:layout_width="match_parent" />
+                    android:visibility="gone" />
 
                 <TextView
                     android:id="@+id/banquet_detail_review_title"
-                    android:text="评价\nReviews"
-                    android:visibility="visible"
-                    android:singleLine="false"
-                    android:textSize="16sp"
-                    android:textColor="@color/tv_deep_gray"
-                    android:layout_gravity="center_horizontal"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="10dip"
+                    android:layout_gravity="center_horizontal"
                     android:layout_marginLeft="10dip"
-                    android:gravity="center_horizontal"
+                    android:layout_marginRight="10dip"
                     android:layout_marginTop="10dip"
-                    android:layout_width="wrap_content" />
+                    android:gravity="center_horizontal"
+                    android:singleLine="false"
+                    android:text="评价\nReviews"
+                    android:textColor="@color/tv_deep_gray"
+                    android:textSize="16sp"
+                    android:visibility="visible" />
 
                 <include
-                layout="@layout/banquet_comment_item"
-                android:id="@+id/banquet_detail_lastest_comment" />
+                    android:id="@+id/banquet_detail_lastest_comment"
+                    layout="@layout/banquet_comment_item" />
 
                 <Button
-                    android:text="@string/all_comments"
-                    android:visibility="visible"
-                    style="?android:attr/buttonStyleSmall"
                     android:id="@+id/banquet_detail_comment_btn"
+                    style="?android:attr/buttonStyleSmall"
+                    android:layout_width="wrap_content"
                     android:layout_height="35dip"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="10dip"
+                    android:layout_marginBottom="10dip"
+                    android:background="@drawable/banquet_detail_about_cuisine_btn_bg"
+                    android:gravity="center"
                     android:paddingLeft="5dip"
                     android:paddingRight="5dip"
-                    android:layout_marginTop="10dip"
-                    android:layout_width="wrap_content"
-                    android:textSize="14sp"
+                    android:text="@string/all_comments"
                     android:textColor="@color/white"
-                    android:gravity="center"
-                    android:background="@drawable/banquet_detail_about_cuisine_btn_bg"
-                    android:layout_gravity="center_horizontal" />
+                    android:textSize="14sp"
+                    android:visibility="visible" />
             </LinearLayout>
         </LinearLayout>
 
@@ -528,73 +501,73 @@
         android:background="@drawable/bg_input_diviver" />
 
     <RelativeLayout
-        android:background="@color/white"
-        android:layout_alignParentBottom="true"
         android:id="@+id/banquet_detail_bottom"
+        android:layout_width="match_parent"
         android:layout_height="50dip"
-        android:layout_width="match_parent">
+        android:layout_alignParentBottom="true"
+        android:background="@color/white">
 
         <RelativeLayout
             android:id="@+id/banquet_detail_bottom_can_order"
-            android:layout_height="match_parent"
-            android:layout_width="match_parent">
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
             <TextView
                 android:id="@+id/banquet_detail_bottom_price"
-                android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
-                android:text="198"
+                android:layout_height="wrap_content"
                 android:layout_marginLeft="10dip"
                 android:layout_marginTop="5dip"
+                android:text="198"
                 android:textColor="@color/banquet_price_text"
                 android:textSize="18sp" />
 
             <TextView
-                android:layout_toRightOf="@id/banquet_detail_bottom_price"
-                android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
-                android:text="@string/price_unit"
-                android:layout_marginLeft="3dip"
-                android:textColor="@color/banquet_price_text"
+                android:layout_height="wrap_content"
                 android:layout_alignBottom="@id/banquet_detail_bottom_price"
+                android:layout_marginLeft="3dip"
+                android:layout_toRightOf="@id/banquet_detail_bottom_price"
+                android:text="@string/price_unit"
+                android:textColor="@color/banquet_price_text"
                 android:textSize="14sp" />
 
             <TextView
                 android:id="@+id/banquet_detail_bottom_date"
-                android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
-                android:layout_marginBottom="5dip"
-                android:text="14月18日 周六 18：00"
-                android:layout_marginLeft="10dip"
+                android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
+                android:layout_marginBottom="5dip"
+                android:layout_marginLeft="10dip"
+                android:text="14月18日 周六 18：00"
                 android:textColor="@color/bg_light_gray"
                 android:textSize="13sp" />
 
             <Button
-                android:background="@drawable/banquet_detail_order_bg"
                 android:id="@+id/banquet_detail_bottom_order"
-                android:layout_height="match_parent"
                 android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="10dip"
+                android:background="@drawable/banquet_detail_order_bg"
+                android:gravity="center"
                 android:paddingLeft="5dip"
                 android:paddingRight="5dip"
                 android:text="@string/order_now"
-                android:gravity="center"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
                 android:textColor="@color/banquet_theme"
-                android:textSize="19sp"
-                android:layout_marginRight="10dip" />
+                android:textSize="19sp" />
         </RelativeLayout>
 
 
         <TextView
-            android:layout_height="match_parent"
-            android:layout_width="match_parent"
             android:id="@+id/banquet_detail_finished"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:gravity="center"
-            android:textSize="20sp"
-            android:visibility="gone"
+            android:text="@string/already_finished"
             android:textColor="@color/tv_deep_gray"
-            android:text="@string/already_finished" />
+            android:textSize="20sp"
+            android:visibility="gone" />
     </RelativeLayout>
 </RelativeLayout>

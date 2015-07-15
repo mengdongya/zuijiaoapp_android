@@ -4,6 +4,7 @@ import com.google.gson.annotations.SerializedName;
 import com.zuijiao.android.zuijiao.model.user.TinyUser;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * Created by yitianhao on 2015/7/13.
@@ -16,7 +17,7 @@ public class Review implements Serializable {
     @SerializedName("score")
     private int score;
     @SerializedName("createdAt")
-    private String createdAt;
+    private Date createdAt;
     @SerializedName("event")
     private CommentEvent event;
     @SerializedName("user")
@@ -34,7 +35,7 @@ public class Review implements Serializable {
         return score;
     }
 
-    public String getCreatedAt() {
+    public Date getCreatedAt() {
         return createdAt;
     }
 

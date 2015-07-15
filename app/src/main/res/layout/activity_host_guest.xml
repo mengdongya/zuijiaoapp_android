@@ -72,9 +72,9 @@
             <LinearLayout
                 android:id="@+id/ll_host_comment_stars"
                 android:layout_width="match_parent"
-                android:layout_height="30dip"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="10dip"
-                android:gravity="center_vertical"
+                android:gravity="center"
                 android:orientation="horizontal"
                 android:visibility="gone">
 
@@ -83,7 +83,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_marginLeft="85dip"
                     myattr:imageSize="30"
                     myattr:isIndicator="true"
                     myattr:ratingBarType="host_score">
@@ -95,7 +94,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:paddingRight="30dip"
+                    android:layout_marginTop="3dip"
+                    android:textSize="14sp"
                     android:text="(20)" />
             </LinearLayout>
 
@@ -352,8 +352,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/bg_white_round"
-                android:orientation="vertical"
-                >
+                android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/banquet_detail_review_title"
@@ -385,13 +384,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
+
                 <ImageView
                     android:id="@+id/banquet_empty_review_iv"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:scaleType="centerCrop"
-                    android:visibility="gone"
-                    android:src="@drawable/empty_view_greeting" />
+                    android:src="@drawable/empty_view_greeting"
+                    android:visibility="gone" />
 
                 <Button
                     android:id="@+id/banquet_detail_comment_btn"

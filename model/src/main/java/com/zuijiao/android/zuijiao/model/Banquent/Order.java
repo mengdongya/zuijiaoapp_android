@@ -35,6 +35,12 @@ public class Order implements Serializable {
     private String status;
     @SerializedName("time")
     private Date holdTime;
+    @SerializedName("isCommented")
+    private Boolean isCommented;
+
+    public Boolean getIsCommented() {
+        return isCommented;
+    }
 
     public Integer getIdentifier() {
         return identifier;

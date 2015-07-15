@@ -4,7 +4,7 @@ package com.zuijiao.android.zuijiao.model.Banquent;
  * Created by user on 6/18/15.
  */
 public enum OrderStatus {
-    Waiting, Finished, Canceled, All;
+    Waiting, Finished, Canceled, Uncomment, All;
 
     public static OrderStatus fromString(String s) {
         switch (s) {
@@ -16,6 +16,8 @@ public enum OrderStatus {
 
             case "canceled":
                 return Canceled;
+            case "uncomment":
+                return Uncomment;
 
             default:
                 return All;
@@ -34,6 +36,10 @@ public enum OrderStatus {
                 break;
             case Canceled:
                 rawValue = "canceled";
+                break;
+            case Uncomment:
+                rawValue = "uncomment";
+                break;
             case All:
                 rawValue = "";
         }

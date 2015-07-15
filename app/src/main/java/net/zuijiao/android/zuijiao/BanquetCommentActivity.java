@@ -130,7 +130,7 @@ public class BanquetCommentActivity extends BaseActivity implements RefreshAndIn
                 holder = (ViewHolder) convertView.getTag();
             }
             Review review = reviewList.get(position);
-            ImageLoader.getInstance().displayImage("file://" + review.getReviewer().getAvatarUrl(), holder.head);
+            ImageLoader.getInstance().displayImage(review.getReviewer().getAvatarURLSmall().get(), holder.head);
             holder.name.setText(review.getReviewer().getNickName());
             holder.issue.setText(review.getEvent().getTitle() + " · " + formatDate(review.getCreatedAt()));
             holder.stars.setRating(review.getScore());

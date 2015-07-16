@@ -109,8 +109,8 @@ public class HostAndGuestActivity extends BaseActivity {
     @ViewInject(R.id.ll_host_attendee_banquet)
     private LinearLayout llAttendeeBanquet;
 
-    @ViewInject(R.id.attendee_detail_info_item_view)
-    private View attendee_detail_info_item_view;
+    /*@ViewInject(R.id.attendee_detail_info_item_view)
+    private View attendee_detail_info_item_view;*/
     @ViewInject(R.id.banquet_history_item_image_hold)
     private ImageView banquetImageHoldNull;
     @ViewInject(R.id.banquet_history_item_image_attendee)
@@ -148,9 +148,9 @@ public class HostAndGuestActivity extends BaseActivity {
         }
 
         ((TextView) mAttendeeCooking.findViewById(R.id.attendee_detail_info_item_title)).setText(getString(R.string.cooking));
-        ((TextView) mAttendeeSkilled.findViewById(R.id.attendee_detail_info_item_title)).setText(getString(R.string.skilled));
-        ((TextView) mAttendeePlace.findViewById(R.id.attendee_detail_info_item_title)).setText(getString(R.string.place));
-        ((TextView) mAttendeeAddress.findViewById(R.id.attendee_detail_info_item_title)).setText(getString(R.string.address));
+        ((TextView) mAttendeeSkilled.findViewById(R.id.attendee_detail_info_item_title)).setText(getString(R.string.skilled)+"  ");
+        ((TextView) mAttendeePlace.findViewById(R.id.attendee_detail_info_item_title)).setText(getString(R.string.place)+"  ");
+        ((TextView) mAttendeeAddress.findViewById(R.id.attendee_detail_info_item_title)).setText(getString(R.string.address)+"  ");
         ((TextView) mAttendeeCareer.findViewById(R.id.attendee_detail_info_item_title)).setText(getString(R.string.industry));
         ((TextView) mAttendeeLanguage.findViewById(R.id.attendee_detail_info_item_title)).setText(getString(R.string.my_language));
         ((TextView) mAttendeeEducation.findViewById(R.id.attendee_detail_info_item_title)).setText(getString(R.string.education));

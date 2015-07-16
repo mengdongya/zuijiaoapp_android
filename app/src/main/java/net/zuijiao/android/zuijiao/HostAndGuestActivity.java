@@ -109,6 +109,8 @@ public class HostAndGuestActivity extends BaseActivity {
     @ViewInject(R.id.ll_host_attendee_banquet)
     private LinearLayout llAttendeeBanquet;
 
+    @ViewInject(R.id.attendee_detail_info_item_view)
+    private View attendee_detail_info_item_view;
     @ViewInject(R.id.banquet_history_item_image_hold)
     private ImageView banquetImageHoldNull;
     @ViewInject(R.id.banquet_history_item_image_attendee)
@@ -171,7 +173,6 @@ public class HostAndGuestActivity extends BaseActivity {
         Router.getBanquentModule().themesOfParticipator(mAttendeeId, null, 500, new OneParameterExpression<Banquents>() {
             @Override
             public void action(Banquents banquents) {
-
                 banquentAttendeeList = banquents.getBanquentList();
                 mHostAttendee.setText(String.format(getString(R.string.attended_banquet), banquentAttendeeList.size()));
                 Banquent banquent = null;
@@ -180,7 +181,7 @@ public class HostAndGuestActivity extends BaseActivity {
                     banquetImageAttendeeNull.setVisibility(View.VISIBLE);
                     mAttendeeBanquet.setVisibility(View.GONE);
                 } else {
-                    banquent = banquentAttendeeList.get(banquentAttendeeList.size() - 1);
+                    banquent = banquentAttendeeList.get(0);
                     Picasso.with(mContext).load(banquent.getSurfaceImageUrl()).placeholder(R.drawable.empty_view_greeting).into((ImageView) holdBanquet.findViewById(R.id.banquet_history_item_image));
                     ((TextView) holdAttendeeBanquet.findViewById(R.id.banquet_history_item_title)).setText(banquent.getTitle());
                     ((TextView) holdAttendeeBanquet.findViewById(R.id.banquet_history_item_date)).setText(formatDate(banquent.getTime()));
@@ -233,8 +234,7 @@ public class HostAndGuestActivity extends BaseActivity {
 
                     finalizeDialog();
                 }
-            }
-                    , new OneParameterExpression<String>() {
+            }, new OneParameterExpression<String>() {
                 @Override
                 public void action(String s) {
                     Toast.makeText(mContext, getString(R.string.get_history_list_failed), Toast.LENGTH_SHORT).show();
@@ -265,7 +265,7 @@ public class HostAndGuestActivity extends BaseActivity {
             mHoldAllBanquet.setVisibility(View.GONE);
             mHoldBanquet.setVisibility(View.GONE);
             mAllComment.setVisibility(View.GONE);
-            // mHostCommentList.setVisibility(View.GONE);
+
             Router.getAccountModule().attendeeInfo(mAttendeeId, new OneParameterExpression<Attendee>() {
                 @Override
                 public void action(Attendee attendee) {

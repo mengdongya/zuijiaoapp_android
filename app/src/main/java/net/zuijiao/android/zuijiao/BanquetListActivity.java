@@ -52,7 +52,8 @@ public class BanquetListActivity extends BaseActivity{
     protected void registerViews() {
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
+        mHistoryList.setDivider(null);
+        mHistoryList.setDividerHeight(0);
         weekDays = mContext.getResources().getStringArray(R.array.week_days);
         if (mTendIntent != null) {
             isHold = mTendIntent.getBooleanExtra("b_hold", false);

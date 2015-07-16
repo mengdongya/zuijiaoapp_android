@@ -224,7 +224,6 @@
                 android:id="@+id/ll_host_hold_banquet"
                 android:orientation="vertical">
 
-
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dip"
@@ -260,6 +259,7 @@
                 <ImageView
                     android:id="@+id/banquet_history_item_image_hold"
                     android:src="@drawable/empty_view_greeting2"
+                    android:layout_marginTop="10dip"
                     android:layout_marginLeft="8dip"
                     android:layout_marginRight="8dip"
                     android:visibility="gone"
@@ -270,7 +270,9 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dip"
-                    android:background="@color/bg_light_gray2" />
+                    android:layout_marginLeft="10dip"
+                    android:layout_marginRight="10dip"
+                    android:background="@color/bg_gray_white" />
 
             </LinearLayout>
 
@@ -282,6 +284,8 @@
                 android:background="@drawable/bg_white_round_corner"
                 android:gravity="center"
                 android:text="@string/show_all_banquet"
+                android:layout_marginLeft="8dip"
+                android:layout_marginRight="8dip"
                 android:textColor="@color/banquet_theme"
                 android:textSize="18sp"
                 android:visibility="visible" />
@@ -295,7 +299,9 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dip"
-                    android:background="@color/bg_light_gray2"
+                    android:layout_marginLeft="10dip"
+                    android:layout_marginRight="10dip"
+                    android:background="@color/bg_gray_white"
                     />
                 <View
                     android:layout_width="match_parent"
@@ -325,6 +331,7 @@
                 <ImageView
                     android:id="@+id/banquet_history_item_image_attendee"
                     android:src="@drawable/empty_view_greeting2"
+                    android:layout_marginTop="10dip"
                     android:layout_marginLeft="8dip"
                     android:layout_marginRight="8dip"
                     android:visibility="gone"
@@ -335,6 +342,8 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dip"
+                    android:layout_marginLeft="10dip"
+                    android:layout_marginRight="10dip"
                     android:background="@color/bg_light_gray2" />
 
             </LinearLayout>
@@ -348,6 +357,8 @@
                 android:layout_height="40dip"
                 android:background="@drawable/bg_white_round_corner"
                 android:gravity="center"
+                android:layout_marginLeft="8dip"
+                android:layout_marginRight="8dip"
                 android:text="@string/show_all_banquet"
                 android:textColor="@color/banquet_theme"
                 android:textSize="18sp"

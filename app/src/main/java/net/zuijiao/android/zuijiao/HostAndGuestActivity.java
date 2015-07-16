@@ -271,6 +271,7 @@ public class HostAndGuestActivity extends BaseActivity {
                     registerViewsByAttendee();
                     finalizeDialog();
                 }
+
             }, new OneParameterExpression<String>() {
                 @Override
                 public void action(String errorMsg) {

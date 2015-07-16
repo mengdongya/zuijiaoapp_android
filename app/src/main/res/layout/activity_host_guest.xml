@@ -69,6 +69,7 @@
                 android:textColor="@color/_555555"
                 android:textSize="14sp" />
 
+
             <LinearLayout
                 android:id="@+id/ll_host_comment_stars"
                 android:layout_width="match_parent"
@@ -77,6 +78,7 @@
                 android:gravity="center"
                 android:orientation="horizontal"
                 android:visibility="gone">
+
 
                 <com.zuijiao.view.ReviewRatingBar
                     android:id="@+id/host_comment_rtatingbar"

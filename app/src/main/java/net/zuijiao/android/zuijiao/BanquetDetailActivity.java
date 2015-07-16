@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
@@ -34,6 +35,7 @@ import com.zuijiao.android.zuijiao.model.user.User;
 import com.zuijiao.android.zuijiao.network.Router;
 import com.zuijiao.utils.AdapterViewHeightCalculator;
 import com.zuijiao.view.BanquetDetailScrollView;
+import com.zuijiao.view.RoundImageView;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -158,11 +160,17 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
      * display ordered user's avatar
      */
     private BaseAdapter mGridAdapter = new BaseAdapter() {
+        private int height = 0;
         @Override
         public int getCount() {
             if (mBanquent.getAttendees() != null)
                 return mBanquent.getAttendees().size();
             return 0;
+        }
+
+        public int getHeight (){
+
+            return 1 ;
         }
 
         @Override
@@ -177,18 +185,19 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            View contentView = LayoutInflater.from(mContext).inflate(R.layout.user_info_favor_item, null);
+            if(convertView == null)
+                convertView = LayoutInflater.from(mContext).inflate(R.layout.user_info_favor_item, null);
             TinyUser user = mBanquent.getAttendees().get(position);
-            ImageView userHead = (ImageView) contentView.findViewById(R.id.user_info_favor_item_image);
-            TextView userName = (TextView) contentView.findViewById(R.id.user_info_favor_item_text);
+            ImageView userHead = (ImageView) convertView.findViewById(R.id.user_info_favor_item_image);
+           convertView.findViewById(R.id.user_info_favor_item_text).setVisibility(View.GONE);
             if (user.getAvatarURLSmall().isPresent() && !user.getAvatarURLSmall().get().equals("http://pic.zuijiao.net")) {
                 String url = user.getAvatarURLSmall().get();
                 Log.i("outofmemory", url);
                 Picasso.with(mContext).load(user.getAvatarURLSmall().get()).placeholder(R.drawable.default_user_head).into(userHead);
             }
 //            userName.setText(user.getNickName());
-            userName.setVisibility(View.GONE);
-            return contentView;
+//            userName.setVisibility(View.GONE);
+            return convertView;
         }
     };
 

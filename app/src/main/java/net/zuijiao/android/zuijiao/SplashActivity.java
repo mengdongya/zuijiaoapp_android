@@ -1,24 +1,32 @@
 package net.zuijiao.android.zuijiao;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Build.VERSION;
 import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 
 import com.lidroid.xutils.view.annotation.ContentView;
 import com.lidroid.xutils.view.annotation.ViewInject;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.umeng.message.PushAgent;
 import com.zuijiao.android.util.Optional;
 import com.zuijiao.android.zuijiao.model.Gourmet;
+import com.zuijiao.controller.ActivityTask;
 import com.zuijiao.controller.FileManager;
 import com.zuijiao.controller.PreferenceManager;
 import com.zuijiao.controller.PreferenceManager.PreferenceInfo;
 import com.zuijiao.db.DBOpenHelper;
+import com.zuijiao.utils.OSUtil;
 
+import java.io.InputStream;
 import java.util.List;
 
 /**
@@ -34,7 +42,8 @@ public class SplashActivity extends BaseActivity {
     private boolean loadResult = false;
     //    if true ,do not jump to main
     private boolean onBackPressed = false;
-
+    @ViewInject(R.id.splash_bg)
+    private ImageView mImageView ;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         PushAgent mPushAgent = PushAgent.getInstance(getApplicationContext());
@@ -112,6 +121,8 @@ public class SplashActivity extends BaseActivity {
                     WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
         }
         initPreferenceInfo();
+        InputStream is = getResources().openRawResource(R.drawable.splash_bg);
+        mImageView.setImageBitmap(BitmapFactory.decodeStream(is));
         if (mPreferInfo.isAppFirstLaunch()) {
             pb.setVisibility(View.GONE);
         }

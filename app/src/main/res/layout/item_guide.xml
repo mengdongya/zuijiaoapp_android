@@ -10,7 +10,6 @@
         android:layout_weight="1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:src="@drawable/welcome1"
         android:scaleType="fitXY"
         android:layout_above="@+id/guide_text" />
 
@@ -22,6 +21,6 @@
         android:layout_width="match_parent"
         android:layout_marginBottom="50dip"
         android:layout_alignParentBottom="true"
-        android:src="@drawable/guide_text1" />
+       />
 
 </LinearLayout>

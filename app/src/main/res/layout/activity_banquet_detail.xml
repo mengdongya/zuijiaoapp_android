@@ -459,8 +459,8 @@
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 android:verticalSpacing="5dip"
-                android:layout_marginBottom="10dip"
-                android:horizontalSpacing="10dip"
+                android:horizontalSpacing="5dip"
+                android:columnWidth="100dp"
                 android:numColumns="5" />
 
             <LinearLayout

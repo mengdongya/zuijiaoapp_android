@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">嘴角</string>
-    <string name="current_version_code">2.0.1</string>
+    <string name="current_version_code">2.0.2</string>
     <string name="welcome_word">发现最美的味道</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
@@ -347,7 +347,6 @@
     <string name="order_message">订单详情</string>
     <string name="support_more_city_soon">请相信我们会很快支持更多的城市</string>
     <string name="over_evaluate">已评价</string>
-    <string name="title_activity_review">ReviewActivity</string>
     <string name="review_content_hint">说说对本次赏味的体验吧</string>
     <string name="notify_review_score_empty">请选择评分</string>
     <string name="notify_review_content_empty">评价内容不能为空</string>
@@ -355,4 +354,5 @@
     <string name="send">发送</string>
     <string name="receive_comments">收到%d条评价</string>
     <string name="show_all_comments">查看全部评价</string>
+    <string name="weixin_not_installed">你还没有安装微信，不能登录</string>
 </resources>

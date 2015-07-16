@@ -50,7 +50,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
     @ViewInject(R.id.iv_qq)
     private ImageButton mBtnQQ = null;
     private int mLoginType = ThirdPartySDKManager.CLOUD_TYPE_NONE;
-    private ProgressDialog mDialog = null;
+//    private ProgressDialog mDialog = null;
     @ViewInject(R.id.login_toolbar)
     private Toolbar mToolbar = null;
     @ViewInject(R.id.et_login_email)
@@ -168,10 +168,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
                     Intent intent = new Intent();
                     intent.setAction(MessageDef.ACTION_GET_THIRD_PARTY_USER);
                     sendBroadcast(intent);
-                    if (mDialog != null) {
-                        mDialog.dismiss();
-                        mDialog = null;
-                    }
+                    finalizeDialog();
                 }
             }, new OneParameterExpression<Integer>() {
                 @Override
@@ -181,10 +178,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
                     } else {
                         Toast.makeText(getApplicationContext(), getString(R.string.notify_net2), Toast.LENGTH_LONG).show();
                     }
-                    if (mDialog != null) {
-                        mDialog.dismiss();
-                        mDialog = null;
-                    }
+                    finalizeDialog();
                 }
             });
         }
@@ -212,6 +206,9 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
                 break;
         }
         if (mLoginType != ThirdPartySDKManager.CLOUD_TYPE_NONE) {
+            if(mLoginType == ThirdPartySDKManager.CLOUD_TYPE_QQ){
+                createDialog();
+            }
             authMng.login(mLoginType);
         }
     }
@@ -253,10 +250,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
     }
 
     protected void onUserInfoGot(boolean bSuccess) {
-        if (mDialog != null) {
-            mDialog.dismiss();
-            mDialog = null;
-        }
+        finalizeDialog();
         if (bSuccess) {
             finish();
         }

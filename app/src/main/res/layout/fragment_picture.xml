@@ -4,6 +4,7 @@
     android:gravity="center">
 
     <com.zuijiao.view.hdimage.ScaleView
+        android:src="@drawable/empty_view_greeting"
         android:id="@+id/scale_pic_item"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

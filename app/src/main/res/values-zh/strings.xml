@@ -2,7 +2,7 @@
 <resources>
     <string name="tb_munion_tip_download_prefix">正在下载:</string>
     <string name="app_name">嘴角</string>
-    <string name="current_version_code">2.0</string>
+    <string name="current_version_code">2.0.2</string>
     <string name="welcome_word">发现最美的味道</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
@@ -37,7 +37,7 @@
     <string name="share_url">http://mobile.views.zuijiao.net/zuijiao/share/cuisine</string>
     <string name="zuijiao_team">嘴角团队</string>
     <string name="wizard_page">欢迎页</string>
-    <string name="version_code">V2.0.0</string>
+    <string name="version_code">V%s</string>
     <string name="logout_confirm_title">是否退出登录</string>
     <string name="logout">退出登录</string>
     <string name="logout_msg">已经退出登录</string>
@@ -358,6 +358,7 @@
     <string name="send">发送</string>
     <string name="receive_comments">收到%d条评价</string>
     <string name="show_all_comments">查看全部评价</string>
+    <string name="weixin_not_installed">你还没有安装微信，不能登录</string>
     <!-- umeng socialize strings begin-->
     <!--<string name="pull_to_refresh_pull_label" translatable="false">向下拉动可以刷新</string>-->
     <!--<string name="pull_to_refresh_release_label" translatable="false">松开可以刷新</string>-->

@@ -1,6 +1,7 @@
 package net.zuijiao.android.zuijiao;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -295,4 +296,6 @@ public class OrderListFragment extends Fragment implements
         strBuilder.append(" ");
         return strBuilder.toString();
     }
+
+
 }

@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -224,6 +225,8 @@ public class VerifyPhoneNumActivity extends BaseActivity {
         View logoutView = LayoutInflater.from(getApplicationContext()).inflate(
                 R.layout.logout_dialog, null);
         AlertDialog dialog = new AlertDialog.Builder(VerifyPhoneNumActivity.this).setView(logoutView).create();
+        Window window = dialog.getWindow() ;
+        window.setWindowAnimations(R.style.dialogWindowAnim);
         ((TextView) logoutView.findViewById(R.id.logout_content)).setText(getString(R.string.keep_phone_confirm));
         Button negativeBtn = (Button) logoutView.findViewById(R.id.logout_btn_cancel);
         Button positiveBtn = (Button) logoutView.findViewById(R.id.logout_btn_confirm);

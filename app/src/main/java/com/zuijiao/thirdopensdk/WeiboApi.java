@@ -114,12 +114,14 @@ public class WeiboApi extends AbsSDK {
 //							MessageDef.ACTION_GET_THIRD_PARTY_USER);
 //					mContext.sendBroadcast(intent);
                 } else {
+                    mListener.onLoginFailed();
                 }
             }
         }
 
         @Override
         public void onWeiboException(WeiboException e) {
+            mListener.onLoginFailed();
         }
     }
 

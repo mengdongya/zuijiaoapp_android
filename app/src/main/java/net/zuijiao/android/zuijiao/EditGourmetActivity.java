@@ -17,6 +17,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
@@ -420,9 +421,12 @@ public class EditGourmetActivity extends BaseActivity implements View.OnClickLis
             case R.id.edit_gourmet_location:
                 View contentView = LayoutInflater.from(getApplicationContext()).inflate(
                         R.layout.location_choose_layout, null);
-                AlertDialog.Builder builder = new AlertDialog.Builder(
-                        EditGourmetActivity.this);
-                builder.setView(contentView).create().show();
+                AlertDialog builder = new AlertDialog.Builder(
+                        EditGourmetActivity.this).create();
+                Window window = builder.getWindow() ;
+                window.setWindowAnimations(R.style.dialogWindowAnim);
+                builder.setView(contentView);
+                builder.show();
 //                Intent intent3 = new Intent();
 //                intent3.setClass(mContext, LocationActivity.class);
 //                startActivityForResult(intent3, EDIT_LOCATION_REQ);

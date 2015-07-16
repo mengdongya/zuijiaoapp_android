@@ -109,6 +109,8 @@ public final class MainActivity extends BaseActivity {
     private String[] titles = null;
     public static int unReadNewsCount = 0;
     private static final int BACK_STACK_DURATION = 2000;
+    public final static int COMMENT_SUCCESS = 10002;
+    public final static int COMMENT_REQUEST = 10001;
 
 
     private OnItemClickListener mTabsListener = new OnItemClickListener() {

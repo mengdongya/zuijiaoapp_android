@@ -77,42 +77,6 @@
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
-
-                <!--<ImageButton-->
-                <!--android:background="@drawable/star_bright"-->
-                <!--android:layout_width="30dip"-->
-                <!--android:layout_height="30dip"-->
-                <!--android:layout_marginLeft="85dip"-->
-                <!--android:layout_marginRight="5dip"-->
-                <!--android:clickable="true" />-->
-                <!--<ImageButton-->
-                <!--android:background="@drawable/star_bright"-->
-                <!--android:layout_width="30dip"-->
-                <!--android:layout_height="30dip"-->
-                <!--android:layout_marginLeft="5dip"-->
-                <!--android:layout_marginRight="5dip"-->
-                <!--android:clickable="true" />-->
-                <!--<ImageButton-->
-                <!--android:background="@drawable/star_bright"-->
-                <!--android:layout_width="30dip"-->
-                <!--android:layout_height="30dip"-->
-                <!--android:layout_marginLeft="5dip"-->
-                <!--android:layout_marginRight="5dip"-->
-                <!--android:clickable="true" />-->
-                <!--<ImageButton-->
-                <!--android:background="@drawable/star_bright"-->
-                <!--android:layout_width="30dip"-->
-                <!--android:layout_height="30dip"-->
-                <!--android:layout_marginLeft="5dip"-->
-                <!--android:layout_marginRight="5dip"-->
-                <!--android:clickable="true" />-->
-                <!--<ImageButton-->
-                <!--android:background="@drawable/star_gloomy"-->
-                <!--android:layout_width="30dip"-->
-                <!--android:layout_height="30dip"-->
-                <!--android:layout_marginLeft="5dip"-->
-                <!--android:layout_marginRight="30dip"-->
-                <!--android:clickable="true" />-->
                 <com.zuijiao.view.ReviewRatingBar
                     android:id="@+id/host_comment_tatingbar"
                     android:layout_width="wrap_content"
@@ -121,7 +85,8 @@
                     android:layout_marginLeft="85dip"
                     myattr:imageSize="30"
                     myattr:isIndicator="true"
-                    myattr:ratingBarType="host_score"></com.zuijiao.view.ReviewRatingBar>
+                    myattr:ratingBarType="host_score">
+                </com.zuijiao.view.ReviewRatingBar>
 
                 <TextView
                     android:id="@+id/host_comment_count"
@@ -176,6 +141,44 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/host_detail_group"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dip"
+                    android:layout_marginTop="10dip"
+                    android:background="@color/bg_light_gray2" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="10dip"
+                    android:text="@string/host_msg"
+                    android:textColor="@color/black"
+                    android:textSize="18sp" />
+
+                <include
+                    android:id="@+id/attendee_detail_cooking_item"
+                    layout="@layout/attendee_detail_info_item" />
+
+                <include
+                    android:id="@+id/attendee_detail_skilled_item"
+                    layout="@layout/attendee_detail_info_item" />
+
+                <include
+                    android:id="@+id/attendee_detail_place_item"
+                    layout="@layout/attendee_detail_info_item" />
+
+                <include
+                    android:id="@+id/attendee_detail_address_item"
+                    layout="@layout/attendee_detail_info_item" />
+            </LinearLayout>
+
+            <LinearLayout
                 android:id="@+id/host_guest_detail_group"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -215,6 +218,155 @@
 
             </LinearLayout>
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/ll_host_hold_banquet"
+                android:orientation="vertical">
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dip"
+                    android:background="@color/bg_light_gray2"
+                    />
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dip"
+                    android:layout_marginTop="10dip"
+                    android:background="@color/bg_light_gray2"
+                    />
+
+                <TextView
+                    android:id="@+id/host_history_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginLeft="10dip"
+                    android:layout_marginRight="10dip"
+                    android:layout_marginTop="10dip"
+                    android:gravity="center_horizontal"
+                    android:singleLine="false"
+                    android:text="举办了0场料理，累计接待0人"
+                    android:textColor="@color/black"
+                    android:textSize="18sp" />
+
+
+                <include
+                    android:id="@+id/hold_banquet_item"
+                    layout="@layout/banquet_history_item"
+                    />
+
+                <ImageView
+                    android:id="@+id/banquet_history_item_image_hold"
+                    android:src="@drawable/empty_view_greeting2"
+                    android:layout_marginTop="10dip"
+                    android:layout_marginLeft="8dip"
+                    android:layout_marginRight="8dip"
+                    android:visibility="gone"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/main_item_image_height"
+                    android:scaleType="centerCrop" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dip"
+                    android:layout_marginLeft="10dip"
+                    android:layout_marginRight="10dip"
+                    android:background="@color/bg_gray_white" />
+
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/banquet_detail_hold_btn"
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="match_parent"
+                android:layout_height="40dip"
+                android:background="@drawable/bg_white_round_corner"
+                android:gravity="center"
+                android:text="@string/show_all_banquet"
+                android:layout_marginLeft="8dip"
+                android:layout_marginRight="8dip"
+                android:textColor="@color/banquet_theme"
+                android:textSize="18sp"
+                android:visibility="visible" />
+
+            <LinearLayout
+                android:id="@+id/ll_host_attendee_banquet"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <!--<View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dip"
+                    android:background="@color/bg_light_gray2"
+                    />-->
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dip"
+                    android:layout_marginTop="10dip"
+                    android:background="@color/bg_light_gray2"
+                    />
+
+                <TextView
+                    android:id="@+id/host_guest_history_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginLeft="10dip"
+                    android:layout_marginRight="10dip"
+                    android:layout_marginTop="10dip"
+                    android:gravity="center_horizontal"
+                    android:singleLine="false"
+                    android:text="参加了0场料理"
+                    android:textColor="@color/black"
+                    android:textSize="18sp" />
+
+                <include
+                    android:id="@+id/attendee_banquet_item"
+                    layout="@layout/banquet_history_item"
+                    />
+                <ImageView
+                    android:id="@+id/banquet_history_item_image_attendee"
+                    android:src="@drawable/empty_view_greeting2"
+                    android:layout_marginTop="10dip"
+                    android:layout_marginLeft="8dip"
+                    android:layout_marginRight="8dip"
+                    android:visibility="gone"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/main_item_image_height"
+                    android:scaleType="centerCrop" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dip"
+                    android:layout_marginLeft="10dip"
+                    android:layout_marginRight="10dip"
+                    android:background="@color/bg_light_gray2" />
+
+            </LinearLayout>
+
+
+
+            <Button
+                android:id="@+id/banquet_detail_attendee_btn"
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="match_parent"
+                android:layout_height="40dip"
+                android:background="@drawable/bg_white_round_corner"
+                android:gravity="center"
+                android:layout_marginLeft="8dip"
+                android:layout_marginRight="8dip"
+                android:text="@string/show_all_banquet"
+                android:textColor="@color/banquet_theme"
+                android:textSize="18sp"
+                android:visibility="visible" />
+
+            <!--<View
+                android:layout_width="match_parent"
+                android:layout_height="1dip"
+                android:background="@color/bg_light_gray2" />-->
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dip"
@@ -240,7 +392,7 @@
                     android:gravity="center_horizontal"
                     android:singleLine="false"
                     android:text="@string/receive_comments"
-                    android:textColor="@color/tv_deep_gray"
+                    android:textColor="@color/black"
                     android:textSize="18sp" />
 
                 <include
@@ -263,48 +415,9 @@
                 android:background="@drawable/bg_white_round_corner"
                 android:gravity="center"
                 android:text="@string/show_all_comments"
-                android:textColor="@color/logout_btn_normal"
+                android:textColor="@color/banquet_theme"
                 android:textSize="18sp"
                 android:visibility="visible" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dip"
-                android:background="@color/bg_light_gray2" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dip"
-                    android:layout_marginTop="10dip"
-                    android:background="@color/bg_light_gray2"
-                    android:visibility="gone" />
-
-                <TextView
-                    android:id="@+id/host_guest_history_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginLeft="10dip"
-                    android:layout_marginRight="10dip"
-                    android:layout_marginTop="10dip"
-                    android:gravity="center_horizontal"
-                    android:singleLine="false"
-                    android:text="已经举办的私宴"
-                    android:textColor="@color/black"
-                    android:textSize="18sp" />
-
-                <ListView
-                    android:id="@+id/host_guest_history_list"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dip"
-                    android:divider="@null" />
-            </LinearLayout>
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

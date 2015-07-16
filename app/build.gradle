@@ -17,12 +17,16 @@ android {
             keyPassword "zuijiao123"
         }
     }
+
     defaultConfig {
         applicationId "net.zuijiao.android.zuijiao"
         minSdkVersion 15
         targetSdkVersion 21
         versionCode 5
         versionName "2.0.2"
+        versionCode 6
+        versionName "2.0.1"
+        manifestPlaceholders = [UMENG_CHANNEL_SOURCE: "zuijiao_net"]
     }
 
     buildTypes {
@@ -41,14 +45,24 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             buildConfigField "String", "Base_Url", "\"http://api.zuijiao.net\""
-//            buildConfigField "String", "Base_Url", "\"http://xielingyu3.zuijiaodev.com\""
             buildConfigField "String", "Web_View_Url", "\"http://mobile.views.zuijiao.net\""
             buildConfigField "String", "Avatar_Base_Url", "\"/Avatar\""
             buildConfigField "String", "Gourmet_Base_Url", "\"/Gourmet\""
             buildConfigField "String", "Request_Key", "\"zuijiaoapp\""
             signingConfig signingConfigs.release
+
+            applicationVariants.all { variant ->
+                variant.outputs.each { output ->
+                    def outputFile = output.outputFile
+                    if (outputFile != null && outputFile.name.endsWith('.apk') && !outputFile.name.endsWith('debug.apk')) {
+                        def fileName = "Zuijiao_v${defaultConfig.versionName}_${buildTime()}_${variant.productFlavors[0].name}.apk"
+                        output.outputFile = new File(outputFile.parent, fileName)
+                    }
+                }
+            }
         }
     }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -62,6 +76,20 @@ android {
         exclude 'META-INF/NOTICE.txt'
     }
 
+    productFlavors {
+        WanDouJia {}
+        XiaoMi {}
+        _360 {}
+        zuijiao_net {}
+        BaiDu {}
+        Tencent {}
+        AnZhi {}
+        GooglePlay {}
+    }
+
+    productFlavors.all { flavor ->
+        flavor.manifestPlaceholders = [UMENG_CHANNEL_SOURCE: name]
+    }
 
 }
 
@@ -80,4 +108,8 @@ dependencies {
     compile 'com.android.support:support-v4:21.+'
     compile files('libs/android-support-v13.jar')
     compile files('libs/universal-image-loader-1.9.3-with-sources.jar')
+}
+
+def buildTime() {
+    return new Date().format("yyyy-MM-dd_hhmmss", TimeZone.getTimeZone("UTC"))
 }

@@ -24,19 +24,27 @@ import android.widget.Toast;
 
 import com.lidroid.xutils.view.annotation.ContentView;
 import com.lidroid.xutils.view.annotation.ViewInject;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.squareup.picasso.Picasso;
 import com.zuijiao.adapter.ImageViewPagerAdapter;
 import com.zuijiao.android.util.functional.OneParameterExpression;
 import com.zuijiao.android.zuijiao.model.Banquent.Attendee;
 import com.zuijiao.android.zuijiao.model.Banquent.Banquent;
 import com.zuijiao.android.zuijiao.model.Banquent.Banquents;
-import com.zuijiao.android.zuijiao.model.Banquent.Order;
+import com.zuijiao.android.zuijiao.model.Banquent.Review;
+import com.zuijiao.android.zuijiao.model.Banquent.Reviews;
 import com.zuijiao.android.zuijiao.model.common.Language;
 import com.zuijiao.android.zuijiao.model.user.Profile;
 import com.zuijiao.android.zuijiao.network.Cache;
 import com.zuijiao.android.zuijiao.network.Router;
+import com.zuijiao.controller.ActivityTask;
 import com.zuijiao.utils.AdapterViewHeightCalculator;
+import com.zuijiao.view.ReviewRatingBar;
+import com.zuijiao.view.RoundImageView;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -104,13 +112,22 @@ public class HostAndGuestActivity extends BaseActivity {
     private LinearLayout mhostMsg;
     @ViewInject(R.id.ll_host_comment_stars)
     private LinearLayout mCommentStars;
+    @ViewInject(R.id.banquet_detail_lastest_comment)
+    private RelativeLayout mLastestComment;
+    @ViewInject(R.id.banquet_detail_review_title)
+    private TextView mReviewTitle;
+    @ViewInject(R.id.banquet_empty_review_iv)
+    private ImageView mEmptyIv;
+    @ViewInject(R.id.host_comment_count)
+    private TextView mCommentCount;
+    @ViewInject(R.id.host_comment_rtatingbar)
+    private ReviewRatingBar mCommentRatingbar;
+    //    @ViewInject(R.id.host_comment_list)
+//    private LinearLayout mHostCommentList;
     @ViewInject(R.id.ll_host_hold_banquet)
     private LinearLayout mHoldBanquet;
     @ViewInject(R.id.ll_host_attendee_banquet)
     private LinearLayout llAttendeeBanquet;
-
-    /*@ViewInject(R.id.attendee_detail_info_item_view)
-    private View attendee_detail_info_item_view;*/
     @ViewInject(R.id.banquet_history_item_image_hold)
     private ImageView banquetImageHoldNull;
     @ViewInject(R.id.banquet_history_item_image_attendee)
@@ -131,12 +148,18 @@ public class HostAndGuestActivity extends BaseActivity {
     private boolean bHost = false;
     private Attendee mAttendee;
     private String[] weekDays;
-    private Order mOrder;
+    private Reviews mReviews;
 
     @Override
     protected void registerViews() {
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(getApplicationContext())
+                .defaultDisplayImageOptions(((ActivityTask) getApplication()).getDefaultDisplayImageOptions()).memoryCacheExtraOptions(50, 50)
+                .threadPoolSize(1).build();
+        ImageLoader.getInstance().init(config);
+
         weekDays = mContext.getResources().getStringArray(R.array.week_days);
         if (mTendIntent != null) {
             bHost = mTendIntent.getBooleanExtra("b_host", false);
@@ -148,9 +171,9 @@ public class HostAndGuestActivity extends BaseActivity {
         }
 
         ((TextView) mAttendeeCooking.findViewById(R.id.attendee_detail_info_item_title)).setText(getString(R.string.cooking));
-        ((TextView) mAttendeeSkilled.findViewById(R.id.attendee_detail_info_item_title)).setText(getString(R.string.skilled)+"  ");
-        ((TextView) mAttendeePlace.findViewById(R.id.attendee_detail_info_item_title)).setText(getString(R.string.place)+"  ");
-        ((TextView) mAttendeeAddress.findViewById(R.id.attendee_detail_info_item_title)).setText(getString(R.string.address)+"  ");
+        ((TextView) mAttendeeSkilled.findViewById(R.id.attendee_detail_info_item_title)).setText(getString(R.string.skilled));
+        ((TextView) mAttendeePlace.findViewById(R.id.attendee_detail_info_item_title)).setText(getString(R.string.place));
+        ((TextView) mAttendeeAddress.findViewById(R.id.attendee_detail_info_item_title)).setText(getString(R.string.address));
         ((TextView) mAttendeeCareer.findViewById(R.id.attendee_detail_info_item_title)).setText(getString(R.string.industry));
         ((TextView) mAttendeeLanguage.findViewById(R.id.attendee_detail_info_item_title)).setText(getString(R.string.my_language));
         ((TextView) mAttendeeEducation.findViewById(R.id.attendee_detail_info_item_title)).setText(getString(R.string.education));
@@ -162,6 +185,7 @@ public class HostAndGuestActivity extends BaseActivity {
         mAllComment.setOnClickListener(mHeadListener);
         mHoldBanquet.setOnClickListener(mHeadListener);
         llAttendeeBanquet.setOnClickListener(mHeadListener);
+        mCommentRatingbar.setStepSize(0.5f);
         networkStep();
     }
 
@@ -173,6 +197,7 @@ public class HostAndGuestActivity extends BaseActivity {
         Router.getBanquentModule().themesOfParticipator(mAttendeeId, null, 500, new OneParameterExpression<Banquents>() {
             @Override
             public void action(Banquents banquents) {
+
                 banquentAttendeeList = banquents.getBanquentList();
                 mHostAttendee.setText(String.format(getString(R.string.attended_banquet), banquentAttendeeList.size()));
                 Banquent banquent = null;
@@ -203,9 +228,6 @@ public class HostAndGuestActivity extends BaseActivity {
         if (bHost) {
             mHostHold.setText(getString(R.string.hosted_banquet));
             getSupportActionBar().setTitle(getString(R.string.host));
-
-            mCommentStars.setVisibility(View.VISIBLE);
-            // mHostCommentList.setVisibility(View.VISIBLE);
 
             Router.getBanquentModule().themesOfMaster(mAttendeeId, null, 500, new OneParameterExpression<Banquents>() {
 
@@ -242,7 +264,6 @@ public class HostAndGuestActivity extends BaseActivity {
                     finalizeDialog();
                 }
             });
-
             Router.getAccountModule().masterInfo(mAttendeeId, new OneParameterExpression<Attendee>() {
                 @Override
                 public void action(Attendee attendee) {
@@ -255,6 +276,20 @@ public class HostAndGuestActivity extends BaseActivity {
                 @Override
                 public void action(String errorMsg) {
                     Toast.makeText(mContext, getString(R.string.notify_net2), Toast.LENGTH_SHORT).show();
+                    finalizeDialog();
+                }
+            });
+            Router.getBanquentModule().commentsofBanquent(mAttendeeId, null, 1, new OneParameterExpression<Reviews>() {
+                @Override
+                public void action(Reviews reviews) {
+                    mReviews = reviews;
+                    registerCommentView();
+                    finalizeDialog();
+                }
+            }, new OneParameterExpression<String>() {
+                @Override
+                public void action(String s) {
+                    Toast.makeText(mContext, getString(R.string.get_history_list_failed), Toast.LENGTH_SHORT).show();
                     finalizeDialog();
                 }
             });
@@ -282,7 +317,62 @@ public class HostAndGuestActivity extends BaseActivity {
                     finalizeDialog();
                 }
             });
+//            Router.getBanquentModule().themesOfParticipator(mAttendeeId, null, 500, new OneParameterExpression<Banquents>() {
+//
+//                @Override
+//                public void action(Banquents banquents) {
+//                    banquentList = banquents.getBanquentList();
+//                    // mHistoryList.setAdapter(mHistoryAdapter);
+//                    // AdapterViewHeightCalculator.setListViewHeightBasedOnChildren(mHistoryList);
+//                    finalizeDialog();
+//                }
+//            }
+//                    , new OneParameterExpression<String>() {
+//                @Override
+//                public void action(String s) {
+//                    Toast.makeText(mContext, getString(R.string.get_history_list_failed), Toast.LENGTH_SHORT).show();
+//                    finalizeDialog();
+//                }
+//            });
+        }
+    }
 
+    private void registerCommentView() {
+        final List<Review> reviewList = mReviews.getReviewList();
+        if (reviewList != null && reviewList.size() != 0) {
+            mEmptyIv.setVisibility(View.GONE);
+            mLastestComment.setVisibility(View.VISIBLE);
+            mCommentStars.setVisibility(View.VISIBLE);
+            if (mReviews.getTotalCount() > 1) {
+                mAllComment.setVisibility(View.VISIBLE);
+            } else {
+                mAllComment.setVisibility(View.GONE);
+            }
+            mReviewTitle.setText(String.format(getString(R.string.receive_comments), mReviews.getTotalCount()));
+            Review review = reviewList.get(0);
+            mCommentCount.setText("(" + mReviews.getTotalCount() + ")");
+            mCommentRatingbar.setRating(4.5f);//虚假数据，等待真实数据
+            ImageView head = (RoundImageView) mLastestComment.findViewById(R.id.banquet_comment_item_head);
+            ImageLoader.getInstance().displayImage(review.getReviewer().getAvatarURLSmall().get(), head);
+            head.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(mContext, HostAndGuestActivity.class);
+                    intent.putExtra("attendee_id", review.getReviewer().getIdentifier());
+                    intent.putExtra("b_host", false);
+                    startActivity(intent);
+                }
+            });
+            ((TextView) mLastestComment.findViewById(R.id.banquet_comment_item_user_name)).setText(review.getReviewer().getNickName());
+            ((TextView) mLastestComment.findViewById(R.id.banquet_comment_item_issue)).setText(review.getEvent().getTitle() + " · " + formatDate(review.getCreatedAt()));
+            ((ReviewRatingBar) mLastestComment.findViewById(R.id.banquet_comment_item_stars)).setRating(review.getScore());
+            ((TextView) mLastestComment.findViewById(R.id.banquet_comment_item_comment)).setText(review.getContent());
+        } else {
+            mEmptyIv.setVisibility(View.VISIBLE);
+            mLastestComment.setVisibility(View.GONE);
+            mCommentStars.setVisibility(View.GONE);
+            mReviewTitle.setText(String.format(getString(R.string.receive_comments), 0));
+            mAllComment.setVisibility(View.GONE);
         }
     }
 
@@ -400,12 +490,13 @@ public class HostAndGuestActivity extends BaseActivity {
         }
 
         @Override
-        public void onPageScrolled(int arg0, float arg1, int arg2) {        }
+        public void onPageScrolled(int arg0, float arg1, int arg2) {
+        }
 
         @Override
-        public void onPageScrollStateChanged(int arg0) {        }
+        public void onPageScrollStateChanged(int arg0) {
+        }
     };
-
 
 
     private View.OnClickListener mHeadListener = new View.OnClickListener() {
@@ -424,16 +515,16 @@ public class HostAndGuestActivity extends BaseActivity {
                     }
                     break;
                 case R.id.ll_host_attendee_banquet:
-                    if (banquentAttendeeList.size() == 0){
-                    }else {
+                    if (banquentAttendeeList.size() == 0) {
+                    } else {
                         intent = new Intent(mContext, BanquetDetailActivity.class);
                         intent.putExtra("banquet", banquentAttendeeList.get(0));
                         startActivity(intent);
                     }
                     break;
                 case R.id.ll_host_hold_banquet:
-                    if (banquentHoldList.size() == 0){
-                    }else {
+                    if (banquentHoldList.size() == 0) {
+                    } else {
                         intent = new Intent(mContext, BanquetDetailActivity.class);
                         intent.putExtra("banquet", banquentHoldList.get(0));
                         startActivity(intent);
@@ -442,20 +533,22 @@ public class HostAndGuestActivity extends BaseActivity {
                 case R.id.banquet_detail_comment_btn:
                     intent = new Intent();
                     intent.setClass(mContext, BanquetCommentActivity.class);
+                    intent.putExtra("host_id", mAttendeeId);
+                    intent.putExtra("totalCount", mReviews.getTotalCount());
                     startActivity(intent);
                     break;
                 case R.id.banquet_detail_attendee_btn:
                     intent = new Intent();
-                    intent.setClass(mContext,BanquetListActivity.class);
+                    intent.setClass(mContext, BanquetListActivity.class);
                     intent.putExtra("b_hold", false);
-                    intent.putExtra("attendee_id",mAttendeeId);
+                    intent.putExtra("attendee_id", mAttendeeId);
                     startActivity(intent);
                     break;
                 case R.id.banquet_detail_hold_btn:
                     intent = new Intent();
-                    intent.setClass(mContext,BanquetListActivity.class);
-                    intent.putExtra("b_hold",true);
-                    intent.putExtra("attendee_id",mAttendeeId);
+                    intent.setClass(mContext, BanquetListActivity.class);
+                    intent.putExtra("b_hold", true);
+                    intent.putExtra("attendee_id", mAttendeeId);
                     startActivity(intent);
                     break;
             }
@@ -469,6 +562,7 @@ public class HostAndGuestActivity extends BaseActivity {
             }
             return banquentAttendeeList.size();
         }
+
         @Override
         public Object getItem(int position) {
             return position;
@@ -494,7 +588,7 @@ public class HostAndGuestActivity extends BaseActivity {
             Picasso.with(mContext).load(banquet.getSurfaceImageUrl()).placeholder(R.drawable.empty_view_greeting).into(holder.image);
             holder.title.setText(banquet.getTitle());
             holder.date.setText(formatDate(banquet.getTime()));
-            holder.price.setText(String.format(getString(R.string.price_per_one),banquet.getPrice()));
+            holder.price.setText(String.format(getString(R.string.price_per_one), banquet.getPrice()));
             holder.situation.setText(String.format(getString(R.string.total_attendee), banquet.getAttendees().size()));
             return convertView;
 
@@ -508,6 +602,7 @@ public class HostAndGuestActivity extends BaseActivity {
             }
             return banquentHoldList.size();
         }
+
         @Override
         public Object getItem(int position) {
             return position;
@@ -551,6 +646,7 @@ public class HostAndGuestActivity extends BaseActivity {
         TextView situation;
         @ViewInject(R.id.banquet_history_item_price)
         TextView price;
+
         ViewHolder(View convertView) {
             com.lidroid.xutils.ViewUtils.inject(this, convertView);
         }

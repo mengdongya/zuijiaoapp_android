@@ -73,30 +73,30 @@
             <LinearLayout
                 android:id="@+id/ll_host_comment_stars"
                 android:layout_width="match_parent"
-                android:layout_height="30dip"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="10dip"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:visibility="gone">
 
 
                 <com.zuijiao.view.ReviewRatingBar
-                    android:id="@+id/host_comment_tatingbar"
+                    android:id="@+id/host_comment_rtatingbar"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_marginLeft="85dip"
                     myattr:imageSize="30"
                     myattr:isIndicator="true"
-                    myattr:ratingBarType="host_score">
-                </com.zuijiao.view.ReviewRatingBar>
+                    myattr:ratingBarType="host_score"/>
 
                 <TextView
                     android:id="@+id/host_comment_count"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:paddingRight="30dip"
-                    android:text="(20)" />
+                    android:layout_gravity="center"
+                    android:text="(20)"
+                    android:layout_marginTop="3dip"
+                    android:textSize="14sp"/>
             </LinearLayout>
 
             <TextView
@@ -253,25 +253,26 @@
                     android:layout_width="match_parent"
                     android:layout_margin="8dip" />
 
+
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/ll_host_hold_banquet"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/ll_host_hold_banquet"
                 android:orientation="vertical">
+
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dip"
-                    android:background="@color/bg_light_gray2"
-                    />
+                    android:background="@color/bg_light_gray2" />
+
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dip"
                     android:layout_marginTop="10dip"
-                    android:background="@color/bg_light_gray2"
-                    />
+                    android:background="@color/bg_light_gray2" />
 
                 <TextView
                     android:id="@+id/host_history_title"
@@ -297,8 +298,7 @@
 
                 <include
                     android:id="@+id/hold_banquet_item"
-                    layout="@layout/banquet_history_item"
-                    />
+                    layout="@layout/banquet_history_item" />
 
                 <ImageView
                     android:id="@+id/banquet_history_item_image_hold"
@@ -466,6 +466,14 @@
                     android:background="@color/bg_light_gray2" />
 
             </LinearLayout>
+
+            <ImageView
+                android:id="@+id/banquet_empty_review_iv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scaleType="centerCrop"
+                android:src="@drawable/empty_view_greeting"
+                android:visibility="gone" />
 
             <Button
                 android:id="@+id/banquet_detail_comment_btn"

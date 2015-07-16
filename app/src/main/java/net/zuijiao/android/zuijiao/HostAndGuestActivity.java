@@ -259,6 +259,15 @@ public class HostAndGuestActivity extends BaseActivity {
             mCommentRatingbar.setRating(4.5f);//虚假数据，等待真实数据
             ImageView head = (RoundImageView) mLastestComment.findViewById(R.id.banquet_comment_item_head);
             ImageLoader.getInstance().displayImage(review.getReviewer().getAvatarURLSmall().get(), head);
+            head.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(mContext, HostAndGuestActivity.class);
+                    intent.putExtra("attendee_id", review.getReviewer().getIdentifier());
+                    intent.putExtra("b_host", false);
+                    startActivity(intent);
+                }
+            });
             ((TextView) mLastestComment.findViewById(R.id.banquet_comment_item_user_name)).setText(review.getReviewer().getNickName());
             ((TextView) mLastestComment.findViewById(R.id.banquet_comment_item_issue)).setText(review.getEvent().getTitle() + " · " + formatDate(review.getCreatedAt()));
             ((ReviewRatingBar) mLastestComment.findViewById(R.id.banquet_comment_item_stars)).setRating(review.getScore());

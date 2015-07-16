@@ -34,6 +34,7 @@ android {
             buildConfigField "String", "Gourmet_Base_Url", "\"/debug/Gourmet\""
             buildConfigField "String", "Web_View_Url", "\"http://huangyi3.zuijiaodev.com\""
             buildConfigField "String", "Request_Key", "\"zuijiaoapp\""
+            signingConfig signingConfigs.release
         }
 
         release {

@@ -19,6 +19,9 @@
 -keep class com.tencent.mm.sdk.** {
     *;
 }
+-keep class com.tencent.connect.auth.**{
+    *;
+}
 -keep class com.sina.weibo.sdk.widget.** {
     *;
 }
@@ -34,4 +37,5 @@
 -dontwarn java.lang.invoke**
 -dontwarn javax.xml.bind.DatatypeConverter
 -dontwarn android.test.**
--dontwarn com.sina.weibo.sdk.widget**
+-dontwarn com.sina.weibo.sdk.widget.**
+-dontwarn com.tencent.connect.auth.**

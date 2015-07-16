@@ -15,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
@@ -387,6 +388,8 @@ public class EditUserInfoActivity extends BaseActivity {
         editText.setFocusableInTouchMode(true);
         editText.requestFocus();
         AlertDialog alertDialog = new AlertDialog.Builder(EditUserInfoActivity.this).setView(contentView).setTitle(title).setPositiveButton(getString(R.string.save), finishListener).create();
+        Window window = alertDialog.getWindow() ;
+        window.setWindowAnimations(R.style.dialogWindowAnim);
         alertDialog.show();
         new Handler().postDelayed(new Runnable() {
             @Override
@@ -492,7 +495,7 @@ public class EditUserInfoActivity extends BaseActivity {
 //                etBirth = String.format(getString(R.string.year_month_day) , year , monthOfYear , dayOfMonth) ;
             }
         });
-        new AlertDialog.Builder(EditUserInfoActivity.this).setView(birthdayChooseView).setTitle(getString(R.string.birthday)).setPositiveButton(getString(R.string.save), new DialogInterface.OnClickListener() {
+        AlertDialog dialog = new AlertDialog.Builder(EditUserInfoActivity.this).setView(birthdayChooseView).setTitle(getString(R.string.birthday)).setPositiveButton(getString(R.string.save), new DialogInterface.OnClickListener() {
 
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -508,7 +511,10 @@ public class EditUserInfoActivity extends BaseActivity {
                 mTmpFullUser.getProfile().setBirthday(etBirth);
                 updateUserInfo();
             }
-        }).create().show();
+        }).create();
+        Window window = dialog.getWindow() ;
+        window.setWindowAnimations(R.style.dialogWindowAnim);
+        dialog.show();
     }
 
     private void createGenderDialog() {
@@ -544,6 +550,8 @@ public class EditUserInfoActivity extends BaseActivity {
                         updateUserInfo();
                     }
                 }).setTitle(getString(R.string.gender)).create();
+        Window window = alertDialog.getWindow() ;
+        window.setWindowAnimations(R.style.dialogWindowAnim);
         alertDialog.show();
     }
 

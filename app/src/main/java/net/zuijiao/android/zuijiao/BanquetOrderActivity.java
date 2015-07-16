@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
@@ -165,7 +166,7 @@ public class BanquetOrderActivity extends BaseActivity implements View.OnClickLi
         switch (v.getId()) {
             case R.id.banquet_order_bottom_pay:
                 if (phoneNum == null || phoneNum.equals("")) {
-                    new AlertDialog.Builder(BanquetOrderActivity.this)
+                    AlertDialog dialog = new AlertDialog.Builder(BanquetOrderActivity.this)
                             .setTitle(getString(R.string.alert))
                             .setMessage(getString(R.string.input_phone_num))
                             .setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener() {
@@ -175,8 +176,10 @@ public class BanquetOrderActivity extends BaseActivity implements View.OnClickLi
                                     intent.putExtra("from_order", true);
                                     startActivityForResult(intent, VERIFY_PHONE);
                                 }
-                            }).create().show();
-                    ;
+                            }).create();
+                    Window window = dialog.getWindow() ;
+                    window.setWindowAnimations(R.style.dialogWindowAnim);
+                    dialog.show();
                     return;
                 }
                 createDialog();
@@ -293,6 +296,8 @@ public class BanquetOrderActivity extends BaseActivity implements View.OnClickLi
                         }
                     }
                 }).create();
+        Window window = alertDialog.getWindow() ;
+        window.setWindowAnimations(R.style.dialogWindowAnim);
         alertDialog.show();
         new Handler().postDelayed(new Runnable() {
             @Override

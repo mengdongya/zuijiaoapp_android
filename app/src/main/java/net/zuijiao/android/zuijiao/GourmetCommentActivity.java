@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.EditText;
@@ -175,6 +176,8 @@ public class GourmetCommentActivity extends BaseActivity {
                     AlertDialog.Builder builder = new AlertDialog.Builder(
                             GourmetCommentActivity.this);
                     AlertDialog dialog = builder.setView(deleteView).create();
+                    Window window = dialog.getWindow() ;
+                    window.setWindowAnimations(R.style.dialogWindowAnim);
                     dialog.show();
                     deleteView.findViewById(R.id.alert_delete_comment).setOnClickListener(new View.OnClickListener() {
                         @Override

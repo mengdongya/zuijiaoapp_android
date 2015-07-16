@@ -110,7 +110,6 @@ public class MessageFragment extends Fragment implements FragmentDataListener,
             mContentView = inflater.inflate(R.layout.fragment_message, null);
         }
         this.mInflater = inflater;
-        mActivity = getActivity();
         mListView = (RefreshAndInitListView) mContentView
                 .findViewById(R.id.lv_msg);
         mLayout = (LinearLayout) mContentView.findViewById(R.id.message_empty_content);
@@ -185,42 +184,43 @@ public class MessageFragment extends Fragment implements FragmentDataListener,
 
     private void networkStep(boolean bRefresh) {
         if (Router.getInstance().getCurrentUser().equals(Optional.empty())) {
-            ((BaseActivity) getActivity()).tryLoginFirst(new LambdaExpression() {
-                @Override
-                public void action() {
-                    if (Router.getInstance().getCurrentUser().equals(Optional.empty())) {
-                        mAdapter.mData.clear();
-                        mAdapter.notifyDataSetChanged();
-                        mListView.setPullLoadEnable(false);
-                        mListView.stopRefresh();
-                        mListView.stopLoadMore();
-                        mRefreshLayout.setRefreshing(false);
-                        ((BaseActivity) getActivity()).notifyLogin(new LambdaExpression() {
-                            @Override
-                            public void action() {
-                                if (Router.getInstance().getCurrentUser().equals(Optional.empty())) {
+            if(mActivity != null)
+                ((BaseActivity) mActivity).tryLoginFirst(new LambdaExpression() {
+                    @Override
+                    public void action() {
+                        if (Router.getInstance().getCurrentUser().equals(Optional.empty())) {
+                            mAdapter.mData.clear();
+                            mAdapter.notifyDataSetChanged();
+                            mListView.setPullLoadEnable(false);
+                            mListView.stopRefresh();
+                            mListView.stopLoadMore();
+                            mRefreshLayout.setRefreshing(false);
+                            if(mActivity != null)
+                                ((BaseActivity) mActivity).notifyLogin(new LambdaExpression() {
+                                    @Override
+                                    public void action() {
+                                        if (Router.getInstance().getCurrentUser().equals(Optional.empty())) {
 
-                                } else {
-                                    networkStep(bRefresh);
-                                }
-                            }
-                        });
-                    } else {
-                        networkStep(bRefresh);
+                                        } else {
+                                            networkStep(bRefresh);
+                                        }
+                                    }
+                                });
+                        } else {
+                            networkStep(bRefresh);
+                        }
                     }
-                }
-            }, new OneParameterExpression<Integer>() {
-                @Override
-                public void action(Integer integer) {
-                    Toast.makeText(mActivity, getResources().getString(R.string.notify_net2), Toast.LENGTH_LONG).show();
-//                mListView.stopRefresh();
-                    mRefreshLayout.setRefreshing(false);
-                    mListView.stopLoadMore();
-                }
-            });
+                }, new OneParameterExpression<Integer>() {
+                    @Override
+                    public void action(Integer integer) {
+                        if(mActivity != null)
+                            Toast.makeText(mActivity, getResources().getString(R.string.notify_net2), Toast.LENGTH_LONG).show();
+                        mRefreshLayout.setRefreshing(false);
+                        mListView.stopLoadMore();
+                    }
+                });
             return;
         }
-        mListView.setRefreshTime(new Date(PreferenceManager.getInstance(getActivity()).getMsgLastRefreshTime()).toLocaleString());
         List<Message> tmpMessages = Optional.of(mAdapter.mData).orElse(new ArrayList<>());
         Integer theLastOneIdentifier = null;
         if (!bRefresh) {
@@ -247,6 +247,18 @@ public class MessageFragment extends Fragment implements FragmentDataListener,
                 mRefreshLayout.setRefreshing(false);
             }
         });
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        mActivity = activity ;
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mActivity = null ;
     }
 
     private void onMessageFetchSuccess(boolean bRefresh, Messages msg) {

@@ -25,6 +25,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
@@ -185,9 +186,11 @@ public final class MainActivity extends BaseActivity {
         public void onClick(View v) {
             View view = LayoutInflater.from(getApplicationContext()).inflate(
                     R.layout.location_choose_layout, null);
-            AlertDialog.Builder builder = new AlertDialog.Builder(
-                    MainActivity.this);
-            builder.setView(view).create().show();
+            AlertDialog dialog = new AlertDialog.Builder(
+                    MainActivity.this).setView(view).create();
+            Window window = dialog.getWindow() ;
+            window.setWindowAnimations(R.style.dialogWindowAnim);
+            dialog.show();
         }
     };
     private OnClickListener mUserInfoDetail = new OnClickListener() {
@@ -657,7 +660,6 @@ public final class MainActivity extends BaseActivity {
                 }
             }
         });
-
         UmengUpdateAgent.update(this);
     }
 

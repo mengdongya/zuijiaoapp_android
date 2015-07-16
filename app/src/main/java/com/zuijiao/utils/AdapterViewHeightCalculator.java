@@ -49,6 +49,11 @@ public class AdapterViewHeightCalculator {
         }
         ViewGroup.LayoutParams params = gdView.getLayoutParams();
         params.height = totalHeight
-                + (gdView.getVerticalSpacing() * (listAdapter.getCount() / gdView.getNumColumns()));
+                + (gdView.getVerticalSpacing() * (listAdapter.getCount() / 5));
+        int verticalSpacing = gdView.getVerticalSpacing() ;
+        int adapterCount = listAdapter.getCount() ;
+        int numColumns = gdView.getNumColumns() ;
+        int space =gdView.getVerticalSpacing() * (listAdapter.getCount() / gdView.getNumColumns()) ;
+        gdView.setLayoutParams(params);
     }
 }

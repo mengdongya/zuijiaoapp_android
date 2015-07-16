@@ -319,4 +319,6 @@ public class OrderListFragment extends Fragment implements
         strBuilder.append(" ");
         return strBuilder.toString();
     }
+
+
 }

@@ -33,6 +33,7 @@ public class GourmetCommentAdapter extends BaseAdapter {
     private Context mContext;
     private LayoutInflater mInflater = null;
     private boolean showAll = true;
+    private int totalHeight = 0 ;
 
     public void setShowAll(boolean showAll) {
         this.showAll = showAll;
@@ -60,13 +61,10 @@ public class GourmetCommentAdapter extends BaseAdapter {
         if (convertView == null) {
             holder = new CommentViewHolder();
             convertView = mInflater.inflate(R.layout.comment_item, null);
-            //holder.commentContent = (TextView) convertView.findViewById(R.id.comment_content);
             TextView commentContent = new MeasuredTextView(mContext);
             RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(ActionBar.LayoutParams.WRAP_CONTENT, ActionBar.LayoutParams.WRAP_CONTENT);
             lp.addRule(RelativeLayout.BELOW, R.id.comment_user_name);
             commentContent.setLayoutParams(lp);
-//                commentContent.setTextSize(getResources().getDimension(R.dimen.comment_content_text_size)) ;
-//                commentContent.setTextColor(getResources().getColor(R.color.comment_content_color )) ;
             ((RelativeLayout) convertView.findViewById(R.id.comment_text_container)).addView(commentContent);
             holder.commentContent = commentContent;
             holder.head = (ImageView) convertView.findViewById(R.id.comment_user_head);
@@ -82,7 +80,6 @@ public class GourmetCommentAdapter extends BaseAdapter {
             Picasso.with(mContext)
                     .load(comment.getUser().getAvatarURLSmall().get())
                     .placeholder(R.drawable.default_user_head)
-//                    .error(R.drawable.empty_view_greeting)
                     .into(holder.head);
         holder.head.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -136,5 +133,6 @@ public class GourmetCommentAdapter extends BaseAdapter {
         public TextView commentContent;
         public TextView time;
     }
+
 
 }

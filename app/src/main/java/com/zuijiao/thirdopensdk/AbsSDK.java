@@ -9,7 +9,7 @@ public abstract class AbsSDK {
     public static final String WEIBO = "weibo";
     public static final String WECHAT = "wechat";
 
-    public abstract void Login(final LoginListener mListener);
+    public abstract void Login(final LoginListener mListener) throws Throwable ;
 
     public abstract void logout();
 

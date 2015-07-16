@@ -7,6 +7,8 @@ import com.tencent.mm.sdk.modelmsg.SendAuth;
 import com.tencent.mm.sdk.openapi.IWXAPI;
 import com.tencent.mm.sdk.openapi.WXAPIFactory;
 
+import net.zuijiao.android.zuijiao.R;
+
 public class WeixinApi extends AbsSDK {
     public static final String WEIXIN_ID = "wx908961ddfd5cade9";
     public static final String WEIXIN_PWD = "b04cac11c4477cf5e07ecffd6ca6bf86";
@@ -22,7 +24,7 @@ public class WeixinApi extends AbsSDK {
     @Override
     public void Login(final LoginListener mListener) {
         if (!mWeiXinApi.isWXAppInstalled()) {
-            Toast.makeText(mContext, "weixin not  installed!",
+            Toast.makeText(mContext, mContext.getString(R.string.weixin_not_installed),
                     Toast.LENGTH_LONG).show();
             return;
         }

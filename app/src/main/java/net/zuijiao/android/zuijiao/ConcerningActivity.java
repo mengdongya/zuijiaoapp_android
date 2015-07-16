@@ -12,6 +12,7 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.lidroid.xutils.view.annotation.ContentView;
 import com.lidroid.xutils.view.annotation.ViewInject;
@@ -52,7 +53,7 @@ public class ConcerningActivity extends BaseActivity {
             mTextVersionCode.setText(String.format(getString(R.string.version_code), versionCode));
         } catch (NameNotFoundException e) {
             e.printStackTrace();
-            mTextVersionCode.setText(String.format(getString(R.string.version_code), "1.0"));
+            mTextVersionCode.setText(String.format(getString(R.string.version_code), getString(R.string.current_version_code)));
         }
         mListView.setAdapter(mAdapter);
         mListView.setOnItemClickListener(mListener);
@@ -131,6 +132,8 @@ public class ConcerningActivity extends BaseActivity {
                                          UpdateResponse updateInfo) {
                 if (updateStatus == 0 && updateInfo != null) {
                     showUpdateDialog(updateInfo.path, updateInfo.updateLog);
+                } else {
+                    Toast.makeText(mContext, getString(R.string.no_update_avaliable),Toast.LENGTH_SHORT).show();
                 }
             }
         });

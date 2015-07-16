@@ -73,30 +73,30 @@
             <LinearLayout
                 android:id="@+id/ll_host_comment_stars"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="30dip"
                 android:layout_marginTop="10dip"
-                android:gravity="center"
-                android:orientation="horizontal"
-                android:visibility="gone">
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
 
                 <com.zuijiao.view.ReviewRatingBar
-                    android:id="@+id/host_comment_rtatingbar"
+                    android:id="@+id/host_comment_tatingbar"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
+                    android:layout_marginLeft="85dip"
                     myattr:imageSize="30"
                     myattr:isIndicator="true"
-                    myattr:ratingBarType="host_score"/>
+                    myattr:ratingBarType="host_score">
+                </com.zuijiao.view.ReviewRatingBar>
 
                 <TextView
                     android:id="@+id/host_comment_count"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:text="(20)"
-                    android:layout_marginTop="3dip"
-                    android:textSize="14sp"/>
+                    android:gravity="center"
+                    android:paddingRight="30dip"
+                    android:text="(20)" />
             </LinearLayout>
 
             <TextView
@@ -166,18 +166,34 @@
                 <include
                     android:id="@+id/attendee_detail_cooking_item"
                     layout="@layout/attendee_detail_info_item" />
-
+                <View
+                    android:layout_height="1dip"
+                    android:layout_width="match_parent"
+                    android:layout_margin="8dip"
+                    android:background="@color/bg_gray_white" />
                 <include
                     android:id="@+id/attendee_detail_skilled_item"
                     layout="@layout/attendee_detail_info_item" />
-
+                <View
+                    android:layout_height="1dip"
+                    android:layout_width="match_parent"
+                    android:layout_margin="8dip"
+                    android:background="@color/bg_gray_white" />
                 <include
                     android:id="@+id/attendee_detail_place_item"
                     layout="@layout/attendee_detail_info_item" />
-
+                <View
+                    android:layout_height="1dip"
+                    android:layout_width="match_parent"
+                    android:layout_margin="8dip"
+                    android:background="@color/bg_gray_white" />
                 <include
                     android:id="@+id/attendee_detail_address_item"
                     layout="@layout/attendee_detail_info_item" />
+                <View
+                    android:layout_height="1dip"
+                    android:layout_width="match_parent"
+                    android:layout_margin="8dip" />
             </LinearLayout>
 
             <LinearLayout
@@ -189,7 +205,7 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dip"
-                    android:layout_marginTop="10dip"
+                    android:layout_marginTop="5dip"
                     android:background="@color/bg_light_gray2" />
 
                 <TextView
@@ -205,38 +221,57 @@
                     android:id="@+id/attendee_detail_career_item"
                     layout="@layout/attendee_detail_info_item" />
 
+                <View
+                    android:layout_height="1dip"
+                    android:layout_width="match_parent"
+                    android:layout_margin="8dip"
+                    android:background="@color/bg_gray_white" />
+
                 <include
                     android:id="@+id/attendee_detail_language_item"
                     layout="@layout/attendee_detail_info_item" />
 
+                <View
+                    android:layout_height="1dip"
+                    android:layout_width="match_parent"
+                    android:layout_margin="8dip"
+                    android:background="@color/bg_gray_white" />
                 <include
                     android:id="@+id/attendee_detail_education_item"
                     layout="@layout/attendee_detail_info_item" />
 
+                <View
+                    android:layout_height="1dip"
+                    android:layout_width="match_parent"
+                    android:layout_margin="8dip"
+                    android:background="@color/bg_gray_white" />
                 <include
                     android:id="@+id/attendee_detail_hobby_item"
                     layout="@layout/attendee_detail_info_item" />
-
+                <View
+                    android:layout_height="1dip"
+                    android:layout_width="match_parent"
+                    android:layout_margin="8dip" />
 
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/ll_host_hold_banquet"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:id="@+id/ll_host_hold_banquet"
                 android:orientation="vertical">
-
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dip"
-                    android:background="@color/bg_light_gray2" />
-
+                    android:background="@color/bg_light_gray2"
+                    />
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dip"
                     android:layout_marginTop="10dip"
-                    android:background="@color/bg_light_gray2" />
+                    android:background="@color/bg_light_gray2"
+                    />
 
                 <TextView
                     android:id="@+id/host_history_title"
@@ -252,25 +287,36 @@
                     android:textColor="@color/black"
                     android:textSize="18sp" />
 
+                <View
+                    android:layout_width="30dip"
+                    android:layout_height="3dip"
+                    android:layout_marginTop="15dip"
+                    android:background="@color/black"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginBottom="10dip"/>
 
                 <include
                     android:id="@+id/hold_banquet_item"
-                    layout="@layout/banquet_history_item" />
+                    layout="@layout/banquet_history_item"
+                    />
 
                 <ImageView
                     android:id="@+id/banquet_history_item_image_hold"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/main_item_image_height"
+                    android:src="@drawable/empty_view_greeting2"
+                    android:layout_marginTop="10dip"
                     android:layout_marginLeft="8dip"
                     android:layout_marginRight="8dip"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/empty_view_greeting"
-                    android:visibility="gone" />
+                    android:visibility="gone"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/main_item_image_height"
+                    android:scaleType="centerCrop" />
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dip"
-                    android:background="@color/bg_light_gray2" />
+                    android:layout_marginLeft="10dip"
+                    android:layout_marginRight="10dip"
+                    android:background="@color/bg_gray_white" />
 
             </LinearLayout>
 
@@ -282,6 +328,8 @@
                 android:background="@drawable/bg_white_round_corner"
                 android:gravity="center"
                 android:text="@string/show_all_banquet"
+                android:layout_marginLeft="8dip"
+                android:layout_marginRight="8dip"
                 android:textColor="@color/banquet_theme"
                 android:textSize="18sp"
                 android:visibility="visible" />
@@ -292,16 +340,17 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <View
+                <!--<View
                     android:layout_width="match_parent"
                     android:layout_height="1dip"
-                    android:background="@color/bg_light_gray2" />
-
+                    android:background="@color/bg_light_gray2"
+                    />-->
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dip"
                     android:layout_marginTop="10dip"
-                    android:background="@color/bg_light_gray2" />
+                    android:background="@color/bg_light_gray2"
+                    />
 
                 <TextView
                     android:id="@+id/host_guest_history_title"
@@ -317,26 +366,38 @@
                     android:textColor="@color/black"
                     android:textSize="18sp" />
 
+                <View
+                    android:layout_width="30dip"
+                    android:layout_height="3dip"
+                    android:layout_marginTop="15dip"
+                    android:background="@color/black"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginBottom="10dip"/>
+
                 <include
                     android:id="@+id/attendee_banquet_item"
-                    layout="@layout/banquet_history_item" />
-
+                    layout="@layout/banquet_history_item"
+                    />
                 <ImageView
                     android:id="@+id/banquet_history_item_image_attendee"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/main_item_image_height"
+                    android:src="@drawable/empty_view_greeting2"
+                    android:layout_marginTop="10dip"
                     android:layout_marginLeft="8dip"
                     android:layout_marginRight="8dip"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/empty_view_greeting"
-                    android:visibility="gone" />
+                    android:visibility="gone"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/main_item_image_height"
+                    android:scaleType="centerCrop" />
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dip"
+                    android:layout_marginLeft="10dip"
+                    android:layout_marginRight="10dip"
                     android:background="@color/bg_light_gray2" />
 
             </LinearLayout>
+
 
 
             <Button
@@ -346,6 +407,8 @@
                 android:layout_height="40dip"
                 android:background="@drawable/bg_white_round_corner"
                 android:gravity="center"
+                android:layout_marginLeft="8dip"
+                android:layout_marginRight="8dip"
                 android:text="@string/show_all_banquet"
                 android:textColor="@color/banquet_theme"
                 android:textSize="18sp"
@@ -384,6 +447,14 @@
                     android:textColor="@color/black"
                     android:textSize="18sp" />
 
+                <View
+                    android:layout_width="30dip"
+                    android:layout_height="3dip"
+                    android:layout_marginTop="15dip"
+                    android:background="@color/black"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginBottom="10dip"/>
+
                 <include
                     android:id="@+id/banquet_detail_lastest_comment"
                     layout="@layout/banquet_comment_item" />
@@ -395,14 +466,6 @@
                     android:background="@color/bg_light_gray2" />
 
             </LinearLayout>
-
-            <ImageView
-                android:id="@+id/banquet_empty_review_iv"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:scaleType="centerCrop"
-                android:src="@drawable/empty_view_greeting"
-                android:visibility="gone" />
 
             <Button
                 android:id="@+id/banquet_detail_comment_btn"

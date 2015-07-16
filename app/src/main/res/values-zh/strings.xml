@@ -2,7 +2,7 @@
 <resources>
     <string name="tb_munion_tip_download_prefix">正在下载:</string>
     <string name="app_name">嘴角</string>
-    <string name="current_version_code">2.0</string>
+    <string name="current_version_code">2.0.2</string>
     <string name="welcome_word">发现最美的味道</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
@@ -217,9 +217,10 @@
     <string name="mobile_phone">手机</string>
     <string name="industry">从事行业</string>
     <string name="industry_hint">输入从事行业</string>
+    <string name="detail_info">详细资料</string>
     <string name="detail_info">详细</string>
     <string name="detail_msg">料理人信息</string>
-    <string name="cooking">厨艺</string>
+    <string name="cooking">厨艺  </string>
     <string name="skilled">擅长</string>
     <string name="place">场地</string>
     <string name="interest_hobby">兴趣爱好</string>
@@ -361,6 +362,7 @@
     <string name="send">发送</string>
     <string name="receive_comments">收到%d条评价</string>
     <string name="show_all_comments">查看全部评价</string>
+    <string name="weixin_not_installed">你还没有安装微信，不能登录</string>
     <string name="send_comment_success">评价发表成功</string>
     <string name="toolbar_comments">%d条评价</string>
     <string name="show_all_banquet">查看全部料理</string>
@@ -430,7 +432,6 @@
     <string name="umeng_socialize_img_des"></string>
     <string name="umeng_socialize_share">分享</string>
     <string name="com_facebook_loading">Loading...</string>
-    <string name="hosted_banquet">举办了%1$d场料理，累计接待%2$d人</string>
     <!-- umeng socialize strings ends-->
 
 </resources>

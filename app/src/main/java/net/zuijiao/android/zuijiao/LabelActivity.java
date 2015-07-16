@@ -12,6 +12,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AbsListView;
@@ -59,6 +60,8 @@ public class LabelActivity extends BaseActivity {
             View logoutView = LayoutInflater.from(getApplicationContext()).inflate(
                     R.layout.delete_label_dialog, null);
             AlertDialog dialog = new AlertDialog.Builder(LabelActivity.this).setView(logoutView).create();
+            Window window = dialog.getWindow() ;
+            window.setWindowAnimations(R.style.dialogWindowAnim);
             logoutView.findViewById(R.id.delete_label_btn_cancel).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

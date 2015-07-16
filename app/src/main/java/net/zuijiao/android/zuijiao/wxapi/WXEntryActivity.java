@@ -119,8 +119,9 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
         switch (resp.errCode) {
             case BaseResp.ErrCode.ERR_OK:
                 Bundle bundle = new Bundle();
-                mDialog = ProgressDialog.show(this, null,
-                        getResources().getString(R.string.loading));
+                if(!isFinishing() && this != null)
+                    mDialog = ProgressDialog.show(this, null,
+                            getResources().getString(R.string.loading));
                 resp.toBundle(bundle);
                 Resp sp = new Resp(bundle);
                 code = sp.code;

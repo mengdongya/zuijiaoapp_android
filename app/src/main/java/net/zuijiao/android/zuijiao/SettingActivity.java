@@ -6,6 +6,10 @@ import android.os.Handler;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
@@ -123,6 +127,8 @@ public class SettingActivity extends BaseActivity {
                 dialog.dismiss();
             }
         });
+        Window window = dialog.getWindow() ;
+        window.setWindowAnimations(R.style.dialogWindowAnim);
         logoutView.findViewById(R.id.logout_btn_confirm).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

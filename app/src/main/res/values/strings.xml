@@ -359,7 +359,7 @@
     <string name="show_all_comments">查看全部评价</string>
     <string name="send_comment_success">评价发表成功</string>
     <string name="toolbar_comments">%d条评价</string>
-    <string name="cooking">厨艺</string>
+    <string name="cooking">厨艺  </string>
     <string name="skilled">擅长</string>
     <string name="place">场地</string>
 </resources>

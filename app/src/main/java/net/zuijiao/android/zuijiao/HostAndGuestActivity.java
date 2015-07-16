@@ -122,9 +122,8 @@ public class HostAndGuestActivity extends BaseActivity {
     private TextView mCommentCount;
     @ViewInject(R.id.host_comment_rtatingbar)
     private ReviewRatingBar mCommentRatingbar;
-//    @ViewInject(R.id.host_comment_list)
+    //    @ViewInject(R.id.host_comment_list)
 //    private LinearLayout mHostCommentList;
-    private LinearLayout mCommentStars;
     @ViewInject(R.id.ll_host_hold_banquet)
     private LinearLayout mHoldBanquet;
     @ViewInject(R.id.ll_host_attendee_banquet)
@@ -136,8 +135,8 @@ public class HostAndGuestActivity extends BaseActivity {
 
     @ViewInject(R.id.hold_banquet_item)
     private View holdBanquet;
-     @ViewInject(R.id.attendee_banquet_item)
-     private View attendeeBanquet;
+    @ViewInject(R.id.attendee_banquet_item)
+    private View attendeeBanquet;
     @ViewInject(R.id.banquet_item_text)
     private View holdAttendeeBanquet;
 
@@ -150,7 +149,7 @@ public class HostAndGuestActivity extends BaseActivity {
     private Attendee mAttendee;
     private String[] weekDays;
     private Reviews mReviews;
-    private Order mOrder;
+
     @Override
     protected void registerViews() {
         setSupportActionBar(mToolbar);
@@ -230,23 +229,6 @@ public class HostAndGuestActivity extends BaseActivity {
             mHostHold.setText(getString(R.string.hosted_banquet));
             getSupportActionBar().setTitle(getString(R.string.host));
 
-            mCommentStars.setVisibility(View.VISIBLE);
-            // mHostCommentList.setVisibility(View.VISIBLE);
-//            mHistoryTitle.setText(getString(R.string.hosted_banquet));
-//            Router.getAccountModule().masterInfo(mAttendeeId, new OneParameterExpression<Attendee>() {
-//                @Override
-//                public void action(Attendee attendee) {
-//                    mAttendee = attendee;
-//                    registerViewsByAttendee();
-//                    finalizeDialog();
-//                }
-//            }, new OneParameterExpression<String>() {
-//                @Override
-//                public void action(String errorMsg) {
-//                    Toast.makeText(mContext, getString(R.string.notify_net2), Toast.LENGTH_SHORT).show();
-//                    finalizeDialog();
-//                }
-//            });
             Router.getBanquentModule().themesOfMaster(mAttendeeId, null, 500, new OneParameterExpression<Banquents>() {
 
                 @Override
@@ -371,6 +353,15 @@ public class HostAndGuestActivity extends BaseActivity {
             mCommentRatingbar.setRating(4.5f);//虚假数据，等待真实数据
             ImageView head = (RoundImageView) mLastestComment.findViewById(R.id.banquet_comment_item_head);
             ImageLoader.getInstance().displayImage(review.getReviewer().getAvatarURLSmall().get(), head);
+            head.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(mContext, HostAndGuestActivity.class);
+                    intent.putExtra("attendee_id", review.getReviewer().getIdentifier());
+                    intent.putExtra("b_host", false);
+                    startActivity(intent);
+                }
+            });
             ((TextView) mLastestComment.findViewById(R.id.banquet_comment_item_user_name)).setText(review.getReviewer().getNickName());
             ((TextView) mLastestComment.findViewById(R.id.banquet_comment_item_issue)).setText(review.getEvent().getTitle() + " · " + formatDate(review.getCreatedAt()));
             ((ReviewRatingBar) mLastestComment.findViewById(R.id.banquet_comment_item_stars)).setRating(review.getScore());
@@ -498,12 +489,13 @@ public class HostAndGuestActivity extends BaseActivity {
         }
 
         @Override
-        public void onPageScrolled(int arg0, float arg1, int arg2) {        }
+        public void onPageScrolled(int arg0, float arg1, int arg2) {
+        }
 
         @Override
-        public void onPageScrollStateChanged(int arg0) {        }
+        public void onPageScrollStateChanged(int arg0) {
+        }
     };
-
 
 
     private View.OnClickListener mHeadListener = new View.OnClickListener() {
@@ -522,16 +514,16 @@ public class HostAndGuestActivity extends BaseActivity {
                     }
                     break;
                 case R.id.ll_host_attendee_banquet:
-                    if (banquentAttendeeList.size() == 0){
-                    }else {
+                    if (banquentAttendeeList.size() == 0) {
+                    } else {
                         intent = new Intent(mContext, BanquetDetailActivity.class);
                         intent.putExtra("banquet", banquentAttendeeList.get(0));
                         startActivity(intent);
                     }
                     break;
                 case R.id.ll_host_hold_banquet:
-                    if (banquentHoldList.size() == 0){
-                    }else {
+                    if (banquentHoldList.size() == 0) {
+                    } else {
                         intent = new Intent(mContext, BanquetDetailActivity.class);
                         intent.putExtra("banquet", banquentHoldList.get(0));
                         startActivity(intent);
@@ -546,16 +538,16 @@ public class HostAndGuestActivity extends BaseActivity {
                     break;
                 case R.id.banquet_detail_attendee_btn:
                     intent = new Intent();
-                    intent.setClass(mContext,BanquetListActivity.class);
+                    intent.setClass(mContext, BanquetListActivity.class);
                     intent.putExtra("b_hold", false);
-                    intent.putExtra("attendee_id",mAttendeeId);
+                    intent.putExtra("attendee_id", mAttendeeId);
                     startActivity(intent);
                     break;
                 case R.id.banquet_detail_hold_btn:
                     intent = new Intent();
-                    intent.setClass(mContext,BanquetListActivity.class);
-                    intent.putExtra("b_hold",true);
-                    intent.putExtra("attendee_id",mAttendeeId);
+                    intent.setClass(mContext, BanquetListActivity.class);
+                    intent.putExtra("b_hold", true);
+                    intent.putExtra("attendee_id", mAttendeeId);
                     startActivity(intent);
                     break;
             }
@@ -569,6 +561,7 @@ public class HostAndGuestActivity extends BaseActivity {
             }
             return banquentAttendeeList.size();
         }
+
         @Override
         public Object getItem(int position) {
             return position;
@@ -590,13 +583,13 @@ public class HostAndGuestActivity extends BaseActivity {
                 holder = (ViewHolder) convertView.getTag();
             }
 
-                Banquent banquet = banquentAttendeeList.get(position);
-                Picasso.with(mContext).load(banquet.getSurfaceImageUrl()).placeholder(R.drawable.empty_view_greeting).into(holder.image);
-                holder.title.setText(banquet.getTitle());
-                holder.date.setText(formatDate(banquet.getTime()));
-                holder.price.setText(String.format(getString(R.string.price_per_one),banquet.getPrice()));
-                holder.situation.setText(String.format(getString(R.string.total_attendee), banquet.getAttendees().size()));
-                return convertView;
+            Banquent banquet = banquentAttendeeList.get(position);
+            Picasso.with(mContext).load(banquet.getSurfaceImageUrl()).placeholder(R.drawable.empty_view_greeting).into(holder.image);
+            holder.title.setText(banquet.getTitle());
+            holder.date.setText(formatDate(banquet.getTime()));
+            holder.price.setText(String.format(getString(R.string.price_per_one), banquet.getPrice()));
+            holder.situation.setText(String.format(getString(R.string.total_attendee), banquet.getAttendees().size()));
+            return convertView;
 
         }
     };
@@ -608,6 +601,7 @@ public class HostAndGuestActivity extends BaseActivity {
             }
             return banquentHoldList.size();
         }
+
         @Override
         public Object getItem(int position) {
             return position;
@@ -629,13 +623,13 @@ public class HostAndGuestActivity extends BaseActivity {
                 holder = (ViewHolder) convertView.getTag();
 
 
-                Banquent banquet = banquentHoldList.get(position);
-                Picasso.with(mContext).load(banquet.getSurfaceImageUrl()).placeholder(R.drawable.empty_view_greeting).into(holder.image);
-                holder.title.setText(banquet.getTitle());
-                holder.date.setText(formatDate(banquet.getTime()));
-                holder.price.setText(String.format(getString(R.string.price_per_one), banquet.getPrice()));
-                holder.situation.setText(String.format(getString(R.string.total_attendee), banquet.getAttendees().size()));
-                return convertView;
+            Banquent banquet = banquentHoldList.get(position);
+            Picasso.with(mContext).load(banquet.getSurfaceImageUrl()).placeholder(R.drawable.empty_view_greeting).into(holder.image);
+            holder.title.setText(banquet.getTitle());
+            holder.date.setText(formatDate(banquet.getTime()));
+            holder.price.setText(String.format(getString(R.string.price_per_one), banquet.getPrice()));
+            holder.situation.setText(String.format(getString(R.string.total_attendee), banquet.getAttendees().size()));
+            return convertView;
 
         }
     };
@@ -651,6 +645,7 @@ public class HostAndGuestActivity extends BaseActivity {
         TextView situation;
         @ViewInject(R.id.banquet_history_item_price)
         TextView price;
+
         ViewHolder(View convertView) {
             com.lidroid.xutils.ViewUtils.inject(this, convertView);
         }

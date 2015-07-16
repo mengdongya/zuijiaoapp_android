@@ -308,7 +308,7 @@
     <string name="remark_to_host">给料理人留言</string>
     <string name="center_dot">·</string>
     <string name="host_introduction">料理人介绍</string>
-    <string name="attended_banquet">参加了%1$d场料理</string>
+    <string name="attended_banquet">参加了%d场料理</string>
     <string name="hosted_banquet">举办了%1$d场料理，累计接待%2$d人</string>
     <string name="get_history_list_failed">获取历史记录失败，请检查网络</string>
     <string name="total_attendee">共有%d人参加</string>

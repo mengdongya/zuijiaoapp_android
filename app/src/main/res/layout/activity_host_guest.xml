@@ -296,13 +296,11 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <View
+                <!--<View
                     android:layout_width="match_parent"
                     android:layout_height="1dip"
-                    android:layout_marginLeft="10dip"
-                    android:layout_marginRight="10dip"
-                    android:background="@color/bg_gray_white"
-                    />
+                    android:background="@color/bg_light_gray2"
+                    />-->
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dip"

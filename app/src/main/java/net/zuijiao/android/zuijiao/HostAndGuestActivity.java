@@ -118,8 +118,8 @@ public class HostAndGuestActivity extends BaseActivity {
 
     @ViewInject(R.id.hold_banquet_item)
     private View holdBanquet;
-     @ViewInject(R.id.attendee_banquet_item)
-     private View attendeeBanquet;
+    @ViewInject(R.id.attendee_banquet_item)
+    private View attendeeBanquet;
     @ViewInject(R.id.banquet_item_text)
     private View holdAttendeeBanquet;
 
@@ -181,7 +181,7 @@ public class HostAndGuestActivity extends BaseActivity {
                     banquetImageAttendeeNull.setVisibility(View.VISIBLE);
                     mAttendeeBanquet.setVisibility(View.GONE);
                 } else {
-                    banquent = banquentAttendeeList.get(0);
+                    banquent = banquentAttendeeList.get(banquentAttendeeList.size() - 1);
                     Picasso.with(mContext).load(banquent.getSurfaceImageUrl()).placeholder(R.drawable.empty_view_greeting).into((ImageView) holdBanquet.findViewById(R.id.banquet_history_item_image));
                     ((TextView) holdAttendeeBanquet.findViewById(R.id.banquet_history_item_title)).setText(banquent.getTitle());
                     ((TextView) holdAttendeeBanquet.findViewById(R.id.banquet_history_item_date)).setText(formatDate(banquent.getTime()));
@@ -234,7 +234,8 @@ public class HostAndGuestActivity extends BaseActivity {
 
                     finalizeDialog();
                 }
-            }, new OneParameterExpression<String>() {
+            }
+                    , new OneParameterExpression<String>() {
                 @Override
                 public void action(String s) {
                     Toast.makeText(mContext, getString(R.string.get_history_list_failed), Toast.LENGTH_SHORT).show();
@@ -265,7 +266,7 @@ public class HostAndGuestActivity extends BaseActivity {
             mHoldAllBanquet.setVisibility(View.GONE);
             mHoldBanquet.setVisibility(View.GONE);
             mAllComment.setVisibility(View.GONE);
-
+            // mHostCommentList.setVisibility(View.GONE);
             Router.getAccountModule().attendeeInfo(mAttendeeId, new OneParameterExpression<Attendee>() {
                 @Override
                 public void action(Attendee attendee) {
@@ -488,13 +489,13 @@ public class HostAndGuestActivity extends BaseActivity {
                 holder = (ViewHolder) convertView.getTag();
             }
 
-                Banquent banquet = banquentAttendeeList.get(position);
-                Picasso.with(mContext).load(banquet.getSurfaceImageUrl()).placeholder(R.drawable.empty_view_greeting).into(holder.image);
-                holder.title.setText(banquet.getTitle());
-                holder.date.setText(formatDate(banquet.getTime()));
-                holder.price.setText(String.format(getString(R.string.price_per_one),banquet.getPrice()));
-                holder.situation.setText(String.format(getString(R.string.total_attendee), banquet.getAttendees().size()));
-                return convertView;
+            Banquent banquet = banquentAttendeeList.get(position);
+            Picasso.with(mContext).load(banquet.getSurfaceImageUrl()).placeholder(R.drawable.empty_view_greeting).into(holder.image);
+            holder.title.setText(banquet.getTitle());
+            holder.date.setText(formatDate(banquet.getTime()));
+            holder.price.setText(String.format(getString(R.string.price_per_one),banquet.getPrice()));
+            holder.situation.setText(String.format(getString(R.string.total_attendee), banquet.getAttendees().size()));
+            return convertView;
 
         }
     };
@@ -527,13 +528,13 @@ public class HostAndGuestActivity extends BaseActivity {
                 holder = (ViewHolder) convertView.getTag();
 
 
-                Banquent banquet = banquentHoldList.get(position);
-                Picasso.with(mContext).load(banquet.getSurfaceImageUrl()).placeholder(R.drawable.empty_view_greeting).into(holder.image);
-                holder.title.setText(banquet.getTitle());
-                holder.date.setText(formatDate(banquet.getTime()));
-                holder.price.setText(String.format(getString(R.string.price_per_one), banquet.getPrice()));
-                holder.situation.setText(String.format(getString(R.string.total_attendee), banquet.getAttendees().size()));
-                return convertView;
+            Banquent banquet = banquentHoldList.get(position);
+            Picasso.with(mContext).load(banquet.getSurfaceImageUrl()).placeholder(R.drawable.empty_view_greeting).into(holder.image);
+            holder.title.setText(banquet.getTitle());
+            holder.date.setText(formatDate(banquet.getTime()));
+            holder.price.setText(String.format(getString(R.string.price_per_one), banquet.getPrice()));
+            holder.situation.setText(String.format(getString(R.string.total_attendee), banquet.getAttendees().size()));
+            return convertView;
 
         }
     };

@@ -83,7 +83,6 @@
       <sourceFolder url="file://$MODULE_DIR$/src/androidTest/java" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/androidTest/jni" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/androidTest/rs" isTestSource="true" />
-      <excludeFolder url="file://$MODULE_DIR$/build/dependency-cache" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/assets" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/bundles" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/classes" />
@@ -104,8 +103,6 @@
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/rs" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/symbols" />
       <excludeFolder url="file://$MODULE_DIR$/build/outputs" />
-      <excludeFolder url="file://$MODULE_DIR$/build/retrolambda" />
-      <excludeFolder url="file://$MODULE_DIR$/build/tmp" />
     </content>
     <orderEntry type="jdk" jdkName="Android API 21 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
@@ -127,8 +124,8 @@
     <orderEntry type="library" exported="" name="weibosdkcore" level="project" />
     <orderEntry type="library" exported="" name="SocialSDK_WeiXin_2" level="project" />
     <orderEntry type="library" exported="" name="SocialSDK_QQZone_3" level="project" />
-    <orderEntry type="library" exported="" name="android-support-v13" level="project" />
     <orderEntry type="library" exported="" name="BaiduLBS_Android" level="project" />
+    <orderEntry type="library" exported="" name="android-support-v13" level="project" />
     <orderEntry type="library" exported="" name="jsr305-2.0.1" level="project" />
     <orderEntry type="library" exported="" name="okio-1.2.0" level="project" />
     <orderEntry type="library" exported="" name="pinyin4j-2.5.0" level="project" />
@@ -144,8 +141,8 @@
     <orderEntry type="library" exported="" name="com.umeng.fb.5.3.0" level="project" />
     <orderEntry type="library" exported="" name="umeng-update-v2.6.0.1" level="project" />
     <orderEntry type="library" exported="" name="umeng-analytics-v5.4.2" level="project" />
-    <orderEntry type="library" exported="" name="support-annotations-21.0.3" level="project" />
     <orderEntry type="library" exported="" name="android-async-http-1.4.6" level="project" />
+    <orderEntry type="library" exported="" name="support-annotations-21.0.3" level="project" />
     <orderEntry type="library" exported="" name="fab-1.5.0" level="project" />
     <orderEntry type="module" module-name="model" exported="" />
   </component>

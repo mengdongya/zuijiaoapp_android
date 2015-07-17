@@ -19,7 +19,6 @@
         <com.zuijiao.view.RefreshAndInitListView
             android:id="@+id/banquet_comment_list_view"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:divider="@null" />
+            android:layout_height="match_parent" />
     </android.support.v4.widget.SwipeRefreshLayout>
 </LinearLayout>

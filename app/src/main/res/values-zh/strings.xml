@@ -360,11 +360,14 @@
     <string name="evaluate">评价</string>
     <string name="send">发送</string>
     <string name="receive_comments">收到%d条评价</string>
+    <string name="default_receive_comments">收到0条评价</string>
     <string name="show_all_comments">查看全部评价</string>
     <string name="weixin_not_installed">你还没有安装微信，不能登录</string>
     <string name="send_comment_success">评价发表成功</string>
     <string name="toolbar_comments">%d条评价</string>
     <string name="show_all_banquet">查看全部料理</string>
+    <string name="attended">已经参加的料理</string>
+    <string name="held">已经举办的料理</string>
     <!-- umeng socialize strings begin-->
     <!--<string name="pull_to_refresh_pull_label" translatable="false">向下拉动可以刷新</string>-->
     <!--<string name="pull_to_refresh_release_label" translatable="false">松开可以刷新</string>-->

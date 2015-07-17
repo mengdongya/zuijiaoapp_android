@@ -254,7 +254,8 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
                 mAllCommentBtn.setVisibility(View.GONE);
             }
             Review review = reviewList.get(0);
-            mCommentRatingbar.setRating(4.5f);
+//            mCommentRatingbar.setRating(4.5f);
+            mCommentRatingbar.setRating(mBanquent.getMaster().getScore());
             mHostScore.setText("(" + mReviews.getTotalCount() + ")");
             ImageView head = (RoundImageView) mLastComment.findViewById(R.id.banquet_comment_item_head);
             ImageLoader.getInstance().displayImage(review.getReviewer().getAvatarURLSmall().get(), head);

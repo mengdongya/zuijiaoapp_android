@@ -115,11 +115,11 @@ public class HostAndGuestActivity extends BaseActivity {
     private TextView mCommentCount;
     @ViewInject(R.id.host_comment_rtatingbar)
     private ReviewRatingBar mCommentRatingbar;
-//        @ViewInject(R.id.host_comment_list)
+    //        @ViewInject(R.id.host_comment_list)
 ////    private LinearLayout mHostCommentList;
-//    @ViewInject(R.id.ll_host_hold_banquet)
-//    private LinearLayout mHoldBanquet;
-//    @ViewInject(R.id.ll_host_attendee_banquet)
+    @ViewInject(R.id.ll_host_hold_banquet)
+    private LinearLayout mHoldBanquet;
+    //    @ViewInject(R.id.ll_host_attendee_banquet)
 //    private LinearLayout llAttendeeBanquet;
     @ViewInject(R.id.host_guest_history_item_image_hold)
     private ImageView banquetImageHoldNull;
@@ -214,7 +214,8 @@ public class HostAndGuestActivity extends BaseActivity {
                     mReviewContainer.setVisibility(View.GONE);
                     mhostMsg.setVisibility(View.GONE);
                     mHoldAllBanquet.setVisibility(View.GONE);
-                    //mHoldBanquet.setVisibility(View.GONE);
+                    mHoldBanquet.setVisibility(View.GONE);
+                    mEmptyIv.setVisibility(View.GONE);
                     mAllComment.setVisibility(View.GONE);
                     mGuestHead.setVisibility(View.VISIBLE);
                     if (mAttendee.getAvatarURLSmall().isPresent()) {

@@ -156,8 +156,6 @@ public class ThirdPartySDKManager implements AbsSDK.LoginListener {
         });
     }
 
-    ;
-
     public void onLoginFailed() {
         try{
             ((BaseActivity) mContext).finalizeDialog();
@@ -166,8 +164,6 @@ public class ThirdPartySDKManager implements AbsSDK.LoginListener {
             Log.i("ThirdPartySDKManager" , "login failed dismiss dialog crashed!") ;
         }
     }
-
-    ;
 
     public boolean isThirdParty(String platform) {
         if (platform == null) {

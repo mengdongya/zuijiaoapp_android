@@ -174,11 +174,9 @@ public class BanquetAdapter extends BaseAdapter implements AdapterView.OnItemCli
     }
 
     private boolean showBanner() {
-        if (mBanquents != null
+        return mBanquents != null
                 && mBanquents.getBannerLinkUrl() != null
-                && !mBanquents.getBannerLinkUrl().equals(""))
-            return true;
-        return false;
+                && !mBanquents.getBannerLinkUrl().equals("");
     }
 
     /**

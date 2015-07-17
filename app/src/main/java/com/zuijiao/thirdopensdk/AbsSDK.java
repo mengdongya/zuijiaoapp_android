@@ -20,12 +20,11 @@ public abstract class AbsSDK {
     public void onLoginResult(int requestCode, int resultCode, Intent data) {
     }
 
-    ;
     protected LoginListener mListener;
 
     public interface LoginListener {
-        public void onLoginFinish(AuthorInfo userInfo);
+        void onLoginFinish(AuthorInfo userInfo);
 
-        public void onLoginFailed();
+        void onLoginFailed();
     }
 }

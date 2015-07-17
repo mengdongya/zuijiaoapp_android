@@ -123,7 +123,6 @@ public class GourmetDetailActivity extends BaseActivity implements
     private View mLayoutTopFloat = null;
     @ViewInject(R.id.food_detail_image_dots)
     private LinearLayout mImageIndex = null;
-    ;
     private TopViewHolder floatHolder = null;
     private TopViewHolder topHolder = null;
     @ViewInject(R.id.food_detail_food_msg_title)

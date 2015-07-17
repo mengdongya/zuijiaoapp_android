@@ -331,7 +331,7 @@ public class MessageFragment extends Fragment implements FragmentDataListener,
     }
 
     public interface OnMessageFetch {
-        public void onFetch(int tabIndex, int unReadCount);
+        void onFetch(int tabIndex, int unReadCount);
     }
 
     //    public List<Message> mData = new ArrayList<>();

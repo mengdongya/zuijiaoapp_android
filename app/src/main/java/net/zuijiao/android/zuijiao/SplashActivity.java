@@ -102,7 +102,7 @@ public class SplashActivity extends BaseActivity {
 
     private void initPreferenceInfo() {
         mPreferMng = PreferenceManager.getInstance(getApplicationContext());
-        mPreferInfo = mPreferMng.initPreferenceInfo();
+        mPreferInfo = PreferenceManager.initPreferenceInfo();
         FileManager.createRootFolder();
     }
 

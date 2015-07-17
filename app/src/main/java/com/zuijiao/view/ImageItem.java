@@ -63,7 +63,7 @@ public class ImageItem extends LinearLayout{
      * image clicked
      */
     public interface onItemClickListener {
-        public void onItemClick(int position);
+        void onItemClick(int position);
     }
 
     public void setOnClickListener(onItemClickListener l, int position) {

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -37,6 +38,8 @@ public class MyOrderFragment extends Fragment {
     private MainPagerAdapter mPagerAdapter = null;
     private Context mContext;
 
+    private static int needRefreshIndex = -1;
+
     public MyOrderFragment() {
         super();
     }
@@ -58,9 +61,28 @@ public class MyOrderFragment extends Fragment {
         mTabs = (PagerSlidingTab) contentView.findViewById(R.id.notification_tabs);
         initTabsValue();
         mTabs.setViewPager(mViewPager);
+        mTabs.setOnPageChangeListener(onPageChangeListener);
         return contentView;
     }
 
+    ViewPager.OnPageChangeListener onPageChangeListener = new ViewPager.OnPageChangeListener() {
+        @Override
+        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+        }
+
+        @Override
+        public void onPageSelected(int position) {
+            if (needRefreshIndex == position) {
+                ((OrderListFragment) mPagerAdapter.getItem(needRefreshIndex)).onRefresh();
+                needRefreshIndex = -1;
+            }
+        }
+
+        @Override
+        public void onPageScrollStateChanged(int state) {
+        }
+    };
 
     @Override
     public void onDestroy() {
@@ -140,8 +162,15 @@ public class MyOrderFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == MainActivity.COMMENT_SUCCESS) {
-            mGoneOrderFragment.onRefresh();
-            mWholeOrderFragment.onRefresh();
+//            mGoneOrderFragment.onRefresh();
+//            new Handler().postDelayed(new Runnable() {
+//                @Override
+//                public void run() {
+//                    mWholeOrderFragment.onRefresh();
+//                }
+//            }, 200);
+            ((OrderListFragment) mPagerAdapter.getItem(mViewPager.getCurrentItem())).onRefresh();
+            needRefreshIndex = 3 - mViewPager.getCurrentItem();
         }
     }
 }

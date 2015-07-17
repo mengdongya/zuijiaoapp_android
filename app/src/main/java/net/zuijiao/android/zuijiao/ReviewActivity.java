@@ -105,6 +105,7 @@ public class ReviewActivity extends BaseActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+        setResult(100);
     }
 
     @Override

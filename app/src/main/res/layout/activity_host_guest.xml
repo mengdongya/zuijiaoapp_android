@@ -87,16 +87,16 @@
                     android:layout_gravity="center"
                     myattr:imageSize="30"
                     myattr:isIndicator="true"
-                    myattr:ratingBarType="host_score"/>
+                    myattr:ratingBarType="host_score" />
 
                 <TextView
                     android:id="@+id/host_comment_count"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:text="(20)"
                     android:layout_marginTop="3dip"
-                    android:textSize="14sp"/>
+                    android:text="(20)"
+                    android:textSize="14sp" />
             </LinearLayout>
 
             <TextView
@@ -166,33 +166,40 @@
                 <include
                     android:id="@+id/attendee_detail_cooking_item"
                     layout="@layout/attendee_detail_info_item" />
+
                 <View
-                    android:layout_height="1dip"
                     android:layout_width="match_parent"
+                    android:layout_height="1dip"
                     android:layout_margin="8dip"
                     android:background="@color/bg_gray_white" />
+
                 <include
                     android:id="@+id/attendee_detail_skilled_item"
                     layout="@layout/attendee_detail_info_item" />
+
                 <View
-                    android:layout_height="1dip"
                     android:layout_width="match_parent"
+                    android:layout_height="1dip"
                     android:layout_margin="8dip"
                     android:background="@color/bg_gray_white" />
+
                 <include
                     android:id="@+id/attendee_detail_place_item"
                     layout="@layout/attendee_detail_info_item" />
+
                 <View
-                    android:layout_height="1dip"
                     android:layout_width="match_parent"
+                    android:layout_height="1dip"
                     android:layout_margin="8dip"
                     android:background="@color/bg_gray_white" />
+
                 <include
                     android:id="@+id/attendee_detail_address_item"
                     layout="@layout/attendee_detail_info_item" />
+
                 <View
-                    android:layout_height="1dip"
                     android:layout_width="match_parent"
+                    android:layout_height="1dip"
                     android:layout_margin="8dip" />
             </LinearLayout>
 
@@ -222,8 +229,8 @@
                     layout="@layout/attendee_detail_info_item" />
 
                 <View
-                    android:layout_height="1dip"
                     android:layout_width="match_parent"
+                    android:layout_height="1dip"
                     android:layout_margin="8dip"
                     android:background="@color/bg_gray_white" />
 
@@ -232,25 +239,28 @@
                     layout="@layout/attendee_detail_info_item" />
 
                 <View
-                    android:layout_height="1dip"
                     android:layout_width="match_parent"
+                    android:layout_height="1dip"
                     android:layout_margin="8dip"
                     android:background="@color/bg_gray_white" />
+
                 <include
                     android:id="@+id/attendee_detail_education_item"
                     layout="@layout/attendee_detail_info_item" />
 
                 <View
-                    android:layout_height="1dip"
                     android:layout_width="match_parent"
+                    android:layout_height="1dip"
                     android:layout_margin="8dip"
                     android:background="@color/bg_gray_white" />
+
                 <include
                     android:id="@+id/attendee_detail_hobby_item"
                     layout="@layout/attendee_detail_info_item" />
+
                 <View
-                    android:layout_height="1dip"
                     android:layout_width="match_parent"
+                    android:layout_height="1dip"
                     android:layout_margin="8dip" />
 
 
@@ -274,65 +284,65 @@
                     android:layout_marginTop="10dip"
                     android:background="@color/bg_light_gray2" />
 
-                <TextView
-                    android:id="@+id/host_history_title"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginLeft="10dip"
-                    android:layout_marginRight="10dip"
-                    android:layout_marginTop="10dip"
-                    android:gravity="center_horizontal"
-                    android:singleLine="false"
-                    android:text="举办了0场料理，累计接待0人"
-                    android:textColor="@color/black"
-                    android:textSize="18sp" />
+                    android:background="@drawable/bg_white_round_corner"
+                    android:orientation="vertical">
 
-                <View
-                    android:layout_width="30dip"
-                    android:layout_height="3dip"
-                    android:layout_marginTop="15dip"
-                    android:background="@color/black"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginBottom="10dip"/>
+                    <TextView
+                        android:id="@+id/host_history_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginTop="10dip"
+                        android:gravity="center_horizontal"
+                        android:singleLine="false"
+                        android:text="举办了0场料理，累计接待0人"
+                        android:textColor="@color/black"
+                        android:textSize="18sp" />
+
+                    <View
+                        android:layout_width="30dip"
+                        android:layout_height="3dip"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginBottom="10dip"
+                        android:layout_marginTop="15dip"
+                        android:background="@color/black" />
+                </LinearLayout>
 
                 <include
+                    android:visibility="gone"
                     android:id="@+id/hold_banquet_item"
-                    layout="@layout/banquet_history_item" />
+                    layout="@layout/banquet_history_item1" />
 
                 <ImageView
-                    android:id="@+id/banquet_history_item_image_hold"
-                    android:src="@drawable/empty_view_greeting2"
-                    android:layout_marginTop="10dip"
-                    android:layout_marginLeft="8dip"
-                    android:layout_marginRight="8dip"
-                    android:visibility="gone"
+                    android:id="@+id/host_guest_history_item_image_hold"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/main_item_image_height"
-                    android:scaleType="centerCrop" />
+                    android:layout_marginTop="10dip"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/empty_view_greeting2"
+                    android:visibility="visible" />
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dip"
-                    android:layout_marginLeft="10dip"
-                    android:layout_marginRight="10dip"
                     android:background="@color/bg_gray_white" />
 
             </LinearLayout>
 
             <Button
-                android:id="@+id/banquet_detail_hold_btn"
+                android:id="@+id/host_guest_hold_btn"
                 style="?android:attr/buttonStyleSmall"
                 android:layout_width="match_parent"
                 android:layout_height="40dip"
                 android:background="@drawable/bg_white_round_corner"
                 android:gravity="center"
                 android:text="@string/show_all_banquet"
-                android:layout_marginLeft="8dip"
-                android:layout_marginRight="8dip"
                 android:textColor="@color/banquet_theme"
                 android:textSize="18sp"
-                android:visibility="visible" />
+                android:visibility="gone" />
 
             <LinearLayout
                 android:id="@+id/ll_host_attendee_banquet"
@@ -349,70 +359,68 @@
                     android:layout_width="match_parent"
                     android:layout_height="1dip"
                     android:layout_marginTop="10dip"
-                    android:background="@color/bg_light_gray2"
-                    />
+                    android:background="@color/bg_light_gray2" />
 
-                <TextView
-                    android:id="@+id/host_guest_history_title"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginLeft="10dip"
-                    android:layout_marginRight="10dip"
-                    android:layout_marginTop="10dip"
-                    android:gravity="center_horizontal"
-                    android:singleLine="false"
-                    android:text="参加了0场料理"
-                    android:textColor="@color/black"
-                    android:textSize="18sp" />
+                    android:background="@drawable/bg_white_round_corner"
+                    android:orientation="vertical">
 
-                <View
-                    android:layout_width="30dip"
-                    android:layout_height="3dip"
-                    android:layout_marginTop="15dip"
-                    android:background="@color/black"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginBottom="10dip"/>
+                    <TextView
+                        android:id="@+id/host_guest_history_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginTop="10dip"
+                        android:gravity="center_horizontal"
+                        android:singleLine="false"
+                        android:text="参加了0场料理"
+                        android:textColor="@color/black"
+                        android:textSize="18sp" />
+
+                    <View
+                        android:layout_width="30dip"
+                        android:layout_height="3dip"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginBottom="10dip"
+                        android:layout_marginTop="15dip"
+                        android:background="@color/black" />
+                </LinearLayout>
 
                 <include
                     android:id="@+id/attendee_banquet_item"
-                    layout="@layout/banquet_history_item"
-                    />
+                    layout="@layout/banquet_history_item1"
+                    android:visibility="gone" />
+
                 <ImageView
-                    android:id="@+id/banquet_history_item_image_attendee"
-                    android:src="@drawable/empty_view_greeting2"
-                    android:layout_marginTop="10dip"
-                    android:layout_marginLeft="8dip"
-                    android:layout_marginRight="8dip"
-                    android:visibility="gone"
+                    android:id="@+id/host_guest_history_item_image_attendee"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/main_item_image_height"
-                    android:scaleType="centerCrop" />
+                    android:layout_marginTop="10dip"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/empty_view_greeting2"
+                    android:visibility="visible" />
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dip"
-                    android:layout_marginLeft="10dip"
-                    android:layout_marginRight="10dip"
                     android:background="@color/bg_light_gray2" />
 
             </LinearLayout>
 
 
-
             <Button
-                android:id="@+id/banquet_detail_attendee_btn"
+                android:id="@+id/host_guest_attendee_btn"
                 style="?android:attr/buttonStyleSmall"
                 android:layout_width="match_parent"
                 android:layout_height="40dip"
                 android:background="@drawable/bg_white_round_corner"
                 android:gravity="center"
-                android:layout_marginLeft="8dip"
-                android:layout_marginRight="8dip"
                 android:text="@string/show_all_banquet"
                 android:textColor="@color/banquet_theme"
                 android:textSize="18sp"
-                android:visibility="visible" />
+                android:visibility="gone" />
 
             <!--<View
                 android:layout_width="match_parent"
@@ -430,8 +438,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/bg_white_round"
-                android:orientation="vertical"
-                 >
+                android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/host_guest_review_title"
@@ -441,24 +448,25 @@
                     android:layout_marginLeft="10dip"
                     android:layout_marginRight="10dip"
                     android:layout_marginTop="10dip"
-                    android:visibility="visible"
                     android:gravity="center_horizontal"
                     android:singleLine="false"
-                    android:text="@string/receive_comments"
+                    android:text="@string/default_receive_comments"
                     android:textColor="@color/black"
-                    android:textSize="18sp" />
+                    android:textSize="18sp"
+                    android:visibility="visible" />
 
                 <View
                     android:layout_width="30dip"
                     android:layout_height="3dip"
-                    android:layout_marginTop="15dip"
-                    android:background="@color/black"
                     android:layout_gravity="center_horizontal"
-                    android:layout_marginBottom="10dip"/>
+                    android:layout_marginBottom="10dip"
+                    android:layout_marginTop="15dip"
+                    android:background="@color/black" />
 
                 <include
                     android:id="@+id/host_guest_lastest_comment"
-                    layout="@layout/banquet_comment_item" />
+                    layout="@layout/banquet_comment_item"
+                    android:visibility="gone" />
 
                 <View
                     android:layout_width="match_parent"
@@ -469,15 +477,15 @@
             </LinearLayout>
 
             <ImageView
-                android:id="@+id/banquet_empty_review_iv"
+                android:id="@+id/host_guest_empty_review_iv"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/main_item_image_height"
                 android:scaleType="centerCrop"
-                android:src="@drawable/empty_view_greeting"
-                android:visibility="gone" />
+                android:src="@drawable/empty_view_greeting2"
+                android:visibility="visible" />
 
             <Button
-                android:id="@+id/banquet_detail_comment_btn"
+                android:id="@+id/host_guest_comment_btn"
                 style="?android:attr/buttonStyleSmall"
                 android:layout_width="match_parent"
                 android:layout_height="40dip"
@@ -486,7 +494,7 @@
                 android:text="@string/show_all_comments"
                 android:textColor="@color/banquet_theme"
                 android:textSize="18sp"
-                android:visibility="visible" />
+                android:visibility="gone" />
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

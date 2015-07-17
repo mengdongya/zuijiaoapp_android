@@ -34,7 +34,7 @@ import java.util.List;
  * Created by mengdongya on 2015/7/10.
  */
 @ContentView(R.layout.activity_banquet_list)
-public class BanquetListActivity extends BaseActivity{
+public class BanquetListActivity extends BaseActivity {
     @ViewInject(R.id.banquet_list_tool_bar)
     private Toolbar mToolbar;
     @ViewInject(R.id.host_guest_history_list)
@@ -63,7 +63,7 @@ public class BanquetListActivity extends BaseActivity{
             finish();
             return;
         }
-
+        getSupportActionBar().setTitle(getString(isHold ? R.string.held : R.string.attended));
         mHistoryList.setAdapter(mHistoryAdapter);
         mHistoryList.setOnItemClickListener(mItemListener);
         networkStep();
@@ -74,34 +74,34 @@ public class BanquetListActivity extends BaseActivity{
 
         if (isHold) {
 
-            Router.getBanquentModule().themesOfMaster(mAttendeeId,null,500,new OneParameterExpression<Banquents>() {
+            Router.getBanquentModule().themesOfMaster(mAttendeeId, null, 500, new OneParameterExpression<Banquents>() {
                 @Override
                 public void action(Banquents banquents) {
-                    int banquetPeopleCount =0;
+                    int banquetPeopleCount = 0;
                     banquentList = banquents.getBanquentList();
-                    if (banquentList.size() != 0){
-                        for (int j= 0;j < banquentList.size();j++){
-                            banquetPeopleCount+=banquentList.get(j).getAttendees().size();
+                    if (banquentList.size() != 0) {
+                        for (int j = 0; j < banquentList.size(); j++) {
+                            banquetPeopleCount += banquentList.get(j).getAttendees().size();
                         }
                     }
-                    getSupportActionBar().setTitle(String.format(getString(R.string.hosted_banquet),banquentList.size(),banquetPeopleCount));
+                    // getSupportActionBar().setTitle(String.format(getString(R.string.hosted_banquet),banquentList.size(),banquetPeopleCount));
                     mHistoryList.setAdapter(mHistoryAdapter);
                     // AdapterViewHeightCalculator.setListViewHeightBasedOnChildren(mHistoryList);
                     finalizeDialog();
                 }
-            },new OneParameterExpression<String>(){
+            }, new OneParameterExpression<String>() {
                 @Override
                 public void action(String s) {
                     Toast.makeText(mContext, getString(R.string.get_history_list_failed), Toast.LENGTH_SHORT).show();
                     finalizeDialog();
                 }
             });
-        }else{
+        } else {
             Router.getBanquentModule().themesOfParticipator(mAttendeeId, null, 500, new OneParameterExpression<Banquents>() {
                 @Override
                 public void action(Banquents banquents) {
                     banquentList = banquents.getBanquentList();
-                    getSupportActionBar().setTitle(String.format(getString(R.string.attended_banquet),banquentList.size()));
+                    // getSupportActionBar().setTitle(String.format(getString(R.string.attended_banquet),banquentList.size()));
                     mHistoryList.setAdapter(mHistoryAdapter);
 //                    AdapterViewHeightCalculator.setListViewHeightBasedOnChildren(mHistoryList);
                     finalizeDialog();
@@ -176,7 +176,7 @@ public class BanquetListActivity extends BaseActivity{
             Picasso.with(mContext).load(banquet.getSurfaceImageUrl()).placeholder(R.drawable.empty_view_greeting).into(holder.image);
             holder.title.setText(banquet.getTitle());
             holder.date.setText(formatDate(banquet.getTime()));
-            holder.price.setText(String.format(getString(R.string.price_per_one),banquet.getPrice()));
+            holder.price.setText(String.format(getString(R.string.price_per_one), banquet.getPrice()));
             holder.situation.setText(String.format(getString(R.string.total_attendee), banquet.getAttendees().size()));
             return convertView;
         }

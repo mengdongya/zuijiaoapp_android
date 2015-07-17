@@ -89,42 +89,21 @@ public class ReviewActivity extends BaseActivity {
         if (item.getItemId() == R.id.menu_review) {
             float rating = mReviewRatingbar.getRating();
             if (rating == 0) {
-                Toast.makeText(mContext, getString(R.string.notify_review_score_empty), 0).show();
+                Toast.makeText(mContext, getString(R.string.notify_review_score_empty), Toast.LENGTH_SHORT).show();
                 return super.onOptionsItemSelected(item);
             }
             String reviewContent = mEtReviewContent.getText().toString().trim();
             if (reviewContent == "" || reviewContent.equals("") || reviewContent.isEmpty()) {
-                Toast.makeText(mContext, getString(R.string.notify_review_content_empty), 0).show();
+                Toast.makeText(mContext, getString(R.string.notify_review_content_empty), Toast.LENGTH_SHORT).show();
                 return super.onOptionsItemSelected(item);
             }
             networkStep();
-
-//            Router.getBanquentModule().commentsofBanquent(29, null, 20, new OneParameterExpression<Reviews>() {
-//                @Override
-//                public void action(Reviews reviews) {
-//                    List<Review> reviewList = reviews.getReviewList();
-//                    System.out.println("test success");
-//                    for (Review review : reviewList) {
-//                        int id = review.getIdentifier();
-//                        String content = review.getContent();
-//                        String time = review.getCreatedAt();
-//                        System.out.println("Review:" + id + "," + content + "," + time);
-//                    }
-//
-//                }
-//            }, new OneParameterExpression<String>() {
-//                @Override
-//                public void action(String s) {
-//                    System.out.println("test error：" + s);
-//                }
-//            });
         }
         return super.onOptionsItemSelected(item);
     }
 
     @Override
     public void onBackPressed() {
-        //setResult(MainActivity.COMMENT_SUCCESS);
         super.onBackPressed();
     }
 

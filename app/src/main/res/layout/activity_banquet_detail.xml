@@ -436,7 +436,7 @@
                 android:verticalSpacing="5dip" />
 
             <LinearLayout
-                android:id="@+id/banquet_detail_review_container"
+                android:id="@+id/host_guest_review_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
@@ -465,7 +465,7 @@
                     android:visibility="visible" />
 
                 <include
-                    android:id="@+id/banquet_detail_lastest_comment"
+                    android:id="@+id/host_guest_lastest_comment"
                     layout="@layout/banquet_comment_item" />
 
                 <Button

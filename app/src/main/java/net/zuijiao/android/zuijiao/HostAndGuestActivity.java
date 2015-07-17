@@ -4,17 +4,14 @@ package net.zuijiao.android.zuijiao;
 import android.app.ActionBar;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.media.Image;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -31,20 +28,16 @@ import com.zuijiao.adapter.ImageViewPagerAdapter;
 import com.zuijiao.android.util.functional.OneParameterExpression;
 import com.zuijiao.android.zuijiao.model.Banquent.Attendee;
 import com.zuijiao.android.zuijiao.model.Banquent.Banquent;
-import com.zuijiao.android.zuijiao.model.Banquent.Banquents;
 import com.zuijiao.android.zuijiao.model.Banquent.Review;
-import com.zuijiao.android.zuijiao.model.Banquent.Reviews;
+import com.zuijiao.android.zuijiao.model.Banquent.Seller;
 import com.zuijiao.android.zuijiao.model.common.Language;
 import com.zuijiao.android.zuijiao.model.user.Profile;
 import com.zuijiao.android.zuijiao.network.Cache;
 import com.zuijiao.android.zuijiao.network.Router;
 import com.zuijiao.controller.ActivityTask;
-import com.zuijiao.utils.AdapterViewHeightCalculator;
 import com.zuijiao.view.ReviewRatingBar;
 import com.zuijiao.view.RoundImageView;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -97,7 +90,7 @@ public class HostAndGuestActivity extends BaseActivity {
     private TextView mHostHold;
     @ViewInject(R.id.host_guest_history_title)
     private TextView mHostAttendee;
-    @ViewInject(R.id.banquet_detail_review_container)
+    @ViewInject(R.id.host_guest_review_container)
     private LinearLayout mReviewContainer;
     @ViewInject(R.id.banquet_detail_hold_btn)
     private Button mHoldAllBanquet;
@@ -112,9 +105,9 @@ public class HostAndGuestActivity extends BaseActivity {
     private LinearLayout mhostMsg;
     @ViewInject(R.id.ll_host_comment_stars)
     private LinearLayout mCommentStars;
-    @ViewInject(R.id.banquet_detail_lastest_comment)
+    @ViewInject(R.id.host_guest_lastest_comment)
     private RelativeLayout mLastestComment;
-    @ViewInject(R.id.banquet_detail_review_title)
+    @ViewInject(R.id.host_guest_review_title)
     private TextView mReviewTitle;
     @ViewInject(R.id.banquet_empty_review_iv)
     private ImageView mEmptyIv;
@@ -148,7 +141,6 @@ public class HostAndGuestActivity extends BaseActivity {
     private boolean bHost = false;
     private Attendee mAttendee;
     private String[] weekDays;
-    private Reviews mReviews;
 
     @Override
     protected void registerViews() {
@@ -169,7 +161,6 @@ public class HostAndGuestActivity extends BaseActivity {
             finish();
             return;
         }
-
         ((TextView) mAttendeeCooking.findViewById(R.id.attendee_detail_info_item_title)).setText(getString(R.string.cooking));
         ((TextView) mAttendeeSkilled.findViewById(R.id.attendee_detail_info_item_title)).setText(getString(R.string.skilled));
         ((TextView) mAttendeePlace.findViewById(R.id.attendee_detail_info_item_title)).setText(getString(R.string.place));
@@ -178,7 +169,6 @@ public class HostAndGuestActivity extends BaseActivity {
         ((TextView) mAttendeeLanguage.findViewById(R.id.attendee_detail_info_item_title)).setText(getString(R.string.my_language));
         ((TextView) mAttendeeEducation.findViewById(R.id.attendee_detail_info_item_title)).setText(getString(R.string.education));
         ((TextView) mAttendeeHobby.findViewById(R.id.attendee_detail_info_item_title)).setText(getString(R.string.interest_hobby));
-
         mHostImages.setOnPageChangeListener(mPageListener);
         mHoldAllBanquet.setOnClickListener(mHeadListener);
         mAttendeeBanquet.setOnClickListener(mHeadListener);
@@ -193,165 +183,155 @@ public class HostAndGuestActivity extends BaseActivity {
         createDialog();
         mAttendeeIntroductionTitle.setText(getString(R.string.host_introduction));
         mHostAttendee.setText(getString(R.string.attended_banquet));
-
-        Router.getBanquentModule().themesOfParticipator(mAttendeeId, null, 500, new OneParameterExpression<Banquents>() {
+        Router.getAccountModule().banquetUserInfo(mAttendeeId, new OneParameterExpression<Attendee>() {
             @Override
-            public void action(Banquents banquents) {
-
-                banquentAttendeeList = banquents.getBanquentList();
-                mHostAttendee.setText(String.format(getString(R.string.attended_banquet), banquentAttendeeList.size()));
-                Banquent banquent = null;
-                if (banquentAttendeeList.size() == 0) {
+            public void action(Attendee attendee) {
+                finalizeDialog();
+                mAttendee = attendee ;
+                //register common user info
+                registerViewsByAttendee();
+                //register last attend banquet begin
+                Banquent lastAttendBanquet = attendee.getLastAttendEvent() ;
+                if(lastAttendBanquet == null){
                     attendeeBanquet.setVisibility(View.GONE);
                     banquetImageAttendeeNull.setVisibility(View.VISIBLE);
                     mAttendeeBanquet.setVisibility(View.GONE);
-                } else {
-                    banquent = banquentAttendeeList.get(banquentAttendeeList.size() - 1);
-                    Picasso.with(mContext).load(banquent.getSurfaceImageUrl()).placeholder(R.drawable.empty_view_greeting).into((ImageView) holdBanquet.findViewById(R.id.banquet_history_item_image));
-                    ((TextView) holdAttendeeBanquet.findViewById(R.id.banquet_history_item_title)).setText(banquent.getTitle());
-                    ((TextView) holdAttendeeBanquet.findViewById(R.id.banquet_history_item_date)).setText(formatDate(banquent.getTime()));
-                    ((TextView) holdAttendeeBanquet.findViewById(R.id.banquet_history_item_price)).setText(String.format(getString(R.string.price_per_one), banquent.getPrice()));
-                    ((TextView) holdAttendeeBanquet.findViewById(R.id.banquet_history_item_situation)).setText(String.format(getString(R.string.total_attendee), banquent.getAttendees().size()));
+                }else{
+                    Picasso.with(mContext).load(lastAttendBanquet.getSurfaceImageUrl()).placeholder(R.drawable.empty_view_greeting).into((ImageView) holdBanquet.findViewById(R.id.banquet_history_item_image));
+                    ((TextView) holdAttendeeBanquet.findViewById(R.id.banquet_history_item_title)).setText(lastAttendBanquet.getTitle());
+                    ((TextView) holdAttendeeBanquet.findViewById(R.id.banquet_history_item_date)).setText(formatDate(lastAttendBanquet.getTime()));
+                    ((TextView) holdAttendeeBanquet.findViewById(R.id.banquet_history_item_price)).setText(String.format(getString(R.string.price_per_one), lastAttendBanquet.getPrice()));
+                    ((TextView) holdAttendeeBanquet.findViewById(R.id.banquet_history_item_situation)).setText(String.format(getString(R.string.total_attendee), lastAttendBanquet.getAttendees().size()));
                 }
-                finalizeDialog();
-            }
-        }
-                , new OneParameterExpression<String>() {
-            @Override
-            public void action(String s) {
-                Toast.makeText(mContext, getString(R.string.get_history_list_failed), Toast.LENGTH_SHORT).show();
-                finalizeDialog();
-            }
-        });
-
-
-        if (bHost) {
-            mHostHold.setText(getString(R.string.hosted_banquet));
-            getSupportActionBar().setTitle(getString(R.string.host));
-
-            Router.getBanquentModule().themesOfMaster(mAttendeeId, null, 500, new OneParameterExpression<Banquents>() {
-
-                @Override
-                public void action(Banquents banquents) {
-                    banquentHoldList = banquents.getBanquentList();
-                    Banquent banquent = null;
-                    if (banquentHoldList.size() != 0) {
-                        int banquetPeopleCount = 0;
-                        for (int i = 0; i < banquentHoldList.size(); i++) {
-                            banquetPeopleCount += banquentHoldList.get(i).getAttendees().size();
+                //register last attend banquet end
+                //register seller info begin ;
+                Seller sellerInfo = attendee.getSellerInfo() ;
+                if(sellerInfo == null){
+                    getSupportActionBar().setTitle(getString(R.string.guest));
+                    mCommentStars.setVisibility(View.GONE);
+                    mReviewContainer.setVisibility(View.GONE);
+                    mhostMsg.setVisibility(View.GONE);
+                    mHoldAllBanquet.setVisibility(View.GONE);
+                    mHoldBanquet.setVisibility(View.GONE);
+                    mAllComment.setVisibility(View.GONE);
+                    mGuestHead.setVisibility(View.VISIBLE);
+                    if (mAttendee.getAvatarURLSmall().isPresent()) {
+                        Picasso.with(mContext).load(mAttendee.getAvatarURLSmall().get()).placeholder(R.drawable.default_user_head).into(mGuestHead);
+                        mGuestHead.setOnClickListener(mHeadListener);
+                    }
+                }else{
+                    String culinary = sellerInfo.getCulinary() ;
+                    if(culinary != null && !culinary.equals("")){
+                        ((TextView) mAttendeeCooking.findViewById(R.id.attendee_detail_info_item_content)).setText(culinary);
+                    }
+                    String cookSkill = sellerInfo.getSkill() ;
+                    if(cookSkill != null && !cookSkill.equals("")){
+                        ((TextView) mAttendeeSkilled.findViewById(R.id.attendee_detail_info_item_content)).setText(cookSkill);
+                    }
+                    Seller.SellerPlace sellerPlace = sellerInfo.getPlace() ;
+                    if(sellerPlace != null){
+                        String placeType = sellerInfo.getPlace().getPlaceType() ;
+                        if(placeType != null && ! placeType .equals("")){
+                            ((TextView) mAttendeePlace.findViewById(R.id.attendee_detail_info_item_content)).setText(placeType) ;
                         }
-                        mHostHold.setText(String.format(getString(R.string.hosted_banquet), banquentHoldList.size(), banquetPeopleCount));
-                        banquent = banquentHoldList.get(banquentHoldList.size() - 1);
-                        Picasso.with(mContext).load(banquent.getSurfaceImageUrl()).placeholder(R.drawable.empty_view_greeting).into((ImageView) holdBanquet.findViewById(R.id.banquet_history_item_image));
-                        ((TextView) holdAttendeeBanquet.findViewById(R.id.banquet_history_item_title)).setText(banquent.getTitle());
-                        ((TextView) holdAttendeeBanquet.findViewById(R.id.banquet_history_item_date)).setText(formatDate(banquent.getTime()));
-                        ((TextView) holdAttendeeBanquet.findViewById(R.id.banquet_history_item_price)).setText(String.format(getString(R.string.price_per_one), banquent.getPrice()));
-                        ((TextView) holdAttendeeBanquet.findViewById(R.id.banquet_history_item_situation)).setText(String.format(getString(R.string.total_attendee), banquent.getAttendees().size()));
-                    } else {
+                        String address =  sellerPlace.getAddress() ;
+                        if(address != null && !address.equals("")){
+                            ((TextView)mAttendeeAddress.findViewById(R.id.attendee_detail_info_item_content)).setText(address);
+                        }
+                        final ArrayList<String> imageUrls = sellerInfo.getPlace().getPlaceImages();
+                        if (imageUrls != null && imageUrls.size() != 0) {
+                            mHostImageContainer.setVisibility(View.VISIBLE);
+                            for (int i = 0; i < imageUrls.size(); i++) {
+                                ImageView image = new ImageView(mContext);
+                                image.setLayoutParams(new ActionBar.LayoutParams(ActionBar.LayoutParams.MATCH_PARENT,
+                                        ActionBar.LayoutParams.MATCH_PARENT));
+                                image.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                                image.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        Intent intent = new Intent(HostAndGuestActivity.this, BigImageActivity.class);
+                                        int currentImageIndex = mHostImages.getCurrentItem();
+                                        intent.putExtra("current_image_index", currentImageIndex);
+                                        intent.putStringArrayListExtra("cloud_images", imageUrls);
+                                        startActivity(intent);
+                                    }
+                                });
+                                Picasso.with(mContext)
+                                        .load(imageUrls.get(i))
+                                        .placeholder(R.drawable.empty_view_greeting)
+                                        .error(R.drawable.empty_view_greeting)
+                                        .into(image);
+                                mImageList.add(image);
+                            }
+                            mViewPagerAdapter = new ImageViewPagerAdapter(mImageList);
+                            mImageIndex.setText(1 + "/" + mImageList.size());
+                            mHostImages.setAdapter(mViewPagerAdapter);
+                            if (mAttendee.getAvatarURLSmall().isPresent()) {
+                                Log.i("outofmemory", mAttendee.getAvatarURLSmall().get());
+                                Picasso.with(mContext).load(mAttendee.getAvatarURLSmall().get()).placeholder(R.drawable.default_user_head).into(mHostHead);
+                                mHostHead.setOnClickListener(mHeadListener);
+                            }
+                        } else {
+                            mGuestHead.setVisibility(View.VISIBLE);
+                            if (mAttendee.getAvatarURLSmall().isPresent()) {
+                                Picasso.with(mContext).load(mAttendee.getAvatarURLSmall().get()).placeholder(R.drawable.default_user_head).into(mGuestHead);
+                                mGuestHead.setOnClickListener(mHeadListener);
+                            }
+                        }
+                    }else{
+                        mGuestHead.setVisibility(View.VISIBLE);
+                        if (mAttendee.getAvatarURLSmall().isPresent()) {
+                            Picasso.with(mContext).load(mAttendee.getAvatarURLSmall().get()).placeholder(R.drawable.default_user_head).into(mGuestHead);
+                            mGuestHead.setOnClickListener(mHeadListener);
+                        }
+                    }
+                    // register last hold banquet begin
+                    Banquent lastHoldBanquet = sellerInfo.getLastHoldEvent() ;
+                    if(lastHoldBanquet != null){
+                        mHostHold.setText(String.format(getString(R.string.hosted_banquet), sellerInfo.getEventCount(), sellerInfo.getSoldCount()));
+                        Picasso.with(mContext).load(lastHoldBanquet.getSurfaceImageUrl()).placeholder(R.drawable.empty_view_greeting).into((ImageView) holdBanquet.findViewById(R.id.banquet_history_item_image));
+                        ((TextView) holdAttendeeBanquet.findViewById(R.id.banquet_history_item_title)).setText(lastHoldBanquet.getTitle());
+                        ((TextView) holdAttendeeBanquet.findViewById(R.id.banquet_history_item_date)).setText(formatDate(lastHoldBanquet.getTime()));
+                        ((TextView) holdAttendeeBanquet.findViewById(R.id.banquet_history_item_price)).setText(String.format(getString(R.string.price_per_one), lastHoldBanquet.getPrice()));
+                        ((TextView) holdAttendeeBanquet.findViewById(R.id.banquet_history_item_situation)).setText(String.format(getString(R.string.total_attendee), lastHoldBanquet.getAttendees().size()));
+                    }else{
                         mHoldAllBanquet.setVisibility(View.GONE);
-//                        holdAttendeeBanquet.setVisibility(View.GONE);
+                        holdAttendeeBanquet.setVisibility(View.GONE);
                         holdBanquet.setVisibility(View.GONE);
                         banquetImageHoldNull.setVisibility(View.VISIBLE);
                     }
-
-                    finalizeDialog();
+                    //register last hold banquet end
+                    //register last comment  ;
+                    Review lastReview = sellerInfo.getLastReview() ;
+                    registerCommentView(lastReview);
                 }
+                //register seller info end ;
             }
-                    , new OneParameterExpression<String>() {
-                @Override
-                public void action(String s) {
-                    Toast.makeText(mContext, getString(R.string.get_history_list_failed), Toast.LENGTH_SHORT).show();
-                    finalizeDialog();
-                }
-            });
-            Router.getAccountModule().masterInfo(mAttendeeId, new OneParameterExpression<Attendee>() {
-                @Override
-                public void action(Attendee attendee) {
-                    mAttendee = attendee;
-                    registerViewsByAttendee();
-                    finalizeDialog();
-                }
+        }, new OneParameterExpression<String>() {
+            @Override
+            public void action(String s) {
+                finalizeDialog();
+                Toast.makeText(mContext,R.string.notify_net2 , Toast.LENGTH_SHORT).show();
+            }
+        });
 
-            }, new OneParameterExpression<String>() {
-                @Override
-                public void action(String errorMsg) {
-                    Toast.makeText(mContext, getString(R.string.notify_net2), Toast.LENGTH_SHORT).show();
-                    finalizeDialog();
-                }
-            });
-            Router.getBanquentModule().commentsofBanquent(mAttendeeId, null, 1, new OneParameterExpression<Reviews>() {
-                @Override
-                public void action(Reviews reviews) {
-                    mReviews = reviews;
-                    registerCommentView();
-                    finalizeDialog();
-                }
-            }, new OneParameterExpression<String>() {
-                @Override
-                public void action(String s) {
-                    Toast.makeText(mContext, getString(R.string.get_history_list_failed), Toast.LENGTH_SHORT).show();
-                    finalizeDialog();
-                }
-            });
-            mReviewContainer.setVisibility(View.VISIBLE);
-        } else {
-            getSupportActionBar().setTitle(getString(R.string.guest));
-            mCommentStars.setVisibility(View.GONE);
-            mReviewContainer.setVisibility(View.GONE);
-            mhostMsg.setVisibility(View.GONE);
-            mHoldAllBanquet.setVisibility(View.GONE);
-            mHoldBanquet.setVisibility(View.GONE);
-            mAllComment.setVisibility(View.GONE);
-            // mHostCommentList.setVisibility(View.GONE);
-            Router.getAccountModule().attendeeInfo(mAttendeeId, new OneParameterExpression<Attendee>() {
-                @Override
-                public void action(Attendee attendee) {
-                    mAttendee = attendee;
-                    registerViewsByAttendee();
-                    finalizeDialog();
-                }
-            }, new OneParameterExpression<String>() {
-                @Override
-                public void action(String s) {
-                    Toast.makeText(mContext, getString(R.string.notify_net2), Toast.LENGTH_SHORT).show();
-                    finalizeDialog();
-                }
-            });
-//            Router.getBanquentModule().themesOfParticipator(mAttendeeId, null, 500, new OneParameterExpression<Banquents>() {
-//
-//                @Override
-//                public void action(Banquents banquents) {
-//                    banquentList = banquents.getBanquentList();
-//                    // mHistoryList.setAdapter(mHistoryAdapter);
-//                    // AdapterViewHeightCalculator.setListViewHeightBasedOnChildren(mHistoryList);
-//                    finalizeDialog();
-//                }
-//            }
-//                    , new OneParameterExpression<String>() {
-//                @Override
-//                public void action(String s) {
-//                    Toast.makeText(mContext, getString(R.string.get_history_list_failed), Toast.LENGTH_SHORT).show();
-//                    finalizeDialog();
-//                }
-//            });
-        }
     }
 
-    private void registerCommentView() {
-        final List<Review> reviewList = mReviews.getReviewList();
-        if (reviewList != null && reviewList.size() != 0) {
+    private void registerCommentView(Review review) {
+        if (review != null  ) {
             mEmptyIv.setVisibility(View.GONE);
             mLastestComment.setVisibility(View.VISIBLE);
             mCommentStars.setVisibility(View.VISIBLE);
-            if (mReviews.getTotalCount() > 1) {
+
+            if (mAttendee.getSellerInfo().getCommentCount() > 1) {
                 mAllComment.setVisibility(View.VISIBLE);
             } else {
                 mAllComment.setVisibility(View.GONE);
             }
-            mReviewTitle.setText(String.format(getString(R.string.receive_comments), mReviews.getTotalCount()));
-            Review review = reviewList.get(0);
-            mCommentCount.setText("(" + mReviews.getTotalCount() + ")");
-            mCommentRatingbar.setRating(4.5f);//虚假数据，等待真实数据
+            mReviewTitle.setText(String.format(getString(R.string.receive_comments), mAttendee.getSellerInfo().getCommentCount()));
+//            Review review = reviewList.get(0);
+            mCommentCount.setText("(" + mAttendee.getSellerInfo().getCommentCount() + ")");
+            mCommentRatingbar.setRating(mAttendee.getSellerInfo().getScore());
             ImageView head = (RoundImageView) mLastestComment.findViewById(R.id.banquet_comment_item_head);
             ImageLoader.getInstance().displayImage(review.getReviewer().getAvatarURLSmall().get(), head);
             head.setOnClickListener(new View.OnClickListener() {
@@ -377,49 +357,6 @@ public class HostAndGuestActivity extends BaseActivity {
     }
 
     private void registerViewsByAttendee() {
-        final ArrayList<String> imageUrls = mAttendee.getImageUrls();
-//        mToolbar.setTitle(mAttendee.getNickname());
-        if (imageUrls != null && imageUrls.size() != 0) {
-            mHostImageContainer.setVisibility(View.VISIBLE);
-            for (int i = 0; i < imageUrls.size(); i++) {
-                ImageView image = new ImageView(this);
-                image.setLayoutParams(new ActionBar.LayoutParams(ActionBar.LayoutParams.MATCH_PARENT,
-                        ActionBar.LayoutParams.MATCH_PARENT));
-                image.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                image.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent intent = new Intent(HostAndGuestActivity.this, BigImageActivity.class);
-                        int currentImageIndex = mHostImages.getCurrentItem();
-                        intent.putExtra("current_image_index", currentImageIndex);
-                        intent.putStringArrayListExtra("cloud_images", imageUrls);
-                        startActivity(intent);
-                    }
-                });
-                Picasso.with(mContext)
-                        .load(imageUrls.get(i))
-                        .placeholder(R.drawable.empty_view_greeting)
-                        .error(R.drawable.empty_view_greeting)
-                        .into(image);
-                mImageList.add(image);
-            }
-            mViewPagerAdapter = new ImageViewPagerAdapter(mImageList);
-            mImageIndex.setText(1 + "/" + mImageList.size());
-            mHostImages.setAdapter(mViewPagerAdapter);
-            if (mAttendee.getAvatarURLSmall().isPresent()) {
-                Log.i("outofmemory", mAttendee.getAvatarURLSmall().get());
-                Picasso.with(mContext).load(mAttendee.getAvatarURLSmall().get()).placeholder(R.drawable.default_user_head).into(mHostHead);
-                mHostHead.setOnClickListener(mHeadListener);
-            }
-//            mGuestHead.setVisibility(View.GONE);
-        } else {
-//            mHostImageContainer.setVisibility(View.GONE);
-            mGuestHead.setVisibility(View.VISIBLE);
-            if (mAttendee.getAvatarURLSmall().isPresent()) {
-                Picasso.with(mContext).load(mAttendee.getAvatarURLSmall().get()).placeholder(R.drawable.default_user_head).into(mGuestHead);
-                mGuestHead.setOnClickListener(mHeadListener);
-            }
-        }
         mAttendeeName.setText(mAttendee.getNickname());
         String profile = buildAttendeeProfile();
         mAttendeeInfo.setText(profile);
@@ -468,17 +405,17 @@ public class HostAndGuestActivity extends BaseActivity {
         else
             gender = getString(R.string.gender_keep_secret);
         strBuilder.append(gender);
-        if (bHost) {
-            strBuilder.append("\n");
-            String qualification = mAttendee.getQualification();
-            if (qualification != null) {
-                strBuilder.append(qualification + " ");
-            }
-            String cookingSkill = mAttendee.getCookingSkill();
-            if (cookingSkill != null) {
-                strBuilder.append(cookingSkill);
-            }
-        }
+//        if (bHost) {
+//            strBuilder.append("\n");
+//            String qualification = mAttendee.getSellerInfo().getCulinary();
+//            if (qualification != null) {
+//                strBuilder.append(qualification + " ");
+//            }
+//            String cookingSkill = mAttendee.getSellerInfo().getSkill();
+//            if (cookingSkill != null) {
+//                strBuilder.append(cookingSkill);
+//            }
+//        }
         return strBuilder.toString();
     }
 
@@ -534,7 +471,7 @@ public class HostAndGuestActivity extends BaseActivity {
                     intent = new Intent();
                     intent.setClass(mContext, BanquetCommentActivity.class);
                     intent.putExtra("host_id", mAttendeeId);
-                    intent.putExtra("totalCount", mReviews.getTotalCount());
+                    intent.putExtra("totalCount", mAttendee.getSellerInfo().getCommentCount());
                     startActivity(intent);
                     break;
                 case R.id.banquet_detail_attendee_btn:

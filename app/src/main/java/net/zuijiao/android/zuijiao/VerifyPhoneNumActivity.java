@@ -68,9 +68,7 @@ public class VerifyPhoneNumActivity extends BaseActivity {
     public static boolean checkMobileNumber(String mobileNumber) {
         if (mobileNumber == null)
             return false;
-        if (mobileNumber.startsWith("1") && mobileNumber.length() == 11)
-            return true;
-        return false;
+        return mobileNumber.startsWith("1") && mobileNumber.length() == 11;
     }
 
     @Override

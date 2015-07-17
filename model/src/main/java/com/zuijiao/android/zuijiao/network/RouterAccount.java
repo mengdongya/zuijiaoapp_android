@@ -7,6 +7,7 @@ import com.zuijiao.android.zuijiao.model.user.User;
 
 import java.util.Calendar;
 
+
 /**
  * Created by Chen Hao on 3/23/15.
  */
@@ -145,4 +146,9 @@ public enum RouterAccount {
         service.attendeeInfo(attendeeId, CallbackFactory.getInstance().callback(successCallback, failureCallback));
     }
 
+
+    public void banquetUserInfo(Integer userId ,OneParameterExpression<Attendee> successCallback
+            , OneParameterExpression<String> failureCallback){
+        service.banquetUserInfo(userId ,CallbackFactory.getInstance().callback(successCallback , failureCallback));
+    }
 }

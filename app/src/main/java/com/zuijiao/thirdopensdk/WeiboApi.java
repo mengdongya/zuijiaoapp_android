@@ -137,8 +137,6 @@ public class WeiboApi extends AbsSDK {
         return bLogin;
     }
 
-    ;
-
     @Override
     public void onLoginResult(int requestCode, int resultCode, Intent data) {
         if (mSsoHandler != null) {

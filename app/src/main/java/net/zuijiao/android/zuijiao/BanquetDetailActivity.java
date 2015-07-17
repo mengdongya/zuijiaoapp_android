@@ -17,7 +17,6 @@ import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -101,9 +100,9 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
     private TextView mInstructStatus;
     @ViewInject(R.id.banquet_detail_ordered_person)
     private GridView mOrderedPersonShow;
-    @ViewInject(R.id.banquet_detail_review_container)
+    @ViewInject(R.id.host_guest_review_container)
     private LinearLayout mReviewContainer;
-    @ViewInject(R.id.banquet_detail_lastest_comment)
+    @ViewInject(R.id.host_guest_lastest_comment)
     private View mLastComment;
     @ViewInject(R.id.banquet_detail_comment_btn)
     private Button mAllCommentBtn;
@@ -255,7 +254,8 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
                 mAllCommentBtn.setVisibility(View.GONE);
             }
             Review review = reviewList.get(0);
-            mCommentRatingbar.setRating(4.5f);//虚假数据，等待真实数据
+//            mCommentRatingbar.setRating(4.5f);
+            mCommentRatingbar.setRating(mBanquent.getMaster().getScore());
             mHostScore.setText("(" + mReviews.getTotalCount() + ")");
             ImageView head = (RoundImageView) mLastComment.findViewById(R.id.banquet_comment_item_head);
             ImageLoader.getInstance().displayImage(review.getReviewer().getAvatarURLSmall().get(), head);
@@ -459,7 +459,7 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
             case R.id.banquet_detail_host_head:
             case R.id.banquet_detail_about_host:
                 intent.putExtra("b_host", true);
-                intent.putExtra("attendee_id", mBanquent.getMaster().getIdentifier());
+                intent.putExtra("attendee_id", mBanquent.getMaster().getUserId());
                 intent.setClass(mContext, HostAndGuestActivity.class);
                 startActivity(intent);
                 break;

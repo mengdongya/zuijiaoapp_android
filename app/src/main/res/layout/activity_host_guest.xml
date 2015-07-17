@@ -426,21 +426,22 @@
                 android:background="@color/bg_light_gray2" />
 
             <LinearLayout
-                android:id="@+id/banquet_detail_review_container"
+                android:id="@+id/host_guest_review_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/bg_white_round"
                 android:orientation="vertical"
-                android:visibility="gone">
+                 >
 
                 <TextView
-                    android:id="@+id/banquet_detail_review_title"
+                    android:id="@+id/host_guest_review_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginLeft="10dip"
                     android:layout_marginRight="10dip"
                     android:layout_marginTop="10dip"
+                    android:visibility="visible"
                     android:gravity="center_horizontal"
                     android:singleLine="false"
                     android:text="@string/receive_comments"
@@ -456,7 +457,7 @@
                     android:layout_marginBottom="10dip"/>
 
                 <include
-                    android:id="@+id/banquet_detail_lastest_comment"
+                    android:id="@+id/host_guest_lastest_comment"
                     layout="@layout/banquet_comment_item" />
 
                 <View

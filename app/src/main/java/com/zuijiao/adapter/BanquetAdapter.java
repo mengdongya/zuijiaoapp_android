@@ -49,13 +49,13 @@ public class BanquetAdapter extends BaseAdapter implements AdapterView.OnItemCli
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         position -= 1;
-        if(position == 0 && showBanner()){
+        if (position == 0 && showBanner()) {
             Intent intent = new Intent(mContext, CommonWebViewActivity.class);
             intent.putExtra("title", "activity");
             intent.putExtra("content_url", mBanquents.getBannerLinkUrl());
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             mContext.startActivity(intent);
-        }else{
+        }else {
             if (showBanner())
                 position = position - 1;
             Intent intent = new Intent(mContext, BanquetDetailActivity.class);
@@ -148,7 +148,7 @@ public class BanquetAdapter extends BaseAdapter implements AdapterView.OnItemCli
                     Intent intent = new Intent(mContext, HostAndGuestActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     intent.putExtra("b_host", true);
-                    intent.putExtra("attendee_id", banquent.getMaster().getIdentifier());
+                    intent.putExtra("attendee_id", banquent.getMaster().getUserId()) ;
                     mContext.startActivity(intent);
                 }
             });
@@ -174,11 +174,9 @@ public class BanquetAdapter extends BaseAdapter implements AdapterView.OnItemCli
     }
 
     private boolean showBanner() {
-        if (mBanquents != null
+        return mBanquents != null
                 && mBanquents.getBannerLinkUrl() != null
-                && !mBanquents.getBannerLinkUrl().equals(""))
-            return true;
-        return false;
+                && !mBanquents.getBannerLinkUrl().equals("");
     }
 
     /**

@@ -582,13 +582,13 @@ public class GourmetDisplayFragment extends Fragment
             if (Router.getInstance().getCurrentUser().isPresent()) {
                 goToEditGourmet(v);
             } else {
-                ((BaseActivity) mActivity).tryLoginFirst(new LambdaExpression() {
+                mActivity.tryLoginFirst(new LambdaExpression() {
                     @Override
                     public void action() {
                         if (Router.getInstance().getCurrentUser().isPresent()) {
                             goToEditGourmet(v);
                         } else {
-                            ((BaseActivity) mActivity).notifyLogin(null);
+                            mActivity.notifyLogin(null);
                         }
                     }
                 }, new OneParameterExpression<Integer>() {
@@ -634,10 +634,7 @@ public class GourmetDisplayFragment extends Fragment
 
 
     public boolean holdBackEvent() {
-        if (mAddMenu != null && mAddMenu.isOpened()) {
-            return true;
-        }
-        return false;
+        return mAddMenu != null && mAddMenu.isOpened();
     }
 
     public void closeFloatMenu() {

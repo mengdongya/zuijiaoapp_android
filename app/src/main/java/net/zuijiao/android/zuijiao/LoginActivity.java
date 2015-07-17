@@ -135,7 +135,6 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
             mPassword = mPwdEdit.getText().toString().trim();
             if (mPassword == null || mPassword.equals("")) {
                 Toast.makeText(getApplicationContext(), getString(R.string.notify_empty_password), Toast.LENGTH_SHORT).show();
-                ;
                 return super.onOptionsItemSelected(item);
 //                mPassword = "c81e728d9d4c2f636f067f89cc14862c" ;
             }

@@ -56,11 +56,12 @@ public interface IRouterAccount {
     void fetchMyInfo(Callback<User> callback);
 
     // MARK: - banquent
-
     @GET("/users/v2/ios/seller/{id}")
     void masterInfo(@Path("id") Integer chefId, Callback<Attendee> callback);
 
     @GET("/users/v2/ios/buyer/{id}")
     void attendeeInfo(@Path("id") Integer attendeeId, Callback<Attendee> callback);
 
+    @GET("/users/v2/ios/person/{id}/home")
+    void banquetUserInfo(@Path("id") Integer userId ,Callback<Attendee> callback) ;
 }

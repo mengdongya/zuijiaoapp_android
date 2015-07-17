@@ -100,9 +100,9 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
     private TextView mInstructStatus;
     @ViewInject(R.id.banquet_detail_ordered_person)
     private GridView mOrderedPersonShow;
-    @ViewInject(R.id.host_guest_review_container)
+    @ViewInject(R.id.banquet_detail_review_container)
     private LinearLayout mReviewContainer;
-    @ViewInject(R.id.host_guest_lastest_comment)
+    @ViewInject(R.id.banquet_detail_lastest_comment)
     private View mLastComment;
     @ViewInject(R.id.banquet_detail_comment_btn)
     private Button mAllCommentBtn;
@@ -348,7 +348,6 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
         }
         mBottomPrice.setText(String.valueOf(mBanquent.getPrice()));
         mBottomDate.setText(formatDate(mBanquent.getTime()));
-        mReviewContainer.setVisibility(View.VISIBLE);
     }
 
 

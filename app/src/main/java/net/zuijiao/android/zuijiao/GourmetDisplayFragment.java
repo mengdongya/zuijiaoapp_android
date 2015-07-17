@@ -389,7 +389,7 @@ public class GourmetDisplayFragment extends Fragment
     }
 
     private void fetchFavorData(Boolean isRefresh) {
-        if (!mDisplayUser.isPresent()) {
+        if (mDisplayUser == null ||!mDisplayUser.isPresent()) {
 //            if (Router.getInstance().getCurrentUser().isPresent()) {
             mDisplayUser = Router.getInstance().getCurrentUser();
 //            }

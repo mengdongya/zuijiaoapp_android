@@ -35,8 +35,9 @@
         <Button
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
-            style="@android:style/Widget.Material.Button.Borderless"
+            style="@android:style/Widget.Button.Small"
             android:text="@string/cancel"
+            android:background="@color/transparent"
             android:textSize="16sp"
             android:layout_centerHorizontal="true"
             android:id="@+id/logout_btn_cancel" />

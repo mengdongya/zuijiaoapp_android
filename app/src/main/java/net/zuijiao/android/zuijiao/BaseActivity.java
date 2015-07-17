@@ -13,6 +13,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -115,23 +116,39 @@ public abstract class BaseActivity extends ActionBarActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home)
-            onBackPressed();
+        if (item.getItemId() == android.R.id.home )
+        {
+            if(mDialog == null || !mDialog.isShowing()){
+                onBackPressed();
+            }
+        }
         return super.onOptionsItemSelected(item);
     }
 
     protected void createDialog(String message) {
-        if (mDialog != null)
-            mDialog.dismiss();
-        mDialog = ProgressDialog.show(this, "", message);
+        if(this == null || this.isFinishing())
+            return ;
+        try{
+            if (mDialog != null)
+                mDialog.dismiss();
+            mDialog = ProgressDialog.show(this, "", message);
+        }catch (Throwable t){
+            t.printStackTrace();
+        }
     }
 
     protected void createDialog() {
-        if (mDialog != null && mDialog.isShowing()) return;
-        mDialog = ProgressDialog.show(this, "", getString(R.string.on_loading));
+        if(this == null || this.isFinishing())
+            return ;
+        try{
+            if (mDialog != null && mDialog.isShowing()) return;
+            mDialog = ProgressDialog.show(this, "", getString(R.string.on_loading));
+        }catch (Throwable t){
+            t.printStackTrace();
+        }
     }
 
-    protected void finalizeDialog() {
+    public void finalizeDialog() {
         if (mDialog == null) return;
         try {
             mDialog.dismiss();
@@ -254,11 +271,15 @@ public abstract class BaseActivity extends ActionBarActivity {
      * @param loginCallBack LambdaExpression @Nullable
      */
     protected void notifyLogin(LambdaExpression loginCallBack) {
+        if(isFinishing())
+            return ;
         if (mNotifyLoginDialog == null || !mNotifyLoginDialog.isShowing()) {
             this.mLoginCallBack = loginCallBack;
             View contentView = LayoutInflater.from(mContext).inflate(R.layout.alert_login_dialog, null);
             TextView tv = (TextView) contentView.findViewById(R.id.fire_login);
             mNotifyLoginDialog = new AlertDialog.Builder(this).setView(contentView).create();
+            Window window = mNotifyLoginDialog.getWindow() ;
+            window.setWindowAnimations(R.style.dialogWindowAnim);
             tv.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -280,13 +301,16 @@ public abstract class BaseActivity extends ActionBarActivity {
      * @param message     dialog message ,including update information
      */
     protected void showUpdateDialog(final String downloadUrl, final String message) {
+        if(this == null || this.isFinishing())
+            return ;
         if (updateAlertDialog != null && updateAlertDialog.isShowing()) {
             return;
         }
         View logoutView = LayoutInflater.from(getApplicationContext()).inflate(
                 R.layout.logout_dialog, null);
         AlertDialog updateAlertDialog = new AlertDialog.Builder(this).setView(logoutView).create();
-
+        Window window = updateAlertDialog.getWindow() ;
+        window.setWindowAnimations(R.style.dialogWindowAnim);
         ((TextView) logoutView.findViewById(R.id.logout_title)).setText(getString(R.string.new_version));
         ((TextView) logoutView.findViewById(R.id.logout_content)).setText(message);
         Button confirmBtn = (Button) logoutView.findViewById(R.id.logout_btn_confirm);

@@ -16,12 +16,14 @@ import com.baidu.location.GeofenceClient;
 import com.baidu.location.LocationClient;
 import com.facebook.stetho.Stetho;
 import com.facebook.stetho.okhttp.StethoInterceptor;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.squareup.okhttp.Interceptor;
 import com.zuijiao.android.zuijiao.network.Router;
 import com.zuijiao.utils.OSUtil;
 
 import net.zuijiao.android.zuijiao.BuildConfig;
 import net.zuijiao.android.zuijiao.LocationActivity;
+import net.zuijiao.android.zuijiao.R;
 
 import java.io.File;
 import java.util.Date;
@@ -42,6 +44,14 @@ public class ActivityTask extends Application {
     // opened activities
     private LinkedList<Activity> mActivitiesList = new LinkedList<Activity>();
 
+    public DisplayImageOptions getDefaultDisplayImageOptions() {
+        return defaultDisplayImageOptions;
+    }
+
+    private DisplayImageOptions defaultDisplayImageOptions;
+
+
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -52,6 +62,14 @@ public class ActivityTask extends Application {
         mGeofenceClient = new GeofenceClient(getApplicationContext());
         File cacheDirectory = getApplicationContext().getCacheDir();
         Interceptor interceptor = null;
+
+        defaultDisplayImageOptions = new DisplayImageOptions.Builder() //
+                .considerExifParams(true) // 调整图片方向
+                .resetViewBeforeLoading(true) // 载入之前重置ImageView
+                .showImageOnLoading(R.drawable.empty_view_greeting) // 载入时图片设置为黑色
+                .showImageOnFail(R.drawable.empty_view_greeting) // 加载失败时显示的图片
+                .delayBeforeLoading(0) // 载入之前的延迟时间
+                .build(); //
 
         if (BuildConfig.DEBUG) {
             interceptor = new StethoInterceptor();

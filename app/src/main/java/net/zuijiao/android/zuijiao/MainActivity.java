@@ -25,6 +25,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
@@ -46,19 +47,27 @@ import com.umeng.update.UmengUpdateAgent;
 import com.umeng.update.UmengUpdateListener;
 import com.umeng.update.UpdateResponse;
 import com.zuijiao.android.util.Optional;
+import com.zuijiao.android.util.functional.LambdaExpression;
 import com.zuijiao.android.util.functional.OneParameterExpression;
+import com.zuijiao.android.zuijiao.model.Banquent.Banquent;
+import com.zuijiao.android.zuijiao.model.Gourmet;
+import com.zuijiao.android.zuijiao.model.Gourmets;
 import com.zuijiao.android.zuijiao.model.message.News;
 import com.zuijiao.android.zuijiao.model.message.NewsList;
 import com.zuijiao.android.zuijiao.model.user.TinyUser;
 import com.zuijiao.android.zuijiao.network.Router;
 import com.zuijiao.controller.ActivityTask;
+import com.zuijiao.controller.FileManager;
 import com.zuijiao.controller.MessageDef;
 import com.zuijiao.controller.PreferenceManager;
+import com.zuijiao.db.DBOpenHelper;
 import com.zuijiao.entity.AuthorInfo;
+import com.zuijiao.utils.StrUtil;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @ContentView(R.layout.activity_main)
 public final class MainActivity extends BaseActivity {
@@ -100,6 +109,10 @@ public final class MainActivity extends BaseActivity {
     private String[] titles = null;
     public static int unReadNewsCount = 0;
     private static final int BACK_STACK_DURATION = 2000;
+    public final static int COMMENT_SUCCESS = 10002;
+    public final static int COMMENT_REQUEST = 10001;
+
+
     private OnItemClickListener mTabsListener = new OnItemClickListener() {
 
         @Override
@@ -173,9 +186,11 @@ public final class MainActivity extends BaseActivity {
         public void onClick(View v) {
             View view = LayoutInflater.from(getApplicationContext()).inflate(
                     R.layout.location_choose_layout, null);
-            AlertDialog.Builder builder = new AlertDialog.Builder(
-                    MainActivity.this);
-            builder.setView(view).create().show();
+            AlertDialog dialog = new AlertDialog.Builder(
+                    MainActivity.this).setView(view).create();
+            Window window = dialog.getWindow() ;
+            window.setWindowAnimations(R.style.dialogWindowAnim);
+            dialog.show();
         }
     };
     private OnClickListener mUserInfoDetail = new OnClickListener() {
@@ -335,6 +350,7 @@ public final class MainActivity extends BaseActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
+        getString(R.string.guest);
         return true;
     }
 
@@ -378,8 +394,8 @@ public final class MainActivity extends BaseActivity {
             mThirdPartyUserName.setVisibility(View.GONE);
             mThirdPartyUserHead.setVisibility(View.GONE);
         }
-        mUserInfoArea.setOnClickListener((View v) -> {
-        });
+//        mUserInfoArea.setOnClickListener((View v) -> {
+//        });
         mSettingList.setOnItemClickListener(mSettingListener);
         titles = getResources().getStringArray(R.array.fragment_title);
         mToolBar.setTitle(titles[0]);
@@ -426,6 +442,71 @@ public final class MainActivity extends BaseActivity {
         }, errorMsg -> {
             //do nothing
         });
+        startNewActivity(mTendIntent);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        startNewActivity(intent);
+        super.onNewIntent(intent);
+    }
+
+    /**
+     * start activity from notification
+     *
+     * @param intent
+     */
+    private void startNewActivity(Intent intent) {
+        String content_url = intent.getStringExtra("content_url");
+        if (content_url != null && !content_url.equals("")) {
+            if (StrUtil.isNumer(content_url)) {
+                int openinfo = Integer.parseInt(content_url);
+                if (openinfo != 0) {
+                    createDialog();
+                    tryLoginFirst(new LambdaExpression() {
+                        @Override
+                        public void action() {
+                            Router.getBanquentModule().theme(openinfo, new OneParameterExpression<Banquent>() {
+                                @Override
+                                public void action(Banquent banquent) {
+                                    Intent intent = new Intent(mContext, BanquetDetailActivity.class);
+                                    intent.putExtra("banquet", banquent);
+                                    startActivity(intent);
+                                    finalizeDialog();
+                                }
+                            }, new OneParameterExpression<String>() {
+                                @Override
+                                public void action(String errorMsg) {
+                                    Toast.makeText(mContext, getString(R.string.notify_net2), Toast.LENGTH_SHORT).show();
+                                    finalizeDialog();
+                                }
+                            });
+                        }
+                    }, new OneParameterExpression<Integer>() {
+                        @Override
+                        public void action(Integer integer) {
+                            Toast.makeText(mContext, getString(R.string.notify_net2), Toast.LENGTH_SHORT).show();
+                            finalizeDialog();
+                        }
+                    });
+                }
+            } else {
+                Intent intent1 = new Intent();
+                intent1.putExtra("content_url", content_url);
+                intent1.setClass(this, CommonWebViewActivity.class);
+                startActivity(intent1);
+            }
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
     }
 
     private BadgeView initBadgeView() {
@@ -579,7 +660,6 @@ public final class MainActivity extends BaseActivity {
                 }
             }
         });
-
         UmengUpdateAgent.update(this);
     }
 

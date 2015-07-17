@@ -3,11 +3,14 @@ package net.zuijiao.android.zuijiao;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Point;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
+import android.util.Log;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,6 +34,8 @@ import com.zuijiao.controller.FileManager;
 import com.zuijiao.controller.ThirdPartySDKManager;
 import com.zuijiao.db.DBOpenHelper;
 import com.zuijiao.entity.AuthorInfo;
+import com.zuijiao.utils.LoadImageTask;
+import com.zuijiao.utils.OSUtil;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -46,9 +51,13 @@ public class GuideActivity extends BaseActivity {
     private Button mBtn;
     @ViewInject(R.id.guide_progressbar)
     private ProgressBar mPb = null;
-    private List<View> viewList;
+    private List<View> viewList = new ArrayList<>() ;
     private boolean onBackPressed = false;
     private boolean mBCallByUser = false;
+    private int[] images = new int[]{R.drawable.guide_image1, R.drawable.guide_image2,
+            R.drawable.guide_image3, R.drawable.guide_image4};
+    private int[] texts = new int[]{R.drawable.guide_text1, R.drawable.guide_text2, R.drawable.guide_text3, R.drawable.guide_text4};
+    private int[] mScreenSize ;
     private OnPageChangeListener mPageListener = new OnPageChangeListener() {
         @Override
         public void onPageSelected(int arg0) {
@@ -84,6 +93,13 @@ public class GuideActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        Display display = getWindowManager().getDefaultDisplay(); //Activity#getWindowManager()
+        Point size = new Point();
+        display.getSize(size);
+        int width = size.x;
+        int height = size.y;
+        Log.i("screen size :", "x ==" + size.x + "y ==" + size.y);
+//        mScreenSize = OSUtil.getDeviceDimension(this) ;
 //        if (VERSION.SDK_INT >= VERSION_CODES.KITKAT) {
 ////            getWindow().addFlags(
 ////                    WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
@@ -94,48 +110,32 @@ public class GuideActivity extends BaseActivity {
 
     private void initPager() {
         viewList = new ArrayList<View>();
-        int[] images = new int[]{R.drawable.guide_image1, R.drawable.guide_image2,
-                R.drawable.guide_image3, R.drawable.guide_image4};
-        int[] texts = new int[]{R.drawable.guide_text1, R.drawable.guide_text2, R.drawable.guide_text3, R.drawable.guide_text4};
+//        int[] images = new int[]{R.drawable.guide_image1, R.drawable.guide_image2,
+//                R.drawable.guide_image3, R.drawable.guide_image4};
+//        int[] texts = new int[]{R.drawable.guide_text1, R.drawable.guide_text2, R.drawable.guide_text3, R.drawable.guide_text4};
         for (int i = 0; i < images.length; i++) {
-            viewList.add(initView(images[i], texts[i]));
+            View view = LayoutInflater.from(getApplicationContext()).inflate(
+                    R.layout.item_guide, null);
+            viewList.add(view);
         }
-        View view = LayoutInflater.from(this).inflate(R.layout.guide_last_item, null);
-        Bitmap bitmap = BitmapFactory.decodeStream(getResources().openRawResource(R.drawable.guide_image5));
-        ((ImageView) (view.findViewById(R.id.guide_last_item_bg))).setImageBitmap(bitmap);
+        View view = LayoutInflater.from(GuideActivity.this).inflate(R.layout.guide_last_item, null);
         viewList.add(view);
-        //initDots(images.length);
     }
 
-    private void initDots(int count) {
-        for (int j = 0; j < count; j++) {
-            mDotsLayout.addView(initDot(), new ViewGroup.LayoutParams(10, 10));
-        }
-        mDotsLayout.getChildAt(0).setSelected(true);
-        mDotsLayout.getChildAt(0).setBackgroundResource(R.drawable.wizard_index_selected);
-        mDotsLayout.getChildAt(1).setBackgroundResource(R.drawable.wizard_index_unselected);
-        mDotsLayout.getChildAt(2).setBackgroundResource(R.drawable.wizard_index_unselected);
-        mDotsLayout.getChildAt(3).setBackgroundResource(R.drawable.wizard_index_unselected);
-    }
-
-    private View initDot() {
-        ImageView dot = (ImageView) LayoutInflater.from(
-                getApplicationContext()).inflate(R.layout.layout_dot, null);
-        return dot;
-    }
-
-    private View initView(int imageRes, int textRes) {
-        View view = LayoutInflater.from(getApplicationContext()).inflate(
-                R.layout.item_guide, null);
-        ImageView imageView = (ImageView) view.findViewById(R.id.guide_image);
-        ImageView textImage = (ImageView) view.findViewById(R.id.guide_text);
+    private void initView(int imageRes, int textRes, View parentView) throws Exception{
+//        View view = LayoutInflater.from(getApplicationContext()).inflate(
+//                R.layout.item_guide, null);
+        ImageView imageView = (ImageView) parentView.findViewById(R.id.guide_image);
+        ImageView textImage = (ImageView) parentView.findViewById(R.id.guide_text);
         InputStream imageIs = getResources().openRawResource(imageRes);
         InputStream textIs = getResources().openRawResource(textRes);
         Bitmap bitmap2 = BitmapFactory.decodeStream(textIs);
         Bitmap bitmap = BitmapFactory.decodeStream(imageIs);
+        Log.i("bitmap id" , "create bitmap id = " + bitmap.toString() + "  bitmap byte count =  " + bitmap.getByteCount()) ;
+        Log.i("bitmap id" , "create bitmap id = " + bitmap2.toString() + "  bitmap byte count =  " + bitmap2.getByteCount()) ;
         imageView.setImageBitmap(bitmap);
         textImage.setImageBitmap(bitmap2);
-        return view;
+//        return view;
     }
 
     @Override
@@ -276,6 +276,16 @@ public class GuideActivity extends BaseActivity {
         }
     }
 
+    private void recycleBitmap(ImageView imageView) {
+        imageView.setDrawingCacheEnabled(true);
+        Bitmap bitmap = imageView.getDrawingCache();
+        Log.i("bitmap id" , "recycleBitmap id = " + bitmap.toString() + "  bitmap byte count  = " + bitmap.getByteCount()) ;
+        if (bitmap != null)
+            bitmap.recycle();
+        imageView.setDrawingCacheEnabled(false);
+        System.gc();
+    }
+
     class ViewPagerAdapter extends PagerAdapter {
 
         private List<View> data;
@@ -287,7 +297,7 @@ public class GuideActivity extends BaseActivity {
 
         @Override
         public int getCount() {
-            return data.size();
+            return 5;
         }
 
         @Override
@@ -297,22 +307,37 @@ public class GuideActivity extends BaseActivity {
 
         @Override
         public Object instantiateItem(ViewGroup container, int position) {
+            Log.i("guideActivity", "instantiateItem") ;
             container.addView(data.get(position));
+            try {
+                if (position < 4) {
+                    initView(images[position], texts[position], data.get(position));
+                } else {
+                    Bitmap bitmap = BitmapFactory.decodeStream(getResources().openRawResource(R.drawable.guide_image5));
+                    Log.i("bitmap id" , "create bitmap id = " + bitmap.toString() + "  bitmap byte count =  " + bitmap.getByteCount()) ;
+                    ((ImageView) (data.get(position).findViewById(R.id.guide_last_item_bg))).setImageBitmap(bitmap);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            } catch (Error e){
+                e.printStackTrace();
+            }catch (Throwable t){
+                t.printStackTrace();
+            }
             return data.get(position);
         }
 
         @Override
         public void destroyItem(ViewGroup container, int position, Object object) {
+            Log.i("guideActivity" ,"destroyItem") ;
+            if (position < 4) {
+                recycleBitmap((ImageView) data.get(position).findViewById(R.id.guide_image));
+                recycleBitmap((ImageView) data.get(position).findViewById(R.id.guide_text));
+            }else{
+                recycleBitmap((ImageView) data.get(position).findViewById(R.id.guide_last_item_bg));
+            }
             container.removeView(data.get(position));
+
         }
-
     }
-    //    @Override
-//    public void onClick(View view) {
-//        switch (view.getId()) {
-//            case R.id.guide_btn:
-//            default:
-//        }
-//    }
-
 }

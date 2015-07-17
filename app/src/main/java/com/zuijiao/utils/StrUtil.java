@@ -7,6 +7,8 @@ import net.zuijiao.android.zuijiao.R;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * get format string
@@ -130,5 +132,19 @@ public class StrUtil {
                     return 28;
         }
         return 30;
+    }
+
+    /**
+     *  if str are num
+     * @param str
+     * @return
+     */
+    public static boolean isNumer(String str){
+        Pattern pattern =Pattern.compile("[0-9]*");
+        Matcher isNum = pattern.matcher(str);
+        if(!isNum.matches()){
+            return  false;
+        }
+        return true;
     }
 }

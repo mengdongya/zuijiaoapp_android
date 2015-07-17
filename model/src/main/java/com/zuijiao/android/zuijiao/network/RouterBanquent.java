@@ -1,11 +1,13 @@
 package com.zuijiao.android.zuijiao.network;
 
+import com.zuijiao.android.util.functional.LambdaExpression;
 import com.zuijiao.android.util.functional.OneParameterExpression;
 import com.zuijiao.android.zuijiao.model.Banquent.Banquent;
 import com.zuijiao.android.zuijiao.model.Banquent.BanquentForTheme;
 import com.zuijiao.android.zuijiao.model.Banquent.Banquents;
 import com.zuijiao.android.zuijiao.model.Banquent.OrderStatus;
 import com.zuijiao.android.zuijiao.model.Banquent.Orders;
+import com.zuijiao.android.zuijiao.model.Banquent.Reviews;
 import com.zuijiao.android.zuijiao.model.OrderAuth;
 
 /**
@@ -74,4 +76,21 @@ public enum RouterBanquent {
         service.themesOfParticipator(identifier, maxId, count, CallbackFactory.getInstance().callback(successCallback, failureCallback));
     }
 
+    public void commentsofBanquent(
+            Integer sellerID
+            , Integer maxID
+            , Integer count
+            , final OneParameterExpression<Reviews> successCallback
+            , final OneParameterExpression<String> failureCallback) {
+        service.commentsofBanquent(sellerID, maxID, count, CallbackFactory.getInstance().callback(successCallback, failureCallback));
+    }
+
+    public void createComment(
+            Integer orderId
+            , String content
+            , Integer score
+            , LambdaExpression successCallback
+            , LambdaExpression failureCallback) {
+        service.createComment(orderId, content, score, CallbackFactory.getInstance().callback(successCallback, failureCallback));
+    }
 }

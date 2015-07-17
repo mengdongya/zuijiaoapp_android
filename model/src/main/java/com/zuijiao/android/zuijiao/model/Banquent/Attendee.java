@@ -17,21 +17,15 @@ public class Attendee {
     @SerializedName("nickname")
     private String nickname;
     @SerializedName("imageUrl")
-    private String avatarURL; //: ?
-
+    private String avatarURL;
+    @SerializedName("attendCount")
+    private Integer attendCount ;//add
+    @SerializedName("event")
+    private Banquent lastAttendEvent ;//add
     @SerializedName("profile")
     private Profile profile;
     @SerializedName("host")
-    private OrganizerInfo organizerInfo;
-
-    class OrganizerInfo {
-        @SerializedName("skill")
-        private String qualification;
-        @SerializedName("culinary")
-        private String cookingSkill;
-        @SerializedName("imageUrls")
-        private ArrayList<String> imageUrls;
-    }
+    private Seller sellerInfo;
 
     public Integer getIdentifier() {
         return identifier;
@@ -55,18 +49,17 @@ public class Attendee {
         return profile;
     }
 
-    public String getQualification() {
-        if (organizerInfo != null)
-            return organizerInfo.qualification;
-        return null;
+    public Integer getAttendCount() {
+        return attendCount;
     }
 
-    public String getCookingSkill() {
-        if (organizerInfo != null)
-            return organizerInfo.cookingSkill;
-        return null;
+    public Banquent getLastAttendEvent() {
+        return lastAttendEvent;
     }
 
+    public Seller getSellerInfo() {
+        return sellerInfo;
+    }
     //    public ArrayList<String> getImageUrls() {
 //        if (organizerInfo != null)
 //            ?
@@ -74,15 +67,4 @@ public class Attendee {
 //        return null;
 //
 //    }
-    public ArrayList<String> getImageUrls() {
-        if (organizerInfo == null || organizerInfo.imageUrls == null) {
-            return null;
-        }
-        ArrayList<String> arrayList = new ArrayList<>();
-        for (String imageUrl : organizerInfo.imageUrls) {
-            imageUrl = ImageUrlUtil.imageUrl(imageUrl);
-            arrayList.add(imageUrl);
-        }
-        return arrayList;
-    }
 }

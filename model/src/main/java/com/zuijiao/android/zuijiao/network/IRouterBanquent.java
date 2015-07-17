@@ -1,8 +1,10 @@
 package com.zuijiao.android.zuijiao.network;
 
+import com.squareup.okhttp.Response;
 import com.zuijiao.android.zuijiao.model.Banquent.BanquentForTheme;
 import com.zuijiao.android.zuijiao.model.Banquent.Banquents;
 import com.zuijiao.android.zuijiao.model.Banquent.Orders;
+import com.zuijiao.android.zuijiao.model.Banquent.Reviews;
 import com.zuijiao.android.zuijiao.model.OrderAuth;
 
 import retrofit.Callback;
@@ -36,6 +38,14 @@ public interface IRouterBanquent {
             , @Field("note") String remark
             , @Field("payWay") String payMethod
             , Callback<OrderAuth> restaurantsCallback
+    );
+
+    @POST(RootURL + "/ios/comment/create")
+    @FormUrlEncoded
+    void createComment(@Field("orderID") Integer orderId
+            , @Field("content") String content
+            , @Field("score") Integer score
+            , Callback<Response> callback
     );
 
     @GET(RootURL + "/ios/orders")
@@ -72,5 +82,13 @@ public interface IRouterBanquent {
             , @Query("count") Integer count
             , Callback<Banquents> callback
     );
+
+    @GET(RootURL + "/ios/seller/{id}/comments")
+    void commentsofBanquent(@Path("id") Integer sellerId
+            , @Query("maxID") Integer maxID
+            , @Query("count") Integer count
+            , Callback<Reviews> callback
+    );
+
 
 }

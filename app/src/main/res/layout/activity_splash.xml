@@ -7,11 +7,12 @@
 
 
     <ImageView
+        android:id="@+id/splash_bg"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="fitXY"
         android:layout_gravity="bottom"
-        android:background="@drawable/splash_bg" />
+         />
 
     <ImageView
         android:layout_height="wrap_content"

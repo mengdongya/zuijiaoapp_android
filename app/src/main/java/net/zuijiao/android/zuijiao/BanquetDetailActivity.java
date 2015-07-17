@@ -22,6 +22,8 @@ import android.widget.Toast;
 
 import com.lidroid.xutils.view.annotation.ContentView;
 import com.lidroid.xutils.view.annotation.ViewInject;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.squareup.picasso.Picasso;
 import com.zuijiao.adapter.ImageViewPagerAdapter;
 import com.zuijiao.android.util.functional.LambdaExpression;
@@ -29,14 +31,20 @@ import com.zuijiao.android.util.functional.OneParameterExpression;
 import com.zuijiao.android.zuijiao.model.Banquent.Banquent;
 import com.zuijiao.android.zuijiao.model.Banquent.BanquentCapacity;
 import com.zuijiao.android.zuijiao.model.Banquent.BanquentStatus;
+import com.zuijiao.android.zuijiao.model.Banquent.Review;
+import com.zuijiao.android.zuijiao.model.Banquent.Reviews;
 import com.zuijiao.android.zuijiao.model.user.TinyUser;
 import com.zuijiao.android.zuijiao.model.user.User;
 import com.zuijiao.android.zuijiao.network.Router;
+import com.zuijiao.controller.ActivityTask;
 import com.zuijiao.utils.AdapterViewHeightCalculator;
 import com.zuijiao.view.BanquetDetailScrollView;
+import com.zuijiao.view.ReviewRatingBar;
+import com.zuijiao.view.RoundImageView;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by xiaqibo on 2015/6/10.
@@ -92,8 +100,10 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
     private TextView mInstructStatus;
     @ViewInject(R.id.banquet_detail_ordered_person)
     private GridView mOrderedPersonShow;
-    @ViewInject(R.id.banquet_detail_review_title)
-    private TextView mReviewTitle;
+    @ViewInject(R.id.host_guest_review_container)
+    private LinearLayout mReviewContainer;
+    @ViewInject(R.id.host_guest_lastest_comment)
+    private View mLastComment;
     @ViewInject(R.id.banquet_detail_comment_btn)
     private Button mAllCommentBtn;
     @ViewInject(R.id.banquet_detail_bottom_price)
@@ -110,6 +120,9 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
     private TextView mFinishText;
     @ViewInject(R.id.banquet_detail_bottom_can_order)
     private View mBottomOrderView;
+    @ViewInject(R.id.banquet_comment_rtatingbar)
+    private ReviewRatingBar mCommentRatingbar;
+    private Reviews mReviews;
     private Banquent mBanquent;
     private String[] weekDays;
     private ImageViewPagerAdapter mViewPagerAdapter = null;
@@ -193,6 +206,10 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
         Log.i("outofmemory ", "oncreate");
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(getApplicationContext())
+                .defaultDisplayImageOptions(((ActivityTask) getApplication()).getDefaultDisplayImageOptions()).memoryCacheExtraOptions(50, 50)
+                .threadPoolSize(1).build();
+        ImageLoader.getInstance().init(config);
         if (mTendIntent != null) {
             mBanquent = (Banquent) mTendIntent.getSerializableExtra("banquet");
         }
@@ -211,6 +228,53 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
         mAboutHostBtn.setOnClickListener(this);
         mOrderBtn.setOnClickListener(this);
         mHostHead.setOnClickListener(this);
+        Router.getBanquentModule().commentsofBanquent(mBanquent.getMaster().getIdentifier(), null,1, new OneParameterExpression<Reviews>() {
+            @Override
+            public void action(Reviews reviews) {
+                mReviews = reviews;
+                registerCommentView();
+            }
+        }, new OneParameterExpression<String>() {
+            @Override
+            public void action(String s) {
+                Toast.makeText(mContext, getString(R.string.get_history_list_failed), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void registerCommentView() {
+        List<Review> reviewList = mReviews.getReviewList();
+        if (reviewList != null && reviewList.size() != 0) {
+            mReviewContainer.setVisibility(View.VISIBLE);
+            mStarContainer.setVisibility(View.VISIBLE);
+            if (mReviews.getTotalCount() > 1) {
+                mAllCommentBtn.setVisibility(View.VISIBLE);
+                mAllCommentBtn.setText(String.format(getString(R.string.all_comments), mReviews.getTotalCount()));
+            } else {
+                mAllCommentBtn.setVisibility(View.GONE);
+            }
+            Review review = reviewList.get(0);
+            mCommentRatingbar.setRating(4.5f);
+            mHostScore.setText("(" + mReviews.getTotalCount() + ")");
+            ImageView head = (RoundImageView) mLastComment.findViewById(R.id.banquet_comment_item_head);
+            ImageLoader.getInstance().displayImage(review.getReviewer().getAvatarURLSmall().get(), head);
+            head.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(mContext, HostAndGuestActivity.class);
+                    intent.putExtra("attendee_id", review.getReviewer().getIdentifier());
+                    intent.putExtra("b_host", false);
+                    startActivity(intent);
+                }
+            });
+            ((TextView) mLastComment.findViewById(R.id.banquet_comment_item_user_name)).setText(review.getReviewer().getNickName());
+            ((TextView) mLastComment.findViewById(R.id.banquet_comment_item_issue)).setText(review.getEvent().getTitle() + " · " + formatDate(review.getCreatedAt()));
+            ((ReviewRatingBar) mLastComment.findViewById(R.id.banquet_comment_item_stars)).setRating(review.getScore());
+            ((TextView) mLastComment.findViewById(R.id.banquet_comment_item_comment)).setText(review.getContent());
+        } else {
+            mReviewContainer.setVisibility(View.GONE);
+            mStarContainer.setVisibility(View.GONE);
+        }
     }
 
     private void initViewsByBanquet() {
@@ -283,6 +347,7 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
         }
         mBottomPrice.setText(String.valueOf(mBanquent.getPrice()));
         mBottomDate.setText(formatDate(mBanquent.getTime()));
+        mReviewContainer.setVisibility(View.VISIBLE);
     }
 
 
@@ -386,12 +451,14 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
         switch (v.getId()) {
             case R.id.banquet_detail_comment_btn:
                 intent.setClass(mContext, BanquetCommentActivity.class);
+                intent.putExtra("host_id", mBanquent.getMaster().getIdentifier());
+                intent.putExtra("totalCount", mReviews.getTotalCount());
                 startActivity(intent);
                 break;
             case R.id.banquet_detail_host_head:
             case R.id.banquet_detail_about_host:
                 intent.putExtra("b_host", true);
-                intent.putExtra("attendee_id", mBanquent.getMaster().getIdentifier());
+                intent.putExtra("attendee_id", mBanquent.getMaster().getUserId());
                 intent.setClass(mContext, HostAndGuestActivity.class);
                 startActivity(intent);
                 break;

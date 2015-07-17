@@ -3,6 +3,7 @@ package com.zuijiao.controller;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.zuijiao.android.util.Optional;
@@ -14,6 +15,7 @@ import com.zuijiao.thirdopensdk.QQApi;
 import com.zuijiao.thirdopensdk.WeiboApi;
 import com.zuijiao.thirdopensdk.WeixinApi;
 
+import net.zuijiao.android.zuijiao.BaseActivity;
 import net.zuijiao.android.zuijiao.R;
 
 /**
@@ -62,7 +64,11 @@ public class ThirdPartySDKManager implements AbsSDK.LoginListener {
                 mLoginApi = null;
                 return;
         }
-        mLoginApi.Login(this);
+        try {
+            mLoginApi.Login(this);
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
+        }
     }
 
     public void refreshThirdPartyUserInfo() {
@@ -104,6 +110,12 @@ public class ThirdPartySDKManager implements AbsSDK.LoginListener {
     }
 
     public void onLoginFinish(AuthorInfo authInfo) {
+        try{
+            ((BaseActivity) mContext).finalizeDialog();
+        }catch (Throwable t){
+            t.printStackTrace();
+            Log.i("ThirdPartySDKManager" , "login finish dismiss dialog crashed!") ;
+        }
         Intent in = new Intent();
         in.setAction(MessageDef.ACTION_LOGIN_FINISH);
         mContext.sendBroadcast(in);
@@ -147,7 +159,12 @@ public class ThirdPartySDKManager implements AbsSDK.LoginListener {
     ;
 
     public void onLoginFailed() {
-
+        try{
+            ((BaseActivity) mContext).finalizeDialog();
+        }catch (Throwable t){
+            t.printStackTrace();
+            Log.i("ThirdPartySDKManager" , "login failed dismiss dialog crashed!") ;
+        }
     }
 
     ;
@@ -160,6 +177,7 @@ public class ThirdPartySDKManager implements AbsSDK.LoginListener {
     }
 
     public void onLoginResult(int requestCode, int resultCode, Intent data) {
+
         mLoginApi.onLoginResult(requestCode, resultCode, data);
     }
 }

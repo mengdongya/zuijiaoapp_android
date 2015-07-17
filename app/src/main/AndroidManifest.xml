@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    android:versionCode="6"
-    android:versionName="@string/current_version_code"
-    package="net.zuijiao.android.zuijiao">
+    package="net.zuijiao.android.zuijiao"
+    android:versionCode="7"
+    android:versionName="@string/current_version_code">
 
     <uses-sdk
         android:minSdkVersion="11"
@@ -40,15 +40,15 @@
     <!--umeng feedback-->
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <application
+        android:name="com.zuijiao.controller.ActivityTask"
         android:allowBackup="true"
         android:icon="@drawable/icon"
         android:label="@string/app_name"
-        android:name="com.zuijiao.controller.ActivityTask"
         android:screenOrientation="portrait"
         android:theme="@style/AppTheme">
         <service
-            android:enabled="true"
             android:name="com.baidu.location.f"
+            android:enabled="true"
             android:process=":remote">
             <intent-filter>
                 <action android:name="com.baidu.location.service_v2.2" />
@@ -59,53 +59,53 @@
             android:value="4lE0F9aM8Q3o9bGREEk9eFHe" />
 
         <activity
+            android:name="com.sina.weibo.sdk.component.WeiboSdkBrowser"
             android:configChanges="keyboardHidden|orientation"
             android:exported="false"
-            android:name="com.sina.weibo.sdk.component.WeiboSdkBrowser"
             android:windowSoftInputMode="adjustResize" />
         <activity
+            android:name="net.zuijiao.android.zuijiao.MainActivity"
             android:label="@string/main_page"
             android:launchMode="singleTask"
-            android:name="net.zuijiao.android.zuijiao.MainActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:label="@string/bind_email"
             android:name="net.zuijiao.android.zuijiao.BindEmailActivity"
+            android:label="@string/bind_email"
             android:screenOrientation="portrait" />
         <activity
-            android:label="@string/favor_label"
             android:name="net.zuijiao.android.zuijiao.FavorPersonListActivity"
+            android:label="@string/favor_label"
             android:screenOrientation="portrait" />
         <activity
-            android:label="@string/image_chooser"
             android:name="net.zuijiao.android.zuijiao.ImageChooseActivity"
+            android:label="@string/image_chooser"
             android:screenOrientation="portrait" />
         <activity
-            android:label="@string/current_location"
             android:name="net.zuijiao.android.zuijiao.LocationActivity"
+            android:label="@string/current_location"
             android:screenOrientation="portrait" />
         <activity
-            android:label="@string/setting"
             android:name="net.zuijiao.android.zuijiao.SettingActivity"
+            android:label="@string/setting"
             android:screenOrientation="portrait" />
         <activity
-            android:label="@string/flavor_hobby"
             android:name="net.zuijiao.android.zuijiao.TasteActivity"
+            android:label="@string/flavor_hobby"
             android:screenOrientation="portrait" />
         <activity
-            android:label="@string/mobile_phone"
             android:name="net.zuijiao.android.zuijiao.VerifyPhoneNumActivity"
+            android:label="@string/mobile_phone"
             android:screenOrientation="portrait" />
         <activity
-            android:label="@string/comment"
             android:name="net.zuijiao.android.zuijiao.GourmetCommentActivity"
-            android:windowSoftInputMode="stateHidden|adjustResize"
-            android:screenOrientation="portrait" />
-        <activity
-            android:label=""
-            android:name=".GourmetDetailActivity"
+            android:label="@string/comment"
             android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|adjustResize" />
+        <activity
+            android:name=".GourmetDetailActivity"
             android:configChanges="orientation|keyboardHidden|navigation"
+            android:label=""
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustResize">
             <intent-filter>
                 <action android:name="com.sina.weibo.sdk.action.ACTION_SDK_REQ_ACTIVITY" />
@@ -113,34 +113,38 @@
             </intent-filter>
         </activity>
         <activity
-            android:label="zuijiao"
             android:name="net.zuijiao.android.zuijiao.BigImageActivity"
+            android:label="zuijiao"
             android:screenOrientation="portrait"
             android:theme="@style/SplashTheme" />
         <activity
-            android:label="@string/my_language"
             android:name="net.zuijiao.android.zuijiao.LanguagesChooseActivity"
+            android:label="@string/my_language"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity
-            android:label=""
             android:name="net.zuijiao.android.zuijiao.UserInfoActivity"
+            android:label=""
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity
             android:name="net.zuijiao.android.zuijiao.BanquetOrderDisplayActivity"
-            android:screenOrientation="portrait"
             android:label="@string/order_message"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity
             android:name="net.zuijiao.android.zuijiao.BanquetCommentActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity
+            android:name="net.zuijiao.android.zuijiao.BanquetListActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
+        <activity
             android:name="net.zuijiao.android.zuijiao.BanquetOrderActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden|adjustNothing"
-            android:theme="@style/AppTheme">
+            android:theme="@style/AppTheme"
+            android:windowSoftInputMode="stateHidden|adjustNothing">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -157,23 +161,23 @@
             android:theme="@style/GuideTheme" />
         <activity
             android:name="net.zuijiao.android.zuijiao.BanquetDetailActivity"
-            android:screenOrientation="portrait"
             android:label="@string/detail"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity
-            android:label="@string/register"
             android:name="net.zuijiao.android.zuijiao.RegisterActivity"
+            android:label="@string/register"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="adjustResize|stateHidden" />
         <activity
-            android:label="@string/msg_page"
             android:name="net.zuijiao.android.zuijiao.MessageActivity"
+            android:label="@string/msg_page"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity
-            android:label="@string/login"
             android:name="net.zuijiao.android.zuijiao.LoginActivity"
+            android:label="@string/login"
             android:screenOrientation="portrait"
             android:theme="@style/LoginTheme">
             <intent-filter>
@@ -192,55 +196,55 @@
             </intent-filter>
         </activity>
         <activity
-            android:label="@string/feed_back"
             android:name="net.zuijiao.android.zuijiao.CommonWebViewActivity"
+            android:label="@string/feed_back"
             android:parentActivityName="net.zuijiao.android.zuijiao.MainActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity
-            android:label="@string/friend"
             android:name="net.zuijiao.android.zuijiao.FriendActivity"
+            android:label="@string/friend"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity
-            android:label="@string/where_to_eat"
             android:name=".EditPositionActivity"
+            android:label="@string/where_to_eat"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity
-            android:label="@string/label"
             android:name="net.zuijiao.android.zuijiao.LabelActivity"
+            android:label="@string/label"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity
-            android:label="@string/edit_info"
             android:name="net.zuijiao.android.zuijiao.EditUserInfoActivity"
+            android:label="@string/edit_info"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity
-            android:label="@string/recommend"
             android:name="net.zuijiao.android.zuijiao.RecommendAndFavorActivity"
+            android:label="@string/recommend"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity
-            android:label="@string/store_gourmet"
             android:name="net.zuijiao.android.zuijiao.EditGourmetActivity"
+            android:label="@string/store_gourmet"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity
-            android:label="@string/image_chooser"
             android:name="net.zuijiao.android.zuijiao.MultiImageChooseActivity"
+            android:label="@string/image_chooser"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity
-            android:label="@string/concerning"
             android:name="net.zuijiao.android.zuijiao.ConcerningActivity"
+            android:label="@string/concerning"
             android:parentActivityName="net.zuijiao.android.zuijiao.MainActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity
-            android:exported="true"
             android:name="net.zuijiao.android.zuijiao.wxapi.WXEntryActivity"
+            android:exported="true"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
         <activity
@@ -250,8 +254,15 @@
         <activity
             android:name="net.zuijiao.android.zuijiao.wxapi.WXPayEntryActivity"
             android:exported="true"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="net.zuijiao.android.zuijiao.ReviewActivity"
+            android:label="@string/evaluate"
             android:screenOrientation="portrait"
-            android:launchMode="singleTop" />
+            android:theme="@style/AppTheme" />
+
+
         <!--<activity-->
         <!--android:configChanges="keyboardHidden|orientation|screenSize"-->
         <!--android:exported="true"-->
@@ -259,8 +270,8 @@
         <!--android:screenOrientation="portrait"-->
         <!--android:theme="@android:style/Theme.Translucent.NoTitleBar" />-->
         <activity
-            android:launchMode="singleTask"
             android:name="com.tencent.tauth.AuthActivity"
+            android:launchMode="singleTask"
             android:noHistory="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -273,10 +284,11 @@
             </intent-filter>
         </activity>
         <activity
-            android:configChanges="orientation|keyboardHidden"
             android:name="com.tencent.connect.common.AssistActivity"
+            android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+
 
         <meta-data
             android:name="UMENG_APPKEY"
@@ -284,7 +296,7 @@
         <!--  WanDouJia XiaoMi 360 zuijiao_net BaiDu Tencent AnZhi GooglePlay-->
         <meta-data
             android:name="UMENG_CHANNEL"
-            android:value="GooglePlay" />
+            android:value="${UMENG_CHANNEL_SOURCE}" />
 
         <meta-data
             android:name="UMENG_MESSAGE_SECRET"
@@ -309,8 +321,8 @@
         <!--  umeng push -->
         <receiver
             android:name="com.umeng.message.NotificationProxyBroadcastReceiver"
-            android:process=":push"
-            android:exported="false" />
+            android:exported="false"
+            android:process=":push" />
         <receiver
             android:name="com.umeng.message.SystemReceiver"
             android:process=":push">
@@ -355,8 +367,8 @@
 
         <service
             android:name="com.umeng.message.UmengService"
-            android:label="PushService"
             android:exported="true"
+            android:label="PushService"
             android:process=":push">
 
             <intent-filter>
@@ -375,8 +387,8 @@
             android:process=":push" />
         <service
             android:name="com.umeng.message.UmengMessageIntentReceiverService"
-            android:process=":push"
-            android:exported="true">
+            android:exported="true"
+            android:process=":push">
             <intent-filter>
                 <action android:name="org.android.agoo.client.MessageReceiverService" />
             </intent-filter>

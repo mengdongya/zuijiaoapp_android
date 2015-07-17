@@ -44,7 +44,7 @@ public class QQApi extends AbsSDK {
 
                 @Override
                 public void onCancel() {
-
+                    mListener.onLoginFailed();
                 }
 
                 @Override
@@ -104,7 +104,7 @@ public class QQApi extends AbsSDK {
 
                 @Override
                 public void onError(UiError arg0) {
-
+                    mListener.onLoginFailed();
                 }
 
             });
@@ -112,6 +112,13 @@ public class QQApi extends AbsSDK {
                     "FirstLaunch_SDK:" + SystemClock.elapsedRealtime());
         } else {
             mTencent.logout(mContext);
+            Login(mListener);
+//            mListener.onLoginFailed();
+            Log.e("qqLogin", "mTencent.isSessionValid()");
+            Log.e("qqLogin", "mTencent.isSessionValid()");
+            Log.e("qqLogin", "mTencent.isSessionValid()");
+            Log.e("qqLogin", "mTencent.isSessionValid()");
+            Log.e("qqLogin", "mTencent.isSessionValid()");
 //			updateUserInfo();
         }
 

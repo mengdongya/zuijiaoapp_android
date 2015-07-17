@@ -10,6 +10,7 @@
         android:id="@+id/guide_last_item_bg"
         android:layout_height="match_parent"
         android:layout_width="match_parent"
+        android:src="@color/black"
         android:scaleType="centerCrop" />
 
     <ImageView

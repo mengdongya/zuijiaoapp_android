@@ -1,6 +1,7 @@
 package net.zuijiao.android.zuijiao;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -28,6 +29,8 @@ import com.zuijiao.view.RefreshAndInitListView;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import javax.crypto.Mac;
 
 /**
  * show one status of my order , included in my order fragment
@@ -131,7 +134,7 @@ public class OrderListFragment extends Fragment implements
                 status = OrderStatus.Waiting;
                 break;
             case 1:
-                status = OrderStatus.Finished;
+                status = OrderStatus.Uncomment;
                 break;
             case 2:
                 status = OrderStatus.All;
@@ -189,7 +192,7 @@ public class OrderListFragment extends Fragment implements
 
         @Override
         public Object getItem(int position) {
-            return position;
+            return orderList.get(position);
         }
 
         @Override
@@ -211,6 +214,47 @@ public class OrderListFragment extends Fragment implements
             holder.title.setText(order.getTitle());
             String dateInfo = formatDate(order.getHoldTime());
             holder.date.setText(dateInfo + order.getAddress());
+            if (tabIndex > 0) {
+//                if (tabIndex == 1) {
+//                    holder.review.setVisibility(View.VISIBLE);
+//                    holder.review.setText(getString(R.string.to_evaluate));
+//                    holder.review.setEnabled(true);
+//                    holder.review.setTextColor(getResources().getColor(R.color.banquet_theme));
+//                    holder.review.setOnClickListener(new View.OnClickListener() {
+//                        @Override
+//                        public void onClick(View view) {
+//                            Intent intent = new Intent();
+//                            intent.setClass(getActivity(), ReviewActivity.class);
+//                            intent.putExtra("orderId", order.getIdentifier());
+//                            startActivityForResult(intent, MainActivity.COMMENT_REQUEST);
+//                        }
+//                    });
+//                } else {
+                if (order.getStatus() != OrderStatus.Waiting && order.getStatus() != OrderStatus.Canceled) {
+                    holder.review.setVisibility(View.VISIBLE);
+                    if (order.getIsCommented()) {
+                        holder.review.setText(getString(R.string.over_evaluate));
+                        holder.review.setEnabled(false);
+                        holder.review.setTextColor(getResources().getColor(R.color.tv_light_gray));
+                    } else {
+                        holder.review.setText(getString(R.string.to_evaluate));
+                        holder.review.setEnabled(true);
+                        holder.review.setTextColor(getResources().getColor(R.color.banquet_theme));
+                        holder.review.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                Intent intent = new Intent();
+                                intent.setClass(getActivity(), ReviewActivity.class);
+                                intent.putExtra("orderId", order.getIdentifier());
+                                startActivityForResult(intent, MainActivity.COMMENT_REQUEST);
+                            }
+                        });
+                    }
+                } else {
+                    holder.review.setVisibility(View.GONE);
+                }
+                //  }
+            }
             switch (order.getStatus()) {
                 case Canceled:
                     holder.situation.setText(getString(R.string.canceled_banquet));
@@ -257,6 +301,8 @@ public class OrderListFragment extends Fragment implements
         TextView date;
         @ViewInject(R.id.banquet_order_item_status)
         TextView situation;
+        @ViewInject(R.id.banquet_order_item_review)
+        TextView review;
 
         public ViewHolder(View convertView) {
             com.lidroid.xutils.ViewUtils.inject(this, convertView);
@@ -273,4 +319,6 @@ public class OrderListFragment extends Fragment implements
         strBuilder.append(" ");
         return strBuilder.toString();
     }
+
+
 }

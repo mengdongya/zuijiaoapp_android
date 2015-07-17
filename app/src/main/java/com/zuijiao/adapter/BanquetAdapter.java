@@ -49,24 +49,20 @@ public class BanquetAdapter extends BaseAdapter implements AdapterView.OnItemCli
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         position -= 1;
-//        if (showBanner()) {
-//            position = position - 1;
-//        }
-        if(position == 0&& showBanner()){
+        if (position == 0 && showBanner()) {
             Intent intent = new Intent(mContext, CommonWebViewActivity.class);
             intent.putExtra("title", "activity");
             intent.putExtra("content_url", mBanquents.getBannerLinkUrl());
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             mContext.startActivity(intent);
-        }else{
-//            if (position < 0)
-//                return;
+        }else {
+            if (showBanner())
+                position = position - 1;
             Intent intent = new Intent(mContext, BanquetDetailActivity.class);
             intent.putExtra("banquet", mBanquentList.get(position));
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             mContext.startActivity(intent);
         }
-
     }
 
     @Override
@@ -102,12 +98,6 @@ public class BanquetAdapter extends BaseAdapter implements AdapterView.OnItemCli
                 mBannerContainer = mInflater.inflate(R.layout.banquet_banner, null);
                 ImageView bannerView = (ImageView) mBannerContainer.findViewById(R.id.banquet_banner);
                 Picasso.with(mContext).load(mBanquents.getBannerImageUrl()).placeholder(R.drawable.empty_view_greeting).into(bannerView);
-//                bannerView.setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View v) {
-//
-//                    }
-//                });
             }
             return mBannerContainer;
         } else {
@@ -158,7 +148,7 @@ public class BanquetAdapter extends BaseAdapter implements AdapterView.OnItemCli
                     Intent intent = new Intent(mContext, HostAndGuestActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     intent.putExtra("b_host", true);
-                    intent.putExtra("attendee_id", banquent.getMaster().getIdentifier());
+                    intent.putExtra("attendee_id", banquent.getMaster().getUserId()) ;
                     mContext.startActivity(intent);
                 }
             });
@@ -186,7 +176,7 @@ public class BanquetAdapter extends BaseAdapter implements AdapterView.OnItemCli
     private boolean showBanner() {
         if (mBanquents != null
                 && mBanquents.getBannerLinkUrl() != null
-                && mBanquents.getBannerLinkUrl() != null)
+                && !mBanquents.getBannerLinkUrl().equals(""))
             return true;
         return false;
     }
@@ -203,7 +193,7 @@ public class BanquetAdapter extends BaseAdapter implements AdapterView.OnItemCli
     }
 
     /**
-     * load more calledd
+     * load more called
      *
      * @param banquents
      */

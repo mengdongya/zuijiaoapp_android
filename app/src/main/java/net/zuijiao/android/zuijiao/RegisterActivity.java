@@ -15,6 +15,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -314,6 +315,8 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                         }
                     }
                 }).create();
+                Window window = dialog.getWindow() ;
+                window.setWindowAnimations(R.style.dialogWindowAnim);
                 dialog.show();
                 break;
             case R.id.register_male_btn:

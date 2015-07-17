@@ -30,6 +30,10 @@ public interface IRouterAccount {
             , @Field("month") Integer month
             , @Field("day") Integer day
             , @Field("tags") String tags
+//            , @Field("skilled") String skilled
+//            , @Field("cooking") String cooking
+//            , @Field("place") String place
+//            , @Field("address") String address
             , @Field("education") String education
             , @Field("career") String career
             , @Field("languages") String languages
@@ -52,11 +56,12 @@ public interface IRouterAccount {
     void fetchMyInfo(Callback<User> callback);
 
     // MARK: - banquent
-
     @GET("/users/v2/ios/seller/{id}")
     void masterInfo(@Path("id") Integer chefId, Callback<Attendee> callback);
 
     @GET("/users/v2/ios/buyer/{id}")
     void attendeeInfo(@Path("id") Integer attendeeId, Callback<Attendee> callback);
 
+    @GET("/users/v2/ios/person/{id}/home")
+    void banquetUserInfo(@Path("id") Integer userId ,Callback<Attendee> callback) ;
 }

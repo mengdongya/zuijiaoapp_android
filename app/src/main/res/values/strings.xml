@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">嘴角</string>
-    <string name="current_version_code">2.0.1</string>
+    <string name="current_version_code">2.0.2</string>
     <string name="welcome_word">发现最美的味道</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
@@ -214,7 +214,9 @@
     <string name="mobile_phone">手机</string>
     <string name="industry">从事行业</string>
     <string name="industry_hint">输入从事行业</string>
-    <string name="detail_info">详细资料</string>
+    <string name="host_msg">料理人信息</string>
+    <string name="detail_info">详细</string>
+    <string name="show_all_banquet">查看全部料理</string>
     <string name="interest_hobby">兴趣爱好</string>
     <string name="interest_hobby_hint">输入兴趣爱好</string>
     <string name="education">所受教育</string>
@@ -277,7 +279,7 @@
     <string name="cuisine_name">料理人&#160;|&#160;%s</string>
     <string name="about_cuisine">关于料理人</string>
     <string name="detail">详情</string>
-    <string name="all_comments">所有%d条评论</string>
+    <string name="all_comments">所有%d条评价</string>
     <string name="order_msg">订单信息</string>
     <string name="time">时间</string>
     <string name="price">价格</string>
@@ -306,8 +308,8 @@
     <string name="remark_to_host">给料理人留言</string>
     <string name="center_dot">·</string>
     <string name="host_introduction">料理人介绍</string>
-    <string name="attended_banquet">已参加的私宴</string>
-    <string name="hosted_banquet">拥有的料理</string>
+    <string name="attended_banquet">参加了%d场料理</string>
+    <string name="hosted_banquet">举办了%1$d场料理，累计接待%2$d人</string>
     <string name="get_history_list_failed">获取历史记录失败，请检查网络</string>
     <string name="total_attendee">共有%d人参加</string>
     <string name="banquet_order_notice">须知\n·下单成功后，暂不支持在线退单\n·如有疑问请致电：021-58313120</string>
@@ -346,4 +348,19 @@
     <string name="on_register">正在注册</string>
     <string name="order_message">订单详情</string>
     <string name="support_more_city_soon">请相信我们会很快支持更多的城市</string>
+    <string name="over_evaluate">已评价</string>
+    <string name="title_activity_review">ReviewActivity</string>
+    <string name="review_content_hint">说说对本次赏味的体验吧</string>
+    <string name="notify_review_score_empty">请选择评分</string>
+    <string name="notify_review_content_empty">评价内容不能为空</string>
+    <string name="evaluate">评价</string>
+    <string name="send">发送</string>
+    <string name="receive_comments">收到%d条评价</string>
+    <string name="show_all_comments">查看全部评价</string>
+    <string name="weixin_not_installed">你还没有安装微信，不能登录</string>
+    <string name="send_comment_success">评价发表成功</string>
+    <string name="toolbar_comments">%d条评价</string>
+    <string name="cooking">厨艺  </string>
+    <string name="skilled">擅长</string>
+    <string name="place">场地</string>
 </resources>

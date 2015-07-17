@@ -1,85 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:myattr="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:padding="10dip"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:padding="10dip">
 
     <com.zuijiao.view.RoundImageView
-        android:src="@drawable/shanghai"
-        android:layout_height="50dip"
         android:id="@+id/banquet_comment_item_head"
-        android:layout_width="50dip" />
+        android:layout_width="50dip"
+        android:layout_height="50dip"
+        android:src="@drawable/default_user_head" />
 
     <TextView
-        android:text="我是昵称昵称昵"
-        android:layout_height="25dip"
-        android:layout_width="wrap_content"
         android:id="@+id/banquet_comment_item_user_name"
-        android:textColor="@color/bg_light_gray"
-        android:textSize="16sp"
-        android:gravity="center_vertical"
-        android:layout_marginLeft="5dip"
-        android:layout_toRightOf="@id/banquet_comment_item_head" />
-
-    <TextView
-        android:layout_height="25dip"
         android:layout_width="wrap_content"
-        android:id="@+id/banquet_comment_item_issue"
-        android:textColor="@color/tv_deep_gray"
-        android:gravity="center_vertical"
-        android:textSize="15sp"
+        android:layout_height="25dip"
         android:layout_marginLeft="5dip"
         android:layout_toRightOf="@id/banquet_comment_item_head"
-        android:layout_below="@id/banquet_comment_item_user_name"
-        android:text="2015-4.5:Sonian的台位厨房" />
-
-    <LinearLayout
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        android:gravity="left"
-        android:id="@+id/banquet_comment_item_stars"
-        android:layout_marginTop="10dip"
-        android:layout_below="@id/banquet_comment_item_head"
-        android:orientation="horizontal">
-
-        <ImageView
-            android:layout_height="20dip"
-            android:layout_marginRight="10dip"
-            android:layout_width="20dip"
-            android:src="@drawable/star_bright" />
-
-        <ImageView
-            android:layout_height="20dip"
-            android:layout_marginRight="10dip"
-            android:layout_width="20dip"
-            android:src="@drawable/star_bright" />
-
-        <ImageView
-            android:layout_height="20dip"
-            android:layout_width="20dip"
-            android:layout_marginRight="10dip"
-            android:src="@drawable/star_bright" />
-
-        <ImageView
-            android:layout_height="20dip"
-            android:layout_width="20dip"
-            android:layout_marginRight="10dip"
-            android:src="@drawable/star_bright" />
-
-        <ImageView
-            android:layout_height="20dip"
-            android:layout_width="20dip"
-            android:src="@drawable/star_bright" />
-    </LinearLayout>
+        android:gravity="center_vertical"
+        android:text="我是昵称昵称昵"
+        android:textColor="@color/bg_light_gray"
+        android:textSize="16sp" />
 
     <TextView
+        android:id="@+id/banquet_comment_item_issue"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        android:text="刚进门就看到Nita大厨在厨房大展身手，从色香味各个角度刺激着我的感官。我来的太晚以至于没有时间慢慢的享受菜品一。"
-        android:textSize="14sp"
-        android:id="@+id/banquet_comment_item_comment"
+        android:layout_below="@id/banquet_comment_item_user_name"
+        android:layout_marginLeft="5dip"
+        android:layout_toRightOf="@id/banquet_comment_item_head"
+        android:gravity="center_vertical"
+        android:text="Sonian的台位厨房 · 4月18日 周六 18：00"
         android:textColor="@color/tv_deep_gray"
+        android:textSize="15sp" />
+
+    <com.zuijiao.view.ReviewRatingBar
+        android:id="@+id/banquet_comment_item_stars"
+        myattr:imageSize="24"
+        myattr:isIndicator="true"
+        myattr:ratingBarType="reviewList"
+        android:layout_width="wrap_content"
+        android:layout_marginTop="10dip"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/banquet_comment_item_head">
+
+    </com.zuijiao.view.ReviewRatingBar>
+
+    <TextView
+        android:id="@+id/banquet_comment_item_comment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/banquet_comment_item_stars"
         android:layout_marginTop="10dip"
         android:lineSpacingExtra="5dip"
-        android:layout_below="@id/banquet_comment_item_stars" />
+        android:text="刚进门就看到Nita大厨在厨房大展身手，从色香味各个角度刺激着我的感官。我来的太晚以至于没有时间慢慢的享受菜品一。"
+        android:textColor="@color/tv_deep_gray"
+        android:textSize="14sp" />
 </RelativeLayout>

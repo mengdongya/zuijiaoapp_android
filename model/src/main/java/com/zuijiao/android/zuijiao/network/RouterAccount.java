@@ -7,6 +7,7 @@ import com.zuijiao.android.zuijiao.model.user.User;
 
 import java.util.Calendar;
 
+
 /**
  * Created by Chen Hao on 3/23/15.
  */
@@ -38,8 +39,23 @@ public enum RouterAccount {
             month = cal.get(Calendar.MONTH);
             day = cal.get(Calendar.DATE);
         }
+        Integer holdCount=0,recCount=0,takeCount = 0;
+
+        String comment = null,skilled=null,cooking=null,place=null,address=null;
         String tags = null, languages = null, education = null, career = null, introduce = null;
         String hobby = null, email = null, avatarUrl = null, nickname = null, story = null;
+        /*if (user.getProfile().getCooking().isPresent())
+            cooking = user.getProfile().getCooking().get();
+
+        if (user.getProfile().getSkilled().isPresent())
+            skilled = Router.convertJsonFromList(user.getProfile().getSkilled().get());
+
+        if (user.getProfile().getPlace().isPresent())
+            place=user.getProfile().getPlace().get();
+
+        if (user.getProfile().getAddress().isPresent())
+            address = user.getProfile().getAddress().get();*/
+
         if (user.getProfile().getTasteTags().isPresent())
             tags = Router.convertJsonFromList(user.getProfile().getTasteTags().get());
 
@@ -70,6 +86,7 @@ public enum RouterAccount {
         if (user.getProfile().getStory().isPresent())
             story = user.getProfile().getStory().get();
 
+
         service.update(gender
                 , provinceId
                 , cityId
@@ -78,6 +95,14 @@ public enum RouterAccount {
                 , month
                 , day
                 , tags
+               /* , skilled
+                , cooking
+                , place
+                , address
+                , comment
+                , holdCount
+                , recCount
+                , takeCount*/
                 , education
                 , career
                 , languages
@@ -121,4 +146,9 @@ public enum RouterAccount {
         service.attendeeInfo(attendeeId, CallbackFactory.getInstance().callback(successCallback, failureCallback));
     }
 
+
+    public void banquetUserInfo(Integer userId ,OneParameterExpression<Attendee> successCallback
+            , OneParameterExpression<String> failureCallback){
+        service.banquetUserInfo(userId ,CallbackFactory.getInstance().callback(successCallback , failureCallback));
+    }
 }

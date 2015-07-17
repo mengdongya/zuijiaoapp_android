@@ -23,6 +23,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
@@ -186,6 +187,7 @@ public class GourmetDetailActivity extends BaseActivity implements
         mToolbarHeight = (int) getResources().getDimension(R.dimen.toolbar_height);
         try {
             gourmet = (Gourmet) mTendIntent.getSerializableExtra("selected_gourmet");
+            System.out.println("gourmet.id:" + gourmet.getIdentifier());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -849,6 +851,8 @@ public class GourmetDetailActivity extends BaseActivity implements
                     AlertDialog.Builder builder = new AlertDialog.Builder(
                             GourmetDetailActivity.this);
                     AlertDialog dialog = builder.setView(deleteView).create();
+                    Window window = dialog.getWindow() ;
+                    window.setWindowAnimations(R.style.dialogWindowAnim);
                     dialog.show();
                     deleteView.findViewById(R.id.alert_delete_comment).setOnClickListener(new OnClickListener() {
                         @Override

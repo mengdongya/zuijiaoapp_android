@@ -215,21 +215,6 @@ public class OrderListFragment extends Fragment implements
             String dateInfo = formatDate(order.getHoldTime());
             holder.date.setText(dateInfo + order.getAddress());
             if (tabIndex > 0) {
-//                if (tabIndex == 1) {
-//                    holder.review.setVisibility(View.VISIBLE);
-//                    holder.review.setText(getString(R.string.to_evaluate));
-//                    holder.review.setEnabled(true);
-//                    holder.review.setTextColor(getResources().getColor(R.color.banquet_theme));
-//                    holder.review.setOnClickListener(new View.OnClickListener() {
-//                        @Override
-//                        public void onClick(View view) {
-//                            Intent intent = new Intent();
-//                            intent.setClass(getActivity(), ReviewActivity.class);
-//                            intent.putExtra("orderId", order.getIdentifier());
-//                            startActivityForResult(intent, MainActivity.COMMENT_REQUEST);
-//                        }
-//                    });
-//                } else {
                 if (order.getStatus() != OrderStatus.Waiting && order.getStatus() != OrderStatus.Canceled) {
                     holder.review.setVisibility(View.VISIBLE);
                     if (order.getIsCommented()) {
@@ -246,7 +231,8 @@ public class OrderListFragment extends Fragment implements
                                 Intent intent = new Intent();
                                 intent.setClass(getActivity(), ReviewActivity.class);
                                 intent.putExtra("orderId", order.getIdentifier());
-                                startActivityForResult(intent, MainActivity.COMMENT_REQUEST);
+                                intent.putExtra("tabIndex", tabIndex);
+                                getActivity().startActivityForResult(intent, MainActivity.COMMENT_REQUEST);
                             }
                         });
                     }
@@ -277,6 +263,7 @@ public class OrderListFragment extends Fragment implements
     @Override
     public void onRefresh() {
         networkStep(true);
+        System.out.println("tabIndex:" + tabIndex);
     }
 
     @Override

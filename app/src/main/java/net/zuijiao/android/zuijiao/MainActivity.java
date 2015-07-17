@@ -109,8 +109,8 @@ public final class MainActivity extends BaseActivity {
     private String[] titles = null;
     public static int unReadNewsCount = 0;
     private static final int BACK_STACK_DURATION = 2000;
-    public final static int COMMENT_SUCCESS = 10002;
-    public final static int COMMENT_REQUEST = 10001;
+    public static final int COMMENT_SUCCESS = 10010;
+    public static final int COMMENT_REQUEST = 10011;
 
 
     private OnItemClickListener mTabsListener = new OnItemClickListener() {
@@ -188,7 +188,7 @@ public final class MainActivity extends BaseActivity {
                     R.layout.location_choose_layout, null);
             AlertDialog dialog = new AlertDialog.Builder(
                     MainActivity.this).setView(view).create();
-            Window window = dialog.getWindow() ;
+            Window window = dialog.getWindow();
             window.setWindowAnimations(R.style.dialogWindowAnim);
             dialog.show();
         }
@@ -585,7 +585,7 @@ public final class MainActivity extends BaseActivity {
         }
         long currentBackPressedTime = new Date().getTime();
         if (currentBackPressedTime - lastBackPressedTime > BACK_STACK_DURATION) {
-            Toast.makeText(mContext, getString(R.string.exit_confirm), BACK_STACK_DURATION).show();
+            Toast.makeText(mContext, getString(R.string.exit_confirm), Toast.LENGTH_SHORT).show();
             lastBackPressedTime = currentBackPressedTime;
             return;
         }
@@ -666,6 +666,9 @@ public final class MainActivity extends BaseActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == COMMENT_REQUEST) {
+            mMyOrderFragment.onActivityResult(requestCode, resultCode, data);
+        }
         if (requestCode == SETTING_REQ && resultCode == LOGOUT_RESULT) {
             mFavorFragment.clearPersonalData();
             mRecommendFragment.clearPersonalData();

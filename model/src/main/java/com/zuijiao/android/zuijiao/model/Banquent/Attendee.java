@@ -36,8 +36,11 @@ public class Attendee {
     }
 
     public Optional<String> getAvatarURLSmall() {
-//        return Optional.ofNullable(avatarURL);
-        return Optional.ofNullable(ImageUrlUtil.imageUrl(avatarURL + "_avatar"));
+        String avatarUrlTest = ImageUrlUtil.imageUrl(avatarURL);
+        if (avatarUrlTest != null && !avatarUrlTest.startsWith("http://pic.zuijiao"))
+            avatarUrlTest = avatarUrlTest + "_avatar";
+        return Optional.ofNullable(avatarUrlTest);
+//        return Optional.ofNullable(ImageUrlUtil.imageUrl(avatarURL + "_avatar"));
 
     }
 

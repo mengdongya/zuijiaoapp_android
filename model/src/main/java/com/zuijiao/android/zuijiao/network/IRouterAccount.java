@@ -19,17 +19,18 @@ public interface IRouterAccount {
     @FormUrlEncoded
     @POST("/account/v1/profile/avatar/update")
     void updateAvatar(@Field("imageUrl") String avatarUrl, Callback<Response> callback);
-
+//    /account/v2/ios/profiles/update
+//    /account/v2/profiles/update
     @FormUrlEncoded
-    @POST("/account/v2/profiles/update")
+    @POST("/account/v2/ios/profiles/update")
     void update(@Field("gender") String gender
             , @Field("provinceID") Integer provinceId
-            , @Field("cityId") Integer cityId
+            , @Field("cityID") Integer cityId
             , @Field("story") String story
             , @Field("year") Integer year
             , @Field("month") Integer month
             , @Field("day") Integer day
-            , @Field("tags") String tags
+            , @Field("tasteTags") String tags
 //            , @Field("skilled") String skilled
 //            , @Field("cooking") String cooking
 //            , @Field("place") String place
@@ -52,7 +53,8 @@ public interface IRouterAccount {
     @GET("/users/v2/ios/person/{id}")
     void fetchUserInfoByIdentifier(@Path("id") Integer identifier, Callback<User> callback);
 
-    @GET("/account/v2/mobile/info")
+//    @GET("/account/v2/mobile/info")
+    @GET("/account/v2/ios/info")
     void fetchMyInfo(Callback<User> callback);
 
     // MARK: - banquent

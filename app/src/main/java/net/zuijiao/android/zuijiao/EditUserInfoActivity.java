@@ -124,12 +124,12 @@ public class EditUserInfoActivity extends BaseActivity {
                     createGeneralEditTextDialog(mFullUser.getNickname().get(), getString(R.string.nick_name), getString(R.string.nick_name_hint), 1, 15, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
                             if (mCurrentEdit != null && !mCurrentEdit.equals(mFullUser.getNickname())) {
                                 mTmpFullUser.setNickname(mCurrentEdit);
                                 updateUserInfo();
                             }
                             mCurrentEdit = null;
+                            dialog.dismiss();
                         }
                     });
                     break;
@@ -152,7 +152,6 @@ public class EditUserInfoActivity extends BaseActivity {
 
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
                             if ((mCurrentEdit == null || mCurrentEdit.equals(""))
                                     || mFullUser.getProfile().getSelfIntroduction().isPresent()
                                     && mFullUser.getProfile().getSelfIntroduction().get().equals(mCurrentEdit)) {
@@ -161,6 +160,7 @@ public class EditUserInfoActivity extends BaseActivity {
                             }
                             mTmpFullUser.getProfile().setSelfIntroduction(mCurrentEdit);
                             updateUserInfo();
+                            dialog.dismiss();
                         }
                     });
                     break;
@@ -187,7 +187,6 @@ public class EditUserInfoActivity extends BaseActivity {
                                 Toast.makeText(mContext, getString(R.string.register_error_email_format), Toast.LENGTH_SHORT).show();
                                 return;
                             }
-                            dialog.dismiss();
                             if (mFullUser.getContactInfo().isPresent() && mCurrentEdit.equals(mFullUser.getContactInfo().get().getEmail())) {
                                 mCurrentEdit = null;
                                 return;
@@ -197,6 +196,7 @@ public class EditUserInfoActivity extends BaseActivity {
                             }
                             mTmpFullUser.getContactInfo().get().setEmail(mCurrentEdit);
                             updateUserInfo();
+                            dialog.dismiss();
                         }
                     });
                     break;
@@ -220,7 +220,6 @@ public class EditUserInfoActivity extends BaseActivity {
                     createGeneralEditTextDialog(industry, getString(R.string.industry), getString(R.string.industry_hint), 4, 100, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
                             if (mCurrentEdit == null || mCurrentEdit.equals("")) {
                                 return;
                             }
@@ -232,6 +231,7 @@ public class EditUserInfoActivity extends BaseActivity {
                             }
                             mTmpFullUser.getProfile().setCareer(mCurrentEdit);
                             updateUserInfo();
+                            dialog.dismiss();
                         }
                     });
                     break;
@@ -242,7 +242,6 @@ public class EditUserInfoActivity extends BaseActivity {
                     createGeneralEditTextDialog(hobby, getString(R.string.interest_hobby), getString(R.string.interest_hobby_hint), 4, 100, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
                             if (mCurrentEdit == null || mCurrentEdit.equals("")) {
                                 return;
                             }
@@ -254,6 +253,7 @@ public class EditUserInfoActivity extends BaseActivity {
                             }
                             mTmpFullUser.getProfile().setHobby(mCurrentEdit);
                             updateUserInfo();
+                            dialog.dismiss();
                         }
                     });
                     break;
@@ -265,7 +265,6 @@ public class EditUserInfoActivity extends BaseActivity {
                     createGeneralEditTextDialog(education, getString(R.string.education), getString(R.string.education_hint), 4, 100, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
                             if (mCurrentEdit == null || mCurrentEdit.equals("")) {
                                 return;
                             }
@@ -277,6 +276,7 @@ public class EditUserInfoActivity extends BaseActivity {
                             }
                             mTmpFullUser.getProfile().setEducationBackground(mCurrentEdit);
                             updateUserInfo();
+                            dialog.dismiss();
                         }
                     });
                     break;
@@ -391,6 +391,12 @@ public class EditUserInfoActivity extends BaseActivity {
         Window window = alertDialog.getWindow() ;
         window.setWindowAnimations(R.style.dialogWindowAnim);
         alertDialog.show();
+        alertDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                mCurrentEdit = null ;
+            }
+        });
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -530,7 +536,7 @@ public class EditUserInfoActivity extends BaseActivity {
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
+
                         if (which == mGenderCheckItem) {
                             return;
                         }
@@ -548,6 +554,7 @@ public class EditUserInfoActivity extends BaseActivity {
                         }
                         mTmpFullUser.getProfile().setGender(gender);
                         updateUserInfo();
+                        dialog.dismiss();
                     }
                 }).setTitle(getString(R.string.gender)).create();
         Window window = alertDialog.getWindow() ;

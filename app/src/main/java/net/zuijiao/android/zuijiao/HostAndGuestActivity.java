@@ -217,6 +217,7 @@ public class HostAndGuestActivity extends BaseActivity {
                     mGuestHead.setVisibility(View.VISIBLE);
                     if (mAttendee.getAvatarURLSmall().isPresent()) {
                         Picasso.with(mContext).load(mAttendee.getAvatarURLSmall().get()).placeholder(R.drawable.default_user_head).into(mGuestHead);
+                        Log.i("useravatar", mAttendee.getAvatarURLSmall().get()) ;
                         mGuestHead.setOnClickListener(mHeadListener);
                     }
                 }else{
@@ -269,12 +270,14 @@ public class HostAndGuestActivity extends BaseActivity {
                             if (mAttendee.getAvatarURLSmall().isPresent()) {
                                 Log.i("outofmemory", mAttendee.getAvatarURLSmall().get());
                                 Picasso.with(mContext).load(mAttendee.getAvatarURLSmall().get()).placeholder(R.drawable.default_user_head).into(mHostHead);
+                                Log.i("useravatar" ,mAttendee.getAvatarURLSmall().get()) ;
                                 mHostHead.setOnClickListener(mHeadListener);
                             }
                         } else {
                             mGuestHead.setVisibility(View.VISIBLE);
                             if (mAttendee.getAvatarURLSmall().isPresent()) {
                                 Picasso.with(mContext).load(mAttendee.getAvatarURLSmall().get()).placeholder(R.drawable.default_user_head).into(mGuestHead);
+                                Log.i("useravatar", mAttendee.getAvatarURLSmall().get()) ;
                                 mGuestHead.setOnClickListener(mHeadListener);
                             }
                         }
@@ -282,6 +285,7 @@ public class HostAndGuestActivity extends BaseActivity {
                         mGuestHead.setVisibility(View.VISIBLE);
                         if (mAttendee.getAvatarURLSmall().isPresent()) {
                             Picasso.with(mContext).load(mAttendee.getAvatarURLSmall().get()).placeholder(R.drawable.default_user_head).into(mGuestHead);
+                            Log.i("useravatar", mAttendee.getAvatarURLSmall().get()) ;
                             mGuestHead.setOnClickListener(mHeadListener);
                         }
                     }
@@ -489,86 +493,6 @@ public class HostAndGuestActivity extends BaseActivity {
                     startActivity(intent);
                     break;
             }
-        }
-    };
-    private BaseAdapter mHistoryAdapter = new BaseAdapter() {
-        @Override
-        public int getCount() {
-            if (banquentAttendeeList == null) {
-                return 0;
-            }
-            return banquentAttendeeList.size();
-        }
-
-        @Override
-        public Object getItem(int position) {
-            return position;
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return position;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            ViewHolder holder;
-            if (convertView == null) {
-                convertView = LayoutInflater.from(mContext).inflate(R.layout.banquet_history_item, null);
-                holder = new ViewHolder(convertView);
-                convertView.setTag(holder);
-            } else {
-                holder = (ViewHolder) convertView.getTag();
-            }
-
-            Banquent banquet = banquentAttendeeList.get(position);
-            Picasso.with(mContext).load(banquet.getSurfaceImageUrl()).placeholder(R.drawable.empty_view_greeting).into(holder.image);
-            holder.title.setText(banquet.getTitle());
-            holder.date.setText(formatDate(banquet.getTime()));
-            holder.price.setText(String.format(getString(R.string.price_per_one), banquet.getPrice()));
-            holder.situation.setText(String.format(getString(R.string.total_attendee), banquet.getAttendees().size()));
-            return convertView;
-
-        }
-    };
-    private BaseAdapter mHistoryAdapter2 = new BaseAdapter() {
-        @Override
-        public int getCount() {
-            if (banquentHoldList == null) {
-                return 0;
-            }
-            return banquentHoldList.size();
-        }
-
-        @Override
-        public Object getItem(int position) {
-            return position;
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return position;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            ViewHolder holder;
-            if (convertView == null) {
-                convertView = LayoutInflater.from(mContext).inflate(R.layout.banquet_history_item, null);
-                holder = new ViewHolder(convertView);
-                convertView.setTag(holder);
-            } else
-                holder = (ViewHolder) convertView.getTag();
-
-
-            Banquent banquet = banquentHoldList.get(position);
-            Picasso.with(mContext).load(banquet.getSurfaceImageUrl()).placeholder(R.drawable.empty_view_greeting).into(holder.image);
-            holder.title.setText(banquet.getTitle());
-            holder.date.setText(formatDate(banquet.getTime()));
-            holder.price.setText(String.format(getString(R.string.price_per_one), banquet.getPrice()));
-            holder.situation.setText(String.format(getString(R.string.total_attendee), banquet.getAttendees().size()));
-            return convertView;
-
         }
     };
 

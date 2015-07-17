@@ -3,9 +3,9 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/bg_radius"
-    android:orientation="vertical">
+    >
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginLeft="8dip"
@@ -23,10 +23,23 @@
             android:layout_height="@dimen/main_item_image_height"
             android:scaleType="centerCrop" />
 
+        <TextView
+            android:background="@drawable/banquet_list_item_status_bg"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_marginLeft="8dip"
+            android:id="@+id/banquet_history_item_status_finished"
+            android:layout_marginTop="5dip"
+            android:visibility="gone"
+            android:textColor="@color/white"
+            android:textSize="15sp"
+            android:text="@string/banquet_status_end" />
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/banquet_item_text"
+            android:layout_below="@id/banquet_history_item_image"
             android:paddingBottom="0dip"
             android:paddingLeft="5dip"
             android:paddingRight="10dip"
@@ -82,6 +95,6 @@
                 android:layout_below="@id/banquet_history_item_price"/>
 
         </RelativeLayout>
-    </LinearLayout>
+    </RelativeLayout>
 
 </LinearLayout>

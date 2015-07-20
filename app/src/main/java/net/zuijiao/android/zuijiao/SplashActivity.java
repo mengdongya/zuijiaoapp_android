@@ -121,8 +121,8 @@ public class SplashActivity extends BaseActivity {
                     WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
         }
         initPreferenceInfo();
-        InputStream is = getResources().openRawResource(R.drawable.splash_bg);
-        mImageView.setImageBitmap(BitmapFactory.decodeStream(is));
+        InputStream is = getResources().openRawResource(R.raw.splash_bg);
+         mImageView.setImageBitmap(BitmapFactory.decodeStream(is));
         if (mPreferInfo.isAppFirstLaunch()) {
             pb.setVisibility(View.GONE);
         }

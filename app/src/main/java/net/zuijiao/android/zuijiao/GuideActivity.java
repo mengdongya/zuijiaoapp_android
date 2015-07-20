@@ -54,9 +54,9 @@ public class GuideActivity extends BaseActivity {
     private List<View> viewList = new ArrayList<>() ;
     private boolean onBackPressed = false;
     private boolean mBCallByUser = false;
-    private int[] images = new int[]{R.drawable.guide_image1, R.drawable.guide_image2,
-            R.drawable.guide_image3, R.drawable.guide_image4};
-    private int[] texts = new int[]{R.drawable.guide_text1, R.drawable.guide_text2, R.drawable.guide_text3, R.drawable.guide_text4};
+    private int[] images = new int[]{R.raw.guide_image1, R.raw.guide_image2,
+            R.raw.guide_image3, R.raw.guide_image4};
+    private int[] texts = new int[]{R.raw.guide_text1, R.raw.guide_text2, R.raw.guide_text3, R.raw.guide_text4};
     private int[] mScreenSize ;
     private OnPageChangeListener mPageListener = new OnPageChangeListener() {
         @Override
@@ -313,7 +313,7 @@ public class GuideActivity extends BaseActivity {
                 if (position < 4) {
                     initView(images[position], texts[position], data.get(position));
                 } else {
-                    Bitmap bitmap = BitmapFactory.decodeStream(getResources().openRawResource(R.drawable.guide_image5));
+                    Bitmap bitmap = BitmapFactory.decodeStream(getResources().openRawResource(R.raw.guide_image5));
                     Log.i("bitmap id" , "create bitmap id = " + bitmap.toString() + "  bitmap byte count =  " + bitmap.getByteCount()) ;
                     ((ImageView) (data.get(position).findViewById(R.id.guide_last_item_bg))).setImageBitmap(bitmap);
                 }

@@ -49,7 +49,6 @@ public class MainFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View contentView = inflater.inflate(R.layout.fragment_notification, null);
         mViewPager = (ViewPager) contentView.findViewById(R.id.notification_view_pager);
-
         if (mPagerAdapter == null) {
             FragmentManager manager = getChildFragmentManager();
             mPagerAdapter = new MainPagerAdapter(manager);

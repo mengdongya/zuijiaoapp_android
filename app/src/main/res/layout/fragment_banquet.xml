@@ -4,16 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!--<WebView-->
-    <!--android:layout_height="120dip"-->
-    <!--android:layout_marginTop="8dip"-->
-    <!--android:layout_marginLeft="8dip"-->
-    <!--android:layout_marginRight="8dip"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:id="@+id/banquet_banner" />-->
-
-
-    <!--android:layout_below="@id/banquet_banner"-->
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/banquet_swipe_refresh"
 

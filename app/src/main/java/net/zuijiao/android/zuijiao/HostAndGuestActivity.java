@@ -492,7 +492,7 @@ public class HostAndGuestActivity extends BaseActivity {
                     intent = new Intent();
                     intent.setClass(mContext, BanquetListActivity.class);
                     intent.putExtra("b_hold", true);
-                    intent.putExtra("attendee_id", mAttendeeId);
+                    intent.putExtra("attendee_id", mAttendee.getSellerInfo().getIdentifier());
                     startActivity(intent);
                     break;
             }

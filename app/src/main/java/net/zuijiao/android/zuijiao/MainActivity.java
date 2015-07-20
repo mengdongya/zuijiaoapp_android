@@ -585,7 +585,7 @@ public final class MainActivity extends BaseActivity {
         }
         long currentBackPressedTime = new Date().getTime();
         if (currentBackPressedTime - lastBackPressedTime > BACK_STACK_DURATION) {
-            Toast.makeText(mContext, getString(R.string.exit_confirm), BACK_STACK_DURATION).show();
+            Toast.makeText(mContext, getString(R.string.exit_confirm), Toast.LENGTH_SHORT).show();
             lastBackPressedTime = currentBackPressedTime;
             return;
         }

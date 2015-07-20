@@ -467,12 +467,12 @@
                     android:id="@+id/host_guest_lastest_comment"
                     layout="@layout/banquet_comment_item"
                     android:visibility="gone" />
-
+<!--
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dip"
                     android:layout_marginTop="10dip"
-                    android:background="@color/bg_light_gray2" />
+                    android:background="@color/bg_light_gray2" />-->
 
             </LinearLayout>
 

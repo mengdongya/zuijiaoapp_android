@@ -368,6 +368,9 @@
     <string name="show_all_banquet">查看全部料理</string>
     <string name="attended">已经参加的料理</string>
     <string name="held">已经举办的料理</string>
+    <string name="host_msg">料理人信息</string>
+    <string name="hosted_banquet">举办了%1$d场料理，累计接待%2$d人</string>
+    <string name="title_activity_review">ReviewActivity</string>
     <!-- umeng socialize strings begin-->
     <!--<string name="pull_to_refresh_pull_label" translatable="false">向下拉动可以刷新</string>-->
     <!--<string name="pull_to_refresh_release_label" translatable="false">松开可以刷新</string>-->

@@ -214,7 +214,7 @@
     <string name="mobile_phone">手机</string>
     <string name="industry">从事行业</string>
     <string name="industry_hint">输入从事行业</string>
-    <string name="host_msg">料理人信息</string>
+
     <string name="detail_info">详细</string>
     <string name="show_all_banquet">查看全部料理</string>
     <string name="interest_hobby">兴趣爱好</string>
@@ -366,4 +366,6 @@
     <string name="place">场地</string>
     <string name="attended">已经参加的料理</string>
     <string name="held">已经举办的料理</string>
+    <string name="host_msg">料理人信息</string>
+    <string name="detail_msg">料理人信息</string>
 </resources>

@@ -28,6 +28,7 @@ import com.zuijiao.adapter.ImageViewPagerAdapter;
 import com.zuijiao.android.util.functional.OneParameterExpression;
 import com.zuijiao.android.zuijiao.model.Banquent.Attendee;
 import com.zuijiao.android.zuijiao.model.Banquent.Banquent;
+import com.zuijiao.android.zuijiao.model.Banquent.BanquentStatus;
 import com.zuijiao.android.zuijiao.model.Banquent.Review;
 import com.zuijiao.android.zuijiao.model.Banquent.Seller;
 import com.zuijiao.android.zuijiao.model.common.Language;
@@ -136,7 +137,7 @@ public class HostAndGuestActivity extends BaseActivity {
     private ArrayList<ImageView> mImageList = new ArrayList<>();
     private ImageViewPagerAdapter mViewPagerAdapter;
     private int mAttendeeId = -1;
-    private boolean bHost = false;
+//    private boolean bHost = false;
     private Attendee mAttendee;
     private String[] weekDays;
 
@@ -152,7 +153,7 @@ public class HostAndGuestActivity extends BaseActivity {
 
         weekDays = mContext.getResources().getStringArray(R.array.week_days);
         if (mTendIntent != null) {
-            bHost = mTendIntent.getBooleanExtra("b_host", false);
+//            bHost = mTendIntent.getBooleanExtra("b_host", false);
             mAttendeeId = mTendIntent.getIntExtra("attendee_id", -1);
         }
         if (mAttendeeId == -1) {
@@ -189,6 +190,7 @@ public class HostAndGuestActivity extends BaseActivity {
                 registerViewsByAttendee();
                 //register last attend banquet begin
                 Banquent lastAttendBanquet = attendee.getLastAttendEvent();
+
                 if (lastAttendBanquet == null) {
                     attendeeBanquet.setVisibility(View.GONE);
                     banquetImageAttendeeNull.setVisibility(View.VISIBLE);
@@ -197,9 +199,9 @@ public class HostAndGuestActivity extends BaseActivity {
                     attendeeBanquet.setVisibility(View.VISIBLE);
                     banquetImageAttendeeNull.setVisibility(View.GONE);
                     mAttendeeBanquet.setVisibility(View.VISIBLE);
-
                     mHostAttendee.setText(String.format(getString(R.string.attended_banquet), mAttendee.getAttendCount()));
                     Picasso.with(mContext).load(lastAttendBanquet.getSurfaceImageUrl()).placeholder(R.drawable.empty_view_greeting).into((ImageView) attendeeBanquet.findViewById(R.id.banquet_history_item_image1));
+                    setBanquetStatus(lastAttendBanquet,attendeeBanquet);
                     ((TextView) attendeeBanquet.findViewById(R.id.banquet_history_item_title1)).setText(lastAttendBanquet.getTitle());
                     ((TextView) attendeeBanquet.findViewById(R.id.banquet_history_item_date1)).setText(formatDate(lastAttendBanquet.getTime()));
                     ((TextView) attendeeBanquet.findViewById(R.id.banquet_history_item_price1)).setText(String.format(getString(R.string.price_per_one), lastAttendBanquet.getPrice()));
@@ -297,6 +299,7 @@ public class HostAndGuestActivity extends BaseActivity {
 
                         mHostHold.setText(String.format(getString(R.string.hosted_banquet), sellerInfo.getEventCount(), sellerInfo.getSoldCount()));
                         Picasso.with(mContext).load(lastHoldBanquet.getSurfaceImageUrl()).placeholder(R.drawable.empty_view_greeting).into((ImageView) holdBanquet.findViewById(R.id.banquet_history_item_image1));
+                        setBanquetStatus(lastHoldBanquet,holdBanquet);
                         ((TextView) holdBanquet.findViewById(R.id.banquet_history_item_title1)).setText(lastHoldBanquet.getTitle());
                         ((TextView) holdBanquet.findViewById(R.id.banquet_history_item_date1)).setText(formatDate(lastHoldBanquet.getTime()));
                         ((TextView) holdBanquet.findViewById(R.id.banquet_history_item_price1)).setText(String.format(getString(R.string.price_per_one), lastHoldBanquet.getPrice()));
@@ -323,6 +326,26 @@ public class HostAndGuestActivity extends BaseActivity {
 
     }
 
+    private void setBanquetStatus(Banquent banquet,View v){
+        TextView finish = (TextView)v.findViewById(R.id.banquet_history_item_status_finished1);
+        switch (BanquentStatus.fromString(banquet.getStatus())) {
+            case Selling:
+                finish.setVisibility(View.GONE);
+                break;
+            case SoldOut:
+                finish.setText(R.string.banquet_status_sold_out);
+                finish.setVisibility(View.VISIBLE);
+                break;
+            case OverTime:
+                finish.setText(R.string.banquet_status_over_time);
+                finish.setVisibility(View.VISIBLE);
+                break;
+            case End:
+                finish.setText(R.string.banquet_status_end);
+                finish.setVisibility(View.VISIBLE);
+                break;
+        }
+    }
     private void registerCommentView(Review review) {
         if (review != null) {
             mEmptyIv.setVisibility(View.GONE);
@@ -393,7 +416,6 @@ public class HostAndGuestActivity extends BaseActivity {
         if (mAttendee.getProfile().getHobby().isPresent() && !mAttendee.getProfile().getHobby().get().equals("")) {
             ((TextView) mAttendeeHobby.findViewById(R.id.attendee_detail_info_item_content)).setText(mAttendee.getProfile().getHobby().get());
         }
-
     }
 
     private String buildAttendeeProfile() {
@@ -590,6 +612,8 @@ public class HostAndGuestActivity extends BaseActivity {
         TextView situation;
         @ViewInject(R.id.banquet_history_item_price)
         TextView price;
+        @ViewInject(R.id.banquet_history_item_status_finished)
+        TextView finish;
 
         ViewHolder(View convertView) {
             com.lidroid.xutils.ViewUtils.inject(this, convertView);

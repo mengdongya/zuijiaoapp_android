@@ -21,6 +21,7 @@ import com.squareup.picasso.Picasso;
 import com.zuijiao.android.util.functional.OneParameterExpression;
 import com.zuijiao.android.zuijiao.model.Banquent.Attendee;
 import com.zuijiao.android.zuijiao.model.Banquent.Banquent;
+import com.zuijiao.android.zuijiao.model.Banquent.BanquentStatus;
 import com.zuijiao.android.zuijiao.model.Banquent.Banquents;
 import com.zuijiao.android.zuijiao.model.Banquent.Order;
 import com.zuijiao.android.zuijiao.network.Router;
@@ -178,6 +179,23 @@ public class BanquetListActivity extends BaseActivity {
             holder.date.setText(formatDate(banquet.getTime()));
             holder.price.setText(String.format(getString(R.string.price_per_one), banquet.getPrice()));
             holder.situation.setText(String.format(getString(R.string.total_attendee), banquet.getAttendees().size()));
+            switch (BanquentStatus.fromString(banquet.getStatus())) {
+                case Selling:
+                    holder.finish.setVisibility(View.GONE);
+                    break;
+                case SoldOut:
+                    holder.finish.setText(R.string.banquet_status_sold_out);
+                    holder.finish.setVisibility(View.VISIBLE);
+                    break;
+                case OverTime:
+                    holder.finish.setText(R.string.banquet_status_over_time);
+                    holder.finish.setVisibility(View.VISIBLE);
+                    break;
+                case End:
+                    holder.finish.setText(R.string.banquet_status_end);
+                    holder.finish.setVisibility(View.VISIBLE);
+                    break;
+            }
             return convertView;
         }
     };
@@ -199,7 +217,8 @@ public class BanquetListActivity extends BaseActivity {
         TextView price;
         @ViewInject(R.id.banquet_history_item_situation)
         TextView situation;
-
+        @ViewInject(R.id.banquet_history_item_status_finished)
+        TextView finish;
         ViewHolder(View convertView) {
             com.lidroid.xutils.ViewUtils.inject(this, convertView);
         }

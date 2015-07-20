@@ -131,7 +131,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="1dip"
                         android:layout_marginTop="10dip"
-
                         android:background="@color/bg_light_gray2" />
 
                     <TextView
@@ -140,6 +139,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
                         android:layout_marginTop="10dip"
+                        android:text="@string/personal_introduction"
                         android:textColor="@color/black"
                         android:textSize="18sp" />
 

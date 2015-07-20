@@ -61,12 +61,20 @@ public class ReviewActivity extends BaseActivity {
 
     private void networkStep() {
         int score = (int)mReviewRatingbar.getRating();
-        String content = mEtReviewContent.getText().toString();
+        String content = mEtReviewContent.getText().toString().trim();
         System.out.println("orderId:" + orderId + "," + content + "," + score);
+        if(score == 0){
+            Toast.makeText(mContext,R.string.notify_comment_score , Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if(content== null || content.equals("")){
+            Toast.makeText(mContext, R.string.notify_comment_content , Toast.LENGTH_SHORT).show();
+            return ;
+        }
         Router.getBanquentModule().createComment(orderId, content, score, new LambdaExpression() {
             @Override
             public void action() {
-                Toast.makeText(mContext, getString(R.string.send_comment_success), Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, getString(R.string.comment_complete), Toast.LENGTH_SHORT).show();
                 setResult(MainActivity.COMMENT_SUCCESS);
                 finish();
             }

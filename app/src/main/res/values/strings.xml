@@ -369,4 +369,8 @@
     <string name="host_msg">料理人信息</string>
     <string name="detail_msg">料理人信息</string>
     <string name="host_guest_title">主页</string>
+    <string name="notify_comment_score">请按星形来评价</string>
+    <string name="notify_comment_content">请填写你的赏味体验</string>
+    <string name="comment_complete">谢谢评价</string>
+
 </resources>

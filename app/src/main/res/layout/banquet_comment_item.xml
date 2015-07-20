@@ -33,16 +33,15 @@
         android:text="Sonian的台位厨房 · 4月18日 周六 18：00"
         android:textColor="@color/tv_deep_gray"
         android:textSize="15sp" />
-
     <com.zuijiao.view.ReviewRatingBar
         android:id="@+id/banquet_comment_item_stars"
-        myattr:imageSize="24"
+        myattr:imageSize="20"
         myattr:isIndicator="true"
         myattr:ratingBarType="reviewList"
         android:layout_width="wrap_content"
         android:layout_marginTop="10dip"
         android:layout_height="wrap_content"
-        android:layout_below="@id/banquet_comment_item_head">
+        android:layout_below="@id/banquet_comment_item_issue">
 
     </com.zuijiao.view.ReviewRatingBar>
 

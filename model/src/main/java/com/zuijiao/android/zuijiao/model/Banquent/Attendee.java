@@ -5,12 +5,13 @@ import com.zuijiao.android.util.Optional;
 import com.zuijiao.android.util.functional.ImageUrlUtil;
 import com.zuijiao.android.zuijiao.model.user.Profile;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  * Created by user on 6/19/15.
  */
-public class Attendee {
+public class Attendee implements Serializable{
 
     @SerializedName("ID")
     private Integer identifier;

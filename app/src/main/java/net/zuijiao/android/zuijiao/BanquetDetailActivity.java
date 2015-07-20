@@ -28,6 +28,7 @@ import com.squareup.picasso.Picasso;
 import com.zuijiao.adapter.ImageViewPagerAdapter;
 import com.zuijiao.android.util.functional.LambdaExpression;
 import com.zuijiao.android.util.functional.OneParameterExpression;
+import com.zuijiao.android.zuijiao.model.Banquent.Attendee;
 import com.zuijiao.android.zuijiao.model.Banquent.Banquent;
 import com.zuijiao.android.zuijiao.model.Banquent.BanquentCapacity;
 import com.zuijiao.android.zuijiao.model.Banquent.BanquentStatus;
@@ -157,10 +158,22 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
     private AdapterView.OnItemClickListener mGridListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            Intent intent = new Intent(mContext, HostAndGuestActivity.class);
-            intent.putExtra("attendee_id", mBanquent.getAttendees().get(position).getIdentifier());
-            intent.putExtra("b_host", false);
-            startActivity(intent);
+            createDialog();
+            Router.getAccountModule().banquetUserInfo( mBanquent.getAttendees().get(position).getIdentifier(), new OneParameterExpression<Attendee>() {
+                @Override
+                public void action(Attendee attendee) {
+                    finalizeDialog();
+                    Intent intent = new Intent(mContext, HostAndGuestActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    intent.putExtra("attendee_info" , attendee) ;
+                    mContext.startActivity(intent);
+                }
+            }, new OneParameterExpression<String>() {
+                @Override
+                public void action(String s) {
+                    finalizeDialog();
+                }
+            });
         }
     };
     /**
@@ -262,14 +275,26 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
             head.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Intent intent = new Intent(mContext, HostAndGuestActivity.class);
-                    intent.putExtra("attendee_id", review.getReviewer().getIdentifier());
-                    intent.putExtra("b_host", false);
-                    startActivity(intent);
+                    createDialog();
+                    Router.getAccountModule().banquetUserInfo(review.getReviewer().getIdentifier(), new OneParameterExpression<Attendee>() {
+                        @Override
+                        public void action(Attendee attendee) {
+                            finalizeDialog();
+                            Intent intent = new Intent(mContext, HostAndGuestActivity.class);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            intent.putExtra("attendee_info" , attendee) ;
+                            mContext.startActivity(intent);
+                        }
+                    }, new OneParameterExpression<String>() {
+                        @Override
+                        public void action(String s) {
+                            finalizeDialog();
+                        }
+                    });
                 }
             });
             ((TextView) mLastComment.findViewById(R.id.banquet_comment_item_user_name)).setText(review.getReviewer().getNickName());
-            ((TextView) mLastComment.findViewById(R.id.banquet_comment_item_issue)).setText(review.getEvent().getTitle() + " · " + formatDate(review.getCreatedAt()));
+            ((TextView) mLastComment.findViewById(R.id.banquet_comment_item_issue)).setText(review.getEvent().getTitle() + " · " + formatDate(review.getEvent().getTime()));
             ((ReviewRatingBar) mLastComment.findViewById(R.id.banquet_comment_item_stars)).setRating(review.getScore());
             ((TextView) mLastComment.findViewById(R.id.banquet_comment_item_comment)).setText(review.getContent());
         } else {
@@ -301,8 +326,17 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
             mInstructPosition.setText(address);
         if (mBanquent.getTime() == null) {
             findViewById(R.id.banquet_detail_instruction_content_date).setVisibility(View.GONE);
-        } else
-            mInstructDate.setText(formatDate(mBanquent.getTime()));
+        } else{
+            String date  = formatDate(mBanquent.getTime()) ;
+            String endDate = formatDate(mBanquent.getEndTime()) ;
+            if(mBanquent.getTime().getDay() == mBanquent.getEndTime().getDay()){
+                date = date + " ~ " + endDate.substring( endDate.length() - 8, endDate.length()) ;
+            }else{
+                date = date + " ~ " + endDate ;
+            }
+            mInstructDate.setText(date);
+        }
+
         if (mBanquent.getPrice() == null) {
             findViewById(R.id.banquet_detail_instruction_content_price).setVisibility(View.GONE);
         } else
@@ -457,10 +491,29 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
                 break;
             case R.id.banquet_detail_host_head:
             case R.id.banquet_detail_about_host:
-                intent.putExtra("b_host", true);
-                intent.putExtra("attendee_id", mBanquent.getMaster().getUserId());
-                intent.setClass(mContext, HostAndGuestActivity.class);
-                startActivity(intent);
+
+                createDialog();
+                Router.getAccountModule().banquetUserInfo(mBanquent.getMaster().getUserId(), new OneParameterExpression<Attendee>() {
+                    @Override
+                    public void action(Attendee attendee) {
+                        finalizeDialog();
+                        Intent intent = new Intent(mContext, HostAndGuestActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        intent.putExtra("attendee_info" , attendee) ;
+//                            intent.putExtra("b_host", true);
+//                            intent.putExtra("attendee_id", banquent.getMaster().getUserId());
+                        mContext.startActivity(intent);
+                    }
+                }, new OneParameterExpression<String>() {
+                    @Override
+                    public void action(String s) {
+                        finalizeDialog();
+                    }
+                });
+//                intent.putExtra("b_host", true);
+//                intent.putExtra("attendee_id", mBanquent.getMaster().getUserId());
+//                intent.setClass(mContext, HostAndGuestActivity.class);
+//                startActivity(intent);
                 break;
             case R.id.banquet_detail_bottom_order:
                 if (!Router.getInstance().getCurrentUser().isPresent()) {

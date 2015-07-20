@@ -12,12 +12,16 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
+import com.zuijiao.android.util.functional.OneParameterExpression;
+import com.zuijiao.android.zuijiao.model.Banquent.Attendee;
 import com.zuijiao.android.zuijiao.model.Banquent.Banquent;
 import com.zuijiao.android.zuijiao.model.Banquent.BanquentCapacity;
 import com.zuijiao.android.zuijiao.model.Banquent.BanquentStatus;
 import com.zuijiao.android.zuijiao.model.Banquent.Banquents;
+import com.zuijiao.android.zuijiao.network.Router;
 
 import net.zuijiao.android.zuijiao.BanquetDetailActivity;
+import net.zuijiao.android.zuijiao.BaseActivity;
 import net.zuijiao.android.zuijiao.CommonWebViewActivity;
 import net.zuijiao.android.zuijiao.HostAndGuestActivity;
 import net.zuijiao.android.zuijiao.R;
@@ -145,11 +149,25 @@ public class BanquetAdapter extends BaseAdapter implements AdapterView.OnItemCli
             holder.head.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(mContext, HostAndGuestActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    intent.putExtra("b_host", true);
-                    intent.putExtra("attendee_id", banquent.getMaster().getUserId()) ;
-                    mContext.startActivity(intent);
+                    ((BaseActivity)mContext).createDialog();
+                    Router.getAccountModule().banquetUserInfo(banquent.getMaster().getUserId(), new OneParameterExpression<Attendee>() {
+                        @Override
+                        public void action(Attendee attendee) {
+                            ((BaseActivity)mContext).finalizeDialog();
+                            Intent intent = new Intent(mContext, HostAndGuestActivity.class);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            intent.putExtra("attendee_info" , attendee) ;
+//                            intent.putExtra("b_host", true);
+//                            intent.putExtra("attendee_id", banquent.getMaster().getUserId());
+                            mContext.startActivity(intent);
+                        }
+                    }, new OneParameterExpression<String>() {
+                        @Override
+                        public void action(String s) {
+                            ((BaseActivity)mContext).finalizeDialog();
+                        }
+                    });
+
                 }
             });
             switch (BanquentStatus.fromString(banquent.getStatus())) {

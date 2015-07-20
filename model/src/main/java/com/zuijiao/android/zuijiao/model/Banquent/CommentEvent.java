@@ -3,6 +3,7 @@ package com.zuijiao.android.zuijiao.model.Banquent;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * Created by yitianhao on 2015/7/13.
@@ -14,8 +15,8 @@ public class CommentEvent implements Serializable {
     private String title;
     @SerializedName("imageUrl")
     private String imageUrl;
-    @SerializedName("tiem")
-    private String tiem;
+    @SerializedName("time")
+    private Date time;
 
     public Integer getIdentifier() {
         return identifier;
@@ -29,7 +30,7 @@ public class CommentEvent implements Serializable {
         return imageUrl;
     }
 
-    public String getTiem() {
-        return tiem;
+    public Date getTime() {
+        return time;
     }
 }

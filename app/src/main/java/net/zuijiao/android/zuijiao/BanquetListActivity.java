@@ -200,10 +200,10 @@ public class BanquetListActivity extends BaseActivity {
         }
     };
 
-    protected void createDialog() {
-        if (mDialog != null && mDialog.isShowing()) return;
-        mDialog = ProgressDialog.show(this, "", getString(R.string.on_loading));
-    }
+//    protected void createDialog() {
+//        if (mDialog != null && mDialog.isShowing()) return;
+//        mDialog = ProgressDialog.show(this, "", getString(R.string.on_loading));
+//    }
 
 
     class ViewHolder {

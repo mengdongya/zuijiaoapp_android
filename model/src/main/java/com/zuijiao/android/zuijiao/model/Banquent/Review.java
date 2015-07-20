@@ -35,9 +35,9 @@ public class Review implements Serializable {
         return score;
     }
 
-    public Date getCreatedAt() {
-        return createdAt;
-    }
+//    public Date getCreatedAt() {
+//        return createdAt;
+//    }
 
     public CommentEvent getEvent() {
         return event;

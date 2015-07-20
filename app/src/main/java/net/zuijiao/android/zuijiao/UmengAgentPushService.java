@@ -91,7 +91,7 @@ public class UmengAgentPushService extends UmengBaseIntentService {
         }
         resultIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent resultPendingIntent = PendingIntent.getActivity(
-                getApplicationContext(), 0, resultIntent,
+                getApplicationContext(), notificationId, resultIntent,
                 PendingIntent.FLAG_UPDATE_CURRENT);
         mBuilder.setContentIntent(resultPendingIntent);
         NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);

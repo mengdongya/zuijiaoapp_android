@@ -90,7 +90,7 @@ public class BanquetDisplayFragment extends Fragment implements RefreshAndInitLi
                 if (banquents.getBanquentList().size() < 20)
                     mListView.setPullLoadEnable(false);
                 else
-                    mListView.setPullLoadEnable(true);
+                mListView.setPullLoadEnable(true);
                 mRefreshLayout.setRefreshing(false);
             }
         }, new OneParameterExpression<String>() {

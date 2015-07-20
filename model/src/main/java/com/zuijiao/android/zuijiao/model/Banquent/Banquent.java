@@ -33,6 +33,9 @@ public class Banquent implements Serializable {
     private String address;
     @SerializedName("time")
     private Date time;
+
+    @SerializedName("endTime")
+    private Date endTime ;
     @SerializedName("price")
     private Float price;
 
@@ -100,7 +103,9 @@ public class Banquent implements Serializable {
         }
         return arrayList;
     }
-
+    public Date getEndTime() {
+        return endTime;
+    }
     public BanquentCapacity getBanquentCapacity() {
         return banquentCapacity;
     }

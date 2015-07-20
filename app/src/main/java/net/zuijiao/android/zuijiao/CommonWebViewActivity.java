@@ -45,7 +45,7 @@ public class CommonWebViewActivity extends BaseActivity {
         }
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle(title);
+//        getSupportActionBar().setTitle(title);
         mWebView.getSettings().setJavaScriptEnabled(true);
         mWebView.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
         mWvClient = new WebViewClient() {

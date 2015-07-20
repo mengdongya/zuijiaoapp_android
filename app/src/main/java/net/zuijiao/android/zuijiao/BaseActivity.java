@@ -125,7 +125,7 @@ public abstract class BaseActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    protected void createDialog(String message) {
+    public void createDialog(String message) {
         if(this == null || this.isFinishing())
             return ;
         try{
@@ -137,7 +137,7 @@ public abstract class BaseActivity extends ActionBarActivity {
         }
     }
 
-    protected void createDialog() {
+    public void createDialog() {
         if(this == null || this.isFinishing())
             return ;
         try{

@@ -22,6 +22,7 @@
                 android:id="@+id/host_guest_host_image_container"
                 android:layout_width="match_parent"
                 android:layout_height="256dip"
+                android:background="@color/white"
                 android:visibility="gone">
 
                 <android.support.v4.view.ViewPager
@@ -36,7 +37,10 @@
                     android:layout_height="64dip"
                     android:layout_alignParentBottom="true"
                     android:layout_centerHorizontal="true"
-                    android:src="@drawable/default_user_head" />
+                    android:src="@drawable/default_user_head"
+                    myattr:border_inside_color="#eeeeee"
+                    myattr:border_outside_color="#eeeeee"
+                    myattr:border_thickness="1dip" />
 
                 <TextView
                     android:id="@+id/host_guest_images_index"
@@ -44,114 +48,123 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentBottom="true"
                     android:layout_alignParentRight="true"
-                    android:layout_marginBottom="20dip"
+                    android:layout_marginBottom="40dip"
                     android:layout_marginRight="40dip"
                     android:background="@drawable/banquet_detail_image_index_bg"
                     android:textColor="@color/white"
                     android:textSize="15sp" />
             </RelativeLayout>
 
-            <com.zuijiao.view.RoundImageView
-                android:id="@+id/host_guest_guest_head"
-                android:layout_width="64dip"
-                android:layout_height="64dip"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="10dip"
-                android:src="@drawable/default_user_head"
-                android:visibility="gone" />
-
-            <TextView
-                android:id="@+id/host_guest_attendee_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="10dip"
-                android:textColor="@color/_555555"
-                android:textSize="14sp" />
-
-
             <LinearLayout
-                android:id="@+id/ll_host_comment_stars"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dip"
-                android:gravity="center"
-                android:orientation="horizontal"
-                android:visibility="gone">
-
-
-                <com.zuijiao.view.ReviewRatingBar
-                    android:id="@+id/host_comment_rtatingbar"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    myattr:imageSize="30"
-                    myattr:isIndicator="true"
-                    myattr:ratingBarType="host_score" />
-
-                <TextView
-                    android:id="@+id/host_comment_count"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginTop="3dip"
-                    android:text="(20)"
-                    android:textSize="14sp" />
-            </LinearLayout>
-
-            <TextView
-                android:id="@+id/host_guest_attendee_info"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="10dip"
-                android:gravity="center_horizontal"
-                android:lineSpacingExtra="5dip"
-                android:textColor="@color/_555555"
-                android:textSize="14sp" />
-
-            <LinearLayout
-                android:id="@+id/host_guest_personal_introduction_group"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:background="@color/white"
                 android:orientation="vertical">
 
-                <View
+                <com.zuijiao.view.RoundImageView
+                    android:id="@+id/host_guest_guest_head"
+                    android:layout_width="64dip"
+                    android:layout_height="64dip"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="10dip"
+                    android:src="@drawable/default_user_head"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/host_guest_attendee_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="10dip"
+                    android:textColor="@color/_555555"
+                    android:textSize="14sp" />
+
+
+                <LinearLayout
+                    android:id="@+id/ll_host_comment_stars"
                     android:layout_width="match_parent"
-                    android:layout_height="1dip"
+                    android:layout_height="wrap_content"
                     android:layout_marginTop="10dip"
-                    android:background="@color/bg_light_gray2" />
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:visibility="gone">
+
+
+                    <com.zuijiao.view.ReviewRatingBar
+                        android:id="@+id/host_comment_rtatingbar"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        myattr:imageSize="30"
+                        myattr:isIndicator="true"
+                        myattr:ratingBarType="host_score" />
+
+                    <TextView
+                        android:id="@+id/host_comment_count"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="(20)"
+                        android:textSize="14sp" />
+                </LinearLayout>
 
                 <TextView
-                    android:id="@+id/host_guest_introduction_title"
+                    android:id="@+id/host_guest_attendee_info"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="10dip"
-                    android:textColor="@color/black"
-                    android:textSize="18sp" />
-
-                <TextView
-                    android:id="@+id/host_guest_introduction"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_margin="10dip"
+                    android:background="@color/white"
+                    android:gravity="center_horizontal"
                     android:lineSpacingExtra="5dip"
                     android:textColor="@color/_555555"
                     android:textSize="14sp" />
+
+                <LinearLayout
+                    android:id="@+id/host_guest_personal_introduction_group"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white"
+                    android:orientation="vertical">
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dip"
+                        android:layout_marginTop="10dip"
+
+                        android:background="@color/bg_light_gray2" />
+
+                    <TextView
+                        android:id="@+id/host_guest_introduction_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginTop="10dip"
+                        android:textColor="@color/black"
+                        android:textSize="18sp" />
+
+                    <TextView
+                        android:id="@+id/host_guest_introduction"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_margin="10dip"
+                        android:lineSpacingExtra="5dip"
+                        android:textColor="@color/_555555"
+                        android:textSize="14sp" />
+                </LinearLayout>
             </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/host_detail_group"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@color/white"
                 android:orientation="vertical">
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dip"
-                    android:layout_marginTop="10dip"
                     android:background="@color/bg_light_gray2" />
 
                 <TextView
@@ -207,6 +220,7 @@
                 android:id="@+id/host_guest_detail_group"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@color/white"
                 android:orientation="vertical">
 
                 <View
@@ -270,59 +284,45 @@
                 android:id="@+id/ll_host_hold_banquet"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:layout_marginTop="10dip"
+                android:background="@color/white"
+                android:orientation="vertical"
+                android:paddingLeft="8dip"
+                android:paddingRight="8dip">
 
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dip"
-                    android:background="@color/bg_light_gray2" />
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dip"
-                    android:layout_marginTop="10dip"
-                    android:background="@color/bg_light_gray2" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
+                <TextView
+                    android:id="@+id/host_history_title"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/bg_white_round_corner"
-                    android:orientation="vertical">
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="10dip"
+                    android:gravity="center_horizontal"
+                    android:singleLine="false"
+                    android:text="举办了0场料理，累计接待0人"
+                    android:textColor="@color/black"
+                    android:textSize="18sp" />
 
-                    <TextView
-                        android:id="@+id/host_history_title"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:layout_marginTop="10dip"
-                        android:gravity="center_horizontal"
-                        android:singleLine="false"
-                        android:text="举办了0场料理，累计接待0人"
-                        android:textColor="@color/black"
-                        android:textSize="18sp" />
-
-                    <View
-                        android:layout_width="30dip"
-                        android:layout_height="3dip"
-                        android:layout_gravity="center_horizontal"
-                        android:layout_marginBottom="10dip"
-                        android:layout_marginTop="15dip"
-                        android:background="@color/black" />
-                </LinearLayout>
+                <View
+                    android:layout_width="30dip"
+                    android:layout_height="3dip"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginBottom="10dip"
+                    android:layout_marginTop="15dip"
+                    android:background="@color/black" />
 
                 <include
-                    android:visibility="gone"
                     android:id="@+id/hold_banquet_item"
-                    layout="@layout/banquet_history_item1" />
+                    layout="@layout/banquet_history_item1"
+                    android:visibility="gone" />
 
                 <ImageView
                     android:id="@+id/host_guest_history_item_image_hold"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/main_item_image_height"
                     android:layout_marginTop="10dip"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/empty_view_greeting2"
+                    android:background="@color/white"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/banquet_history_place_hold"
                     android:visibility="visible" />
 
                 <View
@@ -330,63 +330,51 @@
                     android:layout_height="1dip"
                     android:background="@color/bg_gray_white" />
 
-            </LinearLayout>
+                <Button
+                    android:id="@+id/host_guest_hold_btn"
+                    style="?android:attr/buttonStyleSmall"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dip"
+                    android:background="@drawable/bg_white_round_corner"
+                    android:gravity="center"
+                    android:text="@string/show_all_banquet"
+                    android:textColor="@color/banquet_theme"
+                    android:textSize="18sp"
+                    android:visibility="gone" />
 
-            <Button
-                android:id="@+id/host_guest_hold_btn"
-                style="?android:attr/buttonStyleSmall"
-                android:layout_width="match_parent"
-                android:layout_height="40dip"
-                android:background="@drawable/bg_white_round_corner"
-                android:gravity="center"
-                android:text="@string/show_all_banquet"
-                android:textColor="@color/banquet_theme"
-                android:textSize="18sp"
-                android:visibility="gone" />
+            </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/ll_host_attendee_banquet"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:layout_marginTop="10dip"
+                android:background="@color/white"
+                android:orientation="vertical"
+                android:paddingLeft="8dip"
 
-                <!--<View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dip"
-                    android:background="@color/bg_light_gray2"
-                    />-->
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dip"
-                    android:layout_marginTop="10dip"
-                    android:background="@color/bg_light_gray2" />
+                android:paddingRight="8dip">
 
-                <LinearLayout
-                    android:layout_width="match_parent"
+                <TextView
+                    android:id="@+id/host_guest_history_title"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/bg_white_round_corner"
-                    android:orientation="vertical">
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="10dip"
+                    android:gravity="center_horizontal"
+                    android:singleLine="false"
+                    android:text="参加了0场料理"
+                    android:textColor="@color/black"
+                    android:textSize="18sp" />
 
-                    <TextView
-                        android:id="@+id/host_guest_history_title"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:layout_marginTop="10dip"
-                        android:gravity="center_horizontal"
-                        android:singleLine="false"
-                        android:text="参加了0场料理"
-                        android:textColor="@color/black"
-                        android:textSize="18sp" />
-
-                    <View
-                        android:layout_width="30dip"
-                        android:layout_height="3dip"
-                        android:layout_gravity="center_horizontal"
-                        android:layout_marginBottom="10dip"
-                        android:layout_marginTop="15dip"
-                        android:background="@color/black" />
-                </LinearLayout>
+                <View
+                    android:layout_width="30dip"
+                    android:layout_height="3dip"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginBottom="10dip"
+                    android:layout_marginTop="15dip"
+                    android:background="@color/black" />
+                <!--</LinearLayout>-->
 
                 <include
                     android:id="@+id/attendee_banquet_item"
@@ -398,45 +386,36 @@
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/main_item_image_height"
                     android:layout_marginTop="10dip"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/empty_view_greeting2"
+                    android:background="@color/white"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/banquet_history_place_hold"
                     android:visibility="visible" />
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dip"
-                    android:background="@color/bg_light_gray2" />
+                    android:background="@color/bg_gray_white" />
+
+                <Button
+                    android:id="@+id/host_guest_attendee_btn"
+                    style="?android:attr/buttonStyleSmall"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dip"
+                    android:background="@drawable/bg_white_round_corner"
+                    android:gravity="center"
+                    android:text="@string/show_all_banquet"
+                    android:textColor="@color/banquet_theme"
+                    android:textSize="18sp"
+                    android:visibility="gone" />
+
 
             </LinearLayout>
-
-
-            <Button
-                android:id="@+id/host_guest_attendee_btn"
-                style="?android:attr/buttonStyleSmall"
-                android:layout_width="match_parent"
-                android:layout_height="40dip"
-                android:background="@drawable/bg_white_round_corner"
-                android:gravity="center"
-                android:text="@string/show_all_banquet"
-                android:textColor="@color/banquet_theme"
-                android:textSize="18sp"
-                android:visibility="gone" />
-
-            <!--<View
-                android:layout_width="match_parent"
-                android:layout_height="1dip"
-                android:background="@color/bg_light_gray2" />-->
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dip"
-                android:layout_marginTop="10dip"
-                android:background="@color/bg_light_gray2" />
 
             <LinearLayout
                 android:id="@+id/host_guest_review_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="10dip"
                 android:background="@drawable/bg_white_round"
                 android:orientation="vertical">
 
@@ -467,22 +446,21 @@
                     android:id="@+id/host_guest_lastest_comment"
                     layout="@layout/banquet_comment_item"
                     android:visibility="gone" />
-<!--
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dip"
-                    android:layout_marginTop="10dip"
-                    android:background="@color/bg_light_gray2" />-->
-
             </LinearLayout>
 
             <ImageView
                 android:id="@+id/host_guest_empty_review_iv"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/main_item_image_height"
-                android:scaleType="centerCrop"
-                android:src="@drawable/empty_view_greeting2"
+                android:background="@color/white"
+                android:scaleType="centerInside"
+                android:src="@drawable/banquet_history_place_hold"
                 android:visibility="visible" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dip"
+                android:background="@color/bg_gray_white" />
 
             <Button
                 android:id="@+id/host_guest_comment_btn"

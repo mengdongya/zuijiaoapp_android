@@ -20,6 +20,7 @@ import com.lidroid.xutils.view.annotation.ViewInject;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.zuijiao.android.util.functional.OneParameterExpression;
+import com.zuijiao.android.zuijiao.model.Banquent.Attendee;
 import com.zuijiao.android.zuijiao.model.Banquent.Review;
 import com.zuijiao.android.zuijiao.model.Banquent.Reviews;
 import com.zuijiao.android.zuijiao.network.Router;
@@ -85,10 +86,30 @@ public class BanquetCommentActivity extends BaseActivity implements RefreshAndIn
     AdapterView.OnItemClickListener itemClickListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-            Intent intent = new Intent(mContext, HostAndGuestActivity.class);
-            intent.putExtra("attendee_id", reviewList.get(position - 1).getReviewer().getIdentifier());
-            intent.putExtra("b_host", false);
-            startActivity(intent);
+
+             createDialog();
+            Router.getAccountModule().banquetUserInfo(reviewList.get(position - 1).getReviewer().getIdentifier(), new OneParameterExpression<Attendee>() {
+                @Override
+                public void action(Attendee attendee) {
+                     finalizeDialog();
+                    Intent intent = new Intent(mContext, HostAndGuestActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    intent.putExtra("attendee_info" , attendee) ;
+//                            intent.putExtra("b_host", true);
+//                            intent.putExtra("attendee_id", banquent.getMaster().getUserId());
+                    mContext.startActivity(intent);
+                }
+            }, new OneParameterExpression<String>() {
+                @Override
+                public void action(String s) {
+                     finalizeDialog();
+                }
+            });
+
+//            Intent intent = new Intent(mContext, HostAndGuestActivity.class);
+//            intent.putExtra("attendee_id", reviewList.get(position - 1).getReviewer().getIdentifier());
+//            intent.putExtra("b_host", false);
+//            startActivity(intent);
         }
     };
 
@@ -132,7 +153,7 @@ public class BanquetCommentActivity extends BaseActivity implements RefreshAndIn
             Review review = reviewList.get(position);
             ImageLoader.getInstance().displayImage(review.getReviewer().getAvatarURLSmall().get(), holder.head);
             holder.name.setText(review.getReviewer().getNickName());
-            holder.issue.setText(review.getEvent().getTitle() + " · " + formatDate(review.getCreatedAt()));
+            holder.issue.setText(review.getEvent().getTitle() + " · " + formatDate(review.getEvent().getTime()));
             holder.stars.setRating(review.getScore());
             holder.comment.setText(review.getContent());
             return convertView;

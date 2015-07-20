@@ -14,7 +14,6 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/white"
             android:orientation="vertical"
             android:paddingBottom="50dip">
 
@@ -45,6 +44,10 @@
                     android:textSize="15sp" />
 
             </RelativeLayout>
+            <LinearLayout android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:orientation="vertical"
+                android:background="@color/white">
 
             <TextView
                 android:id="@+id/banquet_detail_banquet_title"
@@ -135,7 +138,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    myattr:imageSize="30"
+                    myattr:imageSize="32"
                     myattr:isIndicator="true"
                     myattr:ratingBarType="host_score"/>
 
@@ -145,7 +148,6 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:text="(20)"
-                    android:layout_marginTop="3dip"
                     android:textColor="@color/bg_light_gray2"
                     android:textSize="14sp" />
 
@@ -434,20 +436,22 @@
                 android:horizontalSpacing="10dip"
                 android:numColumns="5"
                 android:verticalSpacing="5dip" />
-
+            </LinearLayout>
             <LinearLayout
                 android:id="@+id/banquet_detail_review_container"
                 android:layout_width="match_parent"
+                android:background="@color/white"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="10dip"
                 android:orientation="vertical"
                 android:visibility="gone">
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dip"
-                    android:layout_marginTop="10dip"
-                    android:background="@color/bg_light_gray2"
-                    android:visibility="visible" />
+                <!--<View-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="1dip"-->
+                    <!--android:layout_marginTop="10dip"-->
+                    <!--android:background="@color/bg_light_gray2"-->
+                    <!--android:visibility="visible" />-->
 
                 <TextView
                     android:id="@+id/banquet_detail_review_title"

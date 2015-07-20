@@ -3,6 +3,7 @@ package com.zuijiao.android.zuijiao.model.user;
 import com.google.gson.annotations.SerializedName;
 import com.zuijiao.android.util.Optional;
 
+import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -12,7 +13,7 @@ import java.util.List;
 /**
  * Created by Chen Hao on 4/28/15.
  */
-public class Profile implements Cloneable {
+public class Profile implements Cloneable ,Serializable{
     @SerializedName("gender")
     private String gender;
     @SerializedName("birthday")

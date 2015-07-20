@@ -67,7 +67,8 @@ public class ReviewRatingBar extends LinearLayout {
         // 获取屏幕密度
         float scale = context.getResources().getDisplayMetrics().density;
         // 计算高度
-        linearParams.height = (int) (imageSize * scale + 0.5f);
+//        linearParams.height = (int) (imageSize * scale + 0.5f);
+        linearParams.height = (int) (imageSize * scale );
         ratingBar.setLayoutParams(linearParams);
         ratingBar.setIsIndicator(isIndicator);
         ratingBar.setNumStars(5);

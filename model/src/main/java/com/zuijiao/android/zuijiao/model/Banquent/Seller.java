@@ -3,12 +3,13 @@ package com.zuijiao.android.zuijiao.model.Banquent;
 import com.google.gson.annotations.SerializedName;
 import com.zuijiao.android.util.functional.ImageUrlUtil;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  * Created by xiaqibo on 2015/7/16.
  */
-public class Seller {
+public class Seller implements Serializable{
     @SerializedName("ID")
     private Integer identifier ;
     @SerializedName("skill")
@@ -71,14 +72,14 @@ public class Seller {
     }
 
 
-    public class SellerPlace {
+    public class SellerPlace implements Serializable{
         @SerializedName("type")
         private String placeType ;
         @SerializedName("provinceID")
         private Integer provinceId ;
         @SerializedName("cityID")
         private Integer cityID ;
-        @SerializedName("address ")
+        @SerializedName("address")
         private String address ;
 
         @SerializedName("imageUrls")

@@ -69,6 +69,7 @@ public class PictureFragment extends Fragment {
             Picasso.with(getActivity().getApplicationContext())
                     .load(mImageUrl)
                     .placeholder(R.drawable.empty_view_greeting)
+//                    .fit().centerCrop()
                     .into(mImageView);
         }
         return view;

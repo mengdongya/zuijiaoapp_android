@@ -205,8 +205,12 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
             TextView userName = (TextView) contentView.findViewById(R.id.user_info_favor_item_text);
             if (user.getAvatarURLSmall().isPresent() && !user.getAvatarURLSmall().get().equals("http://pic.zuijiao.net")) {
                 String url = user.getAvatarURLSmall().get();
-                Log.i("outofmemory", url);
-                Picasso.with(mContext).load(user.getAvatarURLSmall().get()).placeholder(R.drawable.default_user_head).into(userHead);
+                Picasso.with(mContext)
+                        .load(user.getAvatarURLSmall().get())
+                        .placeholder(R.drawable.default_user_head)
+                        .fit()
+                        .centerCrop()
+                        .into(userHead);
             }
 //            userName.setText(user.getNickName());
             userName.setVisibility(View.GONE);
@@ -307,7 +311,12 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
         mBanquetTitle.setText(mBanquent.getTitle());
         mBanquetDescription.setText(mBanquent.getDesc());
         if (mBanquent.getMaster().getAvatarURLSmall().isPresent())
-            Picasso.with(mContext).load(mBanquent.getMaster().getAvatarURLSmall().get()).placeholder(R.drawable.default_user_head).into(mHostHead);
+            Picasso.with(mContext)
+                    .load(mBanquent.getMaster().getAvatarURLSmall().get())
+                    .placeholder(R.drawable.default_user_head)
+                    .fit()
+                    .centerCrop()
+                    .into(mHostHead);
         mHostName.setText(mBanquent.getMaster().getNickName());
         String menu = formatMenuContent();
         if (menu.equals("")) {
@@ -414,6 +423,8 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
                     .load(imageUrl)
                     .placeholder(R.drawable.empty_view_greeting)
                     .error(R.drawable.empty_view_greeting)
+                    .fit()
+                    .centerCrop()
                     .into(image);
             mImageList.add(image);
         }

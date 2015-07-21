@@ -73,7 +73,7 @@ public class  BanquetOrderDisplayActivity extends BaseActivity {
             finish();
             return;
         }
-        Picasso.with(mContext).load(mOrder.getImageUrl()).placeholder(R.drawable.empty_view_greeting).into(mImage);
+        Picasso.with(mContext).load(mOrder.getImageUrl()).placeholder(R.drawable.empty_view_greeting).fit().centerCrop().into(mImage);
         title.setText(mOrder.getTitle());
         String formatDate = formatDate(mOrder.getHoldTime());
         dateLocation.setText(formatDate + getString(R.string.center_dot) + mOrder.getAddress());

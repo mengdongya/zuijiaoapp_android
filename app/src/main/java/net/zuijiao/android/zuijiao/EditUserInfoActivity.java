@@ -335,7 +335,7 @@ public class EditUserInfoActivity extends BaseActivity {
             if (taste != null) {
                 for (TasteTag tag : Cache.INSTANCE.tasteTags) {
                     if (tag.getName().equals(taste)) {
-                        Picasso.with(mContext).load(tag.getImageURL()).into(image);
+                        Picasso.with(mContext).load(tag.getImageURL()).fit().centerCrop().into(image);
                     }
                 }
                 text.setText(taste);
@@ -454,7 +454,7 @@ public class EditUserInfoActivity extends BaseActivity {
         }
         mTmpFullUser = mFullUser.clone();
         if (mTmpFullUser.getAvatarURLSmall().isPresent())
-            Picasso.with(mContext).load(mTmpFullUser.getAvatarURLSmall().get()).placeholder(R.drawable.default_user_head).into(mUserHead);
+            Picasso.with(mContext).load(mTmpFullUser.getAvatarURLSmall().get()).placeholder(R.drawable.default_user_head).fit().centerCrop().into(mUserHead);
         mBaseInfoAdapter = new GeneralUserInfoAdapter(getResources().getStringArray(R.array.user_base_info_title), BASE_INFO_ADAPTER);
         mBaseInfoList.setAdapter(mBaseInfoAdapter);
         AdapterViewHeightCalculator.setListViewHeightBasedOnChildren(mBaseInfoList);
@@ -654,6 +654,8 @@ public class EditUserInfoActivity extends BaseActivity {
                                 Picasso.with(mContext)
                                         .load(Router.getInstance().getCurrentUser().get().getAvatarURLSmall().get())
                                         .placeholder(R.drawable.default_user_head)
+                                        .fit()
+                                        .centerCrop()
                                         .into(mUserHead);
                             }
                             Intent intent = new Intent();

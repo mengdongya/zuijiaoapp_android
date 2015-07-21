@@ -316,6 +316,8 @@ public class GourmetDetailActivity extends BaseActivity implements
                         .load(imageUrls.get(i))
                         .placeholder(R.drawable.empty_view_greeting)
                         .error(R.drawable.empty_view_greeting)
+                        .fit()
+                        .centerCrop()
                         .into(image);
                 mImageList.add(image);
             }
@@ -681,6 +683,8 @@ public class GourmetDetailActivity extends BaseActivity implements
             Picasso.with(getApplicationContext())
                     .load(gourmet.getUser().getAvatarURLSmall().get())
                     .placeholder(R.drawable.default_user_head)
+                    .fit()
+                    .centerCrop()
                     .into(floatHolder.mUserHead1);
         floatHolder.mUserName1.setText(gourmet.getUser().getNickName());
         topHolder.mCreateTime1.setText(String.format(getString(R.string.format_create_time), StrUtil.formatTime(gourmet.getDate(), getApplicationContext())));
@@ -691,6 +695,8 @@ public class GourmetDetailActivity extends BaseActivity implements
             Picasso.with(getApplicationContext())
                     .load(gourmet.getUser().getAvatarURLSmall().get())
                     .placeholder(R.drawable.default_user_head)
+                    .fit()
+                    .centerCrop()
                     .into(topHolder.mUserHead1);
         topHolder.mUserName1.setText(gourmet.getUser().getNickName());
     }
@@ -1042,6 +1048,8 @@ public class GourmetDetailActivity extends BaseActivity implements
                     Picasso.with(parent.getContext())
                             .load(user.getAvatarURLSmall().get())
                             .placeholder(R.drawable.default_user_head)
+                            .fit()
+                            .centerCrop()
                             .into((ImageView) contentView.findViewById(R.id.would_like_eat_head));
                 } else {
                     ImageView avatarView = (ImageView) contentView.findViewById(R.id.would_like_eat_head);

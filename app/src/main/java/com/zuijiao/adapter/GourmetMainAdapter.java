@@ -98,12 +98,12 @@ public class GourmetMainAdapter extends BaseAdapter {
         holder.text2_personal.setTypeface(light);
         if (gourmet.getImageURLs().size() > 0) {
             holder.image_food.setVisibility(View.VISIBLE);
-            Picasso.with(mContext).load(gourmet.getImageURLs().get(0) + "!Thumbnails").placeholder(R.drawable.empty_view_greeting).into(holder.image_food);
+            Picasso.with(mContext).load(gourmet.getImageURLs().get(0) + "!Thumbnails").placeholder(R.drawable.empty_view_greeting).fit().centerCrop().into(holder.image_food);
         } else if (gourmet.getImageURLs().size() == 0) {
             holder.image_food.setVisibility(View.GONE);
         }
         if (gourmet.getUser().getAvatarURLSmall().isPresent())
-            Picasso.with(mContext).load(gourmet.getUser().getAvatarURLSmall().get()).placeholder(R.drawable.default_user_head).into(holder.image_user_head);
+            Picasso.with(mContext).load(gourmet.getUser().getAvatarURLSmall().get()).placeholder(R.drawable.default_user_head).fit().centerCrop().into(holder.image_user_head);
         holder.image_user_head.setOnClickListener(new UserHeadClickListener(gourmet.getUser()));
         if (gourmet.getTags() == null || gourmet.getTags().size() == 0) {
             holder.label.setVisibility(View.GONE);

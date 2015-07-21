@@ -116,7 +116,8 @@
         <activity
             android:name="net.zuijiao.android.zuijiao.BigImageActivity"
             android:label="zuijiao"
-            android:screenOrientation="portrait"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="unspecified"
             android:theme="@style/SplashTheme" />
         <activity
             android:name="net.zuijiao.android.zuijiao.LanguagesChooseActivity"
@@ -300,10 +301,12 @@
             android:name="UMENG_APPKEY"
             android:value="552354ddfd98c5ad6a000b73" />
         <!--  WanDouJia XiaoMi 360 zuijiao_net BaiDu Tencent AnZhi GooglePlay-->
+        <!--<meta-data-->
+            <!--android:name="UMENG_CHANNEL"-->
+            <!--android:value="${UMENG_CHANNEL_SOURCE}" />-->
         <meta-data
             android:name="UMENG_CHANNEL"
-            android:value="${UMENG_CHANNEL_SOURCE}" />
-
+            android:value="GooglePlay" />
         <meta-data
             android:name="UMENG_MESSAGE_SECRET"
             android:value="86de4d9fa765370b5467287441be9320"></meta-data>

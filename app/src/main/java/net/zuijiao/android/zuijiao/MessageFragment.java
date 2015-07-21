@@ -379,6 +379,8 @@ public class MessageFragment extends Fragment implements FragmentDataListener,
                 Picasso.with(parent.getContext())
                         .load(msg.getFromUser().getAvatarURLSmall().get())
                         .placeholder(R.drawable.default_user_head)
+                        .fit()
+                        .centerCrop()
                         .into(holder.userhead);
             if (mType == 1)
                 holder.comment.setText(msg.getDescription());
@@ -404,6 +406,8 @@ public class MessageFragment extends Fragment implements FragmentDataListener,
                     Picasso.with(parent.getContext())
                             .load(gourmetImage.get())
                             .placeholder(R.drawable.empty_view_greeting)
+                            .fit()
+                            .centerCrop()
                             .into(holder.gourmetPic);
                     holder.gourmetName.setVisibility(View.GONE);
                     holder.gourmetPic.setVisibility(View.VISIBLE);

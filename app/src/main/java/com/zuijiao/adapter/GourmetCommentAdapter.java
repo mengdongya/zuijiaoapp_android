@@ -80,6 +80,8 @@ public class GourmetCommentAdapter extends BaseAdapter {
             Picasso.with(mContext)
                     .load(comment.getUser().getAvatarURLSmall().get())
                     .placeholder(R.drawable.default_user_head)
+                    .fit()
+                    .centerCrop()
                     .into(holder.head);
         holder.head.setOnClickListener(new View.OnClickListener() {
             @Override

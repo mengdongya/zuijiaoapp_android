@@ -101,7 +101,7 @@ public class BanquetAdapter extends BaseAdapter implements AdapterView.OnItemCli
             if (mBannerContainer == null) {
                 mBannerContainer = mInflater.inflate(R.layout.banquet_banner, null);
                 ImageView bannerView = (ImageView) mBannerContainer.findViewById(R.id.banquet_banner);
-                Picasso.with(mContext).load(mBanquents.getBannerImageUrl()).placeholder(R.drawable.empty_view_greeting).into(bannerView);
+                Picasso.with(mContext).load(mBanquents.getBannerImageUrl()).placeholder(R.drawable.empty_view_greeting).fit().centerCrop().into(bannerView);
             }
             return mBannerContainer;
         } else {
@@ -130,9 +130,9 @@ public class BanquetAdapter extends BaseAdapter implements AdapterView.OnItemCli
             if (showBanner())
                 position -= 1;
             Banquent banquent = mBanquentList.get(position);
-            Picasso.with(mContext).load(banquent.getSurfaceImageUrl()).placeholder(R.drawable.empty_view_greeting).into(holder.image);
+            Picasso.with(mContext).load(banquent.getSurfaceImageUrl()).placeholder(R.drawable.empty_view_greeting).fit().centerCrop().into(holder.image);
             if (banquent.getMaster().getAvatarURLSmall().isPresent())
-                Picasso.with(mContext).load(banquent.getMaster().getAvatarURLSmall().get()).placeholder(R.drawable.default_user_head).into(holder.head);
+                Picasso.with(mContext).load(banquent.getMaster().getAvatarURLSmall().get()).placeholder(R.drawable.default_user_head).fit().centerCrop().into(holder.head);
             holder.title.setText(banquent.getTitle());
             String dateInfo = formatDate(banquent.getTime());
 

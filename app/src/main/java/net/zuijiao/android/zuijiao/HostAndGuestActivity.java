@@ -194,7 +194,7 @@ public class HostAndGuestActivity extends BaseActivity {
                 banquetImageAttendeeNull.setVisibility(View.GONE);
                 mAttendeeBanquet.setVisibility(View.VISIBLE);
                 mHostAttendee.setText(String.format(getString(R.string.attended_banquet), mAttendee.getAttendCount()));
-                Picasso.with(mContext).load(lastAttendBanquet.getSurfaceImageUrl()).placeholder(R.drawable.empty_view_greeting).into((ImageView) attendeeBanquet.findViewById(R.id.banquet_history_item_image1));
+                Picasso.with(mContext).load(lastAttendBanquet.getSurfaceImageUrl()).placeholder(R.drawable.empty_view_greeting).fit().centerCrop().into((ImageView) attendeeBanquet.findViewById(R.id.banquet_history_item_image1));
                 setBanquetStatus(lastAttendBanquet,attendeeBanquet);
                 ((TextView) attendeeBanquet.findViewById(R.id.banquet_history_item_title1)).setText(lastAttendBanquet.getTitle());
                 ((TextView) attendeeBanquet.findViewById(R.id.banquet_history_item_date1)).setText(formatDate(lastAttendBanquet.getTime()));
@@ -215,7 +215,7 @@ public class HostAndGuestActivity extends BaseActivity {
                 mAllComment.setVisibility(View.GONE);
                 mGuestHead.setVisibility(View.VISIBLE);
                 if (mAttendee.getAvatarURLSmall().isPresent()) {
-                    Picasso.with(mContext).load(mAttendee.getAvatarURLSmall().get()).placeholder(R.drawable.default_user_head).into(mGuestHead);
+                    Picasso.with(mContext).load(mAttendee.getAvatarURLSmall().get()).placeholder(R.drawable.default_user_head).fit().centerCrop().into(mGuestHead);
                     mGuestHead.setOnClickListener(mHeadListener);
                 }
             } else {
@@ -259,6 +259,8 @@ public class HostAndGuestActivity extends BaseActivity {
                                     .load(imageUrls.get(i))
                                     .placeholder(R.drawable.empty_view_greeting)
                                     .error(R.drawable.empty_view_greeting)
+                                    .fit()
+                                    .centerCrop()
                                     .into(image);
                             mImageList.add(image);
                         }
@@ -267,20 +269,20 @@ public class HostAndGuestActivity extends BaseActivity {
                         mHostImages.setAdapter(mViewPagerAdapter);
                         if (mAttendee.getAvatarURLSmall().isPresent()) {
                             Log.i("outofmemory", mAttendee.getAvatarURLSmall().get());
-                            Picasso.with(mContext).load(mAttendee.getAvatarURLSmall().get()).placeholder(R.drawable.default_user_head).into(mHostHead);
+                            Picasso.with(mContext).load(mAttendee.getAvatarURLSmall().get()).placeholder(R.drawable.default_user_head).fit().centerCrop().into(mHostHead);
                             mHostHead.setOnClickListener(mHeadListener);
                         }
                     } else {
                         mGuestHead.setVisibility(View.VISIBLE);
                         if (mAttendee.getAvatarURLSmall().isPresent()) {
-                            Picasso.with(mContext).load(mAttendee.getAvatarURLSmall().get()).placeholder(R.drawable.default_user_head).into(mGuestHead);
+                            Picasso.with(mContext).load(mAttendee.getAvatarURLSmall().get()).placeholder(R.drawable.default_user_head).fit().centerCrop().into(mGuestHead);
                             mGuestHead.setOnClickListener(mHeadListener);
                         }
                     }
                 } else {
                     mGuestHead.setVisibility(View.VISIBLE);
                     if (mAttendee.getAvatarURLSmall().isPresent()) {
-                        Picasso.with(mContext).load(mAttendee.getAvatarURLSmall().get()).placeholder(R.drawable.default_user_head).into(mGuestHead);
+                        Picasso.with(mContext).load(mAttendee.getAvatarURLSmall().get()).placeholder(R.drawable.default_user_head).fit().centerCrop().into(mGuestHead);
                         mGuestHead.setOnClickListener(mHeadListener);
                     }
                 }
@@ -292,7 +294,7 @@ public class HostAndGuestActivity extends BaseActivity {
                     banquetImageHoldNull.setVisibility(View.GONE);
 
                     mHostHold.setText(String.format(getString(R.string.hosted_banquet), sellerInfo.getEventCount(), sellerInfo.getSoldCount()));
-                    Picasso.with(mContext).load(lastHoldBanquet.getSurfaceImageUrl()).placeholder(R.drawable.empty_view_greeting).into((ImageView) holdBanquet.findViewById(R.id.banquet_history_item_image1));
+                    Picasso.with(mContext).load(lastHoldBanquet.getSurfaceImageUrl()).placeholder(R.drawable.empty_view_greeting).fit().centerCrop().into((ImageView) holdBanquet.findViewById(R.id.banquet_history_item_image1));
                     setBanquetStatus(lastHoldBanquet,holdBanquet);
                     ((TextView) holdBanquet.findViewById(R.id.banquet_history_item_title1)).setText(lastHoldBanquet.getTitle());
                     ((TextView) holdBanquet.findViewById(R.id.banquet_history_item_date1)).setText(formatDate(lastHoldBanquet.getTime()));
@@ -335,7 +337,7 @@ public class HostAndGuestActivity extends BaseActivity {
                     banquetImageAttendeeNull.setVisibility(View.GONE);
                     mAttendeeBanquet.setVisibility(View.VISIBLE);
                     mHostAttendee.setText(String.format(getString(R.string.attended_banquet), mAttendee.getAttendCount()));
-                    Picasso.with(mContext).load(lastAttendBanquet.getSurfaceImageUrl()).placeholder(R.drawable.empty_view_greeting).into((ImageView) attendeeBanquet.findViewById(R.id.banquet_history_item_image1));
+                    Picasso.with(mContext).load(lastAttendBanquet.getSurfaceImageUrl()).placeholder(R.drawable.empty_view_greeting).fit().centerCrop().into((ImageView) attendeeBanquet.findViewById(R.id.banquet_history_item_image1));
                     setBanquetStatus(lastAttendBanquet,attendeeBanquet);
                     ((TextView) attendeeBanquet.findViewById(R.id.banquet_history_item_title1)).setText(lastAttendBanquet.getTitle());
                     ((TextView) attendeeBanquet.findViewById(R.id.banquet_history_item_date1)).setText(formatDate(lastAttendBanquet.getTime()));
@@ -356,7 +358,7 @@ public class HostAndGuestActivity extends BaseActivity {
                     mAllComment.setVisibility(View.GONE);
                     mGuestHead.setVisibility(View.VISIBLE);
                     if (mAttendee.getAvatarURLSmall().isPresent()) {
-                        Picasso.with(mContext).load(mAttendee.getAvatarURLSmall().get()).placeholder(R.drawable.default_user_head).into(mGuestHead);
+                        Picasso.with(mContext).load(mAttendee.getAvatarURLSmall().get()).placeholder(R.drawable.default_user_head).fit().centerCrop().into(mGuestHead);
                         mGuestHead.setOnClickListener(mHeadListener);
                     }
                 } else {
@@ -400,6 +402,8 @@ public class HostAndGuestActivity extends BaseActivity {
                                         .load(imageUrls.get(i))
                                         .placeholder(R.drawable.empty_view_greeting)
                                         .error(R.drawable.empty_view_greeting)
+                                        .fit()
+                                        .centerCrop()
                                         .into(image);
                                 mImageList.add(image);
                             }
@@ -408,20 +412,20 @@ public class HostAndGuestActivity extends BaseActivity {
                             mHostImages.setAdapter(mViewPagerAdapter);
                             if (mAttendee.getAvatarURLSmall().isPresent()) {
                                 Log.i("outofmemory", mAttendee.getAvatarURLSmall().get());
-                                Picasso.with(mContext).load(mAttendee.getAvatarURLSmall().get()).placeholder(R.drawable.default_user_head).into(mHostHead);
+                                Picasso.with(mContext).load(mAttendee.getAvatarURLSmall().get()).placeholder(R.drawable.default_user_head).fit().centerCrop().into(mHostHead);
                                 mHostHead.setOnClickListener(mHeadListener);
                             }
                         } else {
                             mGuestHead.setVisibility(View.VISIBLE);
                             if (mAttendee.getAvatarURLSmall().isPresent()) {
-                                Picasso.with(mContext).load(mAttendee.getAvatarURLSmall().get()).placeholder(R.drawable.default_user_head).into(mGuestHead);
+                                Picasso.with(mContext).load(mAttendee.getAvatarURLSmall().get()).placeholder(R.drawable.default_user_head).fit().centerCrop().into(mGuestHead);
                                 mGuestHead.setOnClickListener(mHeadListener);
                             }
                         }
                     } else {
                         mGuestHead.setVisibility(View.VISIBLE);
                         if (mAttendee.getAvatarURLSmall().isPresent()) {
-                            Picasso.with(mContext).load(mAttendee.getAvatarURLSmall().get()).placeholder(R.drawable.default_user_head).into(mGuestHead);
+                            Picasso.with(mContext).load(mAttendee.getAvatarURLSmall().get()).placeholder(R.drawable.default_user_head).fit().centerCrop().into(mGuestHead);
                             mGuestHead.setOnClickListener(mHeadListener);
                         }
                     }
@@ -433,7 +437,7 @@ public class HostAndGuestActivity extends BaseActivity {
                         banquetImageHoldNull.setVisibility(View.GONE);
 
                         mHostHold.setText(String.format(getString(R.string.hosted_banquet), sellerInfo.getEventCount(), sellerInfo.getSoldCount()));
-                        Picasso.with(mContext).load(lastHoldBanquet.getSurfaceImageUrl()).placeholder(R.drawable.empty_view_greeting).into((ImageView) holdBanquet.findViewById(R.id.banquet_history_item_image1));
+                        Picasso.with(mContext).load(lastHoldBanquet.getSurfaceImageUrl()).placeholder(R.drawable.empty_view_greeting).fit().centerCrop().into((ImageView) holdBanquet.findViewById(R.id.banquet_history_item_image1));
                         setBanquetStatus(lastHoldBanquet,holdBanquet);
                         ((TextView) holdBanquet.findViewById(R.id.banquet_history_item_title1)).setText(lastHoldBanquet.getTitle());
                         ((TextView) holdBanquet.findViewById(R.id.banquet_history_item_date1)).setText(formatDate(lastHoldBanquet.getTime()));

@@ -523,6 +523,8 @@ public class EditGourmetActivity extends BaseActivity implements View.OnClickLis
                 Picasso.with(mContext)
                         .load(mImageUrls.get(position) + "!Thumbnails")
                         .placeholder(R.drawable.empty_view_greeting)
+                        .fit()
+                        .centerCrop()
                         .into(contentView);
             } else {
                 Bitmap bitmap = MediaStore.Images.Thumbnails.getThumbnail(

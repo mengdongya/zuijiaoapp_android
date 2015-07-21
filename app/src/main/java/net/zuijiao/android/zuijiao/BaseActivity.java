@@ -17,6 +17,7 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.umeng.analytics.MobclickAgent;
 import com.umeng.message.PushAgent;
 import com.zuijiao.android.util.Optional;
 import com.zuijiao.android.util.functional.LambdaExpression;
@@ -63,8 +64,10 @@ public abstract class BaseActivity extends ActionBarActivity {
                     Intent installIntent = new Intent();
                     installIntent.setAction(Intent.ACTION_VIEW);
                     File file = new File(apDir, updateApkName);
+                    installIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     installIntent.setDataAndType(Uri.fromFile(file), "application/vnd.android.package-archive");
                     startActivity(installIntent);
+                    android.os.Process.killProcess(android.os.Process.myPid());
                 }
             }
         }
@@ -95,16 +98,18 @@ public abstract class BaseActivity extends ActionBarActivity {
 
     public void onResume() {
         super.onResume();
+        MobclickAgent.onResume(this);
 //        if(BuildConfig.OpenUmengAgent){
 //            Log.i("openUmengAgent" ,BuildConfig.OpenUmengAgent + "") ;
-//            MobclickAgent.onResume(this);
 //        }
+//
     }
 
     public void onPause() {
         super.onPause();
+        MobclickAgent.onPause(this);
 //        if(BuildConfig.OpenUmengAgent)
-//            MobclickAgent.onPause(this);
+//
     }
 
     @Override
@@ -116,9 +121,8 @@ public abstract class BaseActivity extends ActionBarActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home )
-        {
-            if(mDialog == null || !mDialog.isShowing()){
+        if (item.getItemId() == android.R.id.home) {
+            if (mDialog == null || !mDialog.isShowing()) {
                 onBackPressed();
             }
         }
@@ -126,24 +130,24 @@ public abstract class BaseActivity extends ActionBarActivity {
     }
 
     public void createDialog(String message) {
-        if(this == null || this.isFinishing())
-            return ;
-        try{
+        if (this == null || this.isFinishing())
+            return;
+        try {
             if (mDialog != null)
                 mDialog.dismiss();
             mDialog = ProgressDialog.show(this, "", message);
-        }catch (Throwable t){
+        } catch (Throwable t) {
             t.printStackTrace();
         }
     }
 
     public void createDialog() {
-        if(this == null || this.isFinishing())
-            return ;
-        try{
+        if (this == null || this.isFinishing())
+            return;
+        try {
             if (mDialog != null && mDialog.isShowing()) return;
             mDialog = ProgressDialog.show(this, "", getString(R.string.on_loading));
-        }catch (Throwable t){
+        } catch (Throwable t) {
             t.printStackTrace();
         }
     }
@@ -271,14 +275,14 @@ public abstract class BaseActivity extends ActionBarActivity {
      * @param loginCallBack LambdaExpression @Nullable
      */
     protected void notifyLogin(LambdaExpression loginCallBack) {
-        if(isFinishing())
-            return ;
+        if (isFinishing())
+            return;
         if (mNotifyLoginDialog == null || !mNotifyLoginDialog.isShowing()) {
             this.mLoginCallBack = loginCallBack;
             View contentView = LayoutInflater.from(mContext).inflate(R.layout.alert_login_dialog, null);
             TextView tv = (TextView) contentView.findViewById(R.id.fire_login);
             mNotifyLoginDialog = new AlertDialog.Builder(this).setView(contentView).create();
-            Window window = mNotifyLoginDialog.getWindow() ;
+            Window window = mNotifyLoginDialog.getWindow();
             window.setWindowAnimations(R.style.dialogWindowAnim);
             tv.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -301,15 +305,15 @@ public abstract class BaseActivity extends ActionBarActivity {
      * @param message     dialog message ,including update information
      */
     protected void showUpdateDialog(final String downloadUrl, final String message) {
-        if(this == null || this.isFinishing())
-            return ;
+        if (this == null || this.isFinishing())
+            return;
         if (updateAlertDialog != null && updateAlertDialog.isShowing()) {
             return;
         }
         View logoutView = LayoutInflater.from(getApplicationContext()).inflate(
                 R.layout.logout_dialog, null);
         AlertDialog updateAlertDialog = new AlertDialog.Builder(this).setView(logoutView).create();
-        Window window = updateAlertDialog.getWindow() ;
+        Window window = updateAlertDialog.getWindow();
         window.setWindowAnimations(R.style.dialogWindowAnim);
         ((TextView) logoutView.findViewById(R.id.logout_title)).setText(getString(R.string.new_version));
         ((TextView) logoutView.findViewById(R.id.logout_content)).setText(message);

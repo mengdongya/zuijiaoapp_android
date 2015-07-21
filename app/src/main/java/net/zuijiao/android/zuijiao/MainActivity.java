@@ -378,6 +378,8 @@ public final class MainActivity extends BaseActivity {
                 Picasso.with(mContext)
                         .load(auth.getHeadPath())
                         .placeholder(R.drawable.default_user_head)
+                        .fit()
+                        .centerCrop()
                         .into(mThirdPartyUserHead);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -637,6 +639,8 @@ public final class MainActivity extends BaseActivity {
             Picasso.with(getApplicationContext())
                     .load(auth.getHeadPath())
                     .placeholder(R.drawable.default_user_head)
+                    .fit()
+                    .centerCrop()
                     .into(mThirdPartyUserHead);
         mBtnLogin.setVisibility(View.GONE);
         mThirdPartyUserHead.setVisibility(View.VISIBLE);

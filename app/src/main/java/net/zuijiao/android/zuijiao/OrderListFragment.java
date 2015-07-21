@@ -210,7 +210,7 @@ public class OrderListFragment extends Fragment implements
             } else
                 holder = (ViewHolder) convertView.getTag();
             Order order = orderList.get(position);
-            Picasso.with(getActivity().getApplicationContext()).load(order.getImageUrl()).placeholder(R.drawable.empty_view_greeting).into(holder.image);
+            Picasso.with(getActivity().getApplicationContext()).load(order.getImageUrl()).placeholder(R.drawable.empty_view_greeting).fit().centerCrop().into(holder.image);
             holder.title.setText(order.getTitle());
             String dateInfo = formatDate(order.getHoldTime());
             holder.date.setText(dateInfo + order.getAddress());

@@ -65,7 +65,7 @@ public class RoundImageView extends ImageView {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        Drawable drawable = getDrawable();
+         Drawable drawable = getDrawable();
         if (drawable == null) {
             return;
         }
@@ -121,9 +121,15 @@ public class RoundImageView extends ImageView {
             radius = (defaultWidth < defaultHeight ? defaultWidth
                     : defaultHeight) / 2;
         }
-        Bitmap roundBitmap = getCroppedRoundBitmap(bitmap, radius);
-        canvas.drawBitmap(roundBitmap, defaultWidth / 2 - radius, defaultHeight
-                / 2 - radius, null);
+        Bitmap roundBitmap = null;
+        try {
+            roundBitmap = getCroppedRoundBitmap(bitmap, radius);
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
+        }
+        if(roundBitmap != null)
+            canvas.drawBitmap(roundBitmap, defaultWidth / 2 - radius, defaultHeight
+                    / 2 - radius, null);
     }
 
 
@@ -141,7 +147,9 @@ public class RoundImageView extends ImageView {
         return bitmap;
     }
 
-    public Bitmap getCroppedRoundBitmap(Bitmap bmp, int radius) {
+    public Bitmap getCroppedRoundBitmap(Bitmap bmp, int radius) throws Throwable{
+        if(bmp == null || bmp.isRecycled())
+            return null;
         Bitmap scaledSrcBmp;
         int diameter = radius * 2;
         int bmpWidth = bmp.getWidth();
@@ -164,6 +172,8 @@ public class RoundImageView extends ImageView {
         } else {
             squareBitmap = bmp;
         }
+        if(squareBitmap == null)
+            return null ;
         if (squareBitmap.getWidth() != diameter
                 || squareBitmap.getHeight() != diameter) {
             scaledSrcBmp = Bitmap.createScaledBitmap(squareBitmap, diameter,
@@ -186,12 +196,26 @@ public class RoundImageView extends ImageView {
                 paint);
         paint.setXfermode(new PorterDuffXfermode(Mode.SRC_IN));
         canvas.drawBitmap(scaledSrcBmp, rect, rect, paint);
-        bmp = null;
-        squareBitmap = null;
-        scaledSrcBmp = null;
+//
+//        bmp = null;
+//        squareBitmap = null;
+//        scaledSrcBmp = null;
+        recycleBitmap(bmp);
+        recycleBitmap(squareBitmap);
+        recycleBitmap(scaledSrcBmp);
         return output;
     }
 
+    private void recycleBitmap(Bitmap bmp){
+        if(bmp == null)
+            return;
+        if(bmp.isRecycled()){
+            bmp = null  ;
+            return;
+        }
+        bmp.recycle() ;
+        bmp  = null ;
+    }
 
     private void drawCircleBorder(Canvas canvas, int radius, int color) {
         Paint paint = new Paint();

@@ -97,6 +97,8 @@ public class FavorPersonListActivity extends BaseActivity {
                 Picasso.with(getApplicationContext())
                         .load(user.getAvatarURLSmall().get())
                         .placeholder(R.drawable.default_user_head)
+                        .fit()
+                        .centerCrop()
                         .into(holder.head);
             String location = DBOpenHelper.getmInstance(getApplicationContext()).getLocationByIds(user.getProvinceID(), user.getCityID());
             if (location == null || location.equals("")) {

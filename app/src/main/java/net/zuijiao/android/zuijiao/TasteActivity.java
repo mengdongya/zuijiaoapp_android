@@ -119,7 +119,7 @@ public class TasteActivity extends BaseActivity {
             TextView text = (TextView) convertView.findViewById(R.id.taste_item_text);
             ImageView image = (ImageView) convertView.findViewById(R.id.taste_item_image);
             ImageView shadow = (ImageView) convertView.findViewById(R.id.taste_item_shadow);
-            Picasso.with(mContext).load(tasteTags.get(position).getImageURL()).placeholder(R.drawable.default_user_head).into(image);
+            Picasso.with(mContext).load(tasteTags.get(position).getImageURL()).placeholder(R.drawable.default_user_head).fit().centerCrop().into(image);
             text.setText(tasteTags.get(position).getName());
             if (mUserTaste.contains(tasteTags.get(position).getName())) {
                 shadow.setVisibility(View.VISIBLE);

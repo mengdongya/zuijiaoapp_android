@@ -175,7 +175,7 @@ public class BanquetListActivity extends BaseActivity {
             } else
                 holder = (ViewHolder) convertView.getTag();
             Banquent banquet = banquentList.get(position);
-            Picasso.with(mContext).load(banquet.getSurfaceImageUrl()).placeholder(R.drawable.empty_view_greeting).into(holder.image);
+            Picasso.with(mContext).load(banquet.getSurfaceImageUrl()).placeholder(R.drawable.empty_view_greeting).fit().centerCrop().into(holder.image);
             holder.title.setText(banquet.getTitle());
             holder.date.setText(formatDate(banquet.getTime()));
             holder.price.setText(String.format(getString(R.string.price_per_one), banquet.getPrice()));

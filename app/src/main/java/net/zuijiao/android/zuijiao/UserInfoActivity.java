@@ -94,7 +94,7 @@ public final class UserInfoActivity extends BaseActivity implements View.OnClick
             text.setText(mFullUser.getProfile().getTasteTags().get().get(position));
             for (TasteTag tasteTag : Cache.INSTANCE.tasteTags) {
                 if (mFullUser.getProfile().getTasteTags().get().get(position).equals(tasteTag.getName())) {
-                    Picasso.with(mContext).load(tasteTag.getImageURL()).placeholder(R.drawable.default_user_head).into(image);
+                    Picasso.with(mContext).load(tasteTag.getImageURL()).placeholder(R.drawable.default_user_head).fit().centerCrop().into(image);
                     break;
                 }
             }
@@ -305,7 +305,7 @@ public final class UserInfoActivity extends BaseActivity implements View.OnClick
             mFileMng.setFullUser(mFullUser);
         }
         if (mFullUser.getAvatarURLSmall().isPresent())
-            Picasso.with(mContext).load(mFullUser.getAvatarURLSmall().get()).placeholder(R.drawable.default_user_head).into(mUserHead);
+            Picasso.with(mContext).load(mFullUser.getAvatarURLSmall().get()).placeholder(R.drawable.default_user_head).fit().centerCrop().into(mUserHead);
         mUserName.setText(mFullUser.getNickname().get());
         int follower = 0, following = 0, recommendation = 0, favor = 0;
         if (mFullUser.getFriendShip() != null) {
@@ -392,7 +392,7 @@ public final class UserInfoActivity extends BaseActivity implements View.OnClick
             } else getUserInfo(null);
         }
         if (mTinyUser.getAvatarURLSmall().isPresent())
-            Picasso.with(mContext).load(mTinyUser.getAvatarURLSmall().get()).placeholder(R.drawable.default_user_head).into(mUserHead);
+            Picasso.with(mContext).load(mTinyUser.getAvatarURLSmall().get()).placeholder(R.drawable.default_user_head).fit().centerCrop().into(mUserHead);
         mUserName.setText(mTinyUser.getNickName());
         mBtnFans.setText(String.format(getString(R.string.fans_count), 0));
         mBtnFavor.setText(String.format(getString(R.string.favorite_count), 0));

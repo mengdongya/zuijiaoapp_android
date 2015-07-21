@@ -24,14 +24,16 @@ import java.io.File;
 @SuppressLint("ValidFragment")
 public class PictureFragment extends Fragment {
     private final String TAG = "PictrueFragment";
-    private String mImageUrl;
+    private String mImageUrl = null ;
     private Bitmap mBmp = null;
     private ImageView mImageView = null;
     /**
      * sign the image is local or cloud ,and use different way to load
      */
     private boolean isLocalImage = false;
-
+    public PictureFragment(){
+        super();
+    }
     @SuppressLint("ValidFragment")
     public PictureFragment(String imageUrl) {
         super();
@@ -47,6 +49,8 @@ public class PictureFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         Log.i(TAG, "onCreateView");
+        if(mImageUrl == null && savedInstanceState!=null )
+            mImageUrl = savedInstanceState.getString("image_url") ;
         View view = LayoutInflater.from(getActivity()).inflate(
                 R.layout.fragment_picture, null);
         mImageView = (ImageView) view
@@ -68,6 +72,21 @@ public class PictureFragment extends Fragment {
                     .into(mImageView);
         }
         return view;
+    }
+
+    @Override
+    public void onViewStateRestored(Bundle savedInstanceState) {
+        Log.i(TAG, "onViewStateRestored");
+//        if(savedInstanceState!=null)
+//            mImageUrl = savedInstanceState.getString("image_url") ;
+        super.onViewStateRestored(savedInstanceState);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        Log.i(TAG, "onSaveInstanceState");
+        outState.putString("image_url" ,mImageUrl) ;
+        super.onSaveInstanceState(outState);
     }
 
     @Override

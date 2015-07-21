@@ -237,6 +237,7 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
         mImagePages.setOnPageChangeListener(mPageListener);
         mImagesIndex.setText(1 + "/" + mViewPagerAdapter.getCount());
         initViewsByBanquet();
+        mInstructPosition.setOnClickListener(this);
         mAllCommentBtn.setOnClickListener(this);
         mAboutHostBtn.setOnClickListener(this);
         mOrderBtn.setOnClickListener(this);
@@ -535,6 +536,12 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
                 } else {
                     goToOrder();
                 }
+                break;
+            case R.id.banquet_detail_location_text:
+                intent = new Intent();
+                intent.setClass(mContext,BaiDuMapActivity.class);
+                intent.putExtra("address",mBanquent.getAddress());
+                startActivity(intent);
                 break;
         }
     }

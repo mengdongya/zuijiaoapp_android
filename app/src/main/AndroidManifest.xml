@@ -13,7 +13,8 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-
+    <!--baidu map-->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <!--umeng add -->
     <uses-permission android:name="android.permission.READ_LOGS" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -262,7 +263,11 @@
             android:label="@string/evaluate"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
-
+        <activity
+            android:name="net.zuijiao.android.zuijiao.BaiDuMapActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+        />
 
         <!--<activity-->
         <!--android:configChanges="keyboardHidden|orientation|screenSize"-->

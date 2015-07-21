@@ -174,6 +174,7 @@ public class HostAndGuestActivity extends BaseActivity {
         mAllComment.setOnClickListener(mHeadListener);
         holdBanquet.setOnClickListener(mHeadListener);
         attendeeBanquet.setOnClickListener(mHeadListener);
+        mAttendeePlace.setOnClickListener(mHeadListener);
         mCommentRatingbar.setStepSize(0.5f);
         mAttendee = (Attendee) mTendIntent.getSerializableExtra("attendee_info");
         if(mAttendee == null){
@@ -511,7 +512,7 @@ public class HostAndGuestActivity extends BaseActivity {
                             finalizeDialog();
                             Intent intent = new Intent(mContext, HostAndGuestActivity.class);
                             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            intent.putExtra("attendee_info" , attendee) ;
+                            intent.putExtra("attendee_info", attendee);
 //                            intent.putExtra("b_host", true);
 //                            intent.putExtra("attendee_id", banquent.getMaster().getUserId());
                             mContext.startActivity(intent);
@@ -667,6 +668,12 @@ public class HostAndGuestActivity extends BaseActivity {
                     intent.setClass(mContext, BanquetListActivity.class);
                     intent.putExtra("b_hold", true);
                     intent.putExtra("attendee_id", mAttendee.getSellerInfo().getIdentifier());
+                    startActivity(intent);
+                    break;
+                case R.id.attendee_detail_place_item:
+                    intent = new Intent();
+                    intent.setClass(mContext,BaiDuMapActivity.class);
+                    intent.putExtra("address",mAttendee.getSellerInfo().getPlace());
                     startActivity(intent);
                     break;
             }

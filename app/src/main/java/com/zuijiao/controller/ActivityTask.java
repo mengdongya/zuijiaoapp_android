@@ -14,6 +14,7 @@ import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
 import com.baidu.location.GeofenceClient;
 import com.baidu.location.LocationClient;
+import com.baidu.mapapi.SDKInitializer;
 import com.facebook.stetho.Stetho;
 import com.facebook.stetho.okhttp.StethoInterceptor;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -55,6 +56,8 @@ public class ActivityTask extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        // baidumap initialize
+        SDKInitializer.initialize(this);
         System.out.println(new Date().getTime());
         mLocationClient = new LocationClient(this.getApplicationContext());
         mMyLocationListener = new MyLocationListener();
@@ -86,6 +89,7 @@ public class ActivityTask extends Application {
         int maxMemory = (int) Runtime.getRuntime().maxMemory();
         int mCacheSize = maxMemory / 4;
         Log.i("maxMemory", "sssss = " + mCacheSize);
+
     }
 
 

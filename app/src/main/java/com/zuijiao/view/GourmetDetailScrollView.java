@@ -27,7 +27,7 @@ public class GourmetDetailScrollView extends ScrollView {
                 GourmetDetailScrollView.this.layout(GourmetDetailScrollView.this.getLeft(), desY,
                         GourmetDetailScrollView.this.getRight(),
                         GourmetDetailScrollView.this.getBottom());
-                currentY = (int) desY;
+                currentY = desY;
                 onScrollListener.onTopChange(GourmetDetailScrollView.this.getTop());
             }
             super.handleMessage(msg);
@@ -78,6 +78,7 @@ public class GourmetDetailScrollView extends ScrollView {
 
     private int currentY = 450;
 
+    private float speedY = 0 ;
 
     public GourmetDetailScrollView(Context context) {
         this(context, null);
@@ -163,12 +164,16 @@ public class GourmetDetailScrollView extends ScrollView {
                 tempY = ev.getY();
                 float top = this.getTop();
                 float gapY = tempY - downY;
+                Log.i(log ,"gapy ==" + gapY) ;
                 if (top > bottomY && gapY > 0) {
-                    gapY = gapY / (top - bottomY);
+                    gapY = gapY *10  / (top - bottomY) > gapY ? gapY : gapY *10  / (top - bottomY);
                 }
+                Log.i(log ,"gapy ==" + gapY) ;
                 if (bRecorded) {
                     if ((gapY < 0 && top >= topY) || (gapY > 0 && top < imageHeight)) {
                         changePositionByTouch((int) gapY);
+                        speedY =  gapY;
+                        Log.i(log , "speedY == " + speedY) ;
                         return true;
                     }
                 }
@@ -180,9 +185,50 @@ public class GourmetDetailScrollView extends ScrollView {
                     kickBack();
                 else if (this.getTop() < topY * 4 / 3)
                     scrollToTop();
+                else{
+                    inertia() ;
+                }
                 break;
         }
         return super.onTouchEvent(ev);
+    }
+
+    private void inertia() {
+        if(Math.abs(speedY) <= 5)
+            return;
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                float y = Math.abs(speedY) / 20 ;
+                int sign = speedY > 0 ? 1 : -1 ;
+                float desY = speedY;
+                int top = GourmetDetailScrollView.this.getTop();
+                try {
+                    Thread.currentThread().sleep(10);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                while (desY != 0 && !bRecorded) {
+                    Message msg = new Message();
+                    msg.what = CHANGE_TOP;
+                    msg.arg1 = (int) (top + desY);
+                    if(msg.arg1 >= bottomY || msg.arg1 <= topY){
+                        break;
+                    }
+                    handler.sendMessage(msg);
+                    try {
+                        Thread.currentThread().sleep(10);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    top = GourmetDetailScrollView.this.getTop();
+                    desY = desY - sign* y ;
+                    Log.i(log , "run :speedY == " + speedY+ " desY = " + desY + "  y == " + y  ) ;
+                    if(Math.abs(desY) <= y )
+                        desY = 0;
+                }
+            }
+        }) .start();
     }
 
     private void scrollToTop() {
@@ -195,12 +241,8 @@ public class GourmetDetailScrollView extends ScrollView {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-//                int distanceY = (int) ((top - bottomY ) / 5);
-                while (top > topY) {
-
+                while (top > topY && !bRecorded) {
                     int desY = (int) (top - topY / 10);
-//                    if(distanceY > 10)
-//                        distanceY -= 5;
                     Message msg = new Message();
                     msg.what = CHANGE_TOP;
                     msg.arg1 = desY;
@@ -227,7 +269,7 @@ public class GourmetDetailScrollView extends ScrollView {
         return super.onInterceptTouchEvent(ev);
     }
 
-    private void changePositionByTouch(int y) {
+    private synchronized  void changePositionByTouch(int y) {
         float desY = this.getTop() + y;
         if (desY > imageHeight) {
             desY = imageHeight;
@@ -254,7 +296,7 @@ public class GourmetDetailScrollView extends ScrollView {
                     e.printStackTrace();
                 }
                 int distanceY = (int) ((top - bottomY) / 5);
-                while (top > bottomY) {
+                while (top > bottomY && !bRecorded) {
 
                     int desY = top - distanceY;
                     if (distanceY > 10)
@@ -315,9 +357,9 @@ public class GourmetDetailScrollView extends ScrollView {
     }
 
     public interface OnScrollListener {
-        public void onScroll(int scrollY);
+        void onScroll(int scrollY);
 
-        public void onTopChange(int top);
+        void onTopChange(int top);
     }
 
 }

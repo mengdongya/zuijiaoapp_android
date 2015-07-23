@@ -69,6 +69,7 @@ public class FriendFragment extends Fragment {
         }
     };
 
+
     public BaseAdapter mAdapter = new BaseAdapter() {
         @Override
         public int getCount() {

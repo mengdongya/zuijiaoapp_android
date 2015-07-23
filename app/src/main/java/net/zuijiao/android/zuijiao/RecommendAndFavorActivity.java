@@ -47,5 +47,6 @@ public class RecommendAndFavorActivity extends BaseActivity {
             getSupportActionBar().setTitle(String.format(getString(R.string.whose_recommend), mCurrentUser.get().getNickName()));
         }
         mFragment = (GourmetDisplayFragment) getSupportFragmentManager().findFragmentById(R.id.recommend_and_favor_fragment);
+        mFragment.setType(mContentType) ;
     }
 }

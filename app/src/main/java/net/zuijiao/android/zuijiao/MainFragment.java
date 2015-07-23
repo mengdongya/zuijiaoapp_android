@@ -28,15 +28,16 @@ public class MainFragment extends Fragment {
     private BanquetDisplayFragment banquetFragment;
     private Context mContext;
 
-    public MainFragment() {
-        super();
-    }
 
-    public MainFragment(Context context) {
-        super();
-        this.mContext = context;
-    }
 
+
+    public static MainFragment getInstance(){
+        MainFragment fragment = new MainFragment();
+//        Bundle bundle = new Bundle();
+//        bundle.putInt("position" ,position );
+//        fragment.setArguments(bundle);
+        return fragment;
+    }
     /**
      * init two sub-fragment on create ;
      *
@@ -48,6 +49,7 @@ public class MainFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View contentView = inflater.inflate(R.layout.fragment_notification, null);
+        mContext = getActivity() ;
         mViewPager = (ViewPager) contentView.findViewById(R.id.notification_view_pager);
         if (mPagerAdapter == null) {
             FragmentManager manager = getChildFragmentManager();
@@ -59,7 +61,11 @@ public class MainFragment extends Fragment {
         mTabs.setViewPager(mViewPager);
         return contentView;
     }
-
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
+    }
 
     @Override
     public void onDestroy() {
@@ -132,12 +138,12 @@ public class MainFragment extends Fragment {
         public Fragment getItem(int position) {
             if (position == 0) {
                 if (banquetFragment == null)
-                    banquetFragment = new BanquetDisplayFragment();
+                    banquetFragment =  BanquetDisplayFragment.newInstance();
                 return banquetFragment;
 
             } else {
                 if (gourmetFragment == null)
-                    gourmetFragment = new GourmetDisplayFragment(GourmetDisplayFragment.MAIN_PAGE, mContext);
+                    gourmetFragment =  GourmetDisplayFragment.newInstance(GourmetDisplayFragment.MAIN_PAGE);
                 return gourmetFragment;
             }
         }

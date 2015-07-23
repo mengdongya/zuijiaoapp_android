@@ -222,7 +222,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                         TinyUser user = Router.getInstance().getCurrentUser().get();
                         AuthorInfo authorInfo = new AuthorInfo();
                         authorInfo.setUserName(user.getNickName());
-                        authorInfo.setHeadPath(mUserAvatar);
+                        authorInfo.setHeadPath(user.getAvatarURLSmall().get());
                         authorInfo.setPassword(mPwd);
                         authorInfo.setPlatform("");
                         authorInfo.setEmail(mEmail);

@@ -67,7 +67,8 @@
             android:name="net.zuijiao.android.zuijiao.MainActivity"
             android:label="@string/main_page"
             android:launchMode="singleTask"
-            android:screenOrientation="portrait" />
+            android:configChanges="fontScale"
+            android:screenOrientation="unspecified" />
         <activity
             android:name="net.zuijiao.android.zuijiao.BindEmailActivity"
             android:label="@string/bind_email"

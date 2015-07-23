@@ -45,16 +45,20 @@ import com.lidroid.xutils.view.annotation.ViewInject;
 import com.sina.weibo.sdk.auth.AuthInfo;
 import com.sina.weibo.sdk.auth.sso.SsoHandler;
 import com.squareup.picasso.Picasso;
+import com.tencent.mm.sdk.openapi.IWXAPI;
 import com.umeng.socialize.bean.SHARE_MEDIA;
 import com.umeng.socialize.bean.SocializeEntity;
+import com.umeng.socialize.bean.UMShareMsg;
 import com.umeng.socialize.controller.UMServiceFactory;
 import com.umeng.socialize.controller.UMSocialService;
 import com.umeng.socialize.controller.listener.SocializeListeners;
 import com.umeng.socialize.media.UMImage;
 import com.umeng.socialize.sso.QZoneSsoHandler;
 import com.umeng.socialize.sso.SinaSsoHandler;
+import com.umeng.socialize.sso.SmsHandler;
 import com.umeng.socialize.sso.UMQQSsoHandler;
 import com.umeng.socialize.sso.UMSsoHandler;
+import com.umeng.socialize.utils.SocializeUtils;
 import com.umeng.socialize.weixin.controller.UMWXHandler;
 import com.zuijiao.adapter.GourmetCommentAdapter;
 import com.zuijiao.adapter.ImageViewPagerAdapter;
@@ -94,6 +98,7 @@ public class GourmetDetailActivity extends BaseActivity implements
     private static final int SHARE_TO_FRIEND_CIRCLE = 2;
     private static final int SHARE_TO_QQ = 3;
     private static final int SHARE_TO_QQ_SPACE = 4;
+    private static final int SHARE_TO_SMS = 5;
     //share by umengSDK
     private final UMSocialService mController = UMServiceFactory.getUMSocialService("com.umeng.share");
     @ViewInject(R.id.food_detail_toolbar)
@@ -163,8 +168,8 @@ public class GourmetDetailActivity extends BaseActivity implements
     private Optional<WouldLikeToEatUsers> mWouldLikeToEatList = Optional.empty();
     private String mShareUrl = "/zuijiao/share/cuisine?id=";
 
-    private int mShareImageRes[] = {R.drawable.share_weibo, R.drawable.share_weixin, R.drawable.share_friend_circle, R.drawable.share_qq, R.drawable.share_qq_space};
-    private int mShareTextRes[] = {R.string.weibo, R.string.weixin_friend, R.string.weixin_friend_circle, R.string.qq_friend, R.string.qq_space};
+    private int mShareImageRes[] = {R.drawable.share_weibo, R.drawable.share_weixin, R.drawable.share_friend_circle, R.drawable.share_qq, R.drawable.share_qq_space,R.drawable.share_sms};
+    private int mShareTextRes[] = {R.string.weibo, R.string.weixin_friend, R.string.weixin_friend_circle, R.string.qq_friend, R.string.qq_space,R.string.sms};
     private AuthInfo mAuthInfo = null;
     private SsoHandler mSsoHandler;
     private int rootBottom = Integer.MIN_VALUE;
@@ -375,7 +380,7 @@ public class GourmetDetailActivity extends BaseActivity implements
 
 
     /**
-     * call the list of the share ways , including qq friend ,qq space ,weibo ,wechat space ,wechat friend
+     * call the list of the share ways , including qq friend ,qq space ,weibo ,wechat space ,wechat friend ,msg
      */
     private void createShareWindow() {
 
@@ -386,7 +391,7 @@ public class GourmetDetailActivity extends BaseActivity implements
         shareList.setAdapter(new BaseAdapter() {
             @Override
             public int getCount() {
-                return 5;
+                return 6;
             }
 
             @Override
@@ -485,6 +490,11 @@ public class GourmetDetailActivity extends BaseActivity implements
                         QQApi.QQ_ID, QQApi.QQ_PWD);
                 qZoneSsoHandler.addToSocialSDK();
                 performShare(SHARE_MEDIA.QZONE);
+                break;
+            case SHARE_TO_SMS:
+                SmsHandler smsHandler = new SmsHandler();
+                smsHandler.addToSocialSDK();
+                performShare(SHARE_MEDIA.SMS);
                 break;
         }
     }

@@ -31,7 +31,7 @@
                 android:layout_width="match_parent"
                 android:text="上海市黄浦区知音苑上海市黄浦区知音苑上海市黄浦区知音苑上海市黄浦区知音苑"
                 android:singleLine="true"
-                android:textSize="14sp"
+                android:textSize="16sp"
                 android:gravity="center_vertical"
                 android:textColor="@color/black"
                 android:layout_height="30dip" />
@@ -39,7 +39,7 @@
                 android:id="@+id/baidu_map_distance"
                 android:layout_width="match_parent"
                 android:layout_height="30dip"
-                android:textSize="14sp"
+                android:textSize="16sp"
                 android:gravity="center_vertical"
                 android:text="距您5.8km"
                 android:textColor="@color/bg_light_gray2"/>

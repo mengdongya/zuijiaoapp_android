@@ -20,6 +20,7 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -67,7 +68,7 @@ public class BanquetOrderActivity extends BaseActivity implements View.OnClickLi
     @ViewInject(R.id.banquet_order_pay_way_list)
     private ListView mPayWayList;
     @ViewInject(R.id.banquet_order_bottom)
-    private RelativeLayout mBottomView ;
+    private LinearLayout mBottomView;
     @ViewInject(R.id.banquet_surplus_time)
     private TextView mBanquetSurplusTime;
     @ViewInject(R.id.banquet_order_banquet_name)
@@ -204,12 +205,12 @@ public class BanquetOrderActivity extends BaseActivity implements View.OnClickLi
 
 
         RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mBottomView.getLayoutParams();
-        mBottomPrice.measure(0 , 0 );
+        mBottomPrice.measure(0, 0);
         int priceHeight = mBottomPrice.getMeasuredHeight();
-        mBottomPayWay.measure(0 , 0);
-        int dateHeight = mBottomPayWay.getMeasuredHeight() ;
-        int margin = (int) (3* getResources().getDimension(R.dimen.end_z));
-        params.height = priceHeight + dateHeight + margin ;
+        //mBottomPayWay.measure(0 , 0);
+        //int dateHeight = mBottomPayWay.getMeasuredHeight() ;
+        int margin = (int) (2 * getResources().getDimension(R.dimen.end_z));
+        params.height = priceHeight + margin;
     }
 
     private void initViewsByBanquet() {

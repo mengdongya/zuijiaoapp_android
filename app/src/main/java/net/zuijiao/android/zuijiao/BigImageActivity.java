@@ -16,6 +16,7 @@ import android.view.WindowManager;
 import com.lidroid.xutils.view.annotation.ContentView;
 import com.lidroid.xutils.view.annotation.ViewInject;
 import com.zuijiao.entity.SimpleImage;
+import com.zuijiao.utils.PageTransformerUtil;
 import com.zuijiao.view.MyViewPager;
 
 import java.io.File;
@@ -144,6 +145,12 @@ public class BigImageActivity extends BaseActivity {
         mViewPager.setAdapter(mAdapter);
         mViewPager.setOnPageChangeListener(mPageListener);
         mViewPager.setCurrentItem(mFirstShowIndex);
+        mViewPager.setPageTransformer(true, new ViewPager.PageTransformer() {
+            @Override
+            public void transformPage(View page, float position) {
+                PageTransformerUtil.depthPageTransformer(page, position);
+            }
+        });
     }
 
     @Override

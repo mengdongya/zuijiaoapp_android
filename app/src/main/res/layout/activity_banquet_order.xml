@@ -1,208 +1,330 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:focusable="true"
+    android:focusableInTouchMode="true">
 
     <include
-        layout="@layout/toolbar"
-        android:id="@+id/banquet_order_tool_bar" />
+        android:id="@+id/banquet_order_tool_bar"
+        layout="@layout/toolbar" />
 
     <ScrollView
-        android:scrollbars="none"
-        android:layout_below="@id/banquet_order_tool_bar"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/banquet_order_bottom"
-        android:layout_width="match_parent">
+        android:layout_below="@id/banquet_order_tool_bar"
+        android:scrollbars="none">
 
         <LinearLayout
-            android:layout_height="match_parent"
             android:layout_width="match_parent"
-            android:padding="10dip"
-            android:orientation="vertical">
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="10dip">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingBottom="20dip"
+                android:paddingTop="20dip">
+
+                <TextView
+                    android:layout_width="0dip"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1"
+                    android:gravity="right"
+                    android:text="@string/waiting_time"
+                    android:textColor="@color/tv_light_gray"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/banquet_surplus_time"
+                    android:layout_width="0dip"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:text="@string/surplus_time"
+                    android:textSize="18sp" />
+            </LinearLayout>
 
             <TextView
-                android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
-                android:textSize="13sp"
-                android:textColor="@color/bg_light_gray"
+                android:layout_height="wrap_content"
                 android:layout_gravity="left"
-                android:text="@string/order_msg" />
+                android:text="@string/order_msg"
+                android:textColor="@color/black"
+                android:textSize="18sp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2dip"
+                android:layout_marginTop="10dip"
+                android:background="@color/black" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:minHeight="50dip"
+                android:orientation="horizontal"
+                android:paddingLeft="5dip"
+                android:paddingRight="5dip">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/banquet_name"
+                    android:textColor="@color/tv_deep_gray"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/banquet_order_banquet_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dip"
+                    android:gravity="right"
+                    android:textColor="@color/tv_deep_gray"
+                    android:textSize="15sp" />
+            </LinearLayout>
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dip"
-                android:layout_marginTop="10dip"
-                android:background="@color/bg_light_gray" />
+                android:background="@color/bg_gray_white" />
 
             <LinearLayout
-                android:layout_height="wrap_content"
-                android:minHeight="50dip"
                 android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:gravity="center_vertical"
-                android:paddingRight="5dip"
+                android:minHeight="50dip"
+                android:orientation="horizontal"
                 android:paddingLeft="5dip"
-                android:orientation="horizontal">
+                android:paddingRight="5dip">
 
                 <TextView
-                    android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/time"
                     android:textColor="@color/tv_deep_gray"
-                    android:textSize="14sp"
-                    android:text="@string/time" />
+                    android:textSize="14sp" />
 
                 <TextView
                     android:id="@+id/banquet_order_banquet_time"
-                    android:layout_marginLeft="10dip"
-                    android:layout_height="wrap_content"
                     android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dip"
+                    android:gravity="right"
                     android:textColor="@color/tv_deep_gray"
-                    android:textSize="15sp"
-                    android:gravity="right" />
+                    android:textSize="15sp" />
             </LinearLayout>
 
             <View
-                android:layout_height="1dip"
                 android:layout_width="match_parent"
+                android:layout_height="1dip"
                 android:background="@color/bg_gray_white" />
 
             <LinearLayout
-                android:layout_height="wrap_content"
-                android:minHeight="50dip"
                 android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:gravity="center_vertical"
-                android:paddingRight="5dip"
+                android:minHeight="50dip"
+                android:orientation="horizontal"
                 android:paddingLeft="5dip"
-                android:orientation="horizontal">
+                android:paddingRight="5dip">
 
                 <TextView
-                    android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/price"
                     android:textColor="@color/tv_deep_gray"
-                    android:textSize="14sp"
-                    android:text="@string/price" />
+                    android:textSize="14sp" />
 
                 <TextView
-                    android:layout_marginLeft="10dip"
-                    android:layout_height="wrap_content"
-                    android:layout_width="match_parent"
                     android:id="@+id/banquet_order_banquet_price"
-                    android:textColor="@color/tv_deep_gray"
-                    android:textSize="15sp"
-                    android:gravity="right" />
-            </LinearLayout>
-
-            <View
-                android:layout_height="1dip"
-                android:layout_width="match_parent"
-                android:background="@color/bg_gray_white" />
-
-            <LinearLayout
-                android:layout_height="wrap_content"
-                android:minHeight="35dip"
-                android:layout_width="match_parent"
-                android:gravity="bottom"
-                android:paddingRight="5dip"
-                android:paddingLeft="5dip"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_height="wrap_content"
-                    android:layout_width="wrap_content"
-                    android:textColor="@color/tv_deep_gray"
-                    android:textSize="14sp"
-                    android:text="@string/address" />
-
-                <TextView
-                    android:layout_marginLeft="10dip"
-                    android:layout_height="wrap_content"
                     android:layout_width="match_parent"
-                    android:id="@+id/banquet_order_banquet_location"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dip"
+                    android:gravity="right"
                     android:textColor="@color/tv_deep_gray"
-                    android:textSize="15sp"
-                    android:gravity="right" />
+                    android:textSize="15sp" />
             </LinearLayout>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/banquet_detail_address_notify"
-                android:textSize="12sp"
-                android:layout_marginTop="5dip"
-                android:layout_marginRight="5dip"
-                android:textColor="@color/bg_light_gray"
-                android:layout_gravity="right" />
-
-
             <View
-                android:layout_height="1dip"
                 android:layout_width="match_parent"
+                android:layout_height="1dip"
                 android:background="@color/bg_gray_white" />
 
             <LinearLayout
-                android:layout_height="wrap_content"
-                android:minHeight="50dip"
                 android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:gravity="center_vertical"
-                android:paddingRight="5dip"
+                android:minHeight="50dip"
+                android:orientation="horizontal"
                 android:paddingLeft="5dip"
-                android:orientation="horizontal">
+                android:paddingRight="5dip">
 
                 <TextView
-                    android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/num"
                     android:textColor="@color/tv_deep_gray"
-                    android:textSize="14sp"
-                    android:text="@string/mobile_phone" />
+                    android:textSize="14sp" />
 
                 <TextView
-                    android:layout_marginLeft="10dip"
-                    android:layout_height="wrap_content"
+                    android:id="@+id/banquet_order_banquet_num"
                     android:layout_width="match_parent"
-                    android:id="@+id/banquet_order_banquet_phone"
-                    android:layout_weight="1"
-                    android:text="@string/input_telephone"
-                    android:textColor="@color/tv_light_gray"
-                    android:textSize="15sp"
-                    android:gravity="right" />
-
-                <ImageView
-                    android:layout_height="25dip"
-                    android:layout_width="20dip"
-                    android:src="@drawable/arrow_expend_right"
-                    android:scaleType="center" />
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dip"
+                    android:gravity="right"
+                    android:textColor="@color/tv_deep_gray"
+                    android:textSize="15sp" />
             </LinearLayout>
 
             <View
-                android:layout_height="1dip"
                 android:layout_width="match_parent"
+                android:layout_height="1dip"
                 android:background="@color/bg_gray_white" />
 
             <LinearLayout
-                android:layout_height="wrap_content"
-                android:minHeight="50dip"
                 android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:gravity="center_vertical"
-                android:paddingRight="5dip"
+                android:minHeight="50dip"
+                android:orientation="horizontal"
                 android:paddingLeft="5dip"
-                android:orientation="horizontal">
+                android:paddingRight="5dip">
 
                 <TextView
-                    android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/total_price"
                     android:textColor="@color/tv_deep_gray"
-                    android:textSize="14sp"
-                    android:text="@string/remark" />
+                    android:textSize="14sp" />
 
                 <TextView
-                    android:layout_height="wrap_content"
+                    android:id="@+id/banquet_order_banquet_total_price"
                     android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_marginLeft="10dip"
-                    android:id="@+id/banquet_order_banquet_remark"
-                    android:text="@string/remark_to_host"
-                    android:textColor="@color/tv_light_gray"
-                    android:textSize="15sp"
-                    android:gravity="right" />
+                    android:gravity="right"
+                    android:textColor="@color/tv_deep_gray"
+                    android:textSize="15sp" />
             </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dip"
+                android:background="@color/bg_gray_white" />
+
+            <!--<LinearLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:gravity="bottom"-->
+            <!--android:minHeight="35dip"-->
+            <!--android:orientation="horizontal"-->
+            <!--android:paddingLeft="5dip"-->
+            <!--android:paddingRight="5dip">-->
+
+            <!--<TextView-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="@string/address"-->
+            <!--android:textColor="@color/tv_deep_gray"-->
+            <!--android:textSize="14sp" />-->
+
+            <!--<TextView-->
+            <!--android:id="@+id/banquet_order_banquet_location"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_marginLeft="10dip"-->
+            <!--android:gravity="right"-->
+            <!--android:textColor="@color/tv_deep_gray"-->
+            <!--android:textSize="15sp" />-->
+            <!--</LinearLayout>-->
+
+            <!--<TextView-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_gravity="right"-->
+            <!--android:layout_marginRight="5dip"-->
+            <!--android:layout_marginTop="5dip"-->
+            <!--android:text="@string/banquet_detail_address_notify"-->
+            <!--android:textColor="@color/bg_light_gray"-->
+            <!--android:textSize="12sp" />-->
+
+
+            <!--<View-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="1dip"-->
+            <!--android:background="@color/bg_gray_white" />-->
+
+            <!--<LinearLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:gravity="center_vertical"-->
+            <!--android:minHeight="50dip"-->
+            <!--android:orientation="horizontal"-->
+            <!--android:paddingLeft="5dip"-->
+            <!--android:paddingRight="5dip">-->
+
+            <!--<TextView-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="@string/mobile_phone"-->
+            <!--android:textColor="@color/tv_deep_gray"-->
+            <!--android:textSize="14sp" />-->
+
+            <!--<TextView-->
+            <!--android:id="@+id/banquet_order_banquet_phone"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_marginLeft="10dip"-->
+            <!--android:layout_weight="1"-->
+            <!--android:gravity="right"-->
+            <!--android:text="@string/input_telephone"-->
+            <!--android:textColor="@color/tv_light_gray"-->
+            <!--android:textSize="15sp" />-->
+
+            <!--<ImageView-->
+            <!--android:layout_width="20dip"-->
+            <!--android:layout_height="25dip"-->
+            <!--android:scaleType="center"-->
+            <!--android:src="@drawable/arrow_expend_right" />-->
+            <!--</LinearLayout>-->
+
+            <!--<View-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="1dip"-->
+            <!--android:background="@color/bg_gray_white" />-->
+
+            <!--<LinearLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:gravity="center_vertical"-->
+            <!--android:minHeight="50dip"-->
+            <!--android:orientation="horizontal"-->
+            <!--android:paddingLeft="5dip"-->
+            <!--android:paddingRight="5dip">-->
+
+            <!--<TextView-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="@string/remark"-->
+            <!--android:textColor="@color/tv_deep_gray"-->
+            <!--android:textSize="14sp" />-->
+
+            <!--<TextView-->
+            <!--android:id="@+id/banquet_order_banquet_remark"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_marginLeft="10dip"-->
+            <!--android:gravity="right"-->
+            <!--android:text="@string/remark_to_host"-->
+            <!--android:textColor="@color/tv_light_gray"-->
+            <!--android:textSize="15sp" />-->
+            <!--</LinearLayout>-->
 
             <!--<View-->
             <!--android:layout_width="match_parent"-->
@@ -210,8 +332,8 @@
             <!--android:background="@color/bg_light_gray" />-->
 
             <TextView
-                android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="10dip"
                 android:text="@string/choose_the_way_to_pay"
                 android:textColor="@color/bg_light_gray"
@@ -224,10 +346,10 @@
                 android:background="@color/bg_light_gray" />
 
             <ListView
-                android:layout_marginTop="8dip"
-                android:layout_height="120dip"
+                android:id="@+id/banquet_order_pay_way_list"
                 android:layout_width="match_parent"
-                android:id="@+id/banquet_order_pay_way_list" />
+                android:layout_height="120dip"
+                android:layout_marginTop="8dip" />
 
 
         </LinearLayout>
@@ -240,67 +362,101 @@
         android:layout_above="@+id/banquet_order_bottom"
         android:background="@drawable/bg_input_diviver" />
 
-    <RelativeLayout
-        android:background="@color/white"
-        android:layout_alignParentBottom="true"
-        android:id="@+id/banquet_order_bottom"
-        android:layout_height="50dip"
-        android:layout_gravity="bottom"
-        android:layout_width="match_parent">
+    <!--<RelativeLayout-->
+    <!--android:id="@+id/banquet_order_bottom"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="50dip"-->
+    <!--android:layout_alignParentBottom="true"-->
+    <!--android:layout_gravity="bottom"-->
+    <!--android:background="@color/white">-->
 
-        <!--<TextView-->
-        <!--android:id="@+id/banquet_order_bottom_price"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:text="198元/位"-->
-        <!--android:layout_marginLeft="10dip"-->
-        <!--android:layout_marginTop="5dip"-->
-        <!--android:textColor="@color/banquet_theme"-->
-        <!--android:textSize="17sp" />-->
+    <!--&lt;!&ndash;<TextView&ndash;&gt;-->
+    <!--&lt;!&ndash;android:id="@+id/banquet_order_bottom_price"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_width="wrap_content"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:text="198元/位"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_marginLeft="10dip"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_marginTop="5dip"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:textColor="@color/banquet_theme"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:textSize="17sp" />&ndash;&gt;-->
+    <!--<TextView-->
+    <!--android:id="@+id/banquet_order_bottom_price"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_marginLeft="10dip"-->
+    <!--android:layout_marginTop="5dip"-->
+    <!--android:text="198"-->
+    <!--android:textColor="@color/banquet_price_text"-->
+    <!--android:textSize="18sp" />-->
+
+    <!--<TextView-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_alignBottom="@id/banquet_order_bottom_price"-->
+    <!--android:layout_marginLeft="3dip"-->
+    <!--android:layout_toRightOf="@id/banquet_order_bottom_price"-->
+    <!--android:text="@string/price_unit"-->
+    <!--android:textColor="@color/banquet_price_text"-->
+    <!--android:textSize="14sp" />-->
+
+    <!--<TextView-->
+    <!--android:id="@+id/banquet_order_bottom_pay_way"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_alignParentBottom="true"-->
+    <!--android:layout_marginBottom="5dip"-->
+    <!--android:layout_marginLeft="10dip"-->
+    <!--android:text="使用支付宝进行支付"-->
+    <!--android:textColor="@color/bg_light_gray"-->
+    <!--android:textSize="13sp" />-->
+
+    <!--<Button-->
+    <!--android:id="@+id/banquet_order_bottom_pay"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:layout_alignParentRight="true"-->
+    <!--android:layout_centerVertical="true"-->
+    <!--android:layout_marginRight="10dip"-->
+    <!--android:background="@drawable/banquet_detail_order_bg"-->
+    <!--android:gravity="center"-->
+    <!--android:paddingLeft="5dip"-->
+    <!--android:paddingRight="5dip"-->
+    <!--android:text="@string/pay_right_now"-->
+    <!--android:textColor="@color/banquet_theme"-->
+    <!--android:textSize="19sp" />-->
+    <!--</RelativeLayout>-->
+
+    <LinearLayout
+        android:id="@+id/banquet_order_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/white"
+        android:orientation="horizontal">
+
         <TextView
             android:id="@+id/banquet_order_bottom_price"
+            android:layout_width="0dip"
             android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:text="198"
-            android:layout_marginLeft="10dip"
-            android:layout_marginTop="5dip"
-            android:textColor="@color/banquet_price_text"
+            android:layout_gravity="center"
+            android:layout_marginLeft="15dip"
+            android:layout_weight="2"
+            android:text="@string/order_total_price"
+            android:textColor="@color/banquet_theme"
             android:textSize="18sp" />
 
-        <TextView
-            android:layout_toRightOf="@id/banquet_order_bottom_price"
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:text="@string/price_unit"
-            android:layout_marginLeft="3dip"
-            android:textColor="@color/banquet_price_text"
-            android:layout_alignBottom="@id/banquet_order_bottom_price"
-            android:textSize="14sp" />
-
-        <TextView
-            android:id="@+id/banquet_order_bottom_pay_way"
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:layout_marginBottom="5dip"
-            android:text="使用支付宝进行支付"
-            android:layout_marginLeft="10dip"
-            android:layout_alignParentBottom="true"
-            android:textColor="@color/bg_light_gray"
-            android:textSize="13sp" />
-
         <Button
-            android:background="@drawable/banquet_detail_order_bg"
             android:id="@+id/banquet_order_bottom_pay"
-            android:layout_height="match_parent"
-            android:layout_width="wrap_content"
-            android:text="@string/pay_right_now"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dip"
+            android:layout_weight="1"
+            android:background="@drawable/banquet_detail_order_bg"
             android:gravity="center"
-            android:paddingRight="5dip"
             android:paddingLeft="5dip"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
+            android:paddingRight="5dip"
+            android:text="@string/order_comfirm"
             android:textColor="@color/banquet_theme"
-            android:textSize="19sp"
-            android:layout_marginRight="10dip" />
-    </RelativeLayout>
+            android:textSize="18sp" />
+    </LinearLayout>
 </RelativeLayout>

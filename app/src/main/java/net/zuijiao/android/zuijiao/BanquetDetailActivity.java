@@ -159,13 +159,13 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             createDialog();
-            Router.getAccountModule().banquetUserInfo( mBanquent.getAttendees().get(position).getIdentifier(), new OneParameterExpression<Attendee>() {
+            Router.getAccountModule().banquetUserInfo(mBanquent.getAttendees().get(position).getIdentifier(), new OneParameterExpression<Attendee>() {
                 @Override
                 public void action(Attendee attendee) {
                     finalizeDialog();
                     Intent intent = new Intent(mContext, HostAndGuestActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    intent.putExtra("attendee_info" , attendee) ;
+                    intent.putExtra("attendee_info", attendee);
                     mContext.startActivity(intent);
                 }
             }, new OneParameterExpression<String>() {
@@ -245,7 +245,7 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
         mAboutHostBtn.setOnClickListener(this);
         mOrderBtn.setOnClickListener(this);
         mHostHead.setOnClickListener(this);
-        Router.getBanquentModule().commentsofBanquent(mBanquent.getMaster().getIdentifier(), null,1, new OneParameterExpression<Reviews>() {
+        Router.getBanquentModule().commentsofBanquent(mBanquent.getMaster().getIdentifier(), null, 1, new OneParameterExpression<Reviews>() {
             @Override
             public void action(Reviews reviews) {
                 mReviews = reviews;
@@ -286,7 +286,7 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
                             finalizeDialog();
                             Intent intent = new Intent(mContext, HostAndGuestActivity.class);
                             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            intent.putExtra("attendee_info" , attendee) ;
+                            intent.putExtra("attendee_info", attendee);
                             mContext.startActivity(intent);
                         }
                     }, new OneParameterExpression<String>() {
@@ -335,13 +335,13 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
             mInstructPosition.setText(address);
         if (mBanquent.getTime() == null) {
             findViewById(R.id.banquet_detail_instruction_content_date).setVisibility(View.GONE);
-        } else{
-            String date  = formatDate(mBanquent.getTime()) ;
-            String endDate = formatDate(mBanquent.getEndTime()) ;
-            if(mBanquent.getTime().getDay() == mBanquent.getEndTime().getDay()){
-                date = date + " ~ " + endDate.substring( endDate.length() - 8, endDate.length()) ;
-            }else{
-                date = date + " ~ " + endDate ;
+        } else {
+            String date = formatDate(mBanquent.getTime());
+            String endDate = formatDate(mBanquent.getEndTime());
+            if (mBanquent.getTime().getDay() == mBanquent.getEndTime().getDay()) {
+                date = date + " ~ " + endDate.substring(endDate.length() - 8, endDate.length());
+            } else {
+                date = date + " ~ " + endDate;
             }
             mInstructDate.setText(date);
         }
@@ -510,7 +510,7 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
                         finalizeDialog();
                         Intent intent = new Intent(mContext, HostAndGuestActivity.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        intent.putExtra("attendee_info" , attendee) ;
+                        intent.putExtra("attendee_info", attendee);
 //                            intent.putExtra("b_host", true);
 //                            intent.putExtra("attendee_id", banquent.getMaster().getUserId());
                         mContext.startActivity(intent);
@@ -568,7 +568,7 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
                 } catch (Throwable e) {
                     e.printStackTrace();
                 }
-                intent.setClass(mContext, BanquetOrderActivity.class);
+                intent.setClass(mContext, BanquetOrderCreateActivity.class);
                 intent.putExtra("banquet", mBanquent);
                 if (phoneNum != null && !phoneNum.equals(""))
                     intent.putExtra("contact_phone_num", phoneNum);

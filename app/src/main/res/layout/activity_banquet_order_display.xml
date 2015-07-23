@@ -1,118 +1,215 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <include
         android:id="@+id/order_display_toolbar"
         layout="@layout/toolbar" />
 
     <ScrollView
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:scrollbars="none">
 
         <LinearLayout
-            android:layout_height="wrap_content"
             android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical">
 
             <LinearLayout
-                android:layout_height="wrap_content"
-                android:layout_width="match_parent"
-                android:layout_margin="5dip"
-                android:elevation="3dip"
-                android:background="@drawable/bg_white_round_corner"
                 android:id="@+id/order_display_clickable_group"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dip"
+                android:background="@drawable/bg_white_round_corner"
+                android:elevation="3dip"
                 android:orientation="vertical">
 
                 <ImageView
+                    android:id="@+id/banquet_order_display_image_view"
+                    android:layout_width="match_parent"
                     android:layout_height="224dip"
-                    android:layout_width="match_parent"
-                    android:src="@drawable/empty_view_greeting"
                     android:scaleType="centerCrop"
-                    android:id="@+id/banquet_order_display_image_view" />
+                    android:src="@drawable/empty_view_greeting" />
 
                 <TextView
-                    android:text="Sonian的台味厨房"
-                    android:singleLine="false"
-                    android:layout_marginLeft="5dip"
-                    android:layout_marginRight="5dip"
                     android:id="@+id/banquet_order_display_title"
-                    android:textSize="18sp"
-                    android:textColor="@color/black"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:gravity="center_horizontal"
-                    android:layout_marginTop="10dip"
-                    android:layout_width="wrap_content" />
-
-                <TextView
-                    android:layout_height="wrap_content"
-                    android:layout_width="match_parent"
                     android:layout_marginLeft="5dip"
                     android:layout_marginRight="5dip"
-                    android:layout_marginBottom="10dip"
-                    android:id="@+id/banquet_order_display_date_location"
-                    android:textSize="14sp"
-                    android:textColor="@color/_555555"
                     android:layout_marginTop="10dip"
+                    android:gravity="center_horizontal"
+                    android:singleLine="false"
+                    android:text="Sonian的台味厨房"
+                    android:textColor="@color/black"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/banquet_order_display_date_location"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dip"
+                    android:layout_marginLeft="5dip"
+                    android:layout_marginRight="5dip"
+                    android:layout_marginTop="10dip"
+                    android:singleLine="false"
                     android:text="2015"
-                    android:singleLine="false" />
+                    android:textColor="@color/_555555"
+                    android:textSize="14sp" />
             </LinearLayout>
 
             <View
-                android:layout_height="1dip"
                 android:layout_width="match_parent"
+                android:layout_height="1dip"
                 android:background="@color/bg_light_gray2" />
 
-            <TextView
-                android:id="@+id/banquet_order_display_status"
+            <LinearLayout
+                android:id="@+id/banquet_order_surplus_status"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:textSize="16sp"
-                android:layout_margin="10dip"
-                android:gravity="right"
-                android:textColor="@color/tv_light_gray"
-                android:text="等待赏味" />
+                android:orientation="horizontal"
+                android:paddingBottom="20dip"
+                android:paddingTop="20dip"
+                android:visibility="gone">
 
-            <include
-                layout="@layout/order_detail_info_item"
-                android:id="@+id/order_detail_oder_id" />
+                <TextView
+                    android:layout_width="0dip"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1"
+                    android:gravity="right"
+                    android:text="@string/waiting_time"
+                    android:textColor="@color/tv_light_gray"
+                    android:textSize="18sp" />
 
-            <include
-                layout="@layout/order_detail_info_item"
-                android:id="@+id/order_detail_oder_price" />
+                <TextView
+                    android:id="@+id/banquet_order_surplus_time"
+                    android:layout_width="0dip"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:text="@string/surplus_time"
+                    android:textSize="18sp" />
+            </LinearLayout>
 
-            <include
-                layout="@layout/order_detail_info_item"
-                android:id="@+id/order_detail_oder_phone" />
-
-            <include
-                layout="@layout/order_detail_info_item"
-                android:id="@+id/order_detail_oder_remark" />
-
-            <include
-                layout="@layout/order_detail_info_item"
-                android:id="@+id/order_detail_oder_time" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dip"
+                android:layout_marginRight="10dip"
+                android:layout_marginTop="8dip"
+                android:text="@string/order_msg"
+                android:textColor="@color/black"
+                android:textSize="18sp" />
 
             <View
-                android:layout_height="1dip"
                 android:layout_width="match_parent"
+                android:layout_height="2dip"
+                android:layout_margin="8dip"
+                android:background="@color/black" />
+
+            <include
+                android:id="@+id/order_detail_status"
+                layout="@layout/order_detail_info_item" />
+
+            <include
+                android:id="@+id/order_detail_oder_id"
+                layout="@layout/order_detail_info_item" />
+
+            <include
+                android:id="@+id/order_detail_oder_price"
+                layout="@layout/order_detail_info_item" />
+
+            <include
+                android:id="@+id/order_detail_attendee_num"
+                layout="@layout/order_detail_info_item" />
+
+            <include
+                android:id="@+id/order_detail_oder_total_price"
+                layout="@layout/order_detail_info_item" />
+
+            <include
+                android:id="@+id/order_detail_oder_phone"
+                layout="@layout/order_detail_info_item" />
+
+            <include
+                android:id="@+id/order_detail_oder_remark"
+                layout="@layout/order_detail_info_item" />
+
+            <include
+                android:id="@+id/order_detail_oder_time"
+                layout="@layout/order_detail_info_item" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dip"
                 android:background="@color/bg_light_gray2" />
 
             <TextView
                 android:id="@+id/order_notice"
-                android:textSize="14sp"
-                android:layout_marginTop="10dip"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginLeft="10dip"
                 android:layout_marginRight="10dip"
-                android:textColor="@color/bg_light_gray"
-                android:layout_height="wrap_content"
+                android:layout_marginTop="10dip"
                 android:lineSpacingExtra="7dip"
-                android:layout_marginBottom="20dip"
+                android:text="@string/banquet_order_notice"
+                android:textColor="@color/bg_light_gray"
+                android:textSize="14sp" />
+
+            <Button
+                android:id="@+id/order_cancel"
                 android:layout_width="match_parent"
-                android:text="@string/banquet_order_notice" />
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dip"
+                android:layout_marginLeft="15dip"
+                android:layout_marginRight="15dip"
+                android:layout_marginTop="15dip"
+                android:background="@drawable/order_cancel_selector"
+                android:gravity="center"
+                android:text="@string/order_cancel"
+                android:textColor="@color/banquet_theme"
+                android:textSize="18sp"
+                android:visibility="gone" />
         </LinearLayout>
     </ScrollView>
+
+    <LinearLayout
+        android:id="@+id/order_detail_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/white"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/order_detail_total_price"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="15dip"
+            android:layout_weight="2"
+            android:text="@string/order_total_price"
+            android:textColor="@color/banquet_theme"
+            android:textSize="18sp" />
+
+        <Button
+            android:id="@+id/order_detail_pay"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dip"
+            android:layout_weight="1"
+            android:background="@drawable/banquet_detail_order_bg"
+            android:gravity="center"
+            android:paddingLeft="5dip"
+            android:paddingRight="5dip"
+            android:text="@string/pay_right_now"
+            android:textColor="@color/banquet_theme"
+            android:textSize="18sp" />
+    </LinearLayout>
 </LinearLayout>

@@ -238,7 +238,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                 }, new OneParameterExpression<Integer>() {
                     @Override
                     public void action(Integer errorMessage) {
-                        if (errorMessage != null && errorMessage.equals("401")) {
+                        if (errorMessage != null && errorMessage == 401) {
                             Toast.makeText(getApplicationContext(), getString(R.string.repeat_email_address), Toast.LENGTH_SHORT).show();
                         } else {
                             Toast.makeText(getApplicationContext(), getString(R.string.notify_net2), Toast.LENGTH_SHORT).show();
@@ -277,6 +277,10 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
         if (mPwdConfirm == null || !mPwdConfirm.equals(mPwd)) {
             mErrorCode = getString(R.string.register_error_pwd_imsame);
             return false;
+        }
+        if(mPwd.length() <6){
+            mErrorCode = getString(R.string.pwd_too_short) ;
+            return false ;
         }
         return true;
     }

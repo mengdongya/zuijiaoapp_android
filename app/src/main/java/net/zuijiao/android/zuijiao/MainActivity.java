@@ -318,10 +318,6 @@ public final class MainActivity extends BaseActivity {
         return true;
     }
 
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-    }
 
     @Override
     protected void registerViews() {
@@ -489,6 +485,8 @@ public final class MainActivity extends BaseActivity {
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
     }
+
+
 
     private BadgeView initBadgeView() {
         ViewGroup badgeParent = (ViewGroup) findViewById(R.id.badge_parent);

@@ -375,7 +375,7 @@
     <string name="notify_comment_score">请按星形来评价</string>
     <string name="notify_comment_content">请填写你的赏味体验</string>
     <string name="comment_complete">谢谢评价</string>
-
+    <string name="pwd_too_short">请输入6位以上字符的密码</string>
     <!-- umeng socialize strings begin-->
     <!--<string name="pull_to_refresh_pull_label" translatable="false">向下拉动可以刷新</string>-->
     <!--<string name="pull_to_refresh_release_label" translatable="false">松开可以刷新</string>-->

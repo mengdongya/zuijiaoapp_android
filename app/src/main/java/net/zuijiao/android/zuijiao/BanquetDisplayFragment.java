@@ -1,5 +1,6 @@
 package net.zuijiao.android.zuijiao;
 
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -57,13 +58,24 @@ public class BanquetDisplayFragment extends Fragment implements RefreshAndInitLi
         netWorkStep(true);
         return mContentView;
     }
-
-
     public static BanquetDisplayFragment newInstance (){
         BanquetDisplayFragment fragment = new BanquetDisplayFragment();
         Bundle bundle = new Bundle();
         return fragment;
     }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        if(mAdapter != null && mListView != null )
+            mListView.setAdapter(mAdapter);
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

@@ -199,6 +199,11 @@ public final class UserInfoActivity extends BaseActivity implements View.OnClick
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == EDIT_USER_INFO_REQ && resultCode == RESULT_OK) {
             mFullUser = mFileMng.getFullUser();

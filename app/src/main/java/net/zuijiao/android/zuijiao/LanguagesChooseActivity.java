@@ -81,7 +81,8 @@ public class LanguagesChooseActivity extends BaseActivity {
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 //        mLanguages = Cache.INSTANCE.
-        selectedCode = mTendIntent.getStringArrayListExtra("selected_language");
+        if(mTendIntent != null )
+            selectedCode = mTendIntent.getStringArrayListExtra("selected_language");
         if (selectedCode == null) {
             selectedCode = new ArrayList<>();
         }

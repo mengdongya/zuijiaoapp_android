@@ -21,6 +21,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -62,6 +63,8 @@ public class BanquetOrderActivity extends BaseActivity implements View.OnClickLi
     private TextView mBottomPayWay;
     @ViewInject(R.id.banquet_order_pay_way_list)
     private ListView mPayWayList;
+    @ViewInject(R.id.banquet_order_bottom)
+    private RelativeLayout mBottomView ;
     public static Banquent mBanquent;
     private String[] weekDays;
     private String mRemark;
@@ -140,12 +143,20 @@ public class BanquetOrderActivity extends BaseActivity implements View.OnClickLi
         mBanquetPhone.setOnClickListener(this);
         mBanquetRemark.setOnClickListener(this);
         mPayBtn.setOnClickListener(this);
+
+
+        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mBottomView.getLayoutParams();
+        mBottomPrice.measure(0 , 0 );
+        int priceHeight = mBottomPrice.getMeasuredHeight();
+        mBottomPayWay.measure(0 , 0);
+        int dateHeight = mBottomPayWay.getMeasuredHeight() ;
+        int margin = (int) (3* getResources().getDimension(R.dimen.end_z));
+        params.height = priceHeight + dateHeight + margin ;
     }
 
     private void initViewsByBanquet() {
         mBanquetTime.setText(formatDate(mBanquent.getTime()));
         mBanquetPrice.setText(String.format(getString(R.string.price_per_one), mBanquent.getPrice()));
-//        mBottomPrice.setText(String.format(getString(R.string.price_per_one), mBanquent.getPrice()));
         mBottomPrice.setText(String.valueOf(mBanquent.getPrice()));
         mBottomPayWay.setText(getString(R.string.use) + payWayRes[mSelectedPayWay]);
         mBanquetLocation.setText(mBanquent.getAddress());

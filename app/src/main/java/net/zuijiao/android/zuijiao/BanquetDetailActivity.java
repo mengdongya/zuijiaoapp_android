@@ -2,6 +2,7 @@ package net.zuijiao.android.zuijiao;
 
 import android.app.ActionBar;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Handler;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
@@ -14,9 +15,12 @@ import android.view.animation.TranslateAnimation;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -219,6 +223,11 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
     };
 
     @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+    }
+
+    @Override
     protected void registerViews() {
         Log.i("outofmemory ", "oncreate");
         setSupportActionBar(mToolbar);
@@ -257,6 +266,15 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
                 Toast.makeText(mContext, getString(R.string.get_history_list_failed), Toast.LENGTH_SHORT).show();
             }
         });
+        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mBottomView.getLayoutParams();
+        mBottomPrice.measure(0 , 0 );
+        int priceHeight = mBottomPrice.getMeasuredHeight();
+        mBottomDate.measure(0 , 0);
+        int dateHeight = mBottomDate.getMeasuredHeight() ;
+        int margin = (int) (3* getResources().getDimension(R.dimen.end_z));
+        params.height = priceHeight + dateHeight + margin ;
+        RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) mScrollView.getLayoutParams();
+        layoutParams.bottomMargin = params.height ;
     }
 
     private void registerCommentView() {

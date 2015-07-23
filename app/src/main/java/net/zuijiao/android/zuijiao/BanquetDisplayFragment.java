@@ -1,5 +1,6 @@
 package net.zuijiao.android.zuijiao;
 
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -16,6 +17,7 @@ import com.zuijiao.adapter.BanquetAdapter;
 import com.zuijiao.android.util.functional.OneParameterExpression;
 import com.zuijiao.android.zuijiao.model.Banquent.Banquents;
 import com.zuijiao.android.zuijiao.network.Router;
+import com.zuijiao.controller.FileManager;
 import com.zuijiao.view.RefreshAndInitListView;
 
 import java.lang.reflect.Field;
@@ -32,13 +34,11 @@ public class BanquetDisplayFragment extends Fragment implements RefreshAndInitLi
     private WebViewClient mWvClient = null;
     private BanquetAdapter mAdapter;
     private Integer lastedId = null;
-    private MainActivity mParentActivity;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         if (mContentView == null)
             mContentView = inflater.inflate(R.layout.fragment_banquet, null);
-        mParentActivity = (MainActivity) getActivity();
         mListView = (RefreshAndInitListView) mContentView.findViewById(R.id.banquet_list_view);
         mListView.setPullRefreshEnable(false);
         mAdapter = new BanquetAdapter(getActivity());
@@ -57,6 +57,28 @@ public class BanquetDisplayFragment extends Fragment implements RefreshAndInitLi
         mListView.setListViewListener(this);
         netWorkStep(true);
         return mContentView;
+    }
+    public static BanquetDisplayFragment newInstance (){
+        BanquetDisplayFragment fragment = new BanquetDisplayFragment();
+        Bundle bundle = new Bundle();
+        return fragment;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        if(mAdapter != null && mListView != null )
+            mListView.setAdapter(mAdapter);
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
     }
 
     public void onDetach() {
@@ -81,6 +103,8 @@ public class BanquetDisplayFragment extends Fragment implements RefreshAndInitLi
         Router.getBanquentModule().themesOfPublic(lastedId, 20, new OneParameterExpression<Banquents>() {
             @Override
             public void action(Banquents banquents) {
+                FileManager fileMng = FileManager.getInstance(getActivity()) ;
+                fileMng.orderBanquetList(banquents.getBanquentList());
                 if (bRefresh) {
                     mAdapter.setData(banquents);
                 } else {

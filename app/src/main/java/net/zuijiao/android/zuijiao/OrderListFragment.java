@@ -56,11 +56,19 @@ public class OrderListFragment extends Fragment implements
     private TextView mBlankText;
     private int[] mBlankTextRes = {R.string.no_coming_order, R.string.no_finished_order, R.string.no_order};
 
-    public OrderListFragment(int index) {
-        super();
-        this.tabIndex = index;
-    }
+//    public OrderListFragment(int index) {
+//        super();
+//        this.tabIndex = index;
+//    }
 
+
+    public static OrderListFragment newInstance(int position){
+        OrderListFragment fragment = new OrderListFragment();
+        Bundle bundle = new Bundle();
+        bundle.putInt("position" ,position );
+        fragment.setArguments(bundle);
+        return fragment;
+    }
     public OrderListFragment() {
         super();
     }
@@ -74,6 +82,7 @@ public class OrderListFragment extends Fragment implements
             }
             return mContentView;
         }
+        tabIndex = getArguments().getInt("position") ;
         weekDays = getResources().getStringArray(R.array.week_days);
         mContentView = inflater.inflate(R.layout.fragment_order_list, null);
         mRefreshLayout = (SwipeRefreshLayout) mContentView.findViewById(R.id.order_fragment_swipe_refresh);
@@ -179,6 +188,10 @@ public class OrderListFragment extends Fragment implements
         });
     }
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
     /**
      * orders list adapter
      */

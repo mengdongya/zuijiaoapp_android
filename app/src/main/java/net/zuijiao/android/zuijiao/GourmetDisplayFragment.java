@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -91,22 +92,24 @@ public class GourmetDisplayFragment extends Fragment
             startActivity(intent);
         }
     };
-
     public GourmetDisplayFragment() {
         super();
     }
 
-    @SuppressLint("ValidFragment")
-    public GourmetDisplayFragment(int Type, Context context) {
-        super();
-        this.mContentType = Type;
-        this.mContext = context;
-        mDisplayUser = Router.getInstance().getCurrentUser();
-    }
-
-    //set the page display content type ;
-    public void setType(int type) {
-        this.mContentType = type;
+//    @SuppressLint("ValidFragment")
+//    public GourmetDisplayFragment(int Type, Context context) {
+//        super();
+//        this.mContentType = Type;
+//        this.mContext = context;
+//        mDisplayUser = Router.getInstance().getCurrentUser();
+//    }
+    public static GourmetDisplayFragment newInstance(int type ){
+        GourmetDisplayFragment fragment = new GourmetDisplayFragment();
+        Bundle bundle = new Bundle();
+        bundle.putInt("type" ,type );
+//        bundle.putString( ARG, arg);
+        fragment.setArguments(bundle);
+        return fragment;
     }
 
     @Override
@@ -143,6 +146,9 @@ public class GourmetDisplayFragment extends Fragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         this.mInflater = inflater;
+       Bundle bundle = getArguments() ;
+        if(bundle != null)
+            mContentType = bundle.getInt("type") ;
         mContentView = inflater.inflate(R.layout.fragment_gourmet, null);
         mActivity = (BaseActivity) getActivity();
         mContext = mActivity.getApplicationContext();
@@ -155,6 +161,13 @@ public class GourmetDisplayFragment extends Fragment
         return mContentView;
     }
 
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        if(mAdapter != null && mListView != null )
+            mListView.setAdapter(mAdapter);
+    }
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -574,6 +587,10 @@ public class GourmetDisplayFragment extends Fragment
                 break;
         }
         startActivity(intent);
+    }
+
+    public void setType(int type) {
+        this.mContentType = type;
     }
 
     private class FloatButtonListener implements View.OnClickListener {

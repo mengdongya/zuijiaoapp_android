@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.res.Configuration;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
@@ -113,6 +114,7 @@ public final class MainActivity extends BaseActivity {
     public static final int COMMENT_REQUEST = 10011;
 
 
+
     private OnItemClickListener mTabsListener = new OnItemClickListener() {
 
         @Override
@@ -131,36 +133,10 @@ public final class MainActivity extends BaseActivity {
             mCurrentFragment = mFragmentList.get(position);
             mToolBar.setTitle(titles[position]);
             if (position == 3) {
-//                removeBadgeView();
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     mToolBar.setElevation(0);
                 }
-//                if (!mToolBar.getMenu().hasVisibleItems())
-//                    mToolBar.getMenu().add(0, R.id.action_already_read, 1, getString(R.string.already_read))
-//                            .setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS)
-//                            .setOnMenuItemClickListener((MenuItem item) -> {
-//                                Router.getMessageModule().markAsRead(() -> {
-//                                    unReadNewsCount = 0 ;
-//                                    mTabTitleAdapter.notifyDataSetChanged();
-//                                }, () -> {
-//
-//                                });
-//                                Router.getMessageModule().markAsRead(News.NotificationType.Notice, () -> {
-//                                    if (mMyOrderFragment != null) {
-//                                        mMyOrderFragment.notificationRead();
-//                                    }
-//                                }, () -> {
-//                                });
-//                                Router.getMessageModule().markAsRead(News.NotificationType.Comment, () -> {
-//                                    if (mMyOrderFragment != null) {
-//                                        mMyOrderFragment.messageRead();
-//                                    }
-//                                }, () -> {
-//                                });
-//                                return false;
-//                            });
             } else {
-//                mToolBar.getMenu().removeItem(R.id.action_already_read);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     mToolBar.setElevation(30);
                 }
@@ -240,10 +216,6 @@ public final class MainActivity extends BaseActivity {
             image.setImageResource(mTabImages[position]);
             textView.setText(getString(mTabTitles[position]));
             textMsg.setVisibility(View.GONE);
-//            if (position == 3 && unReadNewsCount != 0) {
-//                textMsg.setText(unReadNewsCount + "");
-//                textMsg.setVisibility(View.VISIBLE);
-//            }
             return contentView;
         }
 
@@ -294,14 +266,6 @@ public final class MainActivity extends BaseActivity {
             if (position == 0) {
                 FeedbackAgent agent = new FeedbackAgent(MainActivity.this);
                 agent.startFeedbackActivity();
-//                Intent feedBackIntent = new Intent(MainActivity.this,
-//                        CommonWebViewActivity.class);
-//                feedBackIntent.putExtra("title",
-//                        getResources().getString(R.string.feed_back));
-//                String token = Router.getInstance().getAccessToken().get();
-//                String url = String.format(getString(R.string.feed_back_url), "", token);
-//                feedBackIntent.putExtra("content_url", getString(R.string.feed_back_url));
-//                startActivity(feedBackIntent);
             } else if (position == 1) {
                 Intent feedBackIntent = new Intent(MainActivity.this,
                         ConcerningActivity.class);
@@ -353,6 +317,7 @@ public final class MainActivity extends BaseActivity {
         getString(R.string.guest);
         return true;
     }
+
 
     @Override
     protected void registerViews() {
@@ -412,13 +377,13 @@ public final class MainActivity extends BaseActivity {
         mMainTabsTitle.setOnItemClickListener(mTabsListener);
         mThirdPartyUserHead.setOnClickListener(mUserInfoDetail);
         mFragmentList = new ArrayList<Fragment>();
-        mMainFragment = new MainFragment(mContext);
+        mMainFragment =   MainFragment.getInstance();
         mFragmentList.add(mMainFragment);
-        mRecommendFragment = new GourmetDisplayFragment(GourmetDisplayFragment.RECOMMEND_PAGE, mContext);
+        mRecommendFragment =  GourmetDisplayFragment.newInstance(GourmetDisplayFragment.RECOMMEND_PAGE) ;
         mFragmentList.add(mRecommendFragment);
-        mFavorFragment = new GourmetDisplayFragment(GourmetDisplayFragment.FAVOR_PAGE, mContext);
+        mFavorFragment = GourmetDisplayFragment.newInstance(GourmetDisplayFragment.FAVOR_PAGE) ;
         mFragmentList.add(mFavorFragment);
-        mMyOrderFragment = new MyOrderFragment();
+        mMyOrderFragment =  MyOrderFragment.getInstance();
         mFragmentList.add(mMyOrderFragment);
         mFragmentMng = getSupportFragmentManager();
         mFragmentTransaction = mFragmentMng.beginTransaction();
@@ -510,6 +475,18 @@ public final class MainActivity extends BaseActivity {
     public void onResume() {
         super.onResume();
     }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+    }
+
+
 
     private BadgeView initBadgeView() {
         ViewGroup badgeParent = (ViewGroup) findViewById(R.id.badge_parent);
@@ -621,7 +598,6 @@ public final class MainActivity extends BaseActivity {
             @Override
             public void action(NewsList newsList) {
                 mNewsList = newsList;
-//            mTabTitleAdapter.notifyDataSetChanged();
             }
         }, null);
     }
@@ -650,6 +626,8 @@ public final class MainActivity extends BaseActivity {
                         R.array.settings1);
         mSettingList.setAdapter(mSettingAdapter);
     }
+
+
 
     private void checkVersion() {
         UmengUpdateAgent.setUpdateOnlyWifi(true);

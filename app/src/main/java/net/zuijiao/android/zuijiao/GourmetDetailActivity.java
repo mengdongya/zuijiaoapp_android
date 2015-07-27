@@ -459,7 +459,7 @@ public class GourmetDetailActivity extends BaseActivity implements
      * @param action
      */
     private void distributeShareAction(int action) {
-        mController.setShareContent(String.format(getString(R.string.share_content), gourmet.getName()));
+        mController.setShareContent(String.format(getString(R.string.share_content), gourmet.getName())+BuildConfig.Web_View_Url + mShareUrl + gourmet.getIdentifier());
         mController.setShareMedia(new UMImage(mContext,
                 BuildConfig.Web_View_Url + mShareUrl + gourmet.getIdentifier()));
         switch (action) {
@@ -505,6 +505,9 @@ public class GourmetDetailActivity extends BaseActivity implements
 
             @Override
             public void onStart() {
+                if (platform.equals(SHARE_MEDIA.SMS)){
+
+                }
             }
 
             @Override

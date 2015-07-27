@@ -32,17 +32,18 @@
                 android:text="上海市黄浦区知音苑上海市黄浦区知音苑上海市黄浦区知音苑上海市黄浦区知音苑"
                 android:singleLine="true"
                 android:textSize="16sp"
-                android:gravity="center_vertical"
                 android:textColor="@color/black"
-                android:layout_height="30dip" />
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dip" />
             <TextView
                 android:id="@+id/baidu_map_distance"
                 android:layout_width="match_parent"
-                android:layout_height="30dip"
+                android:layout_height="wrap_content"
                 android:textSize="16sp"
                 android:gravity="center_vertical"
                 android:text="距您5.8km"
-                android:textColor="@color/bg_light_gray2"/>
+                android:textColor="@color/bg_light_gray2"
+                android:layout_marginBottom="10dip" />
         </LinearLayout>
         <TextView
             android:layout_width="60dip"
@@ -50,7 +51,7 @@
             android:paddingRight="10dip"
             android:paddingLeft="10dip"
             android:paddingTop="20dip"
-            android:layout_marginRight="20dip"
+            android:layout_marginRight="10dip"
             android:layout_marginLeft="10dip"
             android:text="导航"
             android:onClick="navi"

@@ -2,13 +2,21 @@ package net.zuijiao.android.zuijiao;
 
 import android.app.ActionBar;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Rect;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Handler;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.widget.AdapterView;
@@ -17,6 +25,7 @@ import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,7 +33,19 @@ import com.lidroid.xutils.view.annotation.ContentView;
 import com.lidroid.xutils.view.annotation.ViewInject;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.sina.weibo.sdk.auth.sso.SsoHandler;
 import com.squareup.picasso.Picasso;
+import com.umeng.socialize.bean.SHARE_MEDIA;
+import com.umeng.socialize.bean.SocializeEntity;
+import com.umeng.socialize.controller.UMServiceFactory;
+import com.umeng.socialize.controller.UMSocialService;
+import com.umeng.socialize.controller.listener.SocializeListeners;
+import com.umeng.socialize.media.UMImage;
+import com.umeng.socialize.sso.QZoneSsoHandler;
+import com.umeng.socialize.sso.SinaSsoHandler;
+import com.umeng.socialize.sso.SmsHandler;
+import com.umeng.socialize.sso.UMQQSsoHandler;
+import com.umeng.socialize.weixin.controller.UMWXHandler;
 import com.zuijiao.adapter.ImageViewPagerAdapter;
 import com.zuijiao.android.util.functional.LambdaExpression;
 import com.zuijiao.android.util.functional.OneParameterExpression;
@@ -38,6 +59,9 @@ import com.zuijiao.android.zuijiao.model.user.TinyUser;
 import com.zuijiao.android.zuijiao.model.user.User;
 import com.zuijiao.android.zuijiao.network.Router;
 import com.zuijiao.controller.ActivityTask;
+import com.zuijiao.thirdopensdk.QQApi;
+import com.zuijiao.thirdopensdk.WeiboApi;
+import com.zuijiao.thirdopensdk.WeixinApi;
 import com.zuijiao.utils.AdapterViewHeightCalculator;
 import com.zuijiao.view.BanquetDetailScrollView;
 import com.zuijiao.view.ReviewRatingBar;
@@ -123,10 +147,27 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
     private View mBottomOrderView;
     @ViewInject(R.id.banquet_comment_rtatingbar)
     private ReviewRatingBar mCommentRatingbar;
+    @ViewInject(R.id.banquet_datail_root)
+    private View rootView = null;
     private Reviews mReviews;
     private Banquent mBanquent;
     private String[] weekDays;
     private ImageViewPagerAdapter mViewPagerAdapter = null;
+
+    private static final int SHARE_TO_WEIBO = 0;
+    private static final int SHARE_TO_WECHAT = 1;
+    private static final int SHARE_TO_FRIEND_CIRCLE = 2;
+    private static final int SHARE_TO_QQ = 3;
+    private static final int SHARE_TO_QQ_SPACE = 4;
+    private static final int SHARE_TO_SMS = 5;
+    private String mShareUrl = "/zuijiao/share/cuisine?id=";
+    private final UMSocialService mController = UMServiceFactory.getUMSocialService("com.umeng.share");
+    private int mShareImageRes[] = {R.drawable.share_weibo, R.drawable.share_weixin, R.drawable.share_friend_circle, R.drawable.share_qq, R.drawable.share_qq_space,R.drawable.share_sms};
+    private int mShareTextRes[] = {R.string.weibo, R.string.weixin_friend, R.string.weixin_friend_circle, R.string.qq_friend, R.string.qq_space,R.string.sms};
+    private int rootBottom = Integer.MIN_VALUE;
+    private boolean withImage = true;
+    private SsoHandler mSsoHandler;
+
     private TranslateAnimation hideToolbarAnim = new TranslateAnimation(Animation.RELATIVE_TO_SELF, 0.0f,
             Animation.RELATIVE_TO_SELF, 0.0f, Animation.RELATIVE_TO_SELF,
             0.0f, Animation.RELATIVE_TO_SELF, -1.0f);
@@ -155,6 +196,154 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
 
         }
     };
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        if (Router.getInstance().getCurrentUser().isPresent() && Router.getInstance().getCurrentUser().get().getIdentifier().equals(mBanquent.getIdentifier())) {
+            getMenuInflater().inflate(R.menu.gourmet_detail, menu);
+        } else {
+            getMenuInflater().inflate(R.menu.gourmet_detail_simple, menu);
+        }
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.gourmet_detail_share:
+                createShareWindow();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * call the list of the share ways , including qq friend ,qq space ,weibo ,wechat space ,wechat friend ,msg
+     */
+    private void createShareWindow() {
+
+        View view = null;
+        GridView shareList = null;
+        view = LayoutInflater.from(mContext).inflate(R.layout.share_dialog, null);
+        shareList = (GridView) view.findViewById(R.id.gv_share_dialog);
+        shareList.setAdapter(new BaseAdapter() {
+            @Override
+            public int getCount() {
+                return 6;
+            }
+
+            @Override
+            public Object getItem(int position) {
+                return position;
+            }
+
+            @Override
+            public long getItemId(int position) {
+                return position;
+            }
+
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+                View contentView = LayoutInflater.from(mContext).inflate(R.layout.share_item, null);
+                TextView text = (TextView) contentView.findViewById(R.id.share_item_text);
+                ImageView image = (ImageView) contentView.findViewById(R.id.share_item_image);
+                text.setText(getString(mShareTextRes[position]));
+                image.setImageResource(mShareImageRes[position]);
+                return contentView;
+            }
+        });
+
+        final PopupWindow sharePopupWindow = new PopupWindow(view,
+                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT, true);
+        shareList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view,
+                                    int position, long id) {
+                sharePopupWindow.dismiss();
+                distributeShareAction(position);
+            }
+        });
+        sharePopupWindow.setAnimationStyle(R.style.popwin_anim_style);
+        sharePopupWindow.setTouchable(true);
+        sharePopupWindow.setBackgroundDrawable(new BitmapDrawable(getResources(), (Bitmap) null));
+        sharePopupWindow.setOnDismissListener(new poponDismissListener());
+        sharePopupWindow.setOutsideTouchable(true);
+        sharePopupWindow.showAtLocation(rootView, Gravity.BOTTOM, 0, 0);
+        backgroundAlpha(0.5f);
+    }
+
+    /**
+     * share to different way
+     *
+     * @param action
+     */
+    private void distributeShareAction(int action) {
+        mController.setShareContent(String.format(getString(R.string.share_content), mBanquent.getTitle())+BuildConfig.Web_View_Url + mShareUrl + mBanquent.getIdentifier());
+        mController.setShareMedia(new UMImage(mContext,
+                BuildConfig.Web_View_Url + mShareUrl + mBanquent.getIdentifier()));
+        switch (action) {
+            case SHARE_TO_WEIBO:
+                mController.getConfig().setSsoHandler(new SinaSsoHandler());
+                mController.getConfig().setSinaCallbackUrl(WeiboApi.REDIRECT_URL);
+                performShare(SHARE_MEDIA.SINA);
+                break;
+            case SHARE_TO_WECHAT:
+                UMWXHandler wxHandler = new UMWXHandler(this, WeixinApi.WEIXIN_ID, WeixinApi.WEIXIN_PWD);
+                wxHandler.addToSocialSDK();
+                performShare(SHARE_MEDIA.WEIXIN);
+                break;
+            case SHARE_TO_FRIEND_CIRCLE:
+                UMWXHandler wxCircleHandler = new UMWXHandler(this, WeixinApi.WEIXIN_ID, WeixinApi.WEIXIN_PWD);
+                wxCircleHandler.setToCircle(true);
+                wxCircleHandler.addToSocialSDK();
+                performShare(SHARE_MEDIA.WEIXIN_CIRCLE);
+                break;
+            case SHARE_TO_QQ:
+                UMQQSsoHandler qqSsoHandler = new UMQQSsoHandler(this,
+                        QQApi.QQ_ID, QQApi.QQ_PWD);
+                qqSsoHandler.addToSocialSDK();
+                performShare(SHARE_MEDIA.QQ);
+                break;
+            case SHARE_TO_QQ_SPACE:
+                QZoneSsoHandler qZoneSsoHandler = new QZoneSsoHandler(this,
+                        QQApi.QQ_ID, QQApi.QQ_PWD);
+                qZoneSsoHandler.addToSocialSDK();
+                performShare(SHARE_MEDIA.QZONE);
+                break;
+            case SHARE_TO_SMS:
+                SmsHandler smsHandler = new SmsHandler();
+                smsHandler.addToSocialSDK();
+                performShare(SHARE_MEDIA.SMS);
+                break;
+        }
+    }
+
+    private void performShare(SHARE_MEDIA platform) {
+        mController.postShare(this, platform, new SocializeListeners.SnsPostListener() {
+
+            @Override
+            public void onStart() {
+            }
+
+            @Override
+            public void onComplete(SHARE_MEDIA platform, int eCode, SocializeEntity entity) {
+            }
+        });
+    }
+
+    public void backgroundAlpha(float bgAlpha) {
+        WindowManager.LayoutParams lp = getWindow().getAttributes();
+        lp.alpha = bgAlpha; //0.0-1.0
+        getWindow().setAttributes(lp);
+    }
+
+    class poponDismissListener implements PopupWindow.OnDismissListener {
+        @Override
+        public void onDismiss() {
+            backgroundAlpha(1f);
+        }
+    }
     private AdapterView.OnItemClickListener mGridListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -246,7 +435,7 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
         mAboutHostBtn.setOnClickListener(this);
         mOrderBtn.setOnClickListener(this);
         mHostHead.setOnClickListener(this);
-        Router.getBanquentModule().commentsofBanquent(mBanquent.getMaster().getIdentifier(), null,1, new OneParameterExpression<Reviews>() {
+        Router.getBanquentModule().commentsofBanquent(mBanquent.getMaster().getIdentifier(), null, 1, new OneParameterExpression<Reviews>() {
             @Override
             public void action(Reviews reviews) {
                 mReviews = reviews;
@@ -258,6 +447,25 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
                 Toast.makeText(mContext, getString(R.string.get_history_list_failed), Toast.LENGTH_SHORT).show();
             }
         });
+        /*rootView.getViewTreeObserver().addOnGlobalLayoutListener(
+                new ViewTreeObserver.OnGlobalLayoutListener() {
+                    @Override
+                    public void onGlobalLayout() {
+                        Rect r = new Rect();
+                        rootView.getGlobalVisibleRect(r);
+                        if (rootBottom == Integer.MIN_VALUE) {
+                            rootBottom = r.bottom;
+                        } else {
+                            if (withImage)
+                                mScrollView.layout(mScrollView.getLeft(), mScrollView.getCurrentY(), mScrollView.getRight(), mScrollView.getBottom());
+                            else {
+                                mScrollView.layout(mScrollView.getLeft(), (int) mScrollView.getTopY(), mScrollView.getRight(), mScrollView.getBottom());
+                            }
+                        }
+                        onScroll(mScrollView.getScrollY());
+//                        onTopChange(mScrollView.getTop());
+                    }
+                });*/
     }
 
     private void registerCommentView() {

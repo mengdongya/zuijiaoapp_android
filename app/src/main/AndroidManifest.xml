@@ -155,6 +155,7 @@
             android:theme="@style/AppTheme" />
         <activity
             android:name="net.zuijiao.android.zuijiao.BanquetOrderActivity"
+            android:label="@string/order_create_pay"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme"
 
@@ -287,6 +288,13 @@
         <activity
             android:name="net.zuijiao.android.zuijiao.ReviewActivity"
             android:label="@string/evaluate"
+            
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name="net.zuijiao.android.zuijiao.BanquetOrderCreateActivity"
+            android:label="@string/order_create"
+            android:configChanges="fontScale"
 
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />

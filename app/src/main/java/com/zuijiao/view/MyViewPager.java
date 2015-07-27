@@ -5,6 +5,8 @@ import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 
+import net.zuijiao.android.zuijiao.PictureFragment;
+
 public class MyViewPager extends ViewPager {
 
     public MyViewPager(Context context) {
@@ -25,5 +27,4 @@ public class MyViewPager extends ViewPager {
             return false;
         }
     }
-
 }

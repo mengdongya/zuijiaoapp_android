@@ -23,9 +23,10 @@ public enum RouterBanquent {
                             String code,
                             String remark,
                             String payMethod,
+                            Integer quantity,
                             final OneParameterExpression<OrderAuth> successCallback,
                             final OneParameterExpression<String> failureCallback) {
-        service.createOrder(themeId, phoneNumber, code, remark, payMethod, CallbackFactory.getInstance().callback(successCallback, failureCallback));
+        service.createOrder(themeId, phoneNumber, code, remark, payMethod,quantity,CallbackFactory.getInstance().callback(successCallback, failureCallback));
     }
 
     public void createOrder(Integer themeId,

@@ -58,13 +58,13 @@ public class MainFragment extends Fragment {
             mPagerAdapter = new MainPagerAdapter(manager);
         }
         mViewPager.setAdapter(mPagerAdapter);
-        mViewPager.setPageTransformer(true, new ViewPager.PageTransformer() {
-
-            @Override
-            public void transformPage(View page, float position) {
-                PageTransformerUtil.zoomOutPageTransformer(page, position);
-            }
-        });
+//        mViewPager.setPageTransformer(true, new ViewPager.PageTransformer() {
+//
+//            @Override
+//            public void transformPage(View page, float position) {
+//                PageTransformerUtil.zoomOutPageTransformer(page, position);
+//            }
+//        });
         mTabs = (PagerSlidingTab) contentView.findViewById(R.id.notification_tabs);
         initTabsValue();
         mTabs.setViewPager(mViewPager);

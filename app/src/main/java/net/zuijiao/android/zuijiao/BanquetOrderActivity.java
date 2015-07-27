@@ -259,7 +259,7 @@ public class BanquetOrderActivity extends BaseActivity implements View.OnClickLi
                 if (mRemark == null || mRemark.equals("")) {
                     mRemark = " ";
                 }
-                Router.getBanquentModule().createOrder(mBanquent.getIdentifier(), phoneNum, verifyCode, mRemark, payWayStr[mSelectedPayWay], new OneParameterExpression<OrderAuth>() {
+                Router.getBanquentModule().createOrder(mBanquent.getIdentifier(), phoneNum, verifyCode, mRemark, payWayStr[mSelectedPayWay], attendeeNum, new OneParameterExpression<OrderAuth>() {
                     @Override
                     public void action(OrderAuth orderAuth) {
                         Log.d("pay_interface", "result_success");

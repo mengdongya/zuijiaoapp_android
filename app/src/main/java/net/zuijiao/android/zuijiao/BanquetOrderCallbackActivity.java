@@ -50,7 +50,8 @@ public class BanquetOrderCallbackActivity extends BaseActivity implements View.O
     protected void registerViews() {
         setSupportActionBar(mToolbar);
         getSupportActionBar().setTitle(getString(R.string.detail_order));
-        bSuccess = mTendIntent.getBooleanExtra("b_success", false);
+        if(mTendIntent != null)
+            bSuccess = mTendIntent.getBooleanExtra("b_success", false);
         weekDays = mContext.getResources().getStringArray(R.array.week_days);
         mFinishBtn.setOnClickListener(this);
         mCompleteTv.setOnClickListener(this);

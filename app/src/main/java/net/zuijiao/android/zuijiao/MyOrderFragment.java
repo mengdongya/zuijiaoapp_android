@@ -16,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.zuijiao.utils.PageTransformerUtil;
 import com.zuijiao.view.PagerSlidingTab;
 
 import java.util.ArrayList;
@@ -40,14 +41,22 @@ public class MyOrderFragment extends Fragment {
 
     private static int needRefreshIndex = -1;
 
-    public MyOrderFragment() {
-        super();
+//    public MyOrderFragment() {
+//        super();
+//    }
+
+    public static  MyOrderFragment getInstance(){
+        MyOrderFragment fragment = new MyOrderFragment();
+        Bundle bundle = new Bundle();
+//        bundle.putInt("position" ,position );
+        fragment.setArguments(bundle);
+        return fragment;
     }
 
-    public MyOrderFragment(Context context) {
-        super();
-        this.mContext = context;
-    }
+//    public MyOrderFragment(Context context) {
+//        super();
+//        this.mContext = context;
+//    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -58,13 +67,24 @@ public class MyOrderFragment extends Fragment {
             mPagerAdapter = new MainPagerAdapter(getChildFragmentManager());
         }
         mViewPager.setAdapter(mPagerAdapter);
+        mViewPager.setPageTransformer(true, new ViewPager.PageTransformer() {
+
+            @Override
+            public void transformPage(View page, float position) {
+                PageTransformerUtil.zoomOutPageTransformer(page, position);
+            }
+        });
         mTabs = (PagerSlidingTab) contentView.findViewById(R.id.notification_tabs);
         initTabsValue();
         mTabs.setViewPager(mViewPager);
         mTabs.setOnPageChangeListener(onPageChangeListener);
         return contentView;
     }
-
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
+    }
     ViewPager.OnPageChangeListener onPageChangeListener = new ViewPager.OnPageChangeListener() {
         @Override
         public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -140,20 +160,20 @@ public class MyOrderFragment extends Fragment {
         public android.support.v4.app.Fragment getItem(int position) {
             if (position == 0) {
                 if (mComingOrderFragment == null)
-                    mComingOrderFragment = new OrderListFragment(position);
+                    mComingOrderFragment =  OrderListFragment.newInstance(position);
                 return mComingOrderFragment;
             } else if (position == 1) {
                 if (mGoneOrderFragment == null)
-                    mGoneOrderFragment = new OrderListFragment(position);
+                    mGoneOrderFragment =   OrderListFragment.newInstance(position);
                 return mGoneOrderFragment;
             } else if (position == 2) {
                 if (mWholeOrderFragment == null)
-                    mWholeOrderFragment = new OrderListFragment(position);
+                    mWholeOrderFragment =   OrderListFragment.newInstance(position);
                 return mWholeOrderFragment;
             } else {
 //                if(mWholeOrderFragment == null)
 //                    mWholeOrderFragment = new OrderListFragment(position ) ;
-                return new OrderListFragment(position);
+                return   OrderListFragment.newInstance(position);
             }
         }
     }

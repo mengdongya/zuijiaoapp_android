@@ -20,7 +20,9 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,11 +30,14 @@ import com.lidroid.xutils.view.annotation.ContentView;
 import com.lidroid.xutils.view.annotation.ViewInject;
 import com.zuijiao.android.util.functional.OneParameterExpression;
 import com.zuijiao.android.zuijiao.model.Banquent.Banquent;
+import com.zuijiao.android.zuijiao.model.Banquent.Order;
 import com.zuijiao.android.zuijiao.model.OrderAuth;
 import com.zuijiao.android.zuijiao.network.Router;
 import com.zuijiao.thirdopensdk.Alipay;
 import com.zuijiao.thirdopensdk.WeixinPay;
+import com.zuijiao.utils.AlertDialogUtil;
 
+import java.text.DecimalFormat;
 import java.util.Date;
 
 /**
@@ -48,20 +53,30 @@ public class BanquetOrderActivity extends BaseActivity implements View.OnClickLi
     private TextView mBanquetTime;
     @ViewInject(R.id.banquet_order_banquet_price)
     private TextView mBanquetPrice;
-    @ViewInject(R.id.banquet_order_banquet_location)
-    private TextView mBanquetLocation;
-    @ViewInject(R.id.banquet_order_banquet_phone)
-    private TextView mBanquetPhone;
-    @ViewInject(R.id.banquet_order_banquet_remark)
-    private TextView mBanquetRemark;
+    //    @ViewInject(R.id.banquet_order_banquet_location)
+//    private TextView mBanquetLocation;
+//    @ViewInject(R.id.banquet_order_banquet_phone)
+//    private TextView mBanquetPhone;
+//    @ViewInject(R.id.banquet_order_banquet_remark)
+//    private TextView mBanquetRemark;
     @ViewInject(R.id.banquet_order_bottom_pay)
     private Button mPayBtn;
     @ViewInject(R.id.banquet_order_bottom_price)
     private TextView mBottomPrice;
-    @ViewInject(R.id.banquet_order_bottom_pay_way)
-    private TextView mBottomPayWay;
+    //    @ViewInject(R.id.banquet_order_bottom_pay_way)
+//    private TextView mBottomPayWay;
     @ViewInject(R.id.banquet_order_pay_way_list)
     private ListView mPayWayList;
+    @ViewInject(R.id.banquet_order_bottom)
+    private LinearLayout mBottomView;
+    @ViewInject(R.id.banquet_surplus_time)
+    private TextView mBanquetSurplusTime;
+    @ViewInject(R.id.banquet_order_banquet_name)
+    private TextView mBanquetName;
+    @ViewInject(R.id.banquet_order_banquet_num)
+    private TextView mBanquetNum;
+    @ViewInject(R.id.banquet_order_banquet_total_price)
+    private TextView mBanquetTotalPrice;
     public static Banquent mBanquent;
     private String[] weekDays;
     private String mRemark;
@@ -73,13 +88,29 @@ public class BanquetOrderActivity extends BaseActivity implements View.OnClickLi
     //for network request
     private String[] payWayStr;
     private int mSelectedPayWay = 0;
+    private int mSurplusTime = 10 * 60;
+    private int attendeeNum;
+    private Order mOrder;
+
+    /**
+     * handler and runnable for surplus time
+     */
+    Handler handler = new Handler();
+    Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+            mBanquetSurplusTime.setText(formatTime(mSurplusTime));
+            mSurplusTime--;
+            handler.postDelayed(this, 1000);
+        }
+    };
 
     private AdapterView.OnItemClickListener mPayWaySwitcher = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             if (mSelectedPayWay == position) return;
             mSelectedPayWay = position;
-            mBottomPayWay.setText(getString(R.string.use) + payWayRes[mSelectedPayWay]);
+            //mBottomPayWay.setText(getString(R.string.use) + payWayRes[mSelectedPayWay]);
             mPayWayAdapter.notifyDataSetChanged();
         }
     };
@@ -118,48 +149,90 @@ public class BanquetOrderActivity extends BaseActivity implements View.OnClickLi
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         weekDays = mContext.getResources().getStringArray(R.array.week_days);
+        boolean isCreate = false;
         if (mTendIntent != null) {
             mBanquent = (Banquent) mTendIntent.getSerializableExtra("banquet");
             phoneNum = mTendIntent.getStringExtra("contact_phone_num");
+            attendeeNum = mTendIntent.getIntExtra("attendeeNum", -1);
+            mSurplusTime = mTendIntent.getIntExtra("surplusTime", -1);
+            isCreate = mTendIntent.getBooleanExtra("isCreate", false);
+            mOrder = (Order) mTendIntent.getSerializableExtra("order");
         }
-        if (mBanquent == null) {
+        if (mBanquent == null && mOrder == null) {
             finish();
             return;
         }
+        if (attendeeNum != -1) {
+            mBanquetNum.setText(attendeeNum + getString(R.string.people));
+        } else {
+            finish();
+            return;
+        }
+        if (mSurplusTime == -1)
+            mSurplusTime = 10 * 60;
+        runnable.run();
 //        getSupportActionBar().setTitle(mBanquent.getTitle());
-        getSupportActionBar().setTitle(getString(R.string.detail_order));
+//        getSupportActionBar().setTitle(getString(R.string.detail_order));
         payWayRes = getResources().getStringArray(R.array.pay_way);
         payWayStr = getResources().getStringArray(R.array.pay_way_str);
         mPayWayList.setAdapter(mPayWayAdapter);
         mPayWayList.setOnItemClickListener(mPayWaySwitcher);
-        if (phoneNum != null && !phoneNum.equals("")) {
-            mBanquetPhone.setText(phoneNum);
-            mBanquetPhone.setTextColor(getResources().getColor(R.color.tv_deep_gray));
-        }
+//        if (phoneNum != null && !phoneNum.equals("")) {
+//            mBanquetPhone.setText(phoneNum);
+//            mBanquetPhone.setTextColor(getResources().getColor(R.color.tv_deep_gray));
+//        }
         initViewsByBanquet();
-        mBanquetPhone.setOnClickListener(this);
-        mBanquetRemark.setOnClickListener(this);
+//        mBanquetPhone.setOnClickListener(this);
+//        mBanquetRemark.setOnClickListener(this);
         mPayBtn.setOnClickListener(this);
+        if (isCreate) {
+            AlertDialogUtil alertDialogUtil = AlertDialogUtil.getIntance();
+            alertDialogUtil.createNoticeDialog(BanquetOrderActivity.this, getString(R.string.order_success), getString(R.string.order_success_content));
+            alertDialogUtil.setButtonText(getString(R.string.notice_comfirm), null);
+            alertDialogUtil.setOnClickListener(new AlertDialogUtil.OnClickListener() {
+                @Override
+                public void CancelOnClick() {
+
+                }
+
+                @Override
+                public void ConfirmOnClick() {
+                    alertDialogUtil.dismissDialog();
+                }
+            });
+            alertDialogUtil.showDialog();
+        }
+
+
+        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mBottomView.getLayoutParams();
+        mBottomPrice.measure(0, 0);
+        int priceHeight = mBottomPrice.getMeasuredHeight();
+        //mBottomPayWay.measure(0 , 0);
+        //int dateHeight = mBottomPayWay.getMeasuredHeight() ;
+        int margin = (int) (2 * getResources().getDimension(R.dimen.end_z));
+        params.height = priceHeight + margin;
     }
 
     private void initViewsByBanquet() {
-        mBanquetTime.setText(formatDate(mBanquent.getTime()));
-        mBanquetPrice.setText(String.format(getString(R.string.price_per_one), mBanquent.getPrice()));
+        mBanquetTime.setText(mBanquent != null ? formatDate(mBanquent.getTime()) : mOrder.getCreateTime().toLocaleString());
+        mBanquetPrice.setText(String.format(getString(R.string.price_per_one), mBanquent != null ? mBanquent.getPrice() : mOrder.getPrice()));
 //        mBottomPrice.setText(String.format(getString(R.string.price_per_one), mBanquent.getPrice()));
-        mBottomPrice.setText(String.valueOf(mBanquent.getPrice()));
-        mBottomPayWay.setText(getString(R.string.use) + payWayRes[mSelectedPayWay]);
-        mBanquetLocation.setText(mBanquent.getAddress());
+        mBottomPrice.setText(String.format(getString(R.string.order_total_price), (mBanquent != null ? mBanquent.getPrice() : mOrder.getPrice()) * attendeeNum));
+        mBanquetName.setText(mBanquent != null ? mBanquent.getTitle() : mOrder.getTitle());
+        mBanquetTotalPrice.setText(((mBanquent != null ? mBanquent.getPrice() : mOrder.getPrice()) * attendeeNum) + getString(R.string.yuan));
+//        mBottomPayWay.setText(getString(R.string.use) + payWayRes[mSelectedPayWay]);
+//        mBanquetLocation.setText(mBanquent.getAddress());
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == VERIFY_PHONE && resultCode == RESULT_OK) {
-            verifyCode = data.getStringExtra("verify_code");
-            phoneNum = data.getStringExtra("verified_phone_num");
-            mBanquetPhone.setText(phoneNum);
-        }
-        super.onActivityResult(requestCode, resultCode, data);
-    }
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        if (requestCode == VERIFY_PHONE && resultCode == RESULT_OK) {
+//            verifyCode = data.getStringExtra("verify_code");
+//            phoneNum = data.getStringExtra("verified_phone_num");
+//            mBanquetPhone.setText(phoneNum);
+//        }
+//        super.onActivityResult(requestCode, resultCode, data);
+//    }
 
     @Override
     public void onClick(View v) {
@@ -177,7 +250,7 @@ public class BanquetOrderActivity extends BaseActivity implements View.OnClickLi
                                     startActivityForResult(intent, VERIFY_PHONE);
                                 }
                             }).create();
-                    Window window = dialog.getWindow() ;
+                    Window window = dialog.getWindow();
                     window.setWindowAnimations(R.style.dialogWindowAnim);
                     dialog.show();
                     return;
@@ -186,7 +259,7 @@ public class BanquetOrderActivity extends BaseActivity implements View.OnClickLi
                 if (mRemark == null || mRemark.equals("")) {
                     mRemark = " ";
                 }
-                Router.getBanquentModule().createOrder(mBanquent.getIdentifier(), phoneNum, verifyCode, mRemark, payWayStr[mSelectedPayWay], new OneParameterExpression<OrderAuth>() {
+                Router.getBanquentModule().createOrder(mBanquent.getIdentifier(), phoneNum, verifyCode, mRemark, payWayStr[mSelectedPayWay], attendeeNum, new OneParameterExpression<OrderAuth>() {
                     @Override
                     public void action(OrderAuth orderAuth) {
                         Log.d("pay_interface", "result_success");
@@ -208,18 +281,38 @@ public class BanquetOrderActivity extends BaseActivity implements View.OnClickLi
                     }
                 });
                 break;
-            case R.id.banquet_order_banquet_phone:
-                Intent intent = new Intent(mContext, VerifyPhoneNumActivity.class);
-                intent.putExtra("from_order", true);
-                startActivityForResult(intent, VERIFY_PHONE);
-                break;
-            case R.id.banquet_order_banquet_remark:
-                createGeneralEditTextDialog(mRemark
-                        , getString(R.string.remark)
-                        , getString(R.string.remark_to_host)
-                        , 1, 150);
-                break;
+//            case R.id.banquet_order_banquet_phone:
+//                Intent intent = new Intent(mContext, VerifyPhoneNumActivity.class);
+//                intent.putExtra("from_order", true);
+//                startActivityForResult(intent, VERIFY_PHONE);
+//                break;
+//            case R.id.banquet_order_banquet_remark:
+//                createGeneralEditTextDialog(mRemark
+//                        , getString(R.string.remark)
+//                        , getString(R.string.remark_to_host)
+//                        , 1, 150);
+//                break;
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        AlertDialogUtil alertDialogUtil = AlertDialogUtil.getIntance();
+        alertDialogUtil.createPromptDialog(BanquetOrderActivity.this, null, getString(R.string.order_success_return_content));
+        alertDialogUtil.setButtonText(getString(R.string.exit_pay), getString(R.string.continue_pay));
+        alertDialogUtil.setOnClickListener(new AlertDialogUtil.OnClickListener() {
+            @Override
+            public void CancelOnClick() {
+                alertDialogUtil.dismissDialog();
+            }
+
+            @Override
+            public void ConfirmOnClick() {
+                alertDialogUtil.dismissDialog();
+                finish();
+            }
+        });
+        alertDialogUtil.showDialog();
     }
 
     /**
@@ -240,72 +333,93 @@ public class BanquetOrderActivity extends BaseActivity implements View.OnClickLi
     }
 
 
-    private void createGeneralEditTextDialog(String message, String title, String etHint, int lineNum, int maxText) {
-        View contentView = LayoutInflater.from(mContext).inflate(R.layout.nick_name_input_dialog, null);
-        TextView textView = (TextView) contentView.findViewById(R.id.tv_et_watcher);
-        EditText editText = (EditText) contentView.findViewById(R.id.et_nick_name_input);
+//    private void createGeneralEditTextDialog(String message, String title, String etHint, int lineNum, int maxText) {
+//        View contentView = LayoutInflater.from(mContext).inflate(R.layout.nick_name_input_dialog, null);
+//        TextView textView = (TextView) contentView.findViewById(R.id.tv_et_watcher);
+//        EditText editText = (EditText) contentView.findViewById(R.id.et_nick_name_input);
+//
+//        if (maxText == 0) {
+//            textView.setVisibility(View.GONE);
+//        } else {
+//            editText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(maxText)});
+//        }
+//        textView.setText(String.format(getString(R.string.nick_name_watcher), 0, maxText));
+//        editText.addTextChangedListener(new TextWatcher() {
+//            @Override
+//            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+//            }
+//
+//            @Override
+//            public void onTextChanged(CharSequence s, int start, int before, int count) {
+//                textView.setText(String.format(getString(R.string.nick_name_watcher), s.length(), maxText));
+//                editRemark = s.toString();
+//            }
+//
+//            @Override
+//            public void afterTextChanged(Editable s) {
+//
+//            }
+//        });
+//        if (lineNum > 1) {
+//            editText.setHorizontallyScrolling(false);
+//        }
+////        editText.setLines(lineNum);
+//        editText.setHint(etHint);
+//        if (message != null && !message.equals("")) {
+//            editText.setText(message);
+//            editText.setSelection(0, message.length());
+//        }
+//        editText.setFocusable(true);
+//        editText.setFocusableInTouchMode(true);
+//        editText.requestFocus();
+//        AlertDialog alertDialog = new AlertDialog.Builder(BanquetOrderActivity.this).setView(contentView).setTitle(title).setPositiveButton(getString(R.string.save),
+//                new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        mRemark = editRemark;
+//                        InputMethodManager imm = (InputMethodManager) editText.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+//                        if (imm.isActive())
+//                            imm.hideSoftInputFromWindow(editText.getApplicationWindowToken(), 0);
+////                        if (mRemark != null && !mRemark.equals("")) {
+////                            mBanquetRemark.setText(mRemark);
+////                            mBanquetRemark.setTextColor(getResources().getColor(R.color.tv_deep_gray));
+////                        } else {
+////                            mBanquetRemark.setText(getString(R.string.none));
+////                            mBanquetRemark.setTextColor(getResources().getColor(R.color.tv_deep_gray));
+////                        }
+//                    }
+//                }).create();
+//        Window window = alertDialog.getWindow();
+//        window.setWindowAnimations(R.style.dialogWindowAnim);
+//        alertDialog.show();
+//        new Handler().postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                InputMethodManager inputManager =
+//                        (InputMethodManager) editText.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+//                inputManager.showSoftInput(editText, 0);
+//            }
+//        }, 200);
+//    }
 
-        if (maxText == 0) {
-            textView.setVisibility(View.GONE);
+    private String formatTime(int time) {
+        int minute, second, hour;
+        String strTime;
+        DecimalFormat df = new DecimalFormat("00");
+        if (time <= 0) {
+            strTime = String.format(mContext.getString(R.string.surplus_time), "00", "00");
         } else {
-            editText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(maxText)});
+            minute = time / 60;
+            if (minute < 60) {
+                second = time % 60;
+                strTime = String.format(mContext.getString(R.string.surplus_time), df.format(minute), df.format(second));
+            } else {
+                hour = minute / 60;
+                minute = minute % 60;
+                second = time - hour * 3600 - minute * 60;
+                strTime = String.format(mContext.getString(R.string.surplus_time), df.format(minute), df.format(second));
+            }
         }
-        textView.setText(String.format(getString(R.string.nick_name_watcher), 0, maxText));
-        editText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                textView.setText(String.format(getString(R.string.nick_name_watcher), s.length(), maxText));
-                editRemark = s.toString();
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
-        if (lineNum > 1) {
-            editText.setHorizontallyScrolling(false);
-        }
-//        editText.setLines(lineNum);
-        editText.setHint(etHint);
-        if (message != null && !message.equals("")) {
-            editText.setText(message);
-            editText.setSelection(0, message.length());
-        }
-        editText.setFocusable(true);
-        editText.setFocusableInTouchMode(true);
-        editText.requestFocus();
-        AlertDialog alertDialog = new AlertDialog.Builder(BanquetOrderActivity.this).setView(contentView).setTitle(title).setPositiveButton(getString(R.string.save),
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        mRemark = editRemark;
-                        InputMethodManager imm = (InputMethodManager) editText.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-                        if (imm.isActive())
-                            imm.hideSoftInputFromWindow(editText.getApplicationWindowToken(), 0);
-                        if (mRemark != null && !mRemark.equals("")) {
-                            mBanquetRemark.setText(mRemark);
-                            mBanquetRemark.setTextColor(getResources().getColor(R.color.tv_deep_gray));
-                        } else {
-                            mBanquetRemark.setText(getString(R.string.none));
-                            mBanquetRemark.setTextColor(getResources().getColor(R.color.tv_deep_gray));
-                        }
-                    }
-                }).create();
-        Window window = alertDialog.getWindow() ;
-        window.setWindowAnimations(R.style.dialogWindowAnim);
-        alertDialog.show();
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                InputMethodManager inputManager =
-                        (InputMethodManager) editText.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-                inputManager.showSoftInput(editText, 0);
-            }
-        }, 200);
+        return strTime;
     }
 }

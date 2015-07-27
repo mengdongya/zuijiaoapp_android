@@ -91,14 +91,17 @@
             android:name="net.zuijiao.android.zuijiao.MainActivity"
             android:label="@string/main_page"
             android:launchMode="singleTask"
+            android:configChanges="fontScale"
             android:screenOrientation="portrait" />
         <activity
             android:name="net.zuijiao.android.zuijiao.BindEmailActivity"
             android:label="@string/bind_email"
+
             android:screenOrientation="portrait" />
         <activity
             android:name="net.zuijiao.android.zuijiao.FavorPersonListActivity"
             android:label="@string/favor_label"
+
             android:screenOrientation="portrait" />
         <activity
             android:name="net.zuijiao.android.zuijiao.ImageChooseActivity"
@@ -107,6 +110,7 @@
         <activity
             android:name="net.zuijiao.android.zuijiao.LocationActivity"
             android:label="@string/current_location"
+
             android:screenOrientation="portrait" />
         <activity
             android:name="net.zuijiao.android.zuijiao.SettingActivity"
@@ -115,15 +119,18 @@
         <activity
             android:name="net.zuijiao.android.zuijiao.TasteActivity"
             android:label="@string/flavor_hobby"
+
             android:screenOrientation="portrait" />
         <activity
             android:name="net.zuijiao.android.zuijiao.VerifyPhoneNumActivity"
             android:label="@string/mobile_phone"
+
             android:screenOrientation="portrait" />
         <activity
             android:name="net.zuijiao.android.zuijiao.GourmetCommentActivity"
             android:label="@string/comment"
             android:screenOrientation="portrait"
+
             android:windowSoftInputMode="stateHidden|adjustResize" />
         <activity
             android:name=".GourmetDetailActivity"
@@ -146,29 +153,36 @@
             android:name="net.zuijiao.android.zuijiao.LanguagesChooseActivity"
             android:label="@string/my_language"
             android:screenOrientation="portrait"
+
             android:theme="@style/AppTheme" />
         <activity
             android:name="net.zuijiao.android.zuijiao.UserInfoActivity"
             android:label=""
+
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity
             android:name="net.zuijiao.android.zuijiao.BanquetOrderDisplayActivity"
             android:label="@string/order_message"
+
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity
             android:name="net.zuijiao.android.zuijiao.BanquetCommentActivity"
             android:screenOrientation="portrait"
+
             android:theme="@style/AppTheme" />
         <activity
             android:name="net.zuijiao.android.zuijiao.BanquetListActivity"
             android:screenOrientation="portrait"
+
             android:theme="@style/AppTheme" />
         <activity
             android:name="net.zuijiao.android.zuijiao.BanquetOrderActivity"
+            android:label="@string/order_create_pay"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme"
+
             android:windowSoftInputMode="stateHidden|adjustNothing">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -180,10 +194,12 @@
             android:name="net.zuijiao.android.zuijiao.HostAndGuestActivity"
             android:screenOrientation="portrait"
             android:label="@string/host_guest_title"
+
             android:theme="@style/AppTheme" />
         <activity
             android:name="net.zuijiao.android.zuijiao.GuideActivity"
             android:screenOrientation="portrait"
+
             android:theme="@style/GuideTheme" />
         <activity
             android:name="net.zuijiao.android.zuijiao.BanquetDetailActivity"
@@ -193,17 +209,20 @@
         <activity
             android:name="net.zuijiao.android.zuijiao.RegisterActivity"
             android:label="@string/register"
+
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="adjustResize|stateHidden" />
         <activity
             android:name="net.zuijiao.android.zuijiao.MessageActivity"
             android:label="@string/msg_page"
+
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity
             android:name="net.zuijiao.android.zuijiao.LoginActivity"
             android:label="@string/login"
+
             android:screenOrientation="portrait"
             android:theme="@style/LoginTheme">
             <intent-filter>
@@ -214,6 +233,7 @@
         <activity
             android:name="net.zuijiao.android.zuijiao.SplashActivity"
             android:screenOrientation="portrait"
+
             android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -224,37 +244,42 @@
         <activity
             android:name="net.zuijiao.android.zuijiao.CommonWebViewActivity"
             android:label="@string/app_name"
-            android:parentActivityName="net.zuijiao.android.zuijiao.MainActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity
             android:name="net.zuijiao.android.zuijiao.FriendActivity"
             android:label="@string/friend"
+
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity
             android:name=".EditPositionActivity"
             android:label="@string/where_to_eat"
+
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity
             android:name="net.zuijiao.android.zuijiao.LabelActivity"
             android:label="@string/label"
+
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity
             android:name="net.zuijiao.android.zuijiao.EditUserInfoActivity"
             android:label="@string/edit_info"
+            android:configChanges="orientation"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity
             android:name="net.zuijiao.android.zuijiao.RecommendAndFavorActivity"
             android:label="@string/recommend"
+
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity
             android:name="net.zuijiao.android.zuijiao.EditGourmetActivity"
             android:label="@string/store_gourmet"
+
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity
@@ -265,6 +290,7 @@
         <activity
             android:name="net.zuijiao.android.zuijiao.ConcerningActivity"
             android:label="@string/concerning"
+
             android:parentActivityName="net.zuijiao.android.zuijiao.MainActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
@@ -275,6 +301,7 @@
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
         <activity
             android:name="net.zuijiao.android.zuijiao.BanquetOrderCallbackActivity"
+
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity
@@ -285,6 +312,14 @@
         <activity
             android:name="net.zuijiao.android.zuijiao.ReviewActivity"
             android:label="@string/evaluate"
+            
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name="net.zuijiao.android.zuijiao.BanquetOrderCreateActivity"
+            android:label="@string/order_create"
+            android:configChanges="fontScale"
+
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
 

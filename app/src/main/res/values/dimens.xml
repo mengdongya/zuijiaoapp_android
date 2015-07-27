@@ -29,4 +29,5 @@
     <dimen name="start_z">2dp</dimen>
     <dimen name="end_z">5dp</dimen>
     <dimen name="edit_gourmet_image_size">60dip</dimen>
+    <dimen name="sticky_item_horizontalSpacing">2dip</dimen>
 </resources>

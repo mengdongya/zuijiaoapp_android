@@ -176,7 +176,8 @@ public class HostAndGuestActivity extends BaseActivity {
         attendeeBanquet.setOnClickListener(mHeadListener);
         mAttendeePlace.setOnClickListener(mHeadListener);
         mCommentRatingbar.setStepSize(0.5f);
-        mAttendee = (Attendee) mTendIntent.getSerializableExtra("attendee_info");
+        if(mTendIntent != null)
+            mAttendee = (Attendee) mTendIntent.getSerializableExtra("attendee_info");
         if(mAttendee == null){
             networkStep();
         }else{

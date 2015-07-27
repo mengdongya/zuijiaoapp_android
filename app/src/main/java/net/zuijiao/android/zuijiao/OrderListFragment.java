@@ -56,11 +56,19 @@ public class OrderListFragment extends Fragment implements
     private TextView mBlankText;
     private int[] mBlankTextRes = {R.string.no_coming_order, R.string.no_finished_order, R.string.no_order};
 
-    public OrderListFragment(int index) {
-        super();
-        this.tabIndex = index;
-    }
+//    public OrderListFragment(int index) {
+//        super();
+//        this.tabIndex = index;
+//    }
 
+
+    public static OrderListFragment newInstance(int position){
+        OrderListFragment fragment = new OrderListFragment();
+        Bundle bundle = new Bundle();
+        bundle.putInt("position" ,position );
+        fragment.setArguments(bundle);
+        return fragment;
+    }
     public OrderListFragment() {
         super();
     }
@@ -74,6 +82,7 @@ public class OrderListFragment extends Fragment implements
             }
             return mContentView;
         }
+        tabIndex = getArguments().getInt("position") ;
         weekDays = getResources().getStringArray(R.array.week_days);
         mContentView = inflater.inflate(R.layout.fragment_order_list, null);
         mRefreshLayout = (SwipeRefreshLayout) mContentView.findViewById(R.id.order_fragment_swipe_refresh);
@@ -179,6 +188,10 @@ public class OrderListFragment extends Fragment implements
         });
     }
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
     /**
      * orders list adapter
      */
@@ -213,7 +226,18 @@ public class OrderListFragment extends Fragment implements
             Picasso.with(getActivity().getApplicationContext()).load(order.getImageUrl()).placeholder(R.drawable.empty_view_greeting).fit().centerCrop().into(holder.image);
             holder.title.setText(order.getTitle());
             String dateInfo = formatDate(order.getHoldTime());
-            holder.date.setText(dateInfo + order.getAddress());
+            //holder.date.setText(dateInfo + order.getAddress());
+            holder.date.setText(dateInfo + " · " + (position % 4 + 1) + getString(R.string.people));
+            if (tabIndex == 0) {
+                if (position % 2 == 0) {
+                    holder.review.setVisibility(View.VISIBLE);
+                    holder.review.setText(getString(R.string.pay_right_now));
+                    holder.review.setEnabled(true);
+                    holder.review.setTextColor(getResources().getColor(R.color.banquet_theme));
+                } else {
+                    holder.review.setVisibility(View.GONE);
+                }
+            }
             if (tabIndex > 0) {
                 if (order.getStatus() != OrderStatus.Waiting && order.getStatus() != OrderStatus.Canceled) {
                     holder.review.setVisibility(View.VISIBLE);
@@ -246,7 +270,11 @@ public class OrderListFragment extends Fragment implements
                     holder.situation.setText(getString(R.string.canceled_banquet));
                     break;
                 case Waiting:
-                    holder.situation.setText(getString(R.string.waiting_fo_you));
+                    if (position % 2 != 0) {
+                        holder.situation.setText(getString(R.string.waiting_fo_you));
+                    } else {
+                        holder.situation.setText(getString(R.string.waiting_pay));
+                    }
                     break;
                 case Finished:
                     holder.situation.setText(getString(R.string.finished_banquet));

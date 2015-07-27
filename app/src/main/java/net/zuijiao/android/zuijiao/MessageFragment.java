@@ -134,7 +134,11 @@ public class MessageFragment extends Fragment implements FragmentDataListener,
     public void onDestroyView() {
         super.onDestroyView();
     }
-
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
+    }
     private void firstInit() {
 //        mListView.autoResetHeadView();
         new Handler().postDelayed(new Runnable() {

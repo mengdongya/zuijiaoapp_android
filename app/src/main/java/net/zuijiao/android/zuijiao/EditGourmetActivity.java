@@ -357,14 +357,11 @@ public class EditGourmetActivity extends BaseActivity implements View.OnClickLis
     protected void registerViews() {
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        try {
+        if(mTendIntent != null)
             mType = mTendIntent.getIntExtra("edit_gourmet_type", TYPE_UNDEFINE);
-            if (mType == TYPE_UNDEFINE) {
-                finish();
-            }
-        } catch (Throwable t) {
-            t.printStackTrace();
+        if (mType == TYPE_UNDEFINE) {
             finish();
+            return ;
         }
         switch (mType) {
             case TYPE_EDIT_PERSONAL_GOURMET:

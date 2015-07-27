@@ -2,6 +2,7 @@ package net.zuijiao.android.zuijiao;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -14,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.zuijiao.utils.PageTransformerUtil;
 import com.zuijiao.view.PagerSlidingTab;
 
 /**
@@ -28,15 +30,16 @@ public class MainFragment extends Fragment {
     private BanquetDisplayFragment banquetFragment;
     private Context mContext;
 
-    public MainFragment() {
-        super();
-    }
 
-    public MainFragment(Context context) {
-        super();
-        this.mContext = context;
-    }
 
+
+    public static MainFragment getInstance(){
+        MainFragment fragment = new MainFragment();
+//        Bundle bundle = new Bundle();
+//        bundle.putInt("position" ,position );
+//        fragment.setArguments(bundle);
+        return fragment;
+    }
     /**
      * init two sub-fragment on create ;
      *
@@ -48,18 +51,30 @@ public class MainFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View contentView = inflater.inflate(R.layout.fragment_notification, null);
+        mContext = getActivity() ;
         mViewPager = (ViewPager) contentView.findViewById(R.id.notification_view_pager);
         if (mPagerAdapter == null) {
             FragmentManager manager = getChildFragmentManager();
             mPagerAdapter = new MainPagerAdapter(manager);
         }
         mViewPager.setAdapter(mPagerAdapter);
+//        mViewPager.setPageTransformer(true, new ViewPager.PageTransformer() {
+//
+//            @Override
+//            public void transformPage(View page, float position) {
+//                PageTransformerUtil.zoomOutPageTransformer(page, position);
+//            }
+//        });
         mTabs = (PagerSlidingTab) contentView.findViewById(R.id.notification_tabs);
         initTabsValue();
         mTabs.setViewPager(mViewPager);
         return contentView;
     }
-
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
+    }
 
     @Override
     public void onDestroy() {
@@ -69,6 +84,11 @@ public class MainFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
     }
 
     private void initTabsValue() {
@@ -132,12 +152,12 @@ public class MainFragment extends Fragment {
         public Fragment getItem(int position) {
             if (position == 0) {
                 if (banquetFragment == null)
-                    banquetFragment = new BanquetDisplayFragment();
+                    banquetFragment =  BanquetDisplayFragment.newInstance();
                 return banquetFragment;
 
             } else {
                 if (gourmetFragment == null)
-                    gourmetFragment = new GourmetDisplayFragment(GourmetDisplayFragment.MAIN_PAGE, mContext);
+                    gourmetFragment =  GourmetDisplayFragment.newInstance(GourmetDisplayFragment.MAIN_PAGE);
                 return gourmetFragment;
             }
         }

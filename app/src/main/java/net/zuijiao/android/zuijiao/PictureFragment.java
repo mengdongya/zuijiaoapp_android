@@ -74,7 +74,11 @@ public class PictureFragment extends Fragment {
         }
         return view;
     }
-
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
+    }
     @Override
     public void onViewStateRestored(Bundle savedInstanceState) {
         Log.i(TAG, "onViewStateRestored");

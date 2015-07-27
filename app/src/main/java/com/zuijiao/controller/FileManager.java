@@ -10,6 +10,9 @@ import android.provider.MediaStore;
 import android.util.Log;
 
 import com.zuijiao.android.util.Optional;
+import com.zuijiao.android.zuijiao.model.Banquent.Banquent;
+import com.zuijiao.android.zuijiao.model.Banquent.BanquentStatus;
+import com.zuijiao.android.zuijiao.model.Banquent.Banquents;
 import com.zuijiao.android.zuijiao.model.Gourmet;
 import com.zuijiao.android.zuijiao.model.user.User;
 import com.zuijiao.entity.SimpleImage;
@@ -21,6 +24,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -243,107 +249,9 @@ public class FileManager {
     }
 
 
-//    public boolean load = true;
-//    private Thread loadImageThread;
-//    private LinkedList<SimpleImage> images = new LinkedList<>();
-//    private LinkedList<String> ids = new LinkedList<>();
-//    HashMap<String, Bitmap> cachedBitmap = null;
-//    private static final int MAX_CACHE_BITMAP_COUNT = 200;
-//    private Handler imageHandler;
-
-//    public void getImageBitmap(Handler handler) {
-//        load = true;
-//        imageHandler = handler;
-//        int maxMemory = (int) Runtime.getRuntime().maxMemory();
-//        int mCacheSize = maxMemory / 4;
-//        cachedBitmap = new HashMap<>();
-//        loadImageThread = new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//                boolean firstInit = true;
-//                while (load) {
-//                    while (images.size() != 0) {
-//                        String imageId = images.get(0).id;
-//                        Bitmap bmp = cachedBitmap.get(imageId);
-//                        if (bmp == null || bmp.isRecycled()) {
-//                            cachedBitmap.remove(imageId);
-//                            ids.remove(imageId);
-//                            Bitmap bitmap = MediaStore.Images.Thumbnails.getThumbnail(
-//                                    mContext.getContentResolver(),
-//                                    Integer.parseInt(imageId),
-//                                    MediaStore.Images.Thumbnails.MINI_KIND, null);
-//                            if (bitmap != null) {
-////                                synchronized (cachedBitmap) {
-//                                while (ids.size() > MAX_CACHE_BITMAP_COUNT) {
-//                                    String strId = ids.get(0);
-//                                    Bitmap bm = cachedBitmap.get(strId);
-////                                    cachedBitmap.remove(bm);
-//                                    bm.recycle();
-//                                    bm = null;
-//                                    cachedBitmap.remove(strId);
-//                                    ids.remove(0);
-//                                }
-//                                cachedBitmap.put(imageId, bitmap);
-//                                ids.add(imageId);
-////                                }
-//                            }
-//                        }
-//                        synchronized (images) {
-//                            images.removeFirst();
-//                        }
-//                        if (!load)
-//                            break;
-//                    }
-//                    if (firstInit) {
-//                        Message message = handler.obtainMessage();
-//                        handler.sendMessage(message);
-//                        firstInit = false;
-//                    }
-//                    try {
-//                        Thread.sleep(10);
-//                    } catch (InterruptedException e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-//            }
-//        });
-//        loadImageThread.start();
-//    }
-//
-//    public void addToLoadList(List<SimpleImage> images) {
-////        synchronized (this.images){
-//        for (SimpleImage image : images) {
-//            if (!ids.contains(image.id)) {
-//                this.images.add(image);
-//            }
-////            }
-//        }
-//    }
-//
-//    public void addToLoadList(SimpleImage image) {
-//        images.add(image);
-//    }
-//
-//    public void stopLoadImage(List<SimpleImage> imagePaths) {
-//        load = false;
-//        for (SimpleImage image : imagePaths) {
-//            Bitmap bmp = cachedBitmap.get(image.id);
-//            if (bmp != null) {
-//                bmp.recycle();
-//            }
-//            cachedBitmap.remove(image.id);
-//        }
-//        images.clear();
-//        ids.clear();
-//    }
-//
-//    public Bitmap getBitmapFromMemCache(String key) {
-//        return cachedBitmap.get(key);
-//    }
-
     public static List<SimpleImage> getImageList(Context context) {
         Date beginDate = new Date();
-        System.out.println("getimagebegin :" + beginDate.getTime());
+       //System.out.println("getimagebegin :" + beginDate.getTime());
         Cursor cursor = MediaStore.Images.Media.query(context.getContentResolver(),
                 MediaStore.Images.Media.EXTERNAL_CONTENT_URI, STORE_IMAGES, null, MediaStore.Images.Media.DATE_ADDED);
         if (cursor == null || !cursor.moveToNext())
@@ -369,4 +277,42 @@ public class FileManager {
         return list;
     }
 
+
+    /**
+     * order banquet list ,
+     * order-able items appears in front as positive time sequence ,
+     * time out items display later and order by negative time sequence .
+     * @param banquetList
+     */
+    public void orderBanquetList(ArrayList<Banquent> banquetList){
+        if(banquetList == null)
+            return ;
+        if(banquetList.size() <2)
+            return;
+        Collections.sort(banquetList, new Comparator<Banquent>() {
+            @Override
+            public int compare(Banquent banquet1, Banquent banquet2) {
+                BanquentStatus status1 = BanquentStatus.fromString(banquet1.getStatus()) ;
+                BanquentStatus status2 =  BanquentStatus.fromString(banquet2.getStatus()) ;
+                if(status1.equals(BanquentStatus.Selling) || status2.equals(BanquentStatus.Selling)){
+                    int result = compareStatus(status1 , status2) ;
+                    if(result == 0){
+                        return compareDate(banquet1.getTime() , banquet2.getTime()) ;
+                    }else {
+                        return result ;
+                    }
+                }else{
+                    return compareDate(banquet2.getTime() ,banquet1.getTime()) ;
+                }
+            }
+
+            private int compareStatus(BanquentStatus status1, BanquentStatus status2){
+                return  status1.compareTo(status2) ;
+            }
+
+            private int compareDate(Date date1 , Date date2){
+                return  date1.compareTo(date2) ;
+            }
+        });
+    }
 }

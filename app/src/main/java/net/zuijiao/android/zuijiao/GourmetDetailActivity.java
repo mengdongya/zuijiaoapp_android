@@ -189,12 +189,8 @@ public class GourmetDetailActivity extends BaseActivity implements
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         mToolbarHeight = (int) getResources().getDimension(R.dimen.toolbar_height);
-        try {
+        if(mTendIntent != null)
             gourmet = (Gourmet) mTendIntent.getSerializableExtra("selected_gourmet");
-            System.out.println("gourmet.id:" + gourmet.getIdentifier());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
         if (gourmet == null) {
             this.finish();
             return;

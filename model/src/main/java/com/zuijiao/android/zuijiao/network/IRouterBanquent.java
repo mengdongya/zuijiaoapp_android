@@ -29,6 +29,7 @@ public interface IRouterBanquent {
             , @Field("code") String code
             , @Field("note") String remark
             , @Field("payWay") String payMethod
+            , @Field("quantity") Integer quantity
             , Callback<OrderAuth> restaurantsCallback
     );
 

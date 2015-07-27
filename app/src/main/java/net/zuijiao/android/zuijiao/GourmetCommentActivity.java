@@ -55,7 +55,8 @@ public class GourmetCommentActivity extends BaseActivity {
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         mInflater = LayoutInflater.from(this);
-        mIdentify = mTendIntent.getIntExtra("gourmet_identify", 0);
+        if(mTendIntent != null)
+            mIdentify = mTendIntent.getIntExtra("gourmet_identify", 0);
         fetchCommentList();
         mListView.setOnItemClickListener(mCommentListListener);
         mCommitButton.setOnClickListener(mCommitListener);

@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.widget.Toolbar;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,9 +22,17 @@ import android.widget.Toast;
 
 import com.lidroid.xutils.view.annotation.ContentView;
 import com.lidroid.xutils.view.annotation.ViewInject;
+import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiscCache;
+import com.nostra13.universalimageloader.cache.disc.naming.HashCodeFileNameGenerator;
+import com.nostra13.universalimageloader.cache.memory.impl.LruMemoryCache;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
+import com.nostra13.universalimageloader.core.decode.BaseImageDecoder;
+import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
+import com.nostra13.universalimageloader.utils.StorageUtils;
+import com.zuijiao.adapter.PhotoSelectorAdapter;
 import com.zuijiao.controller.ActivityTask;
 import com.zuijiao.controller.FileManager;
 import com.zuijiao.entity.SimpleImage;
@@ -53,34 +62,77 @@ public class MultiImageChooseActivity extends BaseActivity {
     private Button mSureBtn = null;
     private List<SimpleImage> images = new ArrayList<SimpleImage>();
     private int mMaxCount = 5;
-    private static final int CACHE_SIZE = 20;
+    // private static final int CACHE_SIZE = 20;
     //cached bitmap ;
     // private HashMap<String, Bitmap> mCachedData = new HashMap();
     //id of cached bitmap ;
     // private ArrayList<String> mCachedId = new ArrayList<String>();
     private ArrayList<SimpleImage> mSelectedImage = new ArrayList<>();
-    private ContentResolver mResolver = null;
-    private final int maxSize = 80;
+    //private ContentResolver mResolver = null;
+    //private final int maxSize = 80;
+    private PhotoSelectorAdapter mGridViewAdapter;
 
     @Override
     protected void registerViews() {
 
 
-        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(getApplicationContext())
-                .defaultDisplayImageOptions(((ActivityTask) getApplication()).getDefaultDisplayImageOptions()).memoryCacheExtraOptions(400, 400)
-                .threadPoolSize(5).build();
+//        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(getApplicationContext())
+//                .defaultDisplayImageOptions(((ActivityTask) getApplication()).getDefaultDisplayImageOptions()).memoryCacheExtraOptions(100, 100)
+//                .threadPoolSize(5).build();
+//        ImageLoader.getInstance().init(config);
+
+        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(
+                this)
+                .memoryCacheExtraOptions(100, 100)
+                        // default = device screen dimensions
+                .diskCacheExtraOptions(100, 100, null)
+                .threadPoolSize(5)
+                        // default Thread.NORM_PRIORITY - 1
+                .threadPriority(Thread.NORM_PRIORITY)
+                        // default FIFO
+                .tasksProcessingOrder(QueueProcessingType.LIFO)
+                        // default
+                .denyCacheImageMultipleSizesInMemory()
+                .memoryCache(new LruMemoryCache(2 * 1024 * 1024))
+                .memoryCacheSize(2 * 1024 * 1024)
+                .memoryCacheSizePercentage(13)
+                        // default
+                .diskCache(
+                        new UnlimitedDiscCache(StorageUtils.getCacheDirectory(
+                                this, true)))
+                        // default
+                .diskCacheSize(50 * 1024 * 1024).diskCacheFileCount(100)
+                .diskCacheFileNameGenerator(new HashCodeFileNameGenerator())
+                        // default
+                .imageDownloader(new BaseImageDownloader(this))
+                        // default
+                .imageDecoder(new BaseImageDecoder(false))
+                        // default
+                .defaultDisplayImageOptions(DisplayImageOptions.createSimple())
+                        // default
+                .defaultDisplayImageOptions(((ActivityTask) getApplication()).getDefaultDisplayImageOptions()).build();
+
         ImageLoader.getInstance().init(config);
 
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        mSelectedImage = mTendIntent.getParcelableArrayListExtra("edit_images");
-        mMaxCount = mMaxCount - mTendIntent.getIntExtra("cloud_image_size", 0);
+        if(mTendIntent != null){
+            mSelectedImage = mTendIntent.getParcelableArrayListExtra("edit_images");
+            mMaxCount = mMaxCount - mTendIntent.getIntExtra("cloud_image_size", 0);
+        }
+
+        DisplayMetrics dm = new DisplayMetrics();
+        this.getWindowManager().getDefaultDisplay().getMetrics(dm);
+        mGridViewAdapter = new PhotoSelectorAdapter(mContext, new ArrayList<SimpleImage>(), mSelectedImage, dm.widthPixels);
+        mGridView.setAdapter(mGridViewAdapter);
 
         new Thread(new Runnable() {
             @Override
             public void run() {
                 images = FileManager.getImageList(mContext);
-                handler.sendEmptyMessage(0);
+                Message msg = handler.obtainMessage();
+                msg.obj = images;
+                handler.sendMessage(msg);
             }
         }).start();
 
@@ -96,7 +148,7 @@ public class MultiImageChooseActivity extends BaseActivity {
             }
         });
         mGridView.setOnItemClickListener(mGridListener);
-        mResolver = mContext.getContentResolver();
+//        mResolver = mContext.getContentResolver();
 
 //        new Thread(new Runnable() {
 //            @Override
@@ -110,18 +162,20 @@ public class MultiImageChooseActivity extends BaseActivity {
 
         @Override
         public void handleMessage(Message msg) {
-            onImagesLoaded();
+            onImagesLoaded((List<SimpleImage>) msg.obj);
         }
     };
 
-    private void onImagesLoaded() {
-        if (images == null || images.size() == 0)
-            return;
-        if (mGridViewAdapter != null) {
-            mGridView.setAdapter(mGridViewAdapter);
-            // mGridViewAdapter.notifyDataSetChanged();
-            // mGridView.smoothScrollToPosition(0);
-        }
+    private void onImagesLoaded(List<SimpleImage> images) {
+//        if (images == null || images.size() == 0)
+//            return;
+//        if (mGridViewAdapter != null) {
+//            mGridView.setAdapter(mGridViewAdapter);
+//            // mGridViewAdapter.notifyDataSetChanged();
+//            // mGridView.smoothScrollToPosition(0);
+//        }
+        mGridViewAdapter.update(images);
+        mGridView.smoothScrollToPosition(0);
     }
 
     private void removeItem(SimpleImage image) {
@@ -228,7 +282,7 @@ public class MultiImageChooseActivity extends BaseActivity {
 //        }
 //    }
 
-    private BaseAdapter mGridViewAdapter = new BaseAdapter() {
+    private BaseAdapter mGridViewAdapter1 = new BaseAdapter() {
         @Override
         public int getCount() {
             if (images == null) {

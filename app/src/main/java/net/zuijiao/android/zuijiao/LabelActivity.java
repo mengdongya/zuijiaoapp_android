@@ -96,7 +96,9 @@ public class LabelActivity extends BaseActivity {
     protected void registerViews() {
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        ArrayList<String> labels = mTendIntent.getStringArrayListExtra("edit_label");
+        ArrayList<String> labels =null;
+        if(mTendIntent!= null)
+             labels = mTendIntent.getStringArrayListExtra("edit_label");
         mAddedText = (labels == null ? new ArrayList<>() : labels);
         mLabelEditor.setFocusable(true);
         mLabelEditor.setFocusableInTouchMode(true);

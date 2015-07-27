@@ -39,8 +39,10 @@ public class RecommendAndFavorActivity extends BaseActivity {
     protected void registerViews() {
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        mContentType = mTendIntent.getIntExtra("content_type", GourmetDisplayFragment.FAVOR_PAGE);
-        mCurrentUser = Optional.of((TinyUser) mTendIntent.getSerializableExtra("tiny_user"));
+        if(mTendIntent!= null) {
+            mContentType = mTendIntent.getIntExtra("content_type", GourmetDisplayFragment.FAVOR_PAGE);
+            mCurrentUser = Optional.of((TinyUser) mTendIntent.getSerializableExtra("tiny_user"));
+        }
         if (mContentType == GourmetDisplayFragment.FAVOR_PAGE) {
             getSupportActionBar().setTitle(String.format(getString(R.string.whose_favor), mCurrentUser.get().getNickName()));
         } else if (mContentType == GourmetDisplayFragment.RECOMMEND_PAGE) {

@@ -136,7 +136,6 @@ public class BanquetOrderDisplayActivity extends BaseActivity {
         weekDays = mContext.getResources().getStringArray(R.array.week_days);
         if (mTendIntent != null) {
             mOrder = (Order) mTendIntent.getSerializableExtra("order");
-
         }
         if (mOrder == null) {
             finish();

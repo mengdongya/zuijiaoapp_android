@@ -170,13 +170,15 @@ public class LocationActivity extends BaseActivity {
     protected void registerViews() {
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        mProvinceId = mTendIntent.getIntExtra("province_id", -1);
-        if (mProvinceId == -1)
-            getProvinceList();
-        else {
-            getSupportActionBar().setTitle(mTendIntent.getStringExtra("province_name"));
-            mFixLocation.setVisibility(View.GONE);
-            locations = DBOpenHelper.getmInstance(mContext).getCitiesByProvinceId(mProvinceId);
+        if(mTendIntent != null){
+            mProvinceId = mTendIntent.getIntExtra("province_id", -1);
+            if (mProvinceId == -1)
+                getProvinceList();
+            else {
+                getSupportActionBar().setTitle(mTendIntent.getStringExtra("province_name"));
+                mFixLocation.setVisibility(View.GONE);
+                locations = DBOpenHelper.getmInstance(mContext).getCitiesByProvinceId(mProvinceId);
+            }
         }
         InitLocation();
         mListView.setAdapter(mAdapter);
@@ -194,9 +196,7 @@ public class LocationActivity extends BaseActivity {
                     bundle.putString("city", autoLocationCity);
                     bundle.putString("province", autoLocationProvince);
                     bundle.putInt("city_id", cityId);
-                    ;
                     bundle.putInt("province_id", provinceId);
-                    ;
                     intent.putExtra("location", bundle);
                     setResult(RESULT_OK, intent);
                     finish();

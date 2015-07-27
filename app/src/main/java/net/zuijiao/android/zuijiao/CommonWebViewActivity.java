@@ -36,12 +36,9 @@ public class CommonWebViewActivity extends BaseActivity {
 
     @Override
     protected void registerViews() {
-        try {
+        if(mTendIntent != null ){
             title = mTendIntent.getStringExtra("title");
             contentUrl = mTendIntent.getStringExtra("content_url");
-        } catch (Throwable t) {
-            t.printStackTrace();
-            finish();
         }
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);

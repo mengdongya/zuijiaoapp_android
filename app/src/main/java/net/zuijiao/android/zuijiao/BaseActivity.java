@@ -68,7 +68,7 @@ public abstract class BaseActivity extends ActionBarActivity {
                     installIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     installIntent.setDataAndType(Uri.fromFile(file), "application/vnd.android.package-archive");
                     startActivity(installIntent);
-                    android.os.Process.killProcess(android.os.Process.myPid());
+                    //android.os.Process.killProcess(android.os.Process.myPid());
                 }
             }
         }
@@ -86,9 +86,9 @@ public abstract class BaseActivity extends ActionBarActivity {
         mFileMng = FileManager.getInstance(mContext);
         dbMng = DBOpenHelper.getmInstance(mContext);
         authMng = ThirdPartySDKManager.getInstance(this);
-        if (savedInstanceState == null) {
+//        if (savedInstanceState == null) {
             mTendIntent = getIntent();
-        }
+//        }
         registerViews();
         IntentFilter filter = new IntentFilter();
         filter.addAction(DownloadManager.ACTION_DOWNLOAD_COMPLETE);

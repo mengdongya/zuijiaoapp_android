@@ -80,6 +80,7 @@ public class VerifyPhoneNumActivity extends BaseActivity {
     protected void registerViews() {
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        if(mTendIntent  != null)
         bFromOrder = mTendIntent.getBooleanExtra("from_order", false);
         //register text watcher for the edit-text
         mPhoneNumEditor.addTextChangedListener(new TextWatcher() {

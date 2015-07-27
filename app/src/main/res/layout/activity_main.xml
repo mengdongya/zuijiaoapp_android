@@ -34,6 +34,7 @@
         android:layout_width="300dip"
         android:layout_height="match_parent"
         android:layout_gravity="start"
+        android:clickable="true"
         android:background="#ffffff"
         android:orientation="vertical">
 

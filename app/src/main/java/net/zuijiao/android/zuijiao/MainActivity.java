@@ -99,8 +99,10 @@ public final class MainActivity extends BaseActivity {
     @ViewInject(R.id.lv_drawe_items2)
     private ListView mSettingList = null;
     private ArrayList<Fragment> mFragmentList = null;
-    //    private GourmetDisplayFragment mMainFragment = null;
+    //private GourmetDisplayFragment mMainFragment = null;
+    //drop gourmet
     private MainFragment mMainFragment = null;
+//    private BanquetDisplayFragment mMainFragment= null ;
     private GourmetDisplayFragment mRecommendFragment = null;
     private GourmetDisplayFragment mFavorFragment = null;
     private MyOrderFragment mMyOrderFragment = null;
@@ -377,8 +379,13 @@ public final class MainActivity extends BaseActivity {
         mMainTabsTitle.setOnItemClickListener(mTabsListener);
         mThirdPartyUserHead.setOnClickListener(mUserInfoDetail);
         mFragmentList = new ArrayList<Fragment>();
+        //drop gourmet begin ;
+//        mMainFragment =   MainFragment.getInstance();
+//        mFragmentList.add(mMainFragment);
+        //drop gourmet end
         mMainFragment =   MainFragment.getInstance();
         mFragmentList.add(mMainFragment);
+//        mFragmentList.add(mMainFragment) ;
         mRecommendFragment =  GourmetDisplayFragment.newInstance(GourmetDisplayFragment.RECOMMEND_PAGE) ;
         mFragmentList.add(mRecommendFragment);
         mFavorFragment = GourmetDisplayFragment.newInstance(GourmetDisplayFragment.FAVOR_PAGE) ;
@@ -409,7 +416,8 @@ public final class MainActivity extends BaseActivity {
         }, errorMsg -> {
             //do nothing
         });
-        startNewActivity(mTendIntent);
+        if(mTendIntent!= null)
+            startNewActivity(mTendIntent);
     }
 
     @Override
@@ -419,8 +427,8 @@ public final class MainActivity extends BaseActivity {
 
     @Override
     protected void onNewIntent(Intent intent) {
-        startNewActivity(intent);
         super.onNewIntent(intent);
+        startNewActivity(intent);
     }
 
     /**
@@ -553,9 +561,11 @@ public final class MainActivity extends BaseActivity {
             mDrawerLayout.closeDrawer(Gravity.LEFT);
             return;
         }
+        //drop gourmet begin
         if (mFragmentList.indexOf(mCurrentFragment) == 0 && mMainFragment.onBackPressed()) {
             return;
         }
+        //drop gourmet end
         if (mFragmentList.indexOf(mCurrentFragment) != 0) {
             mTabsListener.onItemClick(mMainTabsTitle, null, 0, 0);
 //            mFragmentMng.beginTransaction().hide(mCurrentFragment).show(mFragmentList.get(0)).commit();
@@ -603,6 +613,7 @@ public final class MainActivity extends BaseActivity {
     }
 
     private void onOrderCreated() {
+        //drop gourmet
         mMainFragment.refreshBanquetList();
     }
 

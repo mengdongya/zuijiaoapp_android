@@ -39,13 +39,10 @@ public class FavorPersonListActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        try {
+        if(mTendIntent != null)
             mWouldLikeToEatList = (WouldLikeToEatUsers) mTendIntent.getSerializableExtra("would_like_list");
-            if (mWouldLikeToEatList == null || mWouldLikeToEatList.getCount() == 0)
-                finish();
-        } catch (Throwable t) {
+        if (mWouldLikeToEatList == null || mWouldLikeToEatList.getCount() == 0)
             finish();
-        }
         getSupportActionBar().setTitle(String.format(getResources().getString(R.string.favor_label), mWouldLikeToEatList.getCount() + ""));
         mList.setAdapter(mAdapter);
         mList.setOnItemClickListener(mListener);

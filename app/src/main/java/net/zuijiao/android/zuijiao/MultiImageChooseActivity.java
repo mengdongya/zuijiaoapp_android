@@ -73,8 +73,10 @@ public class MultiImageChooseActivity extends BaseActivity {
 
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        mSelectedImage = mTendIntent.getParcelableArrayListExtra("edit_images");
-        mMaxCount = mMaxCount - mTendIntent.getIntExtra("cloud_image_size", 0);
+        if(mTendIntent != null){
+            mSelectedImage = mTendIntent.getParcelableArrayListExtra("edit_images");
+            mMaxCount = mMaxCount - mTendIntent.getIntExtra("cloud_image_size", 0);
+        }
 
         new Thread(new Runnable() {
             @Override

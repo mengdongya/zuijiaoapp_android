@@ -224,7 +224,7 @@ public class VerifyPhoneNumActivity extends BaseActivity {
      * show keep phone number dialog
      */
     private void showKeepDialog() {
-        AlertDialogUtil alertDialogUtil = AlertDialogUtil.getIntance();
+        AlertDialogUtil alertDialogUtil = AlertDialogUtil.getInstance();
         alertDialogUtil.createPromptDialog(VerifyPhoneNumActivity.this, getString(R.string.alert), getString(R.string.keep_phone_confirm));
         alertDialogUtil.setButtonText(getString(R.string.yes), getString(R.string.no));
         alertDialogUtil.setOnClickListener(new AlertDialogUtil.OnClickListener() {

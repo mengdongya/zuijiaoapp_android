@@ -119,7 +119,7 @@ public class SettingActivity extends BaseActivity {
      * do logout
      */
     private void logout() {
-        AlertDialogUtil alertDialogUtil = AlertDialogUtil.getIntance();
+        AlertDialogUtil alertDialogUtil = AlertDialogUtil.getInstance();
         alertDialogUtil.createPromptDialog(SettingActivity.this, getString(R.string.alert), getString(R.string.logout_confirm_title));
         alertDialogUtil.setButtonText(getString(R.string.confirm), getString(R.string.cancel));
         alertDialogUtil.setOnClickListener(new AlertDialogUtil.OnClickListener() {

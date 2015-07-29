@@ -526,7 +526,7 @@ public class GourmetDetailActivity extends BaseActivity implements
      * delete a gourmet
      */
     private void deleteGourmet() {
-        AlertDialogUtil alertDialogUtil = AlertDialogUtil.getIntance();
+        AlertDialogUtil alertDialogUtil = AlertDialogUtil.getInstance();
         alertDialogUtil.createPromptDialog(GourmetDetailActivity.this, getString(R.string.alert), String.format(getString(R.string.confirm_delete_gourmet), gourmet.getName()));
         alertDialogUtil.setButtonText(getString(R.string.yes), getString(R.string.no));
         alertDialogUtil.setOnClickListener(new AlertDialogUtil.OnClickListener() {

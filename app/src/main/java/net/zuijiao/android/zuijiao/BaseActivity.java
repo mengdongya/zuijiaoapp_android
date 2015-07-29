@@ -313,7 +313,7 @@ public abstract class BaseActivity extends ActionBarActivity {
     protected void showUpdateDialog(final String downloadUrl, final String message) {
         if (this == null || this.isFinishing())
             return;
-        AlertDialogUtil alertDialogUtil = AlertDialogUtil.getIntance();
+        AlertDialogUtil alertDialogUtil = AlertDialogUtil.getInstance();
         alertDialogUtil.createPromptDialog(this, getString(R.string.new_version), message);
         alertDialogUtil.setButtonText(getString(R.string.update), getString(R.string.later));
         alertDialogUtil.setOnClickListener(new AlertDialogUtil.OnClickListener() {

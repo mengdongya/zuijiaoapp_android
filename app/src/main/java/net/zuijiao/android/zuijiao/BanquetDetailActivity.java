@@ -249,6 +249,7 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
             finish();
             return;
         }
+        getSupportActionBar().setTitle(mBanquent.getTitle());
         weekDays = mContext.getResources().getStringArray(R.array.week_days);
         mScrollView.setScrollStateListener(this);
         mViewPagerAdapter = new ImageViewPagerAdapter(initImages());

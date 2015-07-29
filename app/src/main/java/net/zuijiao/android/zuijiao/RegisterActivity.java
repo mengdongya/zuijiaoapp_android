@@ -90,11 +90,27 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
 
     @Override
     protected void registerViews() {
-        mMaleBtn.setActivated(true);
-        mMaleBtn.setTextColor(Color.WHITE);
+        //configuration changed begin
+        if(mSelectedGender.equals("male")){
+            mMaleBtn.setActivated(true);
+            mMaleBtn.setTextColor(Color.WHITE);
+        }else{
+            mFemaleBtn.setActivated(true);
+            mFemaleBtn.setTextColor(Color.WHITE);
+        }
+        //configuration changed end
         mMaleBtn.setOnClickListener(this);
         mFemaleBtn.setOnClickListener(this);
         mHeadChooseImage.setOnClickListener(this);
+        //configuration changed begin
+        if(bUserAvatarSet){
+            String path = (getCacheDir().getPath() + File.separator + "head.jpg");
+            File file = new File(path);
+            if (file.exists()) {
+                mHeadChooseImage.setImageBitmap(BitmapFactory.decodeFile(path));
+            }
+        }
+        //configuration changed end ;
     }
 
     /**

@@ -95,7 +95,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        myattr:imageSize="30"
+                        myattr:imageSize="32"
                         myattr:isIndicator="true"
                         myattr:ratingBarType="host_score" />
 
@@ -287,9 +287,9 @@
                 android:layout_marginTop="10dip"
                 android:background="@color/white"
                 android:orientation="vertical"
-                android:paddingLeft="8dip"
-                android:paddingRight="8dip">
-
+            >
+                <!--android:paddingLeft="8dip"-->
+                <!--android:paddingRight="8dip"-->
                 <TextView
                     android:id="@+id/host_history_title"
                     android:layout_width="wrap_content"
@@ -304,7 +304,7 @@
 
                 <View
                     android:layout_width="30dip"
-                    android:layout_height="3dip"
+                    android:layout_height="2dip"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginBottom="10dip"
                     android:layout_marginTop="15dip"
@@ -325,6 +325,22 @@
                     android:src="@drawable/banquet_history_place_hold"
                     android:visibility="visible" />
 
+                <!--<View-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="1dip"-->
+                    <!--android:background="@color/bg_gray_white" />-->
+
+                <!--<Button-->
+                    <!--android:id="@+id/host_guest_hold_btn"-->
+                    <!--style="?android:attr/buttonStyleSmall"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="40dip"-->
+                    <!--android:background="@drawable/show_all_btn_bg"-->
+                    <!--android:gravity="center"-->
+                    <!--android:text="@string/show_all_banquet"-->
+                    <!--android:textColor="@color/banquet_theme"-->
+                    <!--android:textSize="18sp"-->
+                    <!--android:visibility="gone" />-->
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dip"
@@ -335,13 +351,12 @@
                     style="?android:attr/buttonStyleSmall"
                     android:layout_width="match_parent"
                     android:layout_height="40dip"
-                    android:background="@drawable/bg_white_round_corner"
+                    android:background="@drawable/banquet_detail_order_bg"
                     android:gravity="center"
-                    android:text="@string/show_all_banquet"
+                    android:text="@string/show_all_comments"
                     android:textColor="@color/banquet_theme"
                     android:textSize="18sp"
-                    android:visibility="gone" />
-
+                    />
             </LinearLayout>
 
             <LinearLayout
@@ -351,9 +366,7 @@
                 android:layout_marginTop="10dip"
                 android:background="@color/white"
                 android:orientation="vertical"
-                android:paddingLeft="8dip"
-
-                android:paddingRight="8dip">
+                >
 
                 <TextView
                     android:id="@+id/host_guest_history_title"
@@ -391,6 +404,22 @@
                     android:src="@drawable/banquet_history_place_hold"
                     android:visibility="visible" />
 
+                <!--<View-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="1dip"-->
+                    <!--android:background="@color/bg_gray_white" />-->
+
+                <!--<Button-->
+                    <!--android:id="@+id/host_guest_attendee_btn"-->
+                    <!--style="?android:attr/buttonStyleSmall"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="40dip"-->
+                    <!--android:background="@drawable/bg_white_round_corner"-->
+                    <!--android:gravity="center"-->
+                    <!--android:text="@string/show_all_banquet"-->
+                    <!--android:textColor="@color/banquet_theme"-->
+                    <!--android:textSize="18sp"-->
+                    <!--android:visibility="gone" />-->
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dip"
@@ -401,13 +430,12 @@
                     style="?android:attr/buttonStyleSmall"
                     android:layout_width="match_parent"
                     android:layout_height="40dip"
-                    android:background="@drawable/bg_white_round_corner"
+                    android:background="@drawable/banquet_detail_order_bg"
                     android:gravity="center"
-                    android:text="@string/show_all_banquet"
+                    android:text="@string/show_all_comments"
                     android:textColor="@color/banquet_theme"
                     android:textSize="18sp"
-                    android:visibility="gone" />
-
+                    />
 
             </LinearLayout>
 
@@ -446,33 +474,49 @@
                     android:id="@+id/host_guest_lastest_comment"
                     layout="@layout/banquet_comment_item"
                     android:visibility="gone" />
+                <ImageView
+                    android:id="@+id/host_guest_empty_review_iv"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/main_item_image_height"
+                    android:background="@color/white"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/banquet_history_place_hold"
+                    android:visibility="visible" />
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dip"
+                    android:background="@color/bg_gray_white" />
+
+                <Button
+                    android:id="@+id/host_guest_comment_btn"
+                    style="?android:attr/buttonStyleSmall"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dip"
+                    android:background="@drawable/banquet_detail_order_bg"
+                    android:gravity="center"
+                    android:text="@string/show_all_comments"
+                    android:textColor="@color/banquet_theme"
+                    android:textSize="18sp"
+                    />
             </LinearLayout>
 
-            <ImageView
-                android:id="@+id/host_guest_empty_review_iv"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/main_item_image_height"
-                android:background="@color/white"
-                android:scaleType="centerInside"
-                android:src="@drawable/banquet_history_place_hold"
-                android:visibility="visible" />
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dip"
-                android:background="@color/bg_gray_white" />
+            <!--<View-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="1dip"-->
+                <!--android:background="@color/bg_gray_white" />-->
 
-            <Button
-                android:id="@+id/host_guest_comment_btn"
-                style="?android:attr/buttonStyleSmall"
-                android:layout_width="match_parent"
-                android:layout_height="40dip"
-                android:background="@drawable/bg_white_round_corner"
-                android:gravity="center"
-                android:text="@string/show_all_comments"
-                android:textColor="@color/banquet_theme"
-                android:textSize="18sp"
-                android:visibility="gone" />
+            <!--<Button-->
+                <!--android:id="@+id/host_guest_comment_btn"-->
+                <!--style="?android:attr/buttonStyleSmall"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="40dip"-->
+                <!--android:background="@drawable/bg_white_round_corner"-->
+                <!--android:gravity="center"-->
+                <!--android:text="@string/show_all_comments"-->
+                <!--android:textColor="@color/banquet_theme"-->
+                <!--android:textSize="18sp"-->
+                <!--android:visibility="gone" />-->
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

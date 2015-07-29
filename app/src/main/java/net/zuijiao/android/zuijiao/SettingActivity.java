@@ -28,6 +28,7 @@ import com.zuijiao.android.zuijiao.network.Router;
 import com.zuijiao.controller.FileManager;
 import com.zuijiao.controller.PreferenceManager;
 import com.zuijiao.controller.ThirdPartySDKManager;
+import com.zuijiao.utils.AlertDialogUtil;
 
 /**
  * setting activity ,called from main-activity side bar
@@ -118,21 +119,18 @@ public class SettingActivity extends BaseActivity {
      * do logout
      */
     private void logout() {
-        View logoutView = LayoutInflater.from(getApplicationContext()).inflate(
-                R.layout.logout_dialog, null);
-        AlertDialog dialog = new AlertDialog.Builder(SettingActivity.this).setView(logoutView).create();
-        logoutView.findViewById(R.id.logout_btn_cancel).setOnClickListener(new View.OnClickListener() {
+        AlertDialogUtil alertDialogUtil = AlertDialogUtil.getIntance();
+        alertDialogUtil.createPromptDialog(SettingActivity.this, getString(R.string.alert), getString(R.string.logout_confirm_title));
+        alertDialogUtil.setButtonText(getString(R.string.confirm), getString(R.string.cancel));
+        alertDialogUtil.setOnClickListener(new AlertDialogUtil.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                dialog.dismiss();
+            public void CancelOnClick() {
+                alertDialogUtil.dismissDialog();
             }
-        });
-        Window window = dialog.getWindow() ;
-        window.setWindowAnimations(R.style.dialogWindowAnim);
-        logoutView.findViewById(R.id.logout_btn_confirm).setOnClickListener(new View.OnClickListener() {
+
             @Override
-            public void onClick(View v) {
-                dialog.dismiss();
+            public void ConfirmOnClick() {
+                alertDialogUtil.dismissDialog();
                 createDialog();
                 ThirdPartySDKManager.getInstance(mContext).logout(mContext);
                 PreferenceManager.getInstance(mContext).clearThirdPartyLoginMsg();
@@ -155,7 +153,7 @@ public class SettingActivity extends BaseActivity {
                 });
             }
         });
-        dialog.show();
+        alertDialogUtil.showDialog();
     }
 
     private void backToMain() {
@@ -184,7 +182,7 @@ public class SettingActivity extends BaseActivity {
             if (!bFromUser) {
                 bFromUser = true;
             } else {
-                ((SwitchButton) buttonView).setEnabled(false);
+                buttonView.setEnabled(false);
                 boolean switchTo = false;
                 ConfigurationType type = ConfigurationType.Follow;
                 switch (buttonView.getId()) {
@@ -234,7 +232,7 @@ public class SettingActivity extends BaseActivity {
                             public void run() {
                                 buttonView.setEnabled(true);
                                 bFromUser = false;
-                                ((SwitchButton) buttonView).toggle();
+                                buttonView.toggle();
                                 Toast.makeText(mContext, getString(R.string.notify_net3), Toast.LENGTH_SHORT).show();
                             }
                         }, 500);

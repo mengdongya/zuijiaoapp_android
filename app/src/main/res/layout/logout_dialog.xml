@@ -4,7 +4,10 @@
     android:layout_height="wrap_content"
     android:background="@drawable/logout_dialog_bg"
     android:orientation="vertical"
-    android:padding="20dip">
+    android:paddingTop="20dip"
+    android:paddingLeft="20dip"
+    android:paddingRight="20dip"
+    android:paddingBottom="10dip">
 
     <TextView
         android:id="@+id/logout_title"

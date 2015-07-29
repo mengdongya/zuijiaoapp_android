@@ -11,6 +11,7 @@ import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -34,6 +35,7 @@ import com.zuijiao.controller.PreferenceManager.PreferenceInfo;
 import com.zuijiao.controller.ThirdPartySDKManager;
 import com.zuijiao.db.DBOpenHelper;
 import com.zuijiao.entity.AuthorInfo;
+import com.zuijiao.utils.AlertDialogUtil;
 
 import java.io.File;
 
@@ -99,18 +101,16 @@ public abstract class BaseActivity extends ActionBarActivity {
 
     public void onResume() {
         super.onResume();
-        MobclickAgent.onResume(this);
-//        if(BuildConfig.OpenUmengAgent){
-//            Log.i("openUmengAgent" ,BuildConfig.OpenUmengAgent + "") ;
-//        }
-//
+        if(BuildConfig.OpenUmeng){
+            MobclickAgent.onResume(this);
+        }
     }
 
     public void onPause() {
         super.onPause();
-        MobclickAgent.onPause(this);
-//        if(BuildConfig.OpenUmengAgent)
-//
+        if(BuildConfig.OpenUmeng){
+            MobclickAgent.onPause(this);
+        }
     }
 
     @Override
@@ -313,30 +313,19 @@ public abstract class BaseActivity extends ActionBarActivity {
     protected void showUpdateDialog(final String downloadUrl, final String message) {
         if (this == null || this.isFinishing())
             return;
-        if (updateAlertDialog != null && updateAlertDialog.isShowing()) {
-            return;
-        }
-        View logoutView = LayoutInflater.from(getApplicationContext()).inflate(
-                R.layout.logout_dialog, null);
-        AlertDialog updateAlertDialog = new AlertDialog.Builder(this).setView(logoutView).create();
-        Window window = updateAlertDialog.getWindow();
-        window.setWindowAnimations(R.style.dialogWindowAnim);
-        ((TextView) logoutView.findViewById(R.id.logout_title)).setText(getString(R.string.new_version));
-        ((TextView) logoutView.findViewById(R.id.logout_content)).setText(message);
-        Button confirmBtn = (Button) logoutView.findViewById(R.id.logout_btn_confirm);
-        Button cancelBtn = (Button) logoutView.findViewById(R.id.logout_btn_cancel);
-        confirmBtn.setText(getString(R.string.update));
-        cancelBtn.setText(getString(R.string.later));
-        cancelBtn.setOnClickListener(new View.OnClickListener() {
+        AlertDialogUtil alertDialogUtil = AlertDialogUtil.getIntance();
+        alertDialogUtil.createPromptDialog(this, getString(R.string.new_version), message);
+        alertDialogUtil.setButtonText(getString(R.string.update), getString(R.string.later));
+        alertDialogUtil.setOnClickListener(new AlertDialogUtil.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                updateAlertDialog.dismiss();
+            public void CancelOnClick() {
+                alertDialogUtil.dismissDialog();
             }
-        });
-        confirmBtn.setOnClickListener(new View.OnClickListener() {
+
             @Override
-            public void onClick(View v) {
-                updateAlertDialog.dismiss();
+            public void ConfirmOnClick() {
+                alertDialogUtil.dismissDialog();
+//                updateAlertDialog.dismiss();
                 DownloadManager downloadManager = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
                 Uri uri = Uri.parse(downloadUrl);
                 DownloadManager.Request request = new DownloadManager.Request(uri);
@@ -344,8 +333,7 @@ public abstract class BaseActivity extends ActionBarActivity {
                 mUpdateDownloadId = downloadManager.enqueue(request);
             }
         });
-        if (!isFinishing())
-            updateAlertDialog.show();
+        alertDialogUtil.showDialog();
     }
 
 

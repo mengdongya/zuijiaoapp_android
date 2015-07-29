@@ -16,12 +16,10 @@ import android.view.animation.TranslateAnimation;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -260,7 +258,7 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
         mAboutHostBtn.setOnClickListener(this);
         mOrderBtn.setOnClickListener(this);
         mHostHead.setOnClickListener(this);
-        Router.getBanquentModule().commentsofBanquent(mBanquent.getMaster().getIdentifier(), null, 1, new OneParameterExpression<Reviews>() {
+        Router.getBanquentModule().commentsOfBanquent(mBanquent.getMaster().getIdentifier(), null, 1, new OneParameterExpression<Reviews>() {
             @Override
             public void action(Reviews reviews) {
                 mReviews = reviews;

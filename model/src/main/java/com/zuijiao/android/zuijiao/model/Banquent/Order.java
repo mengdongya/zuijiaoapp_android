@@ -37,6 +37,30 @@ public class Order implements Serializable {
     private Date holdTime;
     @SerializedName("isCommented")
     private Boolean isCommented;
+    @SerializedName("quantity")
+    private Integer quantity;
+    @SerializedName("realPrice")
+    private Integer realPrice;
+    @SerializedName("totalPrice")
+    private Integer totalPrice;
+    @SerializedName("deadline")
+    private Date deadline;
+
+    public Integer getQuantity() {
+        return quantity;
+    }
+
+    public Integer getRealPrice() {
+        return realPrice;
+    }
+
+    public Integer getTotalPrice() {
+        return totalPrice;
+    }
+
+    public Date getDeadline() {
+        return deadline;
+    }
 
     public Boolean getIsCommented() {
         return isCommented;

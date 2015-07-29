@@ -1,9 +1,9 @@
 package net.zuijiao.android.zuijiao;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -55,20 +55,39 @@ public class OrderListFragment extends Fragment implements
     private String[] weekDays;
     private TextView mBlankText;
     private int[] mBlankTextRes = {R.string.no_coming_order, R.string.no_finished_order, R.string.no_order};
+    //    private Orders mOrders;
+    private long currentSystemTime;
 
 //    public OrderListFragment(int index) {
 //        super();
 //        this.tabIndex = index;
 //    }
 
+    Handler handler = new Handler();
+    Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+            currentSystemTime++;
+            handler.postDelayed(this, 1000);
+        }
+    };
 
-    public static OrderListFragment newInstance(int position){
+    @Override
+    public void onResume() {
+        System.out.println("tag:" + this.getTag());
+        System.out.println("id:" + this.getId());
+        System.out.println("tabIndex:" + tabIndex);
+        super.onResume();
+    }
+
+    public static OrderListFragment newInstance(int position) {
         OrderListFragment fragment = new OrderListFragment();
         Bundle bundle = new Bundle();
-        bundle.putInt("position" ,position );
+        bundle.putInt("position", position);
         fragment.setArguments(bundle);
         return fragment;
     }
+
     public OrderListFragment() {
         super();
     }
@@ -82,7 +101,7 @@ public class OrderListFragment extends Fragment implements
             }
             return mContentView;
         }
-        tabIndex = getArguments().getInt("position") ;
+        tabIndex = getArguments().getInt("position");
         weekDays = getResources().getStringArray(R.array.week_days);
         mContentView = inflater.inflate(R.layout.fragment_order_list, null);
         mRefreshLayout = (SwipeRefreshLayout) mContentView.findViewById(R.id.order_fragment_swipe_refresh);
@@ -155,6 +174,9 @@ public class OrderListFragment extends Fragment implements
         Router.getBanquentModule().orders(status, lastedId, 20, new OneParameterExpression<Orders>() {
             @Override
             public void action(Orders orders) {
+                // mOrders = orders;
+                currentSystemTime = orders.getCurrentServerTime().getTime() / 1000;
+                runnable.run();
                 if (bRefresh) {
                     orderList = orders.getOrderList();
                     if (orderList.size() == 0) {
@@ -192,6 +214,7 @@ public class OrderListFragment extends Fragment implements
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
+
     /**
      * orders list adapter
      */
@@ -227,28 +250,56 @@ public class OrderListFragment extends Fragment implements
             holder.title.setText(order.getTitle());
             String dateInfo = formatDate(order.getHoldTime());
             //holder.date.setText(dateInfo + order.getAddress());
-            holder.date.setText(dateInfo + " · " + (position % 4 + 1) + getString(R.string.people));
-            if (tabIndex == 0) {
-                if (position % 2 == 0) {
-                    holder.review.setVisibility(View.VISIBLE);
+            holder.date.setText(dateInfo + " · " + order.getQuantity() + getString(R.string.people));
+//            if (tabIndex == 0) {
+//                if (position % 2 == 0) {
+//                    holder.review.setVisibility(View.VISIBLE);
+//                    holder.review.setText(getString(R.string.pay_right_now));
+//                    holder.review.setEnabled(true);
+//                    holder.review.setTextColor(getResources().getColor(R.color.banquet_theme));
+//                } else {
+//                    holder.review.setVisibility(View.GONE);
+//                }
+//            }
+
+            if (order.getStatus() == OrderStatus.Unpaid || order.getStatus() == OrderStatus.Finished) {
+                holder.review.setVisibility(View.VISIBLE);
+                holder.review.setEnabled(true);
+                holder.review.setTextColor(getResources().getColor(R.color.banquet_theme));
+                if (order.getStatus() == OrderStatus.Unpaid) {
                     holder.review.setText(getString(R.string.pay_right_now));
-                    holder.review.setEnabled(true);
-                    holder.review.setTextColor(getResources().getColor(R.color.banquet_theme));
-                } else {
-                    holder.review.setVisibility(View.GONE);
+                    holder.review.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Intent intent = new Intent(getActivity(), BanquetOrderActivity.class);
+                            intent.putExtra("order", order);
+                            intent.putExtra("surplusTime", (order.getDeadline().getTime() / 1000) - currentSystemTime);
+                            intent.putExtra("isCreate", false);
+                            intent.putExtra("attendeeNum", order.getQuantity());
+                            startActivity(intent);
+                        }
+                    });
                 }
-            }
-            if (tabIndex > 0) {
-                if (order.getStatus() != OrderStatus.Waiting && order.getStatus() != OrderStatus.Canceled) {
-                    holder.review.setVisibility(View.VISIBLE);
+//                if (order.getStatus() == OrderStatus.Uncomment) {
+//                    holder.review.setText(getString(R.string.to_evaluate));
+//                    holder.review.setOnClickListener(new View.OnClickListener() {
+//                        @Override
+//                        public void onClick(View view) {
+//                            Intent intent = new Intent();
+//                            intent.setClass(getActivity(), ReviewActivity.class);
+//                            intent.putExtra("orderId", order.getIdentifier());
+//                            intent.putExtra("tabIndex", tabIndex);
+//                            getActivity().startActivityForResult(intent, MainActivity.COMMENT_REQUEST);
+//                        }
+//                    });
+//                }
+                if (order.getStatus() == OrderStatus.Finished) {
                     if (order.getIsCommented()) {
                         holder.review.setText(getString(R.string.over_evaluate));
                         holder.review.setEnabled(false);
                         holder.review.setTextColor(getResources().getColor(R.color.tv_light_gray));
                     } else {
                         holder.review.setText(getString(R.string.to_evaluate));
-                        holder.review.setEnabled(true);
-                        holder.review.setTextColor(getResources().getColor(R.color.banquet_theme));
                         holder.review.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
@@ -260,24 +311,51 @@ public class OrderListFragment extends Fragment implements
                             }
                         });
                     }
-                } else {
-                    holder.review.setVisibility(View.GONE);
                 }
-                //  }
+            } else {
+                holder.review.setEnabled(false);
+                holder.review.setVisibility(View.GONE);
             }
+
+//            if (tabIndex > 0) {
+//                if (order.getStatus() != OrderStatus.Waiting && order.getStatus() != OrderStatus.Canceled) {
+//                    holder.review.setVisibility(View.VISIBLE);
+//                    if (order.getIsCommented()) {
+//                        holder.review.setText(getString(R.string.over_evaluate));
+//                        holder.review.setEnabled(false);
+//                        holder.review.setTextColor(getResources().getColor(R.color.tv_light_gray));
+//                    } else {
+//                        holder.review.setText(getString(R.string.to_evaluate));
+//                        holder.review.setEnabled(true);
+//                        holder.review.setTextColor(getResources().getColor(R.color.banquet_theme));
+//                        holder.review.setOnClickListener(new View.OnClickListener() {
+//                            @Override
+//                            public void onClick(View view) {
+//                                Intent intent = new Intent();
+//                                intent.setClass(getActivity(), ReviewActivity.class);
+//                                intent.putExtra("orderId", order.getIdentifier());
+//                                intent.putExtra("tabIndex", tabIndex);
+//                                getActivity().startActivityForResult(intent, MainActivity.COMMENT_REQUEST);
+//                            }
+//                        });
+//                    }
+//                } else {
+//                    holder.review.setVisibility(View.GONE);
+//                }
+//                //  }
+//            }
             switch (order.getStatus()) {
                 case Canceled:
                     holder.situation.setText(getString(R.string.canceled_banquet));
                     break;
                 case Waiting:
-                    if (position % 2 != 0) {
-                        holder.situation.setText(getString(R.string.waiting_fo_you));
-                    } else {
-                        holder.situation.setText(getString(R.string.waiting_pay));
-                    }
+                    holder.situation.setText(getString(R.string.waiting_fo_you));
                     break;
                 case Finished:
                     holder.situation.setText(getString(R.string.finished_banquet));
+                    break;
+                case Unpaid:
+                    holder.situation.setText(getString(R.string.waiting_pay));
                     break;
                 default:
                     holder.situation.setText(getString(R.string.waiting_banquet));
@@ -291,7 +369,6 @@ public class OrderListFragment extends Fragment implements
     @Override
     public void onRefresh() {
         networkStep(true);
-        System.out.println("tabIndex:" + tabIndex);
     }
 
     @Override
@@ -304,6 +381,8 @@ public class OrderListFragment extends Fragment implements
         position -= 1;
         Intent intent = new Intent(getActivity(), BanquetOrderDisplayActivity.class);
         intent.putExtra("order", orderList.get(position));
+        long surplusTime = (orderList.get(position).getDeadline().getTime() / 1000) - currentSystemTime;
+        intent.putExtra("surplusTime", surplusTime);
         startActivity(intent);
     }
 
@@ -334,6 +413,5 @@ public class OrderListFragment extends Fragment implements
         strBuilder.append(" ");
         return strBuilder.toString();
     }
-
 
 }

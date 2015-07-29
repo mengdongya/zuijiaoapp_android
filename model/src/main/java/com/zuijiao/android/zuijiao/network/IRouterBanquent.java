@@ -20,6 +20,7 @@ import retrofit.http.Query;
  */
 public interface IRouterBanquent {
     String RootURL = "/feast/v2";
+    String RootURL_V3 = "/feast/v3";
 
     //MARK: - Order
     @POST(RootURL + "/ios/order/create")
@@ -40,6 +41,11 @@ public interface IRouterBanquent {
             , @Field("payWay") String payMethod
             , Callback<OrderAuth> restaurantsCallback
     );
+
+    @POST(RootURL_V3 + "/ios/order/{id}/cancel")
+    @FormUrlEncoded
+    void cancelOrder(@Field("id") Integer orderId
+                    ,Callback<Response> callback);
 
     @POST(RootURL + "/ios/comment/create")
     @FormUrlEncoded
@@ -85,7 +91,7 @@ public interface IRouterBanquent {
     );
 
     @GET(RootURL + "/ios/seller/{id}/comments")
-    void commentsofBanquent(@Path("id") Integer sellerId
+    void commentsOfBanquent(@Path("id") Integer sellerId
             , @Query("maxID") Integer maxID
             , @Query("count") Integer count
             , Callback<Reviews> callback

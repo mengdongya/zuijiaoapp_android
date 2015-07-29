@@ -9,9 +9,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -183,7 +180,7 @@ public class BanquetCommentActivity extends BaseActivity implements RefreshAndIn
             mRefreshLayout.setRefreshing(true);
             lastedId = null;
         }
-        Router.getBanquentModule().commentsofBanquent(host_id, lastedId, 20, new OneParameterExpression<Reviews>() {
+        Router.getBanquentModule().commentsOfBanquent(host_id, lastedId, 20, new OneParameterExpression<Reviews>() {
             @Override
             public void action(Reviews reviews) {
                 mReviews = reviews;

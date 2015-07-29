@@ -1,28 +1,23 @@
 package net.zuijiao.android.zuijiao;
 
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Handler;
 import android.support.v7.widget.Toolbar;
-import android.text.Editable;
-import android.text.InputFilter;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -77,6 +72,8 @@ public class BanquetOrderActivity extends BaseActivity implements View.OnClickLi
     private TextView mBanquetNum;
     @ViewInject(R.id.banquet_order_banquet_total_price)
     private TextView mBanquetTotalPrice;
+    @ViewInject(R.id.banquet_order_scrollview)
+    private ScrollView mScrollView;
     public static Banquent mBanquent;
     private String[] weekDays;
     private String mRemark;
@@ -88,7 +85,7 @@ public class BanquetOrderActivity extends BaseActivity implements View.OnClickLi
     //for network request
     private String[] payWayStr;
     private int mSelectedPayWay = 0;
-    private int mSurplusTime = 10 * 60;
+    private int mSurplusTime = -1;// sec
     private int attendeeNum;
     private Order mOrder;
 
@@ -186,9 +183,9 @@ public class BanquetOrderActivity extends BaseActivity implements View.OnClickLi
 //        mBanquetRemark.setOnClickListener(this);
         mPayBtn.setOnClickListener(this);
         if (isCreate) {
-            AlertDialogUtil alertDialogUtil = AlertDialogUtil.getIntance();
+            AlertDialogUtil alertDialogUtil = AlertDialogUtil.getInstance();
             alertDialogUtil.createNoticeDialog(BanquetOrderActivity.this, getString(R.string.order_success), getString(R.string.order_success_content));
-            alertDialogUtil.setButtonText(getString(R.string.notice_comfirm), null);
+            alertDialogUtil.setButtonText(getString(R.string.notice_confirm), null);
             alertDialogUtil.setOnClickListener(new AlertDialogUtil.OnClickListener() {
                 @Override
                 public void CancelOnClick() {
@@ -209,8 +206,10 @@ public class BanquetOrderActivity extends BaseActivity implements View.OnClickLi
         int priceHeight = mBottomPrice.getMeasuredHeight();
         //mBottomPayWay.measure(0 , 0);
         //int dateHeight = mBottomPayWay.getMeasuredHeight() ;
-        int margin = (int) (2 * getResources().getDimension(R.dimen.end_z));
+        int margin = (int) (6 * getResources().getDimension(R.dimen.end_z));
         params.height = priceHeight + margin;
+        RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) mScrollView.getLayoutParams();
+        layoutParams.bottomMargin = params.height;
     }
 
     private void initViewsByBanquet() {
@@ -219,7 +218,7 @@ public class BanquetOrderActivity extends BaseActivity implements View.OnClickLi
 //        mBottomPrice.setText(String.format(getString(R.string.price_per_one), mBanquent.getPrice()));
         mBottomPrice.setText(String.format(getString(R.string.order_total_price), (mBanquent != null ? mBanquent.getPrice() : mOrder.getPrice()) * attendeeNum));
         mBanquetName.setText(mBanquent != null ? mBanquent.getTitle() : mOrder.getTitle());
-        mBanquetTotalPrice.setText(((mBanquent != null ? mBanquent.getPrice() : mOrder.getPrice()) * attendeeNum) + getString(R.string.yuan));
+        mBanquetTotalPrice.setText(String.format("%.2f", (mBanquent != null ? mBanquent.getPrice() : mOrder.getPrice()) * attendeeNum) + getString(R.string.yuan));
 //        mBottomPayWay.setText(getString(R.string.use) + payWayRes[mSelectedPayWay]);
 //        mBanquetLocation.setText(mBanquent.getAddress());
     }
@@ -297,7 +296,7 @@ public class BanquetOrderActivity extends BaseActivity implements View.OnClickLi
 
     @Override
     public void onBackPressed() {
-        AlertDialogUtil alertDialogUtil = AlertDialogUtil.getIntance();
+        AlertDialogUtil alertDialogUtil = AlertDialogUtil.getInstance();
         alertDialogUtil.createPromptDialog(BanquetOrderActivity.this, null, getString(R.string.order_success_return_content));
         alertDialogUtil.setButtonText(getString(R.string.exit_pay), getString(R.string.continue_pay));
         alertDialogUtil.setOnClickListener(new AlertDialogUtil.OnClickListener() {

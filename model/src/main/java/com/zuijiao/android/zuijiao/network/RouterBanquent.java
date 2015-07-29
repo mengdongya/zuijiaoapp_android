@@ -23,9 +23,10 @@ public enum RouterBanquent {
                             String code,
                             String remark,
                             String payMethod,
+                            Integer quantity,
                             final OneParameterExpression<OrderAuth> successCallback,
                             final OneParameterExpression<String> failureCallback) {
-        service.createOrder(themeId, phoneNumber, code, remark, payMethod, CallbackFactory.getInstance().callback(successCallback, failureCallback));
+        service.createOrder(themeId, phoneNumber, code, remark, payMethod, quantity, CallbackFactory.getInstance().callback(successCallback, failureCallback));
     }
 
     public void createOrder(Integer themeId,
@@ -76,13 +77,13 @@ public enum RouterBanquent {
         service.themesOfParticipator(identifier, maxId, count, CallbackFactory.getInstance().callback(successCallback, failureCallback));
     }
 
-    public void commentsofBanquent(
+    public void commentsOfBanquent(
             Integer sellerID
             , Integer maxID
             , Integer count
             , final OneParameterExpression<Reviews> successCallback
             , final OneParameterExpression<String> failureCallback) {
-        service.commentsofBanquent(sellerID, maxID, count, CallbackFactory.getInstance().callback(successCallback, failureCallback));
+        service.commentsOfBanquent(sellerID, maxID, count, CallbackFactory.getInstance().callback(successCallback, failureCallback));
     }
 
     public void createComment(
@@ -92,5 +93,12 @@ public enum RouterBanquent {
             , LambdaExpression successCallback
             , LambdaExpression failureCallback) {
         service.createComment(orderId, content, score, CallbackFactory.getInstance().callback(successCallback, failureCallback));
+    }
+
+    public void cancelOrder(
+            Integer orderId
+            , LambdaExpression successCallback
+            , LambdaExpression failureCallback) {
+        service.cancelOrder(orderId, CallbackFactory.getInstance().callback(successCallback, failureCallback));
     }
 }

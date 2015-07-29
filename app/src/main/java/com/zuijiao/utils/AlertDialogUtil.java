@@ -27,7 +27,7 @@ public class AlertDialogUtil {
     private AlertDialogUtil() {
     }
 
-    public static AlertDialogUtil getIntance() {
+    public static AlertDialogUtil getInstance() {
         if (alertDialogUtil == null) {
             alertDialogUtil = new AlertDialogUtil();
         }

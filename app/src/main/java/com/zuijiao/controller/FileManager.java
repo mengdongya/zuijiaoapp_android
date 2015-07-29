@@ -251,7 +251,7 @@ public class FileManager {
 
     public static List<SimpleImage> getImageList(Context context) {
         Date beginDate = new Date();
-        System.out.println("getimagebegin :" + beginDate.getTime());
+       //System.out.println("getimagebegin :" + beginDate.getTime());
         Cursor cursor = MediaStore.Images.Media.query(context.getContentResolver(),
                 MediaStore.Images.Media.EXTERNAL_CONTENT_URI, STORE_IMAGES, null, MediaStore.Images.Media.DATE_ADDED);
         if (cursor == null || !cursor.moveToNext())

@@ -7,6 +7,7 @@ import android.app.ActivityManager.RunningTaskInfo;
 import android.app.Application;
 import android.content.ComponentName;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.util.Log;
 
@@ -64,7 +65,6 @@ public class ActivityTask extends Application {
     private DisplayImageOptions defaultDisplayImageOptions;
     private UnCaughtException mExceptionHandler = null ;
 
-
     @Override
     public void onCreate() {
         super.onCreate();
@@ -77,10 +77,12 @@ public class ActivityTask extends Application {
         mExceptionHandler = new UnCaughtException(this) ;
         Thread.setDefaultUncaughtExceptionHandler(mExceptionHandler);
         defaultDisplayImageOptions = new DisplayImageOptions.Builder() //
-                .considerExifParams(true) // 调整图片方向
+                .considerExifParams(false) // 调整图片方向
                 .resetViewBeforeLoading(true) // 载入之前重置ImageView
                 .showImageOnLoading(R.drawable.empty_view_greeting) // 载入时图片设置为黑色
                 .showImageOnFail(R.drawable.empty_view_greeting) // 加载失败时显示的图片
+                .cacheInMemory(true).cacheOnDisk(true)
+                .bitmapConfig(Bitmap.Config.RGB_565)
                 .delayBeforeLoading(0) // 载入之前的延迟时间
                 .build(); //
 

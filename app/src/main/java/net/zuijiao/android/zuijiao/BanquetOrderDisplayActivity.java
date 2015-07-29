@@ -16,9 +16,11 @@ import android.widget.Toast;
 import com.lidroid.xutils.view.annotation.ContentView;
 import com.lidroid.xutils.view.annotation.ViewInject;
 import com.squareup.picasso.Picasso;
+import com.zuijiao.android.util.functional.LambdaExpression;
 import com.zuijiao.android.util.functional.OneParameterExpression;
 import com.zuijiao.android.zuijiao.model.Banquent.Banquent;
 import com.zuijiao.android.zuijiao.model.Banquent.Order;
+import com.zuijiao.android.zuijiao.model.Banquent.OrderStatus;
 import com.zuijiao.android.zuijiao.network.Router;
 import com.zuijiao.utils.AlertDialogUtil;
 
@@ -78,7 +80,7 @@ public class BanquetOrderDisplayActivity extends BaseActivity {
     private Button mOrderPay;
     private Order mOrder;
     private String[] weekDays;
-    private int mSurplusTime = 10 * 60;
+    private static long mSurplusTime = -1;// sec
 
     /**
      * handler and runnable for surplus time
@@ -88,6 +90,14 @@ public class BanquetOrderDisplayActivity extends BaseActivity {
         @Override
         public void run() {
             mOrder_tv_surplus.setText(formatTime(mSurplusTime));
+            if (mSurplusTime <= 0) {
+                mOrderPay.setText(getString(R.string.timeout_pay));
+                mOrderPay.setTextColor(getResources().getColor(R.color.tv_light_gray));
+                mOrderPay.setEnabled(false);
+                mOrderCancel.setTextColor(getResources().getColor(R.color.tv_light_gray));
+                mOrderCancel.setEnabled(false);
+                mOrderCancel.setBackgroundResource(R.drawable.order_timeout_btn);
+            }
             mSurplusTime--;
             handler.postDelayed(this, 1000);
         }
@@ -101,41 +111,14 @@ public class BanquetOrderDisplayActivity extends BaseActivity {
 
     @Override
     protected void registerViews() {
-        //test start
-        mOrder_ll_surplus.setVisibility(View.VISIBLE);
-        mOrderCancel.setVisibility(View.VISIBLE);
-        mOrderBottom.setVisibility(View.VISIBLE);
-
-        runnable.run();
-        mOrderCancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                AlertDialogUtil alertDialogUtil = AlertDialogUtil.getIntance();
-                alertDialogUtil.createPromptDialog(BanquetOrderDisplayActivity.this, null, getString(R.string.order_cancel_content));
-                alertDialogUtil.setButtonText(getString(R.string.order_cancel), getString(R.string.not_cancel));
-                alertDialogUtil.setOnClickListener(new AlertDialogUtil.OnClickListener() {
-                    @Override
-                    public void CancelOnClick() {
-                        Toast.makeText(mContext, "取消了···", Toast.LENGTH_SHORT).show();
-                        alertDialogUtil.dismissDialog();
-                    }
-
-                    @Override
-                    public void ConfirmOnClick() {
-                        Toast.makeText(mContext, "确定了···", Toast.LENGTH_SHORT).show();
-                        alertDialogUtil.dismissDialog();
-                    }
-                });
-                alertDialogUtil.showDialog();
-            }
-        });
-        //test end
-
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         weekDays = mContext.getResources().getStringArray(R.array.week_days);
         if (mTendIntent != null) {
             mOrder = (Order) mTendIntent.getSerializableExtra("order");
+            if (mSurplusTime == -1) {
+                mSurplusTime = mTendIntent.getLongExtra("surplusTime", -1);
+            }
         }
         if (mOrder == null) {
             finish();
@@ -145,33 +128,99 @@ public class BanquetOrderDisplayActivity extends BaseActivity {
         title.setText(mOrder.getTitle());
         String formatDate = formatDate(mOrder.getHoldTime());
         dateLocation.setText(formatDate + getString(R.string.center_dot) + mOrder.getAddress());
-//        switch (mOrder.getStatus()) {
-//            case Canceled:
-//                status.setText(getString(R.string.canceled_banquet));
-//                break;
-//            case Waiting:
-//                status.setText(getString(R.string.waiting_fo_you));
-//                break;
-//            case Finished:
-//                status.setText(getString(R.string.finished_banquet));
-//                break;
-//            default:
-//                status.setText(getString(R.string.waiting_banquet));
-//                break;
-//        }
-//
-//        status.setText(getString(R.string.waiting_time));
+        String statusStr = "";
+        switch (mOrder.getStatus()) {
+            case Canceled:
+                statusStr = getString(R.string.canceled_banquet);
+                break;
+            case Waiting:
+                statusStr = getString(R.string.waiting_fo_you);
+                break;
+            case Finished:
+                statusStr = getString(R.string.finished_banquet);
+                break;
+            case Uncomment:
+                statusStr = getString(R.string.waiting_comment);
+                break;
+            case Unpaid:
+                statusStr = getString(R.string.waiting_pay);
+                break;
+            default:
+                statusStr = getString(R.string.waiting_fo_you);
+                break;
+        }
+        if (mOrder.getStatus() == OrderStatus.Unpaid) {
+            mOrder_ll_surplus.setVisibility(View.VISIBLE);
+            mOrderCancel.setVisibility(View.VISIBLE);
+            mOrderBottom.setVisibility(View.VISIBLE);
+            mOrderDetailTotalPrice.setText(String.format(getString(R.string.order_total_price), mOrder.getTotalPrice()));
+            runnable.run();
+            mOrderCancel.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    AlertDialogUtil alertDialogUtil = AlertDialogUtil.getInstance();
+                    alertDialogUtil.createPromptDialog(BanquetOrderDisplayActivity.this, null, getString(R.string.order_cancel_content));
+                    alertDialogUtil.setButtonText(getString(R.string.order_cancel), getString(R.string.not_cancel));
+                    alertDialogUtil.setOnClickListener(new AlertDialogUtil.OnClickListener() {
+                        @Override
+                        public void CancelOnClick() {
+                            alertDialogUtil.dismissDialog();
+                        }
 
-        fillGenInfo(mOrderStatus, getString(R.string.order_status), getString(R.string.waiting_pay));
+                        @Override
+                        public void ConfirmOnClick() {
+                            alertDialogUtil.dismissDialog();
+                            Router.getBanquentModule().cancelOrder(mOrder.getIdentifier(), new LambdaExpression() {
+                                @Override
+                                public void action() {
+                                    mOrderCancel.setTextColor(getResources().getColor(R.color.tv_light_gray));
+                                    mOrderCancel.setEnabled(false);
+                                    mOrderCancel.setBackgroundResource(R.drawable.order_timeout_btn);
+                                    mOrderPay.setText(getString(R.string.timeout_pay));
+                                    mOrderPay.setTextColor(getResources().getColor(R.color.tv_light_gray));
+                                    mOrderPay.setEnabled(false);
+                                    Toast.makeText(mContext, getString(R.string.order_cancel_success), Toast.LENGTH_SHORT).show();
+                                }
+                            }, new LambdaExpression() {
+                                @Override
+                                public void action() {
+                                    Toast.makeText(mContext, getString(R.string.notify_net2), Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        }
+                    });
+                    alertDialogUtil.showDialog();
+                }
+            });
+            mOrderPay.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(mContext, BanquetOrderActivity.class);
+                    intent.putExtra("order", mOrder);
+                    intent.putExtra("surplusTime", mSurplusTime);
+                    intent.putExtra("isCreate", false);
+                    intent.putExtra("attendeeNum", mOrder.getQuantity());
+                    startActivity(intent);
+                }
+            });
+        } else {
+            mOrder_ll_surplus.setVisibility(View.GONE);
+            mOrderCancel.setVisibility(View.GONE);
+            mOrderBottom.setVisibility(View.GONE);
+        }
+
+        //test end
+
+        fillGenInfo(mOrderStatus, getString(R.string.order_status), statusStr);
         fillGenInfo(mOrderNum, getString(R.string.order_num), mOrder.getSerialNumber());
-        fillGenInfo(mOrderPrice, getString(R.string.price), mOrder.getPrice() + getString(R.string.price_unit));
-        fillGenInfo(mAttendeeNum, getString(R.string.num), 2 + getString(R.string.people));
-        fillGenInfo(mOrderTotalPrice, getString(R.string.total_price), 2 * mOrder.getPrice() + getString(R.string.yuan));
+        fillGenInfo(mOrderPrice, getString(R.string.price), String.format("%.2f", mOrder.getPrice()) + getString(R.string.price_unit));
+        fillGenInfo(mAttendeeNum, getString(R.string.num), mOrder.getQuantity() + getString(R.string.people));
+        fillGenInfo(mOrderTotalPrice, getString(R.string.total_price), mOrder.getTotalPrice() + getString(R.string.yuan));
         fillGenInfo(mOrderPhone, getString(R.string.mobile_phone), mOrder.getPhoneNumber());
         fillGenInfo(mOrderRemark, getString(R.string.remark), mOrder.getRemark());
         fillGenInfo(mOrderDate, getString(R.string.order_time), mOrder.getCreateTime().toLocaleString());
 
-        mOrderDetailTotalPrice.setText(String.format(getString(R.string.order_total_price), 2 * mOrder.getPrice()));
+
         mNoticeText.setAutoLinkMask(Linkify.PHONE_NUMBERS);
         mNoticeText.setMovementMethod(LinkMovementMethod.getInstance());
         System.out.println("mOrder.getBanquentIdentifier():" + mOrder.getBanquentIdentifier());
@@ -195,17 +244,6 @@ public class BanquetOrderDisplayActivity extends BaseActivity {
                     }
                 });
 
-            }
-        });
-        mOrderPay.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(mContext, BanquetOrderActivity.class);
-                intent.putExtra("order", mOrder);
-                intent.putExtra("surplusTime", mSurplusTime);
-                intent.putExtra("isCreate", false);
-                intent.putExtra("attendeeNum", 2);
-                startActivity(intent);
             }
         });
     }
@@ -232,8 +270,8 @@ public class BanquetOrderDisplayActivity extends BaseActivity {
         return strBuilder.toString();
     }
 
-    private String formatTime(int time) {
-        int minute, second, hour;
+    private String formatTime(long time) {
+        long minute, second, hour;
         String strTime;
         DecimalFormat df = new DecimalFormat("00");
         if (time <= 0) {

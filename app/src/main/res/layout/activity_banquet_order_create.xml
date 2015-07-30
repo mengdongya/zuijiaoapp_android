@@ -130,7 +130,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="bottom"
+                android:gravity="center_vertical"
+                android:minHeight="50dip"
                 android:orientation="horizontal"
                 android:paddingLeft="5dip"
                 android:paddingRight="5dip">
@@ -146,12 +147,15 @@
 
                 <Button
                     android:id="@+id/banquet_order_create_subtract"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="center"
+                    android:background="@drawable/subtract_btn"
                     android:gravity="center"
+                    android:minHeight="30dp"
+                    android:minWidth="30dp"
                     android:text="-"
-                    android:textSize="16sp" />
+                    android:textSize="20sp" />
 
                 <TextView
                     android:id="@+id/banquet_order_create_num"
@@ -166,12 +170,15 @@
 
                 <Button
                     android:id="@+id/banquet_order_create_plus"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="center"
+                    android:background="@drawable/subtract_btn"
                     android:gravity="center"
+                    android:minHeight="30dp"
+                    android:minWidth="30dp"
                     android:text="+"
-                    android:textSize="16sp" />
+                    android:textSize="20sp" />
             </LinearLayout>
 
             <TextView

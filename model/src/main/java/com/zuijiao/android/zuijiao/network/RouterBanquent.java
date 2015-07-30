@@ -9,6 +9,7 @@ import com.zuijiao.android.zuijiao.model.Banquent.OrderStatus;
 import com.zuijiao.android.zuijiao.model.Banquent.Orders;
 import com.zuijiao.android.zuijiao.model.Banquent.Reviews;
 import com.zuijiao.android.zuijiao.model.OrderAuth;
+import com.zuijiao.android.zuijiao.model.OrderAuthV3;
 
 /**
  * Created by user on 6/18/15.
@@ -18,15 +19,25 @@ public enum RouterBanquent {
 
     private IRouterBanquent service = Router.getInstance().restAdapter.create(IRouterBanquent.class);
 
+//    public void createOrder(Integer themeId,
+//                            String phoneNumber,
+//                            String code,
+//                            String remark,
+//                            String payMethod,
+//                            Integer quantity,
+//                            final OneParameterExpression<OrderAuth> successCallback,
+//                            final OneParameterExpression<String> failureCallback) {
+//        service.createOrder(themeId, phoneNumber, code, remark, payMethod, quantity, CallbackFactory.getInstance().callback(successCallback, failureCallback));
+//    }
+
     public void createOrder(Integer themeId,
+                            String remark,
+                            Integer quantity,
                             String phoneNumber,
                             String code,
-                            String remark,
-                            String payMethod,
-                            Integer quantity,
-                            final OneParameterExpression<OrderAuth> successCallback,
+                            final OneParameterExpression<Orders> successCallback,
                             final OneParameterExpression<String> failureCallback) {
-        service.createOrder(themeId, phoneNumber, code, remark, payMethod, quantity, CallbackFactory.getInstance().callback(successCallback, failureCallback));
+        service.createOrder(themeId, remark, quantity, phoneNumber, code, CallbackFactory.getInstance().callback(successCallback, failureCallback));
     }
 
     public void createOrder(Integer themeId,
@@ -100,5 +111,14 @@ public enum RouterBanquent {
             , LambdaExpression successCallback
             , LambdaExpression failureCallback) {
         service.cancelOrder(orderId, CallbackFactory.getInstance().callback(successCallback, failureCallback));
+    }
+
+    public void payOrder(
+            Integer orderId
+            , String payMethod
+            , String payPlatform
+            , final OneParameterExpression<OrderAuthV3> successCallback
+            , final OneParameterExpression<String> failureCallback) {
+        service.payOrder(orderId, payMethod, payPlatform, CallbackFactory.getInstance().callback(successCallback, failureCallback));
     }
 }

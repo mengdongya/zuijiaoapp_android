@@ -26,12 +26,12 @@
         android:textSize="15sp" />
 
     <ImageView
-        android:id="@+id/pay_way_image"
-        android:layout_width="20dip"
         android:layout_height="20dip"
+        android:layout_width="20dip"
         android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
+        android:layout_alignParentRight="true"
         android:layout_marginRight="16dip"
-        android:src="@drawable/correct" />
+        android:id="@+id/pay_way_image"
+        android:src="@drawable/selected_pay" />
 </RelativeLayout>

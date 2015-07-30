@@ -6,6 +6,7 @@ import com.zuijiao.android.zuijiao.model.Banquent.Order;
 /**
  * Created by xiaqibo on 2015/6/25.
  */
+@Deprecated
 public class OrderAuth {
     @SerializedName("apiVersion")
     private String apiVersion;

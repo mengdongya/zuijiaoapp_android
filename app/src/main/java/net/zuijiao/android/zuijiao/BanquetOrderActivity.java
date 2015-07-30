@@ -27,6 +27,7 @@ import com.zuijiao.android.util.functional.OneParameterExpression;
 import com.zuijiao.android.zuijiao.model.Banquent.Banquent;
 import com.zuijiao.android.zuijiao.model.Banquent.Order;
 import com.zuijiao.android.zuijiao.model.OrderAuth;
+import com.zuijiao.android.zuijiao.model.OrderAuthV3;
 import com.zuijiao.android.zuijiao.network.Router;
 import com.zuijiao.thirdopensdk.Alipay;
 import com.zuijiao.thirdopensdk.WeixinPay;
@@ -42,6 +43,7 @@ import java.util.Date;
 @ContentView(R.layout.activity_banquet_order)
 public class BanquetOrderActivity extends BaseActivity implements View.OnClickListener {
     private static final int VERIFY_PHONE = 9001;
+    private static final String PAY_PALATFORM = "android";
     @ViewInject(R.id.banquet_order_tool_bar)
     private Toolbar mToolbar;
     @ViewInject(R.id.banquet_order_banquet_time)
@@ -78,19 +80,20 @@ public class BanquetOrderActivity extends BaseActivity implements View.OnClickLi
     private TextView mBottomPriceUnit ;
 
     public static Banquent mBanquent;
+    // public static Banquent mBanquent;
     private String[] weekDays;
     private String mRemark;
     private String editRemark = null;
-    private String verifyCode = "";
+    // private String verifyCode = "";
     private String phoneNum;
     //for display
     private String[] payWayRes;
     //for network request
     private String[] payWayStr;
     private int mSelectedPayWay = 0;
-    private int mSurplusTime = -1;// sec
+    private long mSurplusTime = -1;// sec
     private int attendeeNum;
-    private Order mOrder;
+    public static Order mOrder;
 
     /**
      * handler and runnable for surplus time
@@ -156,14 +159,14 @@ public class BanquetOrderActivity extends BaseActivity implements View.OnClickLi
         weekDays = mContext.getResources().getStringArray(R.array.week_days);
         boolean isCreate = false;
         if (mTendIntent != null) {
-            mBanquent = (Banquent) mTendIntent.getSerializableExtra("banquet");
+            // mBanquent = (Banquent) mTendIntent.getSerializableExtra("banquet");
             phoneNum = mTendIntent.getStringExtra("contact_phone_num");
             attendeeNum = mTendIntent.getIntExtra("attendeeNum", -1);
-            mSurplusTime = mTendIntent.getIntExtra("surplusTime", -1);
+            mSurplusTime = mTendIntent.getLongExtra("surplusTime", -1);
             isCreate = mTendIntent.getBooleanExtra("isCreate", false);
             mOrder = (Order) mTendIntent.getSerializableExtra("order");
         }
-        if (mBanquent == null && mOrder == null) {
+        if (mOrder == null) {
             finish();
             return;
         }
@@ -175,7 +178,10 @@ public class BanquetOrderActivity extends BaseActivity implements View.OnClickLi
         }
         if (mSurplusTime == -1)
             mSurplusTime = 10 * 60;
-        runnable.run();
+        handler.removeCallbacks(runnable);
+        handler.post(runnable);
+//        getSupportActionBar().setTitle(mBanquent.getTitle());
+//        getSupportActionBar().setTitle(getString(R.string.detail_order));
         payWayRes = getResources().getStringArray(R.array.pay_way);
         payWayStr = getResources().getStringArray(R.array.pay_way_str);
         mPayWayList.setAdapter(mPayWayAdapter);
@@ -186,6 +192,9 @@ public class BanquetOrderActivity extends BaseActivity implements View.OnClickLi
         mBottomPayWayTv.setText( getString(R.string.use) + payWayRes[mSelectedPayWay]);
         mBottomPayBtn.setOnClickListener(this);
         initViewsByBanquet();
+//        mBanquetPhone.setOnClickListener(this);
+//        mBanquetRemark.setOnClickListener(this);
+        mPayBtn.setOnClickListener(this);
         if (isCreate) {
             AlertDialogUtil alertDialogUtil = AlertDialogUtil.getInstance();
             alertDialogUtil.createNoticeDialog(BanquetOrderActivity.this, getString(R.string.order_success), getString(R.string.order_success_content));
@@ -217,9 +226,14 @@ public class BanquetOrderActivity extends BaseActivity implements View.OnClickLi
     }
 
     private void initViewsByBanquet() {
-        mBanquetTime.setText(mBanquent != null ? formatDate(mBanquent.getTime()) : mOrder.getCreateTime().toLocaleString());
-        mBanquetPrice.setText(String.format(getString(R.string.price_per_one), mBanquent != null ? mBanquent.getPrice() : mOrder.getPrice()));
+        mBanquetTime.setText(mOrder.getCreateTime().toLocaleString());
+        mBanquetPrice.setText(String.format(getString(R.string.price_per_one), mOrder.getRealPrice()));
 //        mBottomPrice.setText(String.format(getString(R.string.price_per_one), mBanquent.getPrice()));
+        mBottomPrice.setText(String.format(getString(R.string.order_total_price), mOrder.getTotalPrice()));
+        mBanquetName.setText(mOrder.getEvent().getAddress());
+        mBanquetTotalPrice.setText(String.format("%.2f", mOrder.getTotalPrice()) + getString(R.string.yuan));
+//        mBottomPayWay.setText(getString(R.string.use) + payWayRes[mSelectedPayWay]);
+//        mBanquetLocation.setText(mBanquent.getAddress());
         mBottomPriceTv.setText(String.format(getString(R.string.order_total_price), (mBanquent != null ? mBanquent.getPrice() : mOrder.getPrice()) * attendeeNum));
         mBanquetName.setText(mBanquent != null ? mBanquent.getTitle() : mOrder.getTitle());
         mBanquetTotalPrice.setText(String.format("%.2f", (mBanquent != null ? mBanquent.getPrice() : mOrder.getPrice()) * attendeeNum) + getString(R.string.yuan));
@@ -229,47 +243,64 @@ public class BanquetOrderActivity extends BaseActivity implements View.OnClickLi
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.banquet_detail_bottom_order:
-                if (phoneNum == null || phoneNum.equals("")) {
-                    AlertDialog dialog = new AlertDialog.Builder(BanquetOrderActivity.this)
-                            .setTitle(getString(R.string.alert))
-                            .setMessage(getString(R.string.input_phone_num))
-                            .setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    Intent intent = new Intent(mContext, VerifyPhoneNumActivity.class);
-                                    intent.putExtra("from_order", true);
-                                    startActivityForResult(intent, VERIFY_PHONE);
-                                }
-                            }).create();
-                    Window window = dialog.getWindow();
-                    window.setWindowAnimations(R.style.dialogWindowAnim);
-                    dialog.show();
-                    return;
-                }
+            case R.id.banquet_order_bottom_pay:
+//                if (phoneNum == null || phoneNum.equals("")) {
+//                    AlertDialog dialog = new AlertDialog.Builder(BanquetOrderActivity.this)
+//                            .setTitle(getString(R.string.alert))
+//                            .setMessage(getString(R.string.input_phone_num))
+//                            .setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener() {
+//                                @Override
+//                                public void onClick(DialogInterface dialog, int which) {
+//                                    Intent intent = new Intent(mContext, VerifyPhoneNumActivity.class);
+//                                    intent.putExtra("from_order", true);
+//                                    startActivityForResult(intent, VERIFY_PHONE);
+//                                }
+//                            }).create();
+//                    Window window = dialog.getWindow();
+//                    window.setWindowAnimations(R.style.dialogWindowAnim);
+//                    dialog.show();
+//                    return;
+//                }
                 createDialog();
                 if (mRemark == null || mRemark.equals("")) {
                     mRemark = " ";
                 }
-                Router.getBanquentModule().createOrder(mBanquent.getIdentifier(), phoneNum, verifyCode, mRemark, payWayStr[mSelectedPayWay], attendeeNum, new OneParameterExpression<OrderAuth>() {
+//                Router.getBanquentModule().createOrder(mBanquent.getIdentifier(), phoneNum, verifyCode, mRemark, payWayStr[mSelectedPayWay], attendeeNum, new OneParameterExpression<OrderAuth>() {
+//                    @Override
+//                    public void action(OrderAuth orderAuth) {
+//                        Log.d("pay_interface", "result_success");
+//                        if (mSelectedPayWay == 0) {
+//                            new WeixinPay(BanquetOrderActivity.this).pay(orderAuth);
+//                        } else {
+//                            new Alipay(BanquetOrderActivity.this).pay(orderAuth.getQuery());
+//                        }
+//                        finalizeDialog();
+////                        finalizeDialog();
+//                    }
+//                }, new OneParameterExpression<String>() {
+//                    @Override
+//                    public void action(String s) {
+//                        mRemark = null;
+//                        Toast.makeText(mContext, s, Toast.LENGTH_SHORT).show();
+//                        finalizeDialog();
+//                        Log.d("pay_interface", "result_failed");
+//                    }
+//                });
+                Router.getBanquentModule().payOrder(mOrder.getIdentifier(), payWayStr[mSelectedPayWay], PAY_PALATFORM, new OneParameterExpression<OrderAuthV3>() {
                     @Override
-                    public void action(OrderAuth orderAuth) {
-                        Log.d("pay_interface", "result_success");
+                    public void action(OrderAuthV3 orderAuth) {
                         if (mSelectedPayWay == 0) {
                             new WeixinPay(BanquetOrderActivity.this).pay(orderAuth);
                         } else {
-                            new Alipay(BanquetOrderActivity.this).pay(orderAuth.getQuery());
+                            new Alipay(BanquetOrderActivity.this).pay(orderAuth.getQueryString());
                         }
                         finalizeDialog();
-//                        finalizeDialog();
                     }
                 }, new OneParameterExpression<String>() {
                     @Override
                     public void action(String s) {
-                        mRemark = null;
                         Toast.makeText(mContext, s, Toast.LENGTH_SHORT).show();
                         finalizeDialog();
-                        Log.d("pay_interface", "result_failed");
                     }
                 });
                 break;
@@ -394,8 +425,8 @@ public class BanquetOrderActivity extends BaseActivity implements View.OnClickLi
 //        }, 200);
 //    }
 
-    private String formatTime(int time) {
-        int minute, second, hour;
+    private String formatTime(long time) {
+        long minute, second, hour;
         String strTime;
         DecimalFormat df = new DecimalFormat("00");
         if (time <= 0) {
@@ -413,5 +444,11 @@ public class BanquetOrderActivity extends BaseActivity implements View.OnClickLi
             }
         }
         return strTime;
+    }
+
+    @Override
+    protected void onDestroy() {
+        handler.removeCallbacks(runnable);
+        super.onDestroy();
     }
 }

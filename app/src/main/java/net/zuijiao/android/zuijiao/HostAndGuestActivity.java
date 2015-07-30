@@ -50,7 +50,6 @@ import java.util.List;
 public class HostAndGuestActivity extends BaseActivity {
     @ViewInject(R.id.host_guest_tool_bar)
     private Toolbar mToolbar;
-
     @ViewInject(R.id.host_guest_host_image_container)
     private RelativeLayout mHostImageContainer;
     @ViewInject(R.id.host_guest_host_head)
@@ -133,7 +132,6 @@ public class HostAndGuestActivity extends BaseActivity {
     private View attendeeBanquet;
 //    @ViewInject(R.id.banquet_item_text)
 //    private View holdAttendeeBanquet;
-
     private ArrayList<ImageView> mImageList = new ArrayList<>();
     private ImageViewPagerAdapter mViewPagerAdapter;
     private int mAttendeeId = -1;
@@ -168,12 +166,14 @@ public class HostAndGuestActivity extends BaseActivity {
         ((TextView) mAttendeeLanguage.findViewById(R.id.attendee_detail_info_item_title)).setText(getString(R.string.my_language));
         ((TextView) mAttendeeEducation.findViewById(R.id.attendee_detail_info_item_title)).setText(getString(R.string.education));
         ((TextView) mAttendeeHobby.findViewById(R.id.attendee_detail_info_item_title)).setText(getString(R.string.interest_hobby));
+        ((ImageView)mAttendeeAddress.findViewById(R.id.attendee_banquet_address_image)).setVisibility(View.VISIBLE);
         mHostImages.setOnPageChangeListener(mPageListener);
         mHoldAllBanquet.setOnClickListener(mHeadListener);
         mAttendeeBanquet.setOnClickListener(mHeadListener);
         mAllComment.setOnClickListener(mHeadListener);
         holdBanquet.setOnClickListener(mHeadListener);
         attendeeBanquet.setOnClickListener(mHeadListener);
+        mAttendeePlace.setOnClickListener(mHeadListener);
         mCommentRatingbar.setStepSize(0.5f);
         if(mTendIntent != null)
             mAttendee = (Attendee) mTendIntent.getSerializableExtra("attendee_info");
@@ -516,7 +516,7 @@ public class HostAndGuestActivity extends BaseActivity {
                             finalizeDialog();
                             Intent intent = new Intent(mContext, HostAndGuestActivity.class);
                             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            intent.putExtra("attendee_info" , attendee) ;
+                            intent.putExtra("attendee_info", attendee);
 //                            intent.putExtra("b_host", true);
 //                            intent.putExtra("attendee_id", banquent.getMaster().getUserId());
                             mContext.startActivity(intent);
@@ -674,9 +674,18 @@ public class HostAndGuestActivity extends BaseActivity {
                     intent.putExtra("attendee_id", mAttendee.getSellerInfo().getIdentifier());
                     startActivity(intent);
                     break;
+
             }
         }
     };
+
+    public void j2baidumap(View view){
+        Intent intent = new Intent();
+        intent.setClass(mContext, BaiDuMapActivity.class);
+        intent.putExtra("address",mAttendee.getSellerInfo().getPlace().getAddress());
+        startActivity(intent);
+
+    }
 //    private BaseAdapter mHistoryAdapter = new BaseAdapter() {
 //        @Override
 //        public int getCount() {

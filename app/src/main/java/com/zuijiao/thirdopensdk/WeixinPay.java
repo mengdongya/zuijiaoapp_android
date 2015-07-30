@@ -6,6 +6,7 @@ import com.tencent.mm.sdk.modelpay.PayReq;
 import com.tencent.mm.sdk.openapi.IWXAPI;
 import com.tencent.mm.sdk.openapi.WXAPIFactory;
 import com.zuijiao.android.zuijiao.model.OrderAuth;
+import com.zuijiao.android.zuijiao.model.OrderAuthV3;
 
 import java.util.Map;
 
@@ -17,13 +18,13 @@ public class WeixinPay {
     private Map<String, String> resultunifiedorder;
     private PayReq req;
     private IWXAPI mWXApi;
-    private OrderAuth orderAuth;
+    private OrderAuthV3 orderAuth;
 
     public WeixinPay(Context context) {
         mWXApi = WXAPIFactory.createWXAPI(context, null);
     }
 
-    public void pay(OrderAuth orderAuth) {
+    public void pay(OrderAuthV3 orderAuth) {
         this.orderAuth = orderAuth;
         req = new PayReq();
         genPayReq();
@@ -32,12 +33,12 @@ public class WeixinPay {
     }
 
     private void genPayReq() {
-        req.appId = orderAuth.getAppId();
-        req.partnerId = orderAuth.getPartnerId();
-        req.prepayId = orderAuth.getPrepayId();
-        req.packageValue = orderAuth.getPackage();
-        req.nonceStr = orderAuth.getNonceStr();
-        req.timeStamp = String.valueOf(orderAuth.getTimeStamp());
-        req.sign = orderAuth.getSign();
+        req.appId = orderAuth.getAppid();
+        req.partnerId = orderAuth.getPartnerid();
+        req.prepayId = orderAuth.getPrepayid();
+        req.packageValue = orderAuth.getPackageName();
+        req.nonceStr = orderAuth.getNoncestr();
+        req.timeStamp = String.valueOf(orderAuth.getTimestamp());
+        req.sign = orderAuth.getPayWaySign();
     }
 }

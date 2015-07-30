@@ -6,6 +6,7 @@ import com.zuijiao.android.zuijiao.model.Banquent.Banquents;
 import com.zuijiao.android.zuijiao.model.Banquent.Orders;
 import com.zuijiao.android.zuijiao.model.Banquent.Reviews;
 import com.zuijiao.android.zuijiao.model.OrderAuth;
+import com.zuijiao.android.zuijiao.model.OrderAuthV3;
 
 import retrofit.Callback;
 import retrofit.http.Field;
@@ -19,19 +20,30 @@ import retrofit.http.Query;
  * Created by user on 6/18/15.
  */
 public interface IRouterBanquent {
-    String RootURL = "/feast/v2";
+    String RootURL = "/feast/v3";
     String RootURL_V3 = "/feast/v3";
 
+
     //MARK: - Order
-    @POST(RootURL + "/ios/order/create")
+//    @POST(RootURL + "/ios/order/create")
+//    @FormUrlEncoded
+//    void createOrder(@Field("eventID") Integer themeId
+//            , @Field("mobile") String phoneNumber
+//            , @Field("code") String code
+//            , @Field("note") String remark
+//            , @Field("payWay") String payMethod
+//            , @Field("quantity") Integer quantity
+//            , Callback<OrderAuth> restaurantsCallback
+//    );
+
+    @POST(RootURL_V3 + "/ios/order/create")
     @FormUrlEncoded
     void createOrder(@Field("eventID") Integer themeId
+            , @Field("note") String remark
+            , @Field("quantity") Integer quantity
             , @Field("mobile") String phoneNumber
             , @Field("code") String code
-            , @Field("note") String remark
-            , @Field("payWay") String payMethod
-            , @Field("quantity") Integer quantity
-            , Callback<OrderAuth> restaurantsCallback
+            , Callback<Orders> restaurantsCallback
     );
 
     @POST(RootURL + "/ios/order/create")
@@ -43,9 +55,8 @@ public interface IRouterBanquent {
     );
 
     @POST(RootURL_V3 + "/ios/order/{id}/cancel")
-    @FormUrlEncoded
-    void cancelOrder(@Field("id") Integer orderId
-                    ,Callback<Response> callback);
+    void cancelOrder(@Path("id") Integer orderId
+            , Callback<Response> callback);
 
     @POST(RootURL + "/ios/comment/create")
     @FormUrlEncoded
@@ -55,7 +66,7 @@ public interface IRouterBanquent {
             , Callback<Response> callback
     );
 
-    @GET(RootURL + "/ios/orders")
+    @GET(RootURL_V3 + "/ios/orders")
     void orders(@Query("status") String status
             , @Query("maxID") Integer sinceId
             , @Query("count") Integer count
@@ -97,5 +108,10 @@ public interface IRouterBanquent {
             , Callback<Reviews> callback
     );
 
-
+    @GET(RootURL_V3 + "/ios/order/{orderID}/pay")
+    void payOrder(@Path("orderID") Integer orderId
+            , @Query("payWay") String payMethod
+            , @Query("platform") String payPlatform
+            , Callback<OrderAuthV3> restaurantsCallback
+    );
 }

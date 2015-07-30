@@ -550,7 +550,7 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
         mAboutHostBtn.setOnClickListener(this);
         mOrderBtn.setOnClickListener(this);
         mHostHead.setOnClickListener(this);
-        Router.getBanquentModule().commentsofBanquent(mBanquent.getMaster().getIdentifier(), null, 1, new OneParameterExpression<Reviews>() {
+        Router.getBanquentModule().commentsOfBanquent(mBanquent.getMaster().getIdentifier(), null, 1, new OneParameterExpression<Reviews>() {
             @Override
             public void action(Reviews reviews) {
                 mReviews = reviews;

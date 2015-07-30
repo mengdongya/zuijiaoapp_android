@@ -128,7 +128,6 @@
     <orderEntry type="library" exported="" name="SocialSDK_QQZone_3" level="project" />
     <orderEntry type="library" exported="" name="android-support-v13" level="project" />
     <orderEntry type="library" exported="" name="BaiduLBS_Android" level="project" />
-    <orderEntry type="library" exported="" name="1_BaiduLBS_Android" level="project" />
     <orderEntry type="library" exported="" name="baidumapapi_v2_1_2" level="project" />
     <orderEntry type="library" exported="" name="jsr305-2.0.1" level="project" />
     <orderEntry type="library" exported="" name="okio-1.2.0" level="project" />
@@ -151,7 +150,6 @@
     <orderEntry type="library" exported="" name="galaxy_mini" level="project" />
     <orderEntry type="library" exported="" name="SocialSDK_sms" level="project" />
     <orderEntry type="library" exported="" name="android_api_1.1_forsdk" level="project" />
-    <orderEntry type="library" exported="" name="android-async-http-1.4.6" level="project" />
     <orderEntry type="library" exported="" name="fab-1.5.0" level="project" />
     <orderEntry type="module" module-name="model" exported="" />
   </component>

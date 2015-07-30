@@ -97,7 +97,7 @@ import java.util.List;
  * Created by mengdongya on 2015/7/20.
  */
 @ContentView(R.layout.activity_baidumap)
-public class BaiDuMapActivity extends BaseActivity implements OnGetGeoCoderResultListener,OnGetRoutePlanResultListener{
+public class BaiDuMapActivity extends BaseActivity implements OnGetGeoCoderResultListener{
     @ViewInject(R.id.bmapView)
     private MapView mMapView;
     @ViewInject(R.id.map_view_tool_bar)
@@ -117,7 +117,6 @@ public class BaiDuMapActivity extends BaseActivity implements OnGetGeoCoderResul
     private LatLng end;
     private DrivingRouteLine drivingRouteLine = null;
     private LocationClient mLocClient;
-    private RoutePlanModel mRoutePlanModel;
     private DrivingRoutePlanOption drivingRoutePlanOption;
 
     @Override
@@ -180,7 +179,6 @@ public class BaiDuMapActivity extends BaseActivity implements OnGetGeoCoderResul
         mHostAddress.setText(address);
 
         drivingRoutePlanOption = new DrivingRoutePlanOption();
-        drivingRoutePlanOption.from(PlanNode.withLocation(start)).to(PlanNode.withCityNameAndPlaceName(getString(R.string.shanghai), address));
         drivingRoutePlanOption.policy(DrivingRoutePlanOption.DrivingPolicy.ECAR_FEE_FIRST);
     }
 
@@ -190,61 +188,51 @@ public class BaiDuMapActivity extends BaseActivity implements OnGetGeoCoderResul
             Toast.makeText(mContext, "抱歉，未能找到结果", Toast.LENGTH_LONG).show();
             return;
         }
-//        mBaiduMap.clear();
+        mBaiduMap.clear();
         end = geoCodeResult.getLocation();
         mBaiduMap.addOverlay(new MarkerOptions().position(end).icon(BitmapDescriptorFactory.fromResource(R.drawable.location_on_map)));
         mBaiduMap.setMapStatus(MapStatusUpdateFactory.newLatLng(end));
 
-        DecimalFormat df = new DecimalFormat("#.##");
-        mDistence.setText("距您" + df.format(distance / 1000) + "km");
+//        drivingRoutePlanOption.from(PlanNode.withLocation(start)).to(PlanNode.withCityNameAndPlaceName(getString(R.string.shanghai), address));
+        drivingRoutePlanOption.from(PlanNode.withLocation(start)).to(PlanNode.withLocation(end));
+        RoutePlanSearch routePlanSearch = RoutePlanSearch.newInstance();
+        routePlanSearch.drivingSearch(drivingRoutePlanOption);
+        routePlanSearch.setOnGetRoutePlanResultListener(new OnGetRoutePlanResultListener() {
+            @Override
+            public void onGetWalkingRouteResult(WalkingRouteResult walkingRouteResult) {
+                System.out.println("onGetWalkingRouteResult");
+            }
+
+            @Override
+            public void onGetTransitRouteResult(TransitRouteResult transitRouteResult) {
+                System.out.println("onGetTransitRouteResult");
+            }
+
+            @Override
+            public void onGetDrivingRouteResult(DrivingRouteResult drivingRouteResult) {
+                if (drivingRouteResult == null || drivingRouteResult.error != SearchResult.ERRORNO.NO_ERROR) {
+                    Toast.makeText(mContext, "抱歉，未找到结果", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if (drivingRouteResult.error == SearchResult.ERRORNO.NO_ERROR) {
+                    DrivingRouteOverlay routeOverlay = new DrivingRouteOverlay(mBaiduMap);
+                    drivingRouteLine = drivingRouteResult.getRouteLines().get(0);
+                    if (drivingRouteLine == null) {
+                        distance = (int) DistanceUtil.getDistance(start, end);
+                    } else {
+                        distance = drivingRouteLine.getDistance();
+                    }
+                    DecimalFormat df = new DecimalFormat("#.##");
+                    mDistence.setText("距您" + df.format(distance / 1000) + "km");
+                }
+
+            }
+        });
     }
 
     @Override
     public void onGetReverseGeoCodeResult(ReverseGeoCodeResult reverseGeoCodeResult) {
     }
-
-    @Override
-    public void onGetWalkingRouteResult(WalkingRouteResult walkingRouteResult) {
-
-    }
-
-    @Override
-    public void onGetTransitRouteResult(TransitRouteResult transitRouteResult) {
-
-    }
-
-    @Override
-    public void onGetDrivingRouteResult(DrivingRouteResult drivingRouteResult) {
-
-
-        RoutePlanSearch.newInstance().drivingSearch(drivingRoutePlanOption);
-
-        if (drivingRouteResult == null || drivingRouteResult.error != SearchResult.ERRORNO.NO_ERROR) {
-            Toast.makeText(mContext, "抱歉，未找到结果", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        if (drivingRouteResult.error == SearchResult.ERRORNO.AMBIGUOUS_ROURE_ADDR) {
-            List<CityInfo> list = drivingRouteResult.getSuggestAddrInfo()
-                    .getSuggestEndCity();
-
-            Toast.makeText(this, list.toString(),Toast.LENGTH_SHORT).show();
-            return;
-        }
-        if (drivingRouteResult.error == SearchResult.ERRORNO.NO_ERROR) {
-            DrivingRouteOverlay routeOverlay = new DrivingRouteOverlay(mBaiduMap);
-            drivingRouteLine = drivingRouteResult.getRouteLines().get(0);
-            routeOverlay.setData(drivingRouteLine);
-            routeOverlay.addToMap();
-            if (drivingRouteLine == null) {
-                distance = (int) DistanceUtil.getDistance(start, end);
-            } else {
-                distance = drivingRouteLine.getDistance();
-            }
-        }
-//        distance = (int) DistanceUtil.getDistance(start, end);
-
-    }
-
 
     public class MyLocationListenner implements BDLocationListener {
         public void onReceiveLocation(BDLocation location) {
@@ -267,42 +255,7 @@ public class BaiDuMapActivity extends BaseActivity implements OnGetGeoCoderResul
         }
     }
 
-
-//    private IRouteResultObserver mRouteResultObserver = new IRouteResultObserver() {
-//
-//        @Override
-//        public void onRoutePlanYawingSuccess() {}
-//
-//        @Override
-//        public void onRoutePlanYawingFail() {}
-//
-//        @Override
-//        public void onRoutePlanSuccess() {
-//            BNMapController.getInstance().setLayerMode(
-//                    MapParams.Const.LayerMode.MAP_LAYER_MODE_ROUTE_DETAIL);
-//            mRoutePlanModel = (RoutePlanModel) NaviDataEngine.getInstance()
-//                    .getModel(CommonParams.Const.ModelName.ROUTE_PLAN);
-//        }
-//
-//        @Override
-//        public void onRoutePlanFail() {}
-//
-//        @Override
-//        public void onRoutePlanCanceled() {}
-//
-//        @Override
-//        public void onRoutePlanStart() {}
-//
-//    };
-
     public void navi(View view) {
-        /*if (end != null){
-            String addr = "geo:"+end.latitude+","+end.longitude;
-            Uri uri = Uri.parse(addr);
-            Intent it = new Intent(Intent.ACTION_VIEW,uri);
-            startActivity(it);
-        }*/
-
         NaviParaOption para = new NaviParaOption();
         para.startPoint(start);
         para.startName("开始位置");

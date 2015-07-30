@@ -29,6 +29,7 @@ import com.zuijiao.android.zuijiao.model.Banquent.Order;
 import com.zuijiao.android.zuijiao.model.OrderAuth;
 import com.zuijiao.android.zuijiao.model.OrderAuthV3;
 import com.zuijiao.android.zuijiao.network.Router;
+import com.zuijiao.controller.MessageDef;
 import com.zuijiao.thirdopensdk.Alipay;
 import com.zuijiao.thirdopensdk.WeixinPay;
 import com.zuijiao.utils.AlertDialogUtil;
@@ -90,6 +91,7 @@ public class BanquetOrderActivity extends BaseActivity implements View.OnClickLi
     private long mSurplusTime = -1;// sec
     private int attendeeNum;
     public static Order mOrder;
+    private boolean isCreate = false;
 
     /**
      * handler and runnable for surplus time
@@ -148,7 +150,6 @@ public class BanquetOrderActivity extends BaseActivity implements View.OnClickLi
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         weekDays = mContext.getResources().getStringArray(R.array.week_days);
-        boolean isCreate = false;
         if (mTendIntent != null) {
             // mBanquent = (Banquent) mTendIntent.getSerializableExtra("banquet");
             phoneNum = mTendIntent.getStringExtra("contact_phone_num");
@@ -445,6 +446,12 @@ public class BanquetOrderActivity extends BaseActivity implements View.OnClickLi
     @Override
     protected void onDestroy() {
         handler.removeCallbacks(runnable);
+        if (isCreate) {
+            Intent intent = new Intent();
+            intent.setAction(MessageDef.ACTION_ORDER_CREATED);
+            intent.putExtra("tabIndex", 1);
+            sendBroadcast(intent);
+        }
         super.onDestroy();
     }
 }

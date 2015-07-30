@@ -20,8 +20,8 @@ import retrofit.http.Query;
  * Created by user on 6/18/15.
  */
 public interface IRouterBanquent {
-    String RootURL = "/feast/v3";
-
+    String RootURL = "/feast/v2";
+    String RootURL_V3 = "/feast/v3";
     //MARK: - Order
 //    @POST(RootURL + "/ios/order/create")
 //    @FormUrlEncoded
@@ -73,27 +73,27 @@ public interface IRouterBanquent {
 
     //MARK: - Theme
 
-    @GET(RootURL + "/ios/events")
+    @GET(RootURL_V3 + "/ios/events")
     void themesOfPublic(@Query("maxID") Integer sinceId
             , @Query("count") Integer count
             , Callback<Banquents> callback
     );
 
-    @GET(RootURL + "/ios/event/{identifier}")
-    void theme(@Path("identifier") Integer identifier
+    @GET(RootURL_V3 + "/ios/event/{id}")
+    void theme(@Path("id") Integer identifier
             , Callback<BanquentForTheme> callback
     );
 
 
-    @GET(RootURL + "/ios/seller/{identifier}/events")
-    void themesOfMaster(@Path("identifier") Integer identifier
+    @GET(RootURL_V3 + "/ios/seller/{id}/events")
+    void themesOfMaster(@Path("id") Integer identifier
             , @Query("maxID") Integer sinceId
             , @Query("count") Integer count
             , Callback<Banquents> callback
     );
 
-    @GET(RootURL + "/ios/user/{identifier}/events")
-    void themesOfParticipator(@Path("identifier") Integer identifier
+    @GET(RootURL_V3 + "/ios/user/{id}/events")
+    void themesOfParticipator(@Path("id") Integer identifier
             , @Query("maxID") Integer sinceId
             , @Query("count") Integer count
             , Callback<Banquents> callback

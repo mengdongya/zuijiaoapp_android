@@ -3,6 +3,7 @@ package net.zuijiao.android.zuijiao;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Build.VERSION;
 import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
@@ -44,6 +45,9 @@ public class SplashActivity extends BaseActivity {
     private boolean onBackPressed = false;
     @ViewInject(R.id.splash_bg)
     private ImageView mImageView ;
+
+    @ViewInject(R.id.splash_text)
+    private ImageView mImageText ;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         PushAgent mPushAgent = PushAgent.getInstance(getApplicationContext());
@@ -53,7 +57,10 @@ public class SplashActivity extends BaseActivity {
         if (mPreferInfo.isAppFirstLaunch()) {
             goToGuide();
         } else {
-            //do login
+            InputStream is = getResources().openRawResource(R.raw.splash_bg);
+            mImageView.setImageBitmap(BitmapFactory.decodeStream(is));
+            InputStream is2 = getResources().openRawResource(R.raw.splash_text) ;
+            mImageText.setImageBitmap(BitmapFactory.decodeStream(is2));
             tryLoginFirst(null, null);
             new Handler().postDelayed(new Runnable() {
                 @Override
@@ -121,8 +128,6 @@ public class SplashActivity extends BaseActivity {
                     WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
         }
         initPreferenceInfo();
-        InputStream is = getResources().openRawResource(R.raw.splash_bg);
-         mImageView.setImageBitmap(BitmapFactory.decodeStream(is));
         if (mPreferInfo.isAppFirstLaunch()) {
             pb.setVisibility(View.GONE);
         }

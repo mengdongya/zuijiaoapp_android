@@ -1,9 +1,11 @@
 package net.zuijiao.android.zuijiao;
 
 import android.app.AlertDialog;
+import android.app.DownloadManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.widget.Toolbar;
@@ -25,6 +27,7 @@ import com.lidroid.xutils.view.annotation.ViewInject;
 import com.zuijiao.android.util.functional.LambdaExpression;
 import com.zuijiao.android.util.functional.OneParameterExpression;
 import com.zuijiao.android.zuijiao.network.Router;
+import com.zuijiao.utils.AlertDialogUtil;
 
 /**
  * verify phone number activity ,called from edit-user-info-activity or banquet-order-activity ;
@@ -221,30 +224,42 @@ public class VerifyPhoneNumActivity extends BaseActivity {
      * show keep phone number dialog
      */
     private void showKeepDialog() {
-        View logoutView = LayoutInflater.from(getApplicationContext()).inflate(
-                R.layout.logout_dialog, null);
-        AlertDialog dialog = new AlertDialog.Builder(VerifyPhoneNumActivity.this).setView(logoutView).create();
-        Window window = dialog.getWindow() ;
-        window.setWindowAnimations(R.style.dialogWindowAnim);
-        ((TextView) logoutView.findViewById(R.id.logout_content)).setText(getString(R.string.keep_phone_confirm));
-        Button negativeBtn = (Button) logoutView.findViewById(R.id.logout_btn_cancel);
-        Button positiveBtn = (Button) logoutView.findViewById(R.id.logout_btn_confirm);
-        negativeBtn.setText(getString(R.string.no));
-        positiveBtn.setText(getString(R.string.yes));
-        negativeBtn.setOnClickListener(new View.OnClickListener() {
+        AlertDialogUtil alertDialogUtil = AlertDialogUtil.getInstance();
+        alertDialogUtil.createPromptDialog(VerifyPhoneNumActivity.this, getString(R.string.alert), getString(R.string.keep_phone_confirm));
+        alertDialogUtil.setButtonText(getString(R.string.yes), getString(R.string.no));
+        alertDialogUtil.setOnClickListener(new AlertDialogUtil.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                dialog.dismiss();
+            public void CancelOnClick() {
+                alertDialogUtil.dismissDialog();
+            }
+
+            @Override
+            public void ConfirmOnClick() {
+                alertDialogUtil.dismissDialog();
+                createDialog();
+                Router.getAccountModule().updatePhoneNumber(mPhoneNumEditor.getText().toString().trim(), mVerifyNumEditor.getText().toString().trim(), new LambdaExpression() {
+                    @Override
+                    public void action() {
+                        alertDialogUtil.dismissDialog();
+                        if (!bFromOrder) {
+                            finalizeDialog();
+                            Intent intent = new Intent();
+                            intent.putExtra("verified_phone_num", mPhoneNumEditor.getText().toString().trim());
+                            setResult(RESULT_OK, intent);
+                            finish();
+                        }
+                    }
+                }, new OneParameterExpression<String>() {
+                    @Override
+                    public void action(String errorMsg) {
+                        alertDialogUtil.dismissDialog();
+                        Toast.makeText(mContext, errorMsg, Toast.LENGTH_SHORT).show();
+                        finalizeDialog();
+                    }
+                });
             }
         });
-        positiveBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                keepPhoneNum(mVerifyNumEditor.getText().toString().trim(), dialog);
-            }
-        });
-        dialog.show();
-        dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+        alertDialogUtil.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
             public void onDismiss(DialogInterface dialog) {
                 Intent intent = new Intent();
@@ -254,5 +269,6 @@ public class VerifyPhoneNumActivity extends BaseActivity {
                 finish();
             }
         });
+        alertDialogUtil.showDialog();
     }
 }

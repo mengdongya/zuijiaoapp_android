@@ -2,6 +2,7 @@ package com.zuijiao.utils;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,7 +27,7 @@ public class AlertDialogUtil {
     private AlertDialogUtil() {
     }
 
-    public static AlertDialogUtil getIntance() {
+    public static AlertDialogUtil getInstance() {
         if (alertDialogUtil == null) {
             alertDialogUtil = new AlertDialogUtil();
         }
@@ -123,6 +124,11 @@ public class AlertDialogUtil {
             this.dialog.dismiss();
             this.dialog = null;
         }
+    }
+
+    public void setOnDismissListener(DialogInterface.OnDismissListener onDismissListener){
+        if(dialog!= null)
+            dialog.setOnDismissListener(onDismissListener);
     }
 
     public interface OnClickListener {

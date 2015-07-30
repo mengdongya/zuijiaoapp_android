@@ -151,6 +151,7 @@
     <orderEntry type="library" exported="" name="galaxy_mini" level="project" />
     <orderEntry type="library" exported="" name="SocialSDK_sms" level="project" />
     <orderEntry type="library" exported="" name="android_api_1.1_forsdk" level="project" />
+    <orderEntry type="library" exported="" name="android-async-http-1.4.6" level="project" />
     <orderEntry type="library" exported="" name="fab-1.5.0" level="project" />
     <orderEntry type="module" module-name="model" exported="" />
   </component>

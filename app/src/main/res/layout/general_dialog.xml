@@ -4,7 +4,10 @@
     android:layout_height="wrap_content"
     android:background="@drawable/logout_dialog_bg"
     android:orientation="vertical"
-    android:padding="20dip">
+    android:paddingTop="20dip"
+    android:paddingLeft="20dip"
+    android:paddingRight="20dip"
+    android:paddingBottom="10dip">
 
     <TextView
         android:id="@+id/general_dialog_title"
@@ -34,24 +37,22 @@
 
         <Button
             android:id="@+id/general_dialog_btn_cancel"
-            style="@android:style/Widget.Button.Small"
+            style="?android:attr/borderlessButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:background="@color/transparent"
             android:padding="5dp"
             android:text="@string/cancel"
             android:textSize="16sp" />
 
         <Button
             android:id="@+id/general_dialog_btn_confirm"
-            style="@android:style/Widget.Button.Small"
+            style="?android:attr/borderlessButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            android:background="@color/transparent"
             android:padding="5dp"
             android:text="@string/confirm"
             android:textColor="#cccc0000"

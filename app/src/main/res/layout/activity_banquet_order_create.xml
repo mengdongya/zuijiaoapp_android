@@ -8,9 +8,9 @@
         layout="@layout/toolbar" />
 
     <ScrollView
+        android:id="@+id/banquet_order_create_scrollview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/order_create_bottom"
         android:layout_below="@id/banquet_order_create_tool_bar"
         android:scrollbars="none">
 
@@ -305,7 +305,7 @@
     <LinearLayout
         android:id="@+id/order_create_bottom"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="80dp"
         android:layout_alignParentBottom="true"
         android:background="@color/white"
         android:orientation="horizontal">
@@ -327,11 +327,12 @@
             android:layout_height="wrap_content"
             android:layout_marginRight="10dip"
             android:layout_weight="1"
+            android:layout_gravity="center"
             android:background="@drawable/banquet_detail_order_bg"
             android:gravity="center"
             android:paddingLeft="5dip"
             android:paddingRight="5dip"
-            android:text="@string/order_comfirm"
+            android:text="@string/order_confirm"
             android:textColor="@color/banquet_theme"
             android:textSize="18sp" />
     </LinearLayout>

@@ -550,9 +550,6 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
         mAboutHostBtn.setOnClickListener(this);
         mOrderBtn.setOnClickListener(this);
         mHostHead.setOnClickListener(this);
-
-//        initShareIcon();
-
         Router.getBanquentModule().commentsofBanquent(mBanquent.getMaster().getIdentifier(), null, 1, new OneParameterExpression<Reviews>() {
             @Override
             public void action(Reviews reviews) {
@@ -565,7 +562,6 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
                 Toast.makeText(mContext, getString(R.string.get_history_list_failed), Toast.LENGTH_SHORT).show();
             }
         });
-
         RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mBottomView.getLayoutParams();
         mBottomPrice.measure(0 , 0 );
         int priceHeight = mBottomPrice.getMeasuredHeight();
@@ -771,7 +767,7 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
         if (mBanquent.getImageUrls() == null)
             return null;
         for (String imageUrl : mBanquent.getImageUrls()) {
-            ImageView image = new ImageView(mContext);
+            ImageView image = new ImageView(this);
             image.setLayoutParams(new ActionBar.LayoutParams(ActionBar.LayoutParams.MATCH_PARENT,
                     ActionBar.LayoutParams.MATCH_PARENT));
             image.setScaleType(ImageView.ScaleType.CENTER_CROP);

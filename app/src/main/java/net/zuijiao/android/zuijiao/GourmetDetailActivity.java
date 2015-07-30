@@ -5,6 +5,7 @@ import android.annotation.TargetApi;
 import android.app.ActionBar.LayoutParams;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -75,6 +76,7 @@ import com.zuijiao.thirdopensdk.QQApi;
 import com.zuijiao.thirdopensdk.WeiboApi;
 import com.zuijiao.thirdopensdk.WeixinApi;
 import com.zuijiao.utils.AdapterViewHeightCalculator;
+import com.zuijiao.utils.AlertDialogUtil;
 import com.zuijiao.utils.StrUtil;
 import com.zuijiao.view.GourmetDetailScrollView;
 import com.zuijiao.view.GourmetDetailScrollView.OnScrollListener;
@@ -537,20 +539,18 @@ public class GourmetDetailActivity extends BaseActivity implements
      * delete a gourmet
      */
     private void deleteGourmet() {
-        View confirmView = LayoutInflater.from(getApplicationContext()).inflate(
-                R.layout.logout_dialog, null);
-        AlertDialog dialog = new AlertDialog.Builder(GourmetDetailActivity.this).setView(confirmView).create();
-        ((TextView) confirmView.findViewById(R.id.logout_content)).setText(String.format(getString(R.string.confirm_delete_gourmet), gourmet.getName()));
-        confirmView.findViewById(R.id.logout_btn_cancel).setOnClickListener(new OnClickListener() {
+        AlertDialogUtil alertDialogUtil = AlertDialogUtil.getInstance();
+        alertDialogUtil.createPromptDialog(GourmetDetailActivity.this, getString(R.string.alert), String.format(getString(R.string.confirm_delete_gourmet), gourmet.getName()));
+        alertDialogUtil.setButtonText(getString(R.string.yes), getString(R.string.no));
+        alertDialogUtil.setOnClickListener(new AlertDialogUtil.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                dialog.dismiss();
+            public void CancelOnClick() {
+                alertDialogUtil.dismissDialog();
             }
-        });
-        confirmView.findViewById(R.id.logout_btn_confirm).setOnClickListener(new OnClickListener() {
+
             @Override
-            public void onClick(View v) {
-                dialog.dismiss();
+            public void ConfirmOnClick() {
+                alertDialogUtil.dismissDialog();
                 createDialog();
                 Router.getGourmetModule().removeMyRecommendation(gourmet.getIdentifier(), new LambdaExpression() {
                     @Override
@@ -571,7 +571,7 @@ public class GourmetDetailActivity extends BaseActivity implements
                 });
             }
         });
-        dialog.show();
+        alertDialogUtil.showDialog();
     }
 
     /**

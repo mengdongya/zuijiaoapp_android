@@ -105,12 +105,10 @@ public class OrderListFragment extends Fragment implements
             return mContentView;
         }
         tabIndex = getArguments().getInt("position");
-        if (tabIndex != 1) {
-            updateBroadCast = new UpdateBroadCast();
-            IntentFilter filter = new IntentFilter();
-            filter.addAction(MessageDef.ACTION_ORDER_UPDATE);
-            getActivity().registerReceiver(updateBroadCast, filter);
-        }
+        updateBroadCast = new UpdateBroadCast();
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(MessageDef.ACTION_ORDER_CREATED);
+        getActivity().registerReceiver(updateBroadCast, filter);
         weekDays = getResources().getStringArray(R.array.week_days);
         mContentView = inflater.inflate(R.layout.fragment_order_list, null);
         mRefreshLayout = (SwipeRefreshLayout) mContentView.findViewById(R.id.order_fragment_swipe_refresh);
@@ -465,7 +463,9 @@ public class OrderListFragment extends Fragment implements
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            onRefresh();
+
+            if (tabIndex != intent.getIntExtra("tabIndex", -1))
+                onRefresh();
         }
     }
 }

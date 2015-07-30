@@ -48,7 +48,7 @@ public class BanquetOrderCallbackActivity extends BaseActivity implements View.O
     @ViewInject(R.id.order_callback_complete_info)
     private TextView mCompleteTv;
     private boolean bSuccess = false;
-   // private Banquent mBanquet;
+    // private Banquent mBanquet;
     private String[] weekDays;
     private Order morder;
 
@@ -56,7 +56,7 @@ public class BanquetOrderCallbackActivity extends BaseActivity implements View.O
     protected void registerViews() {
         setSupportActionBar(mToolbar);
         getSupportActionBar().setTitle(getString(R.string.detail_order));
-        if(mTendIntent != null)
+        if (mTendIntent != null)
             bSuccess = mTendIntent.getBooleanExtra("b_success", false);
         weekDays = mContext.getResources().getStringArray(R.array.week_days);
         mFinishBtn.setOnClickListener(this);
@@ -66,6 +66,7 @@ public class BanquetOrderCallbackActivity extends BaseActivity implements View.O
             morder = BanquetOrderActivity.mOrder;
             Intent intent = new Intent();
             intent.setAction(MessageDef.ACTION_ORDER_CREATED);
+            intent.putExtra("tabIndex", 1);
             sendBroadcast(intent);
             showSuccess();
         } else {
@@ -120,15 +121,15 @@ public class BanquetOrderCallbackActivity extends BaseActivity implements View.O
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        if(bSuccess){
-            LinkedList<Activity> list = ActivityTask.getInstance().getActivitiesList() ;
-            for(Activity activity: list){
-                if(activity instanceof BanquetDetailActivity
-                        ||activity instanceof BanquetOrderCreateActivity
-                        || activity instanceof BanquetOrderActivity ){
-                    try{
+        if (bSuccess) {
+            LinkedList<Activity> list = ActivityTask.getInstance().getActivitiesList();
+            for (Activity activity : list) {
+                if (activity instanceof BanquetDetailActivity
+                        || activity instanceof BanquetOrderCreateActivity
+                        || activity instanceof BanquetOrderActivity) {
+                    try {
                         activity.finish();
-                    }catch(Throwable t){
+                    } catch (Throwable t) {
                         t.printStackTrace();
                     }
                 }

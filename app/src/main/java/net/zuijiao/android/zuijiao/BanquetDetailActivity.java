@@ -233,7 +233,6 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
 
     @Override
     protected void registerViews() {
-        Log.i("outofmemory ", "oncreate");
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(getApplicationContext())

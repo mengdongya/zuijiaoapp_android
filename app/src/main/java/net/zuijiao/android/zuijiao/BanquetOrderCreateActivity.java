@@ -64,18 +64,30 @@ public class BanquetOrderCreateActivity extends BaseActivity implements View.OnC
     private TextView mBanquetContent;
     @ViewInject(R.id.banquet_order_create_total_price)
     private TextView mBanquetTotalPrice;
-    @ViewInject(R.id.order_create_total_price)
-    private TextView mOrderTotalPrice;
+
+
+//    @ViewInject(R.id.order_create_total_price)
+//    private TextView mOrderTotalPrice;
     @ViewInject(R.id.banquet_order_create_plus)
     private Button mBanquetPlus;
     @ViewInject(R.id.banquet_order_create_subtract)
     private Button mBanquetSubtract;
-    @ViewInject(R.id.order_create_pay)
-    private Button mOrderPay;
+//    @ViewInject(R.id.order_create_pay)
+//    private Button mOrderPay;
     @ViewInject(R.id.banquet_order_create_scrollview)
     private ScrollView mScrollView;
     @ViewInject(R.id.order_create_bottom)
-    private LinearLayout mBottomView;
+    private RelativeLayout mBottomView;
+    @ViewInject(R.id.banquet_detail_bottom_price)
+    private TextView mBottomPriceTv ;
+    @ViewInject(R.id.banquet_detail_bottom_text2)
+    private TextView mBottomPriceUnitTv ;
+    @ViewInject(R.id.banquet_detail_bottom_date)
+    private TextView mBottomOrderCountTv ;
+    @ViewInject(R.id.banquet_detail_bottom_order)
+    private Button mBottomCommitBtn ;
+    @ViewInject(R.id.banquet_detail_bottom_text1)
+    private TextView mBottomText1 ;
     public static Banquent mBanquent;
     private String[] weekDays;
     private String mRemark;
@@ -108,18 +120,21 @@ public class BanquetOrderCreateActivity extends BaseActivity implements View.OnC
         mBanquetRemark.setOnClickListener(this);
         mBanquetPlus.setOnClickListener(this);
         mBanquetSubtract.setOnClickListener(this);
-        mOrderPay.setOnClickListener(this);
+        mBottomCommitBtn.setText(R.string.place_the_order);
+        mBottomOrderCountTv.setText(String.format(getString(R.string.total_person_count) ,attendeeNum)) ;
+        mBottomCommitBtn.setOnClickListener(this);
+        mBottomText1.setVisibility(View.VISIBLE);
+        mBottomPriceUnitTv.setText(R.string.yuan);
         mBanquetNum.setText(attendeeNum + getString(R.string.people));
-
         RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mBottomView.getLayoutParams();
-        mBanquetTotalPrice.measure(0, 0);
-        int priceHeight = mBanquetTotalPrice.getMeasuredHeight();
-        //mBottomPayWay.measure(0 , 0);
-        //int dateHeight = mBottomPayWay.getMeasuredHeight() ;
-        int margin = (int) (6 * getResources().getDimension(R.dimen.end_z));
-        params.height = priceHeight + margin;
+        mBottomPriceTv.measure(0, 0);
+        int priceHeight = mBottomPriceTv.getMeasuredHeight();
+        mBottomOrderCountTv.measure(0, 0);
+        int dateHeight = mBottomOrderCountTv.getMeasuredHeight() ;
+        int margin = (int) (3* getResources().getDimension(R.dimen.end_z));
+        params.height = priceHeight + dateHeight + margin ;
         RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) mScrollView.getLayoutParams();
-        layoutParams.bottomMargin = params.height;
+        layoutParams.bottomMargin = params.height ;
     }
 
     private void initViewsByBanquet() {
@@ -127,7 +142,7 @@ public class BanquetOrderCreateActivity extends BaseActivity implements View.OnC
         mBanquetPrice.setText(String.format(getString(R.string.price_per_one), mBanquent.getPrice()));
         mBanquetTotalPrice.setText(String.format("%.2f", mBanquent.getPrice()) + getString(R.string.yuan));
         mBanquetName.setText(mBanquent.getTitle());
-        mOrderTotalPrice.setText(String.format(getString(R.string.order_total_price), mBanquent.getPrice()));
+        mBottomPriceTv.setText(String.format(getString(R.string.order_total_price), mBanquent.getPrice()));
         BanquentCapacity banquentCapacity = mBanquent.getBanquentCapacity();
         if (banquentCapacity.getMax() == banquentCapacity.getMin()) {
             mBanquetContent.setText(String.format(getString(R.string.banquent_capacity_simple),
@@ -155,7 +170,7 @@ public class BanquetOrderCreateActivity extends BaseActivity implements View.OnC
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.order_create_pay:
+            case R.id.banquet_detail_bottom_order:
                 if (phoneNum == null || phoneNum.equals("")) {
                     AlertDialog dialog = new AlertDialog.Builder(BanquetOrderCreateActivity.this)
                             .setTitle(getString(R.string.alert))
@@ -178,7 +193,6 @@ public class BanquetOrderCreateActivity extends BaseActivity implements View.OnC
                     mRemark = " ";
                 }
                 //check the order num
-
                 //end
                 Intent intent1 = new Intent(mContext, BanquetOrderActivity.class);
                 intent1.putExtra("banquet", mBanquent);
@@ -203,15 +217,17 @@ public class BanquetOrderCreateActivity extends BaseActivity implements View.OnC
                 if (--attendeeNum < 1)
                     attendeeNum = 1;
                 mBanquetNum.setText(attendeeNum + getString(R.string.people));
+                mBottomOrderCountTv.setText(String.format(getString(R.string.total_person_count) ,attendeeNum)) ;
                 mBanquetTotalPrice.setText(String.format("%.2f", mBanquent.getPrice() * attendeeNum) + getString(R.string.yuan));
-                mOrderTotalPrice.setText(String.format(getString(R.string.order_total_price), mBanquent.getPrice() * attendeeNum));
+                mBottomPriceTv.setText(String.format(getString(R.string.order_total_price), mBanquent.getPrice() * attendeeNum));
                 break;
             case R.id.banquet_order_create_plus:
                 if (++attendeeNum > mBanquent.getBanquentCapacity().getMax() - mBanquent.getBanquentCapacity().getCount())
                     attendeeNum = mBanquent.getBanquentCapacity().getMax() - mBanquent.getBanquentCapacity().getCount();
                 mBanquetNum.setText(attendeeNum + getString(R.string.people));
+                mBottomOrderCountTv.setText(String.format(getString(R.string.total_person_count) ,attendeeNum)) ;
                 mBanquetTotalPrice.setText(String.format("%.2f", mBanquent.getPrice() * attendeeNum) + getString(R.string.yuan));
-                mOrderTotalPrice.setText(String.format(getString(R.string.order_total_price), mBanquent.getPrice() * attendeeNum));
+                mBottomPriceTv.setText(String.format(getString(R.string.order_total_price), mBanquent.getPrice() * attendeeNum));
                 break;
         }
     }

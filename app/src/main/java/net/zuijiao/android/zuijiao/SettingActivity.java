@@ -53,7 +53,9 @@ public class SettingActivity extends BaseActivity {
     private Configuration mConfiguration = null;
     private LambdaExpression successCallback = null;
     private String mEmail = null;
-    private CompoundButton.OnCheckedChangeListener mSbListener = null;
+    private SBCheckedChangeListener mSbListener1 = null;
+    private SBCheckedChangeListener mSbListener2 = null;
+    private SBCheckedChangeListener mSbListener3 = null;
 
     @Override
     protected void registerViews() {
@@ -64,6 +66,7 @@ public class SettingActivity extends BaseActivity {
         Router.getCommonModule().currentConfiguration(new OneParameterExpression<Configuration>() {
             @Override
             public void action(Configuration configuration) {
+
                 registerSwitchButton(configuration);
             }
         }, null);
@@ -80,9 +83,12 @@ public class SettingActivity extends BaseActivity {
                 bindEmail();
             }
         });
-        mSb1.setOnCheckedChangeListener(new SBCheckedChangeListener());
-        mSb2.setOnCheckedChangeListener(new SBCheckedChangeListener());
-        mSb3.setOnCheckedChangeListener(new SBCheckedChangeListener());
+        mSbListener1 = new SBCheckedChangeListener() ;
+        mSbListener2 = new SBCheckedChangeListener() ;
+        mSbListener3 = new SBCheckedChangeListener() ;
+        mSb1.setOnCheckedChangeListener(mSbListener1);
+        mSb2.setOnCheckedChangeListener(mSbListener2);
+        mSb3.setOnCheckedChangeListener(mSbListener3);
     }
 
     /**
@@ -104,15 +110,27 @@ public class SettingActivity extends BaseActivity {
      * @param config
      */
     private void registerSwitchButton(Configuration config) {
-        mConfiguration = config;
-        if (mConfiguration == null) {
-            mConfiguration = mPreferMng.getConfigs();
-        } else {
-            mPreferMng.saveConfig(mConfiguration);
-        }
+        if(config != null)
+            mConfiguration = config ;
+        else
+            mConfiguration = mPreferMng.getConfigs() ;
         mSb1.setChecked(mConfiguration.isNotifyFollowed());
         mSb2.setChecked(mConfiguration.isNotifyLike());
         mSb3.setChecked(mConfiguration.isNotifyComment());
+        if (config == null) {
+            mSb1.setEnabled(false);
+            mSb2.setEnabled(false);
+            mSb3.setEnabled(false);
+        } else {
+            mSb1.setEnabled(true);
+            mSb2.setEnabled(true);
+            mSb3.setEnabled(true);
+            mSbListener1.setFromUser(true) ;
+            mSbListener2.setFromUser(true);
+            mSbListener3.setFromUser(true);
+            mPreferMng.saveConfig(mConfiguration);
+        }
+
     }
 
     /**
@@ -171,7 +189,7 @@ public class SettingActivity extends BaseActivity {
      * switcher listener ;
      */
     private class SBCheckedChangeListener implements CompoundButton.OnCheckedChangeListener {
-        private boolean bFromUser = true;
+        private boolean bFromUser = false;
 
         public void setFromUser(boolean fromUser) {
             this.bFromUser = fromUser;
@@ -179,66 +197,70 @@ public class SettingActivity extends BaseActivity {
 
         @Override
         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-            if (!bFromUser) {
-                bFromUser = true;
-            } else {
-                buttonView.setEnabled(false);
-                boolean switchTo = false;
-                ConfigurationType type = ConfigurationType.Follow;
-                switch (buttonView.getId()) {
-                    case R.id.setting_sb_comment_me:
-                        type = ConfigurationType.Comment;
-                        switchTo = !mConfiguration.isNotifyComment();
-                        successCallback = new LambdaExpression() {
-                            @Override
-                            public void action() {
-                                mConfiguration.setNotifyComment(!mConfiguration.isNotifyComment());
-                            }
-                        };
-                        break;
-                    case R.id.setting_sb_favor_me:
-                        type = ConfigurationType.Like;
-                        switchTo = !mConfiguration.isNotifyLike();
-                        successCallback = new LambdaExpression() {
-                            @Override
-                            public void action() {
-                                mConfiguration.setNotifyLike(!mConfiguration.isNotifyLike());
-                            }
-                        };
-                        break;
-                    case R.id.setting_sb_follow_me:
-                        type = ConfigurationType.Follow;
-                        switchTo = !mConfiguration.isNotifyFollowed();
-                        successCallback = new LambdaExpression() {
-                            @Override
-                            public void action() {
-                                mConfiguration.setNotifyFollowed(!mConfiguration.isNotifyFollowed());
-                            }
-                        };
-                        break;
-                }
-                Router.getCommonModule().updateConfiguration(type, switchTo, new LambdaExpression() {
-                    @Override
-                    public void action() {
-                        buttonView.setEnabled(true);
-                        successCallback.action();
-                        mPreferMng.saveConfig(mConfiguration);
-                    }
-                }, new OneParameterExpression<String>() {
-                    @Override
-                    public void action(String s) {
-                        new Handler().postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                buttonView.setEnabled(true);
-                                bFromUser = false;
-                                buttonView.toggle();
-                                Toast.makeText(mContext, getString(R.string.notify_net3), Toast.LENGTH_SHORT).show();
-                            }
-                        }, 500);
-                    }
-                });
+//            if (!bFromUser) {
+//                bFromUser = true;
+//            } else {
+            if(!bFromUser){
+                return;
             }
+            buttonView.setEnabled(false);
+            boolean switchTo = false;
+            ConfigurationType type = ConfigurationType.Follow;
+            switch (buttonView.getId()) {
+                case R.id.setting_sb_comment_me:
+                    type = ConfigurationType.Comment;
+                    switchTo = !mConfiguration.isNotifyComment();
+                    successCallback = new LambdaExpression() {
+                        @Override
+                        public void action() {
+                            mConfiguration.setNotifyComment(!mConfiguration.isNotifyComment());
+                        }
+                    };
+                    break;
+                case R.id.setting_sb_favor_me:
+                    type = ConfigurationType.Like;
+                    switchTo = !mConfiguration.isNotifyLike();
+                    successCallback = new LambdaExpression() {
+                        @Override
+                        public void action() {
+                            mConfiguration.setNotifyLike(!mConfiguration.isNotifyLike());
+                        }
+                    };
+                    break;
+                case R.id.setting_sb_follow_me:
+                    type = ConfigurationType.Follow;
+                    switchTo = !mConfiguration.isNotifyFollowed();
+                    successCallback = new LambdaExpression() {
+                        @Override
+                        public void action() {
+                            mConfiguration.setNotifyFollowed(!mConfiguration.isNotifyFollowed());
+                        }
+                    };
+                    break;
+            }
+            Router.getCommonModule().updateConfiguration(type, switchTo, new LambdaExpression() {
+                @Override
+                public void action() {
+                    buttonView.setEnabled(true);
+                    bFromUser = true ;
+                    successCallback.action();
+                    mPreferMng.saveConfig(mConfiguration);
+                }
+            }, new OneParameterExpression<String>() {
+                @Override
+                public void action(String s) {
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            buttonView.setEnabled(true);
+                            bFromUser = false;
+                            buttonView.toggle();
+                            Toast.makeText(mContext, getString(R.string.notify_net3), Toast.LENGTH_SHORT).show();
+                        }
+                    }, 500);
+                }
+            });
+//            }
         }
     }
 }

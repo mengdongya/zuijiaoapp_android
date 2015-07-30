@@ -1,10 +1,13 @@
 package com.zuijiao.utils;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Environment;
 
 import com.zuijiao.controller.ActivityTask;
 import com.zuijiao.controller.FileManager;
+
+import net.zuijiao.android.zuijiao.MainActivity;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;

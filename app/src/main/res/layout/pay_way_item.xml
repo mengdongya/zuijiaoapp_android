@@ -25,5 +25,5 @@
         android:layout_alignParentRight="true"
         android:layout_marginRight="16dip"
         android:id="@+id/pay_way_image"
-        android:src="@drawable/correct" />
+        android:src="@drawable/selected_pay" />
 </RelativeLayout>

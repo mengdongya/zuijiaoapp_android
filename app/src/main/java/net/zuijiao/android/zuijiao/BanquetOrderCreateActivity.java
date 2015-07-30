@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Handler;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
@@ -32,6 +33,7 @@ import com.lidroid.xutils.view.annotation.ViewInject;
 import com.zuijiao.android.util.functional.OneParameterExpression;
 import com.zuijiao.android.zuijiao.model.Banquent.Banquent;
 import com.zuijiao.android.zuijiao.model.Banquent.BanquentCapacity;
+import com.zuijiao.android.zuijiao.model.Banquent.Orders;
 import com.zuijiao.android.zuijiao.model.OrderAuth;
 import com.zuijiao.android.zuijiao.network.Router;
 import com.zuijiao.thirdopensdk.Alipay;
@@ -83,6 +85,7 @@ public class BanquetOrderCreateActivity extends BaseActivity implements View.OnC
     private String verifyCode = "";
     private String phoneNum;
     private int attendeeNum = 1;
+
 
 
     @Override
@@ -173,20 +176,31 @@ public class BanquetOrderCreateActivity extends BaseActivity implements View.OnC
                     dialog.show();
                     return;
                 }
-                //createDialog();
+                createDialog();
                 if (mRemark == null || mRemark.equals("")) {
                     mRemark = " ";
                 }
-                //check the order num
 
-                //end
-                Intent intent1 = new Intent(mContext, BanquetOrderActivity.class);
-                intent1.putExtra("banquet", mBanquent);
-                intent1.putExtra("contact_phone_num", phoneNum);
-                intent1.putExtra("attendeeNum", attendeeNum);
-                intent1.putExtra("isCreate", true);
-                startActivity(intent1);
-                finish();
+                Router.getBanquentModule().createOrder(mBanquent.getIdentifier(), mRemark, attendeeNum, phoneNum, verifyCode, new OneParameterExpression<Orders>() {
+                    @Override
+                    public void action(Orders orders) {
+                        Intent intent1 = new Intent(mContext, BanquetOrderActivity.class);
+                        intent1.putExtra("order", orders.getOrder());
+                        intent1.putExtra("contact_phone_num", phoneNum);
+                        intent1.putExtra("attendeeNum", attendeeNum);
+                        intent1.putExtra("isCreate", true);
+                        startActivity(intent1);
+                        finalizeDialog();
+                        finish();
+                    }
+                }, new OneParameterExpression<String>() {
+                    @Override
+                    public void action(String s) {
+                        mRemark = null;
+                        Toast.makeText(mContext, s, Toast.LENGTH_SHORT).show();
+                        finalizeDialog();
+                    }
+                });
                 break;
             case R.id.banquet_order_create_phone:
                 Intent intent = new Intent(mContext, VerifyPhoneNumActivity.class);
@@ -200,15 +214,29 @@ public class BanquetOrderCreateActivity extends BaseActivity implements View.OnC
                         , 1, 150);
                 break;
             case R.id.banquet_order_create_subtract:
-                if (--attendeeNum < 1)
+                if (!mBanquetPlus.isEnabled()) {
+                    mBanquetPlus.setEnabled(true);
+                    mBanquetPlus.setTextColor(Color.BLACK);
+                }
+                if (--attendeeNum <= 1) {
                     attendeeNum = 1;
+                    mBanquetSubtract.setEnabled(false);
+                    mBanquetSubtract.setTextColor(Color.WHITE);
+                }
                 mBanquetNum.setText(attendeeNum + getString(R.string.people));
                 mBanquetTotalPrice.setText(String.format("%.2f", mBanquent.getPrice() * attendeeNum) + getString(R.string.yuan));
                 mOrderTotalPrice.setText(String.format(getString(R.string.order_total_price), mBanquent.getPrice() * attendeeNum));
                 break;
             case R.id.banquet_order_create_plus:
-                if (++attendeeNum > mBanquent.getBanquentCapacity().getMax() - mBanquent.getBanquentCapacity().getCount())
+                if (!mBanquetSubtract.isEnabled()) {
+                    mBanquetSubtract.setEnabled(true);
+                    mBanquetSubtract.setTextColor(Color.BLACK);
+                }
+                if (++attendeeNum >= mBanquent.getBanquentCapacity().getMax() - mBanquent.getBanquentCapacity().getCount()) {
                     attendeeNum = mBanquent.getBanquentCapacity().getMax() - mBanquent.getBanquentCapacity().getCount();
+                    mBanquetPlus.setEnabled(false);
+                    mBanquetPlus.setTextColor(Color.WHITE);
+                }
                 mBanquetNum.setText(attendeeNum + getString(R.string.people));
                 mBanquetTotalPrice.setText(String.format("%.2f", mBanquent.getPrice() * attendeeNum) + getString(R.string.yuan));
                 mOrderTotalPrice.setText(String.format(getString(R.string.order_total_price), mBanquent.getPrice() * attendeeNum));

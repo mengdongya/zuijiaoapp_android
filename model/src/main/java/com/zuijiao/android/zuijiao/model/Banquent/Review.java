@@ -19,7 +19,7 @@ public class Review implements Serializable {
     @SerializedName("createdAt")
     private Date createdAt;
     @SerializedName("event")
-    private CommentEvent event;
+    private Event event;
     @SerializedName("user")
     private TinyUser reviewer;
 
@@ -39,7 +39,7 @@ public class Review implements Serializable {
 //        return createdAt;
 //    }
 
-    public CommentEvent getEvent() {
+    public Event getEvent() {
         return event;
     }
 

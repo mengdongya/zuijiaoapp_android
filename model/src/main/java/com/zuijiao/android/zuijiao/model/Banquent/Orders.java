@@ -13,9 +13,17 @@ public class Orders {
     private List<Order> orderList;
     @SerializedName("time")
     private Date currentServerTime;
+    @SerializedName("data")
+    private Order order;
 
-    public Date getCurrentServerTime() {
-        return currentServerTime;
+    public Order getOrder() {
+        return order;
+    }
+
+    private long pullTime = System.currentTimeMillis();
+
+    public long getCurrentServerTime() {
+        return (currentServerTime.getTime() + (System.currentTimeMillis() - pullTime))/1000;
     }
 
     public List<Order> getOrderList() {

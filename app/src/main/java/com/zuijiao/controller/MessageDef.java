@@ -14,4 +14,5 @@ public interface MessageDef {
 
     public static final String ACTION_ORDER_CREATED = "net.zuijiao.android.banquet.order.created";
 
+    public static final String ACTION_ORDER_UPDATE = "android.intent.action.ACTION_ORDER_UPDATE";
 }

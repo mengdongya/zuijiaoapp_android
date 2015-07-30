@@ -2,6 +2,7 @@ package com.zuijiao.android.zuijiao.model.Banquent;
 
 import com.google.gson.annotations.SerializedName;
 import com.zuijiao.android.util.functional.ImageUrlUtil;
+import com.zuijiao.android.zuijiao.model.user.TinyUser;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -13,48 +14,52 @@ public class Order implements Serializable {
 
     @SerializedName("ID")
     private Integer identifier;
-    @SerializedName("eventID")
-    private Integer banquentIdentifier;
+    //    @SerializedName("eventID")
+//    private Integer banquentIdentifier;
     @SerializedName("tradeNo")
     private String serialNumber;
-    @SerializedName("title")
-    private String title;
+    //    @SerializedName("title")
+//    private String title;
     @SerializedName("note")
     private String remark;
     @SerializedName("mobile")
     private String phoneNumber;
-    @SerializedName("imageUrl")
-    private String imageUrl;
+    //    @SerializedName("imageUrl")
+//    private String imageUrl;
     @SerializedName("createdAt")
     private Date createTime;
-    @SerializedName("address")
-    private String address;
+    //    @SerializedName("address")
+//    private String address;
     @SerializedName("price")
     private Float price;
     @SerializedName("status")
     private String status;
-    @SerializedName("time")
-    private Date holdTime;
+    //    @SerializedName("time")
+//    private Date holdTime;
     @SerializedName("isCommented")
     private Boolean isCommented;
     @SerializedName("quantity")
     private Integer quantity;
     @SerializedName("realPrice")
-    private Integer realPrice;
+    private Float realPrice;
     @SerializedName("totalPrice")
-    private Integer totalPrice;
+    private Float totalPrice;
     @SerializedName("deadline")
     private Date deadline;
+    @SerializedName("event")
+    private Event event;
+    @SerializedName("seller")
+    private TinyUser seller;
 
     public Integer getQuantity() {
         return quantity;
     }
 
-    public Integer getRealPrice() {
+    public Float getRealPrice() {
         return realPrice;
     }
 
-    public Integer getTotalPrice() {
+    public Float getTotalPrice() {
         return totalPrice;
     }
 
@@ -70,17 +75,17 @@ public class Order implements Serializable {
         return identifier;
     }
 
-    public Integer getBanquentIdentifier() {
-        return banquentIdentifier;
-    }
+//    public Integer getBanquentIdentifier() {
+//        return banquentIdentifier;
+//    }
 
     public String getSerialNumber() {
         return serialNumber;
     }
 
-    public String getTitle() {
-        return title;
-    }
+//    public String getTitle() {
+//        return title;
+//    }
 
     public String getRemark() {
         return remark;
@@ -90,22 +95,22 @@ public class Order implements Serializable {
         return phoneNumber;
     }
 
-    public String getImageUrl() {
-        return ImageUrlUtil.imageUrl(imageUrl);
-//        return imageUrl;
-    }
+//    public String getImageUrl() {
+//        return ImageUrlUtil.imageUrl(imageUrl);
+////        return imageUrl;
+//    }
 
-    public Date getHoldTime() {
-        return holdTime;
-    }
+//    public Date getHoldTime() {
+//        return holdTime;
+//    }
 
     public Date getCreateTime() {
         return createTime;
     }
 
-    public String getAddress() {
-        return address;
-    }
+//    public String getAddress() {
+//        return address;
+//    }
 
     public Float getPrice() {
         return price;
@@ -113,5 +118,13 @@ public class Order implements Serializable {
 
     public OrderStatus getStatus() {
         return OrderStatus.fromString(status);
+    }
+
+    public Event getEvent() {
+        return event;
+    }
+
+    public TinyUser getSeller() {
+        return seller;
     }
 }

@@ -69,29 +69,31 @@
 
             <LinearLayout
                 android:id="@+id/banquet_order_surplus_status"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
                 android:orientation="horizontal"
                 android:paddingBottom="20dip"
                 android:paddingTop="20dip"
                 android:visibility="gone">
 
                 <TextView
-                    android:layout_width="0dip"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:layout_weight="1"
-                    android:gravity="right"
+                    android:drawableLeft="@drawable/time_surplus"
+                    android:drawablePadding="5dip"
+                    android:gravity="center"
                     android:text="@string/waiting_time"
-                    android:textColor="@color/tv_light_gray"
+                    android:textColor="@color/surplus_time"
                     android:textSize="18sp" />
 
                 <TextView
                     android:id="@+id/banquet_order_surplus_time"
-                    android:layout_width="0dip"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:textColor="@color/surplus_time"
                     android:layout_gravity="center"
-                    android:layout_weight="1"
                     android:text="@string/surplus_time"
                     android:textSize="18sp" />
             </LinearLayout>
@@ -195,7 +197,7 @@
             android:layout_marginLeft="15dip"
             android:layout_weight="2"
             android:text="@string/order_total_price"
-            android:textColor="@color/banquet_theme"
+            android:textColor="@color/surplus_time"
             android:textSize="18sp" />
 
         <Button

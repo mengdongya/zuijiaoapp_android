@@ -1,7 +1,10 @@
 package net.zuijiao.android.zuijiao;
 
 import android.annotation.SuppressLint;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -24,6 +27,7 @@ import com.zuijiao.android.zuijiao.model.Banquent.Order;
 import com.zuijiao.android.zuijiao.model.Banquent.OrderStatus;
 import com.zuijiao.android.zuijiao.model.Banquent.Orders;
 import com.zuijiao.android.zuijiao.network.Router;
+import com.zuijiao.controller.MessageDef;
 import com.zuijiao.view.RefreshAndInitListView;
 
 import java.util.ArrayList;
@@ -55,8 +59,9 @@ public class OrderListFragment extends Fragment implements
     private String[] weekDays;
     private TextView mBlankText;
     private int[] mBlankTextRes = {R.string.no_coming_order, R.string.no_finished_order, R.string.no_order};
-    //    private Orders mOrders;
-    private long currentSystemTime;
+    //private Orders mOrders;
+    private long currentSystemTime;//sec
+    private UpdateBroadCast updateBroadCast;
 
 //    public OrderListFragment(int index) {
 //        super();
@@ -74,9 +79,6 @@ public class OrderListFragment extends Fragment implements
 
     @Override
     public void onResume() {
-        System.out.println("tag:" + this.getTag());
-        System.out.println("id:" + this.getId());
-        System.out.println("tabIndex:" + tabIndex);
         super.onResume();
     }
 
@@ -94,6 +96,7 @@ public class OrderListFragment extends Fragment implements
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+
         if (mContentView != null) {
             ViewGroup parent = (ViewGroup) mContentView.getParent();
             if (parent != null) {
@@ -102,6 +105,12 @@ public class OrderListFragment extends Fragment implements
             return mContentView;
         }
         tabIndex = getArguments().getInt("position");
+        if (tabIndex != 1) {
+            updateBroadCast = new UpdateBroadCast();
+            IntentFilter filter = new IntentFilter();
+            filter.addAction(MessageDef.ACTION_ORDER_UPDATE);
+            getActivity().registerReceiver(updateBroadCast, filter);
+        }
         weekDays = getResources().getStringArray(R.array.week_days);
         mContentView = inflater.inflate(R.layout.fragment_order_list, null);
         mRefreshLayout = (SwipeRefreshLayout) mContentView.findViewById(R.id.order_fragment_swipe_refresh);
@@ -115,6 +124,11 @@ public class OrderListFragment extends Fragment implements
         mListView.setOnItemClickListener(this);
         networkStep(true);
         return mContentView;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
     }
 
     /**
@@ -159,7 +173,8 @@ public class OrderListFragment extends Fragment implements
         OrderStatus status;
         switch (tabIndex) {
             case 0:
-                status = OrderStatus.Waiting;
+                //status = OrderStatus.Waiting;
+                status = OrderStatus.Unclosed;
                 break;
             case 1:
                 status = OrderStatus.Uncomment;
@@ -174,9 +189,13 @@ public class OrderListFragment extends Fragment implements
         Router.getBanquentModule().orders(status, lastedId, 20, new OneParameterExpression<Orders>() {
             @Override
             public void action(Orders orders) {
-                // mOrders = orders;
-                currentSystemTime = orders.getCurrentServerTime().getTime() / 1000;
-                runnable.run();
+                //mOrders = orders;
+                currentSystemTime = orders.getCurrentServerTime();
+                //runnable.run();
+                if (tabIndex != 1) {
+                    handler.removeCallbacks(runnable);
+                    handler.post(runnable);
+                }
                 if (bRefresh) {
                     orderList = orders.getOrderList();
                     if (orderList.size() == 0) {
@@ -215,6 +234,13 @@ public class OrderListFragment extends Fragment implements
         super.onCreate(savedInstanceState);
     }
 
+    @Override
+    public void onDestroy() {
+        if (tabIndex != 1)
+            getActivity().unregisterReceiver(updateBroadCast);
+        super.onDestroy();
+    }
+
     /**
      * orders list adapter
      */
@@ -246,9 +272,9 @@ public class OrderListFragment extends Fragment implements
             } else
                 holder = (ViewHolder) convertView.getTag();
             Order order = orderList.get(position);
-            Picasso.with(getActivity().getApplicationContext()).load(order.getImageUrl()).placeholder(R.drawable.empty_view_greeting).fit().centerCrop().into(holder.image);
-            holder.title.setText(order.getTitle());
-            String dateInfo = formatDate(order.getHoldTime());
+            Picasso.with(getActivity().getApplicationContext()).load(order.getEvent().getImageUrl()).placeholder(R.drawable.empty_view_greeting).fit().centerCrop().into(holder.image);
+            holder.title.setText(order.getEvent().getTitle());
+            String dateInfo = formatDate(order.getEvent().getTime());
             //holder.date.setText(dateInfo + order.getAddress());
             holder.date.setText(dateInfo + " · " + order.getQuantity() + getString(R.string.people));
 //            if (tabIndex == 0) {
@@ -261,8 +287,8 @@ public class OrderListFragment extends Fragment implements
 //                    holder.review.setVisibility(View.GONE);
 //                }
 //            }
-
-            if (order.getStatus() == OrderStatus.Unpaid || order.getStatus() == OrderStatus.Finished) {
+            holder.review.setVisibility(View.GONE);
+            if (order.getStatus() == OrderStatus.Unpaid) {
                 holder.review.setVisibility(View.VISIBLE);
                 holder.review.setEnabled(true);
                 holder.review.setTextColor(getResources().getColor(R.color.banquet_theme));
@@ -276,10 +302,12 @@ public class OrderListFragment extends Fragment implements
                             intent.putExtra("surplusTime", (order.getDeadline().getTime() / 1000) - currentSystemTime);
                             intent.putExtra("isCreate", false);
                             intent.putExtra("attendeeNum", order.getQuantity());
-                            startActivity(intent);
+                            //startActivity(intent);
+                            getActivity().startActivityForResult(intent, MainActivity.ORDER_REQUEST);
                         }
                     });
                 }
+            }
 //                if (order.getStatus() == OrderStatus.Uncomment) {
 //                    holder.review.setText(getString(R.string.to_evaluate));
 //                    holder.review.setOnClickListener(new View.OnClickListener() {
@@ -293,13 +321,17 @@ public class OrderListFragment extends Fragment implements
 //                        }
 //                    });
 //                }
-                if (order.getStatus() == OrderStatus.Finished) {
+            if (tabIndex >= 1) {
+                if (order.getStatus() != OrderStatus.Unpaid && order.getStatus() != OrderStatus.Canceled && order.getStatus() != OrderStatus.Waiting) {
+                    holder.review.setVisibility(View.VISIBLE);
                     if (order.getIsCommented()) {
                         holder.review.setText(getString(R.string.over_evaluate));
                         holder.review.setEnabled(false);
                         holder.review.setTextColor(getResources().getColor(R.color.tv_light_gray));
                     } else {
                         holder.review.setText(getString(R.string.to_evaluate));
+                        holder.review.setEnabled(true);
+                        holder.review.setTextColor(getResources().getColor(R.color.banquet_theme));
                         holder.review.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
@@ -312,10 +344,15 @@ public class OrderListFragment extends Fragment implements
                         });
                     }
                 }
-            } else {
-                holder.review.setEnabled(false);
-                holder.review.setVisibility(View.GONE);
             }
+            //       }
+//
+//        else
+//
+//        {
+//            holder.review.setEnabled(false);
+//            holder.review.setVisibility(View.GONE);
+//        }
 
 //            if (tabIndex > 0) {
 //                if (order.getStatus() != OrderStatus.Waiting && order.getStatus() != OrderStatus.Canceled) {
@@ -344,7 +381,9 @@ public class OrderListFragment extends Fragment implements
 //                }
 //                //  }
 //            }
-            switch (order.getStatus()) {
+            switch (order.getStatus())
+
+            {
                 case Canceled:
                     holder.situation.setText(getString(R.string.canceled_banquet));
                     break;
@@ -355,7 +394,12 @@ public class OrderListFragment extends Fragment implements
                     holder.situation.setText(getString(R.string.finished_banquet));
                     break;
                 case Unpaid:
-                    holder.situation.setText(getString(R.string.waiting_pay));
+                    if (order.getDeadline().getTime() / 1000 - currentSystemTime < 0) {
+                        holder.review.setVisibility(View.GONE);
+                        holder.situation.setText(getString(R.string.timeout_pay));
+                    } else {
+                        holder.situation.setText(getString(R.string.waiting_pay));
+                    }
                     break;
                 default:
                     holder.situation.setText(getString(R.string.waiting_banquet));
@@ -382,8 +426,10 @@ public class OrderListFragment extends Fragment implements
         Intent intent = new Intent(getActivity(), BanquetOrderDisplayActivity.class);
         intent.putExtra("order", orderList.get(position));
         long surplusTime = (orderList.get(position).getDeadline().getTime() / 1000) - currentSystemTime;
+        System.out.println("surplusTime:" + surplusTime);
         intent.putExtra("surplusTime", surplusTime);
-        startActivity(intent);
+        //startActivity(intent);
+        getActivity().startActivityForResult(intent, MainActivity.ORDER_REQUEST);
     }
 
     class ViewHolder {
@@ -401,6 +447,7 @@ public class OrderListFragment extends Fragment implements
         public ViewHolder(View convertView) {
             com.lidroid.xutils.ViewUtils.inject(this, convertView);
         }
+
     }
 
     private String formatDate(Date date) {
@@ -414,4 +461,11 @@ public class OrderListFragment extends Fragment implements
         return strBuilder.toString();
     }
 
+    private class UpdateBroadCast extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            onRefresh();
+        }
+    }
 }

@@ -102,7 +102,7 @@ public final class MainActivity extends BaseActivity {
     //private GourmetDisplayFragment mMainFragment = null;
     //drop gourmet
     private MainFragment mMainFragment = null;
-//    private BanquetDisplayFragment mMainFragment= null ;
+    //    private BanquetDisplayFragment mMainFragment= null ;
     private GourmetDisplayFragment mRecommendFragment = null;
     private GourmetDisplayFragment mFavorFragment = null;
     private MyOrderFragment mMyOrderFragment = null;
@@ -114,7 +114,9 @@ public final class MainActivity extends BaseActivity {
     private static final int BACK_STACK_DURATION = 2000;
     public static final int COMMENT_SUCCESS = 10010;
     public static final int COMMENT_REQUEST = 10011;
-
+    public static final int ORDER_REQUEST = 20010;
+    public static final int ORDER_CANCEL = 20011;
+    public static final int ORDER_PAY_SUCCESS = 20012;
 
 
     private OnItemClickListener mTabsListener = new OnItemClickListener() {
@@ -383,14 +385,14 @@ public final class MainActivity extends BaseActivity {
 //        mMainFragment =   MainFragment.getInstance();
 //        mFragmentList.add(mMainFragment);
         //drop gourmet end
-        mMainFragment =   MainFragment.getInstance();
+        mMainFragment = MainFragment.getInstance();
         mFragmentList.add(mMainFragment);
 //        mFragmentList.add(mMainFragment) ;
-        mRecommendFragment =  GourmetDisplayFragment.newInstance(GourmetDisplayFragment.RECOMMEND_PAGE) ;
+        mRecommendFragment = GourmetDisplayFragment.newInstance(GourmetDisplayFragment.RECOMMEND_PAGE);
         mFragmentList.add(mRecommendFragment);
-        mFavorFragment = GourmetDisplayFragment.newInstance(GourmetDisplayFragment.FAVOR_PAGE) ;
+        mFavorFragment = GourmetDisplayFragment.newInstance(GourmetDisplayFragment.FAVOR_PAGE);
         mFragmentList.add(mFavorFragment);
-        mMyOrderFragment =  MyOrderFragment.getInstance();
+        mMyOrderFragment = MyOrderFragment.getInstance();
         mFragmentList.add(mMyOrderFragment);
         mFragmentMng = getSupportFragmentManager();
         mFragmentTransaction = mFragmentMng.beginTransaction();
@@ -416,7 +418,7 @@ public final class MainActivity extends BaseActivity {
         }, errorMsg -> {
             //do nothing
         });
-        if(mTendIntent!= null)
+        if (mTendIntent != null)
             startNewActivity(mTendIntent);
     }
 
@@ -493,7 +495,6 @@ public final class MainActivity extends BaseActivity {
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
     }
-
 
 
     private BadgeView initBadgeView() {
@@ -639,7 +640,6 @@ public final class MainActivity extends BaseActivity {
     }
 
 
-
     private void checkVersion() {
         UmengUpdateAgent.setUpdateOnlyWifi(true);
         UmengUpdateAgent.setUpdateAutoPopup(false);
@@ -659,7 +659,7 @@ public final class MainActivity extends BaseActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == COMMENT_REQUEST) {
+        if (requestCode == COMMENT_REQUEST || requestCode == ORDER_REQUEST) {
             mMyOrderFragment.onActivityResult(requestCode, resultCode, data);
         }
         if (requestCode == SETTING_REQ && resultCode == LOGOUT_RESULT) {

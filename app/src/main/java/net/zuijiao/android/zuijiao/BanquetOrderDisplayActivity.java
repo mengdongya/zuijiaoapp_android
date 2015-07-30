@@ -80,7 +80,7 @@ public class BanquetOrderDisplayActivity extends BaseActivity {
     private Button mOrderPay;
     private Order mOrder;
     private String[] weekDays;
-    private static long mSurplusTime = -1;// sec
+    private long mSurplusTime = -1;// sec
 
     /**
      * handler and runnable for surplus time
@@ -90,16 +90,19 @@ public class BanquetOrderDisplayActivity extends BaseActivity {
         @Override
         public void run() {
             mOrder_tv_surplus.setText(formatTime(mSurplusTime));
-            if (mSurplusTime <= 0) {
+            if (mSurplusTime == 0) {
                 mOrderPay.setText(getString(R.string.timeout_pay));
                 mOrderPay.setTextColor(getResources().getColor(R.color.tv_light_gray));
                 mOrderPay.setEnabled(false);
                 mOrderCancel.setTextColor(getResources().getColor(R.color.tv_light_gray));
                 mOrderCancel.setEnabled(false);
                 mOrderCancel.setBackgroundResource(R.drawable.order_timeout_btn);
+                handler.removeCallbacks(this);
+                setResult(MainActivity.ORDER_CANCEL);
             }
             mSurplusTime--;
             handler.postDelayed(this, 1000);
+
         }
     };
 
@@ -124,10 +127,10 @@ public class BanquetOrderDisplayActivity extends BaseActivity {
             finish();
             return;
         }
-        Picasso.with(mContext).load(mOrder.getImageUrl()).placeholder(R.drawable.empty_view_greeting).fit().centerCrop().into(mImage);
-        title.setText(mOrder.getTitle());
-        String formatDate = formatDate(mOrder.getHoldTime());
-        dateLocation.setText(formatDate + getString(R.string.center_dot) + mOrder.getAddress());
+        Picasso.with(mContext).load(mOrder.getEvent().getImageUrl()).placeholder(R.drawable.empty_view_greeting).fit().centerCrop().into(mImage);
+        title.setText(mOrder.getEvent().getTitle());
+        String formatDate = formatDate(mOrder.getEvent().getTime());
+        dateLocation.setText(formatDate + getString(R.string.center_dot) + mOrder.getEvent().getAddress());
         String statusStr = "";
         switch (mOrder.getStatus()) {
             case Canceled:
@@ -154,7 +157,9 @@ public class BanquetOrderDisplayActivity extends BaseActivity {
             mOrderCancel.setVisibility(View.VISIBLE);
             mOrderBottom.setVisibility(View.VISIBLE);
             mOrderDetailTotalPrice.setText(String.format(getString(R.string.order_total_price), mOrder.getTotalPrice()));
-            runnable.run();
+            //runnable.run();
+            handler.removeCallbacks(runnable);
+            handler.post(runnable);
             mOrderCancel.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -173,13 +178,9 @@ public class BanquetOrderDisplayActivity extends BaseActivity {
                             Router.getBanquentModule().cancelOrder(mOrder.getIdentifier(), new LambdaExpression() {
                                 @Override
                                 public void action() {
-                                    mOrderCancel.setTextColor(getResources().getColor(R.color.tv_light_gray));
-                                    mOrderCancel.setEnabled(false);
-                                    mOrderCancel.setBackgroundResource(R.drawable.order_timeout_btn);
-                                    mOrderPay.setText(getString(R.string.timeout_pay));
-                                    mOrderPay.setTextColor(getResources().getColor(R.color.tv_light_gray));
-                                    mOrderPay.setEnabled(false);
                                     Toast.makeText(mContext, getString(R.string.order_cancel_success), Toast.LENGTH_SHORT).show();
+                                    setResult(MainActivity.ORDER_CANCEL);
+                                    finish();
                                 }
                             }, new LambdaExpression() {
                                 @Override
@@ -200,7 +201,8 @@ public class BanquetOrderDisplayActivity extends BaseActivity {
                     intent.putExtra("surplusTime", mSurplusTime);
                     intent.putExtra("isCreate", false);
                     intent.putExtra("attendeeNum", mOrder.getQuantity());
-                    startActivity(intent);
+                    //startActivity(intent);
+                    startActivityForResult(intent, MainActivity.ORDER_REQUEST);
                 }
             });
         } else {
@@ -213,9 +215,9 @@ public class BanquetOrderDisplayActivity extends BaseActivity {
 
         fillGenInfo(mOrderStatus, getString(R.string.order_status), statusStr);
         fillGenInfo(mOrderNum, getString(R.string.order_num), mOrder.getSerialNumber());
-        fillGenInfo(mOrderPrice, getString(R.string.price), String.format("%.2f", mOrder.getPrice()) + getString(R.string.price_unit));
+        fillGenInfo(mOrderPrice, getString(R.string.price), String.format("%.2f", mOrder.getRealPrice()) + getString(R.string.price_unit));
         fillGenInfo(mAttendeeNum, getString(R.string.num), mOrder.getQuantity() + getString(R.string.people));
-        fillGenInfo(mOrderTotalPrice, getString(R.string.total_price), mOrder.getTotalPrice() + getString(R.string.yuan));
+        fillGenInfo(mOrderTotalPrice, getString(R.string.total_price), String.format("%.2f", mOrder.getTotalPrice()) + getString(R.string.yuan));
         fillGenInfo(mOrderPhone, getString(R.string.mobile_phone), mOrder.getPhoneNumber());
         fillGenInfo(mOrderRemark, getString(R.string.remark), mOrder.getRemark());
         fillGenInfo(mOrderDate, getString(R.string.order_time), mOrder.getCreateTime().toLocaleString());
@@ -223,12 +225,12 @@ public class BanquetOrderDisplayActivity extends BaseActivity {
 
         mNoticeText.setAutoLinkMask(Linkify.PHONE_NUMBERS);
         mNoticeText.setMovementMethod(LinkMovementMethod.getInstance());
-        System.out.println("mOrder.getBanquentIdentifier():" + mOrder.getBanquentIdentifier());
+        System.out.println("mOrder.getBanquentIdentifier():" + mOrder.getEvent().getIdentifier());
         clickableView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 createDialog();
-                Router.getBanquentModule().theme(mOrder.getBanquentIdentifier(), new OneParameterExpression<Banquent>() {
+                Router.getBanquentModule().theme(mOrder.getEvent().getIdentifier(), new OneParameterExpression<Banquent>() {
                     @Override
                     public void action(Banquent banquent) {
                         Intent intent = new Intent(mContext, BanquetDetailActivity.class);
@@ -289,5 +291,16 @@ public class BanquetOrderDisplayActivity extends BaseActivity {
             }
         }
         return strTime;
+    }
+
+    @Override
+    public void onBackPressed() {
+        finish();
+    }
+
+    @Override
+    protected void onDestroy() {
+        handler.removeCallbacks(runnable);
+        super.onDestroy();
     }
 }

@@ -1,8 +1,10 @@
 package net.zuijiao.android.zuijiao;
 
 import android.annotation.SuppressLint;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -45,7 +47,7 @@ public class MyOrderFragment extends Fragment {
 //        super();
 //    }
 
-    public static  MyOrderFragment getInstance(){
+    public static MyOrderFragment getInstance() {
         MyOrderFragment fragment = new MyOrderFragment();
         Bundle bundle = new Bundle();
 //        bundle.putInt("position" ,position );
@@ -80,11 +82,13 @@ public class MyOrderFragment extends Fragment {
         mTabs.setOnPageChangeListener(onPageChangeListener);
         return contentView;
     }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
     }
+
     ViewPager.OnPageChangeListener onPageChangeListener = new ViewPager.OnPageChangeListener() {
         @Override
         public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -160,20 +164,20 @@ public class MyOrderFragment extends Fragment {
         public android.support.v4.app.Fragment getItem(int position) {
             if (position == 0) {
                 if (mComingOrderFragment == null)
-                    mComingOrderFragment =  OrderListFragment.newInstance(position);
+                    mComingOrderFragment = OrderListFragment.newInstance(position);
                 return mComingOrderFragment;
             } else if (position == 1) {
                 if (mGoneOrderFragment == null)
-                    mGoneOrderFragment =   OrderListFragment.newInstance(position);
+                    mGoneOrderFragment = OrderListFragment.newInstance(position);
                 return mGoneOrderFragment;
             } else if (position == 2) {
                 if (mWholeOrderFragment == null)
-                    mWholeOrderFragment =   OrderListFragment.newInstance(position);
+                    mWholeOrderFragment = OrderListFragment.newInstance(position);
                 return mWholeOrderFragment;
             } else {
 //                if(mWholeOrderFragment == null)
 //                    mWholeOrderFragment = new OrderListFragment(position ) ;
-                return   OrderListFragment.newInstance(position);
+                return OrderListFragment.newInstance(position);
             }
         }
     }
@@ -191,6 +195,10 @@ public class MyOrderFragment extends Fragment {
 //            }, 200);
             ((OrderListFragment) mPagerAdapter.getItem(mViewPager.getCurrentItem())).onRefresh();
             needRefreshIndex = 3 - mViewPager.getCurrentItem();
+        }
+        if (resultCode == MainActivity.ORDER_CANCEL) {
+            ((OrderListFragment) mPagerAdapter.getItem(mViewPager.getCurrentItem())).onRefresh();
+            needRefreshIndex = 3 - (mViewPager.getCurrentItem() + 1);
         }
     }
 }

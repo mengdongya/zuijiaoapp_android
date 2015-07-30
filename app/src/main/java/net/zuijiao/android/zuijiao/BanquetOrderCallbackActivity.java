@@ -15,6 +15,7 @@ import com.lidroid.xutils.view.annotation.ContentView;
 import com.lidroid.xutils.view.annotation.ViewInject;
 import com.zuijiao.android.util.functional.OneParameterExpression;
 import com.zuijiao.android.zuijiao.model.Banquent.Banquent;
+import com.zuijiao.android.zuijiao.model.Banquent.Order;
 import com.zuijiao.android.zuijiao.model.user.User;
 import com.zuijiao.android.zuijiao.network.Router;
 import com.zuijiao.controller.ActivityTask;
@@ -47,8 +48,9 @@ public class BanquetOrderCallbackActivity extends BaseActivity implements View.O
     @ViewInject(R.id.order_callback_complete_info)
     private TextView mCompleteTv;
     private boolean bSuccess = false;
-    private Banquent mBanquet;
+   // private Banquent mBanquet;
     private String[] weekDays;
+    private Order morder;
 
     @Override
     protected void registerViews() {
@@ -60,7 +62,8 @@ public class BanquetOrderCallbackActivity extends BaseActivity implements View.O
         mFinishBtn.setOnClickListener(this);
         mCompleteTv.setOnClickListener(this);
         if (bSuccess) {
-            mBanquet = BanquetOrderActivity.mBanquent;
+            //mBanquet = BanquetOrderActivity.mBanquent;
+            morder = BanquetOrderActivity.mOrder;
             Intent intent = new Intent();
             intent.setAction(MessageDef.ACTION_ORDER_CREATED);
             sendBroadcast(intent);
@@ -89,9 +92,10 @@ public class BanquetOrderCallbackActivity extends BaseActivity implements View.O
      * notify pay success
      */
     private void showSuccess() {
-        mTitleTv.setText(mBanquet.getTitle());
+
+        mTitleTv.setText(morder.getEvent().getTitle());
         String detail;
-        detail = formatDate(mBanquet.getTime()) + "\n" + mBanquet.getAddress();
+        detail = formatDate(morder.getEvent().getTime()) + "\n" + morder.getEvent().getAddress();
         mDetailTv.setText(detail);
     }
 

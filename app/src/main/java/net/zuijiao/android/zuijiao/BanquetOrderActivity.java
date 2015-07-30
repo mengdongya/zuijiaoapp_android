@@ -80,7 +80,6 @@ public class BanquetOrderActivity extends BaseActivity implements View.OnClickLi
     @ViewInject(R.id.banquet_detail_bottom_text2)
     private TextView mBottomPriceUnit ;
 
-    public static Banquent mBanquent;
     // public static Banquent mBanquent;
     private String[] weekDays;
     private String mRemark;
@@ -195,7 +194,7 @@ public class BanquetOrderActivity extends BaseActivity implements View.OnClickLi
         initViewsByBanquet();
 //        mBanquetPhone.setOnClickListener(this);
 //        mBanquetRemark.setOnClickListener(this);
-        mPayBtn.setOnClickListener(this);
+        mBottomPayBtn.setOnClickListener(this);
         if (isCreate) {
             AlertDialogUtil alertDialogUtil = AlertDialogUtil.getInstance();
             alertDialogUtil.createNoticeDialog(BanquetOrderActivity.this, getString(R.string.order_success), getString(R.string.order_success_content));
@@ -230,21 +229,22 @@ public class BanquetOrderActivity extends BaseActivity implements View.OnClickLi
         mBanquetTime.setText(mOrder.getCreateTime().toLocaleString());
         mBanquetPrice.setText(String.format(getString(R.string.price_per_one), mOrder.getRealPrice()));
 //        mBottomPrice.setText(String.format(getString(R.string.price_per_one), mBanquent.getPrice()));
-        mBottomPrice.setText(String.format(getString(R.string.order_total_price), mOrder.getTotalPrice()));
+        mBottomPriceTv.setText(String.format(getString(R.string.order_total_price), mOrder.getTotalPrice()));
         mBanquetName.setText(mOrder.getEvent().getAddress());
         mBanquetTotalPrice.setText(String.format("%.2f", mOrder.getTotalPrice()) + getString(R.string.yuan));
 //        mBottomPayWay.setText(getString(R.string.use) + payWayRes[mSelectedPayWay]);
 //        mBanquetLocation.setText(mBanquent.getAddress());
-        mBottomPriceTv.setText(String.format(getString(R.string.order_total_price), (mBanquent != null ? mBanquent.getPrice() : mOrder.getPrice()) * attendeeNum));
-        mBanquetName.setText(mBanquent != null ? mBanquent.getTitle() : mOrder.getTitle());
-        mBanquetTotalPrice.setText(String.format("%.2f", (mBanquent != null ? mBanquent.getPrice() : mOrder.getPrice()) * attendeeNum) + getString(R.string.yuan));
+//        mBottomPriceTv.setText(String.format(getString(R.string.order_total_price), (mBanquent != null ? mBanquent.getPrice() : mOrder.getPrice()) * attendeeNum));
+//        mBanquetName.setText(mBanquent != null ? mBanquent.getTitle() : mOrder.getTitle());
+//        mBanquetTotalPrice.setText(String.format("%.2f", (mBanquent != null ? mBanquent.getPrice() : mOrder.getPrice()) * attendeeNum) + getString(R.string.yuan));
     }
 
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.banquet_order_bottom_pay:
+
+            case R.id.banquet_detail_bottom_order:
 //                if (phoneNum == null || phoneNum.equals("")) {
 //                    AlertDialog dialog = new AlertDialog.Builder(BanquetOrderActivity.this)
 //                            .setTitle(getString(R.string.alert))

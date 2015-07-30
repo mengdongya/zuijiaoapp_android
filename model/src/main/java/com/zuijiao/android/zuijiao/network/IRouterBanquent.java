@@ -22,6 +22,7 @@ import retrofit.http.Query;
 public interface IRouterBanquent {
     String RootURL = "/feast/v2";
     String RootURL_V3 = "/feast/v3";
+<<<<<<< Updated upstream
     //MARK: - Order
 //    @POST(RootURL + "/ios/order/create")
 //    @FormUrlEncoded
@@ -33,6 +34,8 @@ public interface IRouterBanquent {
 //            , @Field("quantity") Integer quantity
 //            , Callback<OrderAuth> restaurantsCallback
 //    );
+=======
+>>>>>>> Stashed changes
 
     @POST(RootURL_V3 + "/ios/order/create")
     @FormUrlEncoded

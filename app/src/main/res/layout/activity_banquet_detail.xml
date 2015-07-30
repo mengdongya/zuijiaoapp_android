@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:myattr="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/banquet_datail_root"
     android:orientation="vertical">
 
     <com.zuijiao.view.BanquetDetailScrollView
@@ -134,7 +136,7 @@
                     android:layout_marginTop="10dip"
                     android:gravity="center"
                     android:orientation="horizontal"
-                    android:visibility="gone">
+                     >
 
                     <com.zuijiao.view.ReviewRatingBar
                         android:id="@+id/banquet_comment_rtatingbar"
@@ -192,11 +194,11 @@
                         android:gravity="center_horizontal"
                         android:lineSpacingExtra="5dip"
                         android:lines="2"
-                        android:text="菜单\nmenu"
+                        android:text="菜单\nMenu"
                         android:textColor="@color/black"
                         android:textSize="18sp" />
 
-                    <TextView
+                    <!--<TextView
                         android:id="@+id/banquet_detail_menu_content"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -206,7 +208,17 @@
                         android:lineSpacingExtra="5dip"
                         android:text="山楂梅子洋柿子\n乌龙温泉蛋\n禅院素鸭配桂花糖藕\n颐和四季有机色拉配秘制酱汁\n红茶孜然薯格羊排\n茶油冬菜龙俐鱼\n烟熏鸭脯养生小炒"
                         android:textColor="@color/_555555"
-                        android:textSize="14sp" />
+                        android:textSize="14sp" />-->
+
+                    <ListView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:clickable="false"
+                        android:divider="@null"
+                        android:id="@+id/lv_menu_dishes_item"
+                        android:focusableInTouchMode="true"
+                        android:focusable="false"
+                        android:longClickable="false" />
 
                 </LinearLayout>
 
@@ -268,40 +280,6 @@
                     android:textSize="18sp" />
 
                 <RelativeLayout
-                    android:id="@+id/banquet_detail_instruction_content_position"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="15dip"
-                    android:paddingLeft="8dip"
-                    android:paddingRight="8dip">
-
-                    <ImageView
-                        android:id="@+id/banquet_detail_location_icon"
-                        android:layout_width="20dip"
-                        android:layout_height="20dip"
-                        android:layout_centerVertical="true"
-                        android:src="@drawable/banquet_detail_location" />
-
-                    <TextView
-                        android:id="@+id/banquet_detail_location_text"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_marginLeft="20dip"
-                        android:layout_toRightOf="@id/banquet_detail_location_icon"
-                        android:text="上海市黄浦区之因缘"
-                        android:textColor="@color/_555555"
-                        android:textSize="14sp" />
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dip"
-                        android:layout_below="@id/banquet_detail_location_text"
-                        android:layout_marginTop="10dip"
-                        android:background="@color/bg_gray_white" />
-                </RelativeLayout>
-
-                <RelativeLayout
                     android:id="@+id/banquet_detail_instruction_content_date"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -332,7 +310,7 @@
                         android:layout_height="1dip"
                         android:layout_below="@id/banquet_detail_date_text"
                         android:layout_marginTop="10dip"
-                        android:background="@color/bg_gray_white" />
+                        />
                 </RelativeLayout>
 
                 <RelativeLayout
@@ -366,7 +344,7 @@
                         android:layout_height="1dip"
                         android:layout_below="@id/banquet_detail_price_text"
                         android:layout_marginTop="10dip"
-                        android:background="@color/bg_gray_white" />
+                        />
                 </RelativeLayout>
 
                 <RelativeLayout
@@ -400,7 +378,7 @@
                         android:layout_height="1dip"
                         android:layout_below="@id/banquet_detail_request_text"
                         android:layout_marginTop="5dip"
-                        android:background="@color/bg_gray_white" />
+                        />
                 </RelativeLayout>
 
                 <RelativeLayout
@@ -439,6 +417,53 @@
                     android:horizontalSpacing="10dip"
                     android:numColumns="5"
                     android:verticalSpacing="5dip" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dip"
+                    android:layout_marginTop="10dip"
+                    android:paddingLeft="8dip"
+                    android:paddingRight="8dip"
+                    android:background="@color/bg_gray_white" />
+
+                <LinearLayout
+                    android:id="@+id/banquet_detail_instruction_content_position"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="15dip"
+                    android:layout_marginBottom="10dip"
+                    android:paddingBottom="10dip"
+                    android:paddingLeft="8dip"
+                    android:paddingRight="8dip">
+
+                    <ImageView
+                        android:id="@+id/banquet_detail_location_icon"
+                        android:layout_width="20dip"
+                        android:layout_height="20dip"
+                        android:layout_centerVertical="true"
+                        android:src="@drawable/banquet_detail_location" />
+
+                    <TextView
+                        android:id="@+id/banquet_detail_location_text"
+                        android:layout_width="0dip"
+                        android:layout_weight="2"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="20dip"
+                        android:text="上海市黄浦区之因缘"
+                        android:textColor="@color/_555555"
+                        android:textSize="14sp" />
+
+                    <ImageView
+                        android:id="@+id/banquet_detail_location_img"
+                        android:layout_width="20dip"
+                        android:layout_height="20dip"
+                        android:scaleType="center"
+                        android:src="@drawable/arrow_expend_right" />
+
+                </LinearLayout>
+
             </LinearLayout>
 
             <LinearLayout
@@ -449,13 +474,6 @@
                 android:background="@color/white"
                 android:orientation="vertical"
                 android:visibility="gone">
-
-                <!--<View-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="1dip"-->
-                <!--android:layout_marginTop="10dip"-->
-                <!--android:background="@color/bg_light_gray2"-->
-                <!--android:visibility="visible" />-->
 
                 <TextView
                     android:id="@+id/banquet_detail_review_title"
@@ -475,23 +493,38 @@
                 <include
                     android:id="@+id/banquet_detail_lastest_comment"
                     layout="@layout/banquet_comment_item" />
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dip"
+                    android:background="@color/bg_gray_white" />
 
                 <Button
                     android:id="@+id/banquet_detail_comment_btn"
                     style="?android:attr/buttonStyleSmall"
-                    android:layout_width="wrap_content"
-                    android:layout_height="35dip"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginBottom="10dip"
-                    android:layout_marginTop="10dip"
-                    android:background="@drawable/banquet_detail_about_cuisine_btn_bg"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dip"
+                    android:background="@drawable/banquet_detail_order_bg"
                     android:gravity="center"
-                    android:paddingLeft="5dip"
-                    android:paddingRight="5dip"
-                    android:text="@string/all_comments"
-                    android:textColor="@color/white"
-                    android:textSize="14sp"
-                    android:visibility="gone" />
+                    android:text="@string/show_all_comments"
+                    android:textColor="@color/banquet_theme"
+                    android:textSize="18sp"
+                     />
+                <!--<Button-->
+                    <!--android:id="@+id/banquet_detail_comment_btn"-->
+                    <!--style="?android:attr/buttonStyleSmall"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="35dip"-->
+                    <!--android:layout_gravity="center_horizontal"-->
+                    <!--android:layout_marginBottom="10dip"-->
+                    <!--android:layout_marginTop="10dip"-->
+                    <!--android:background="@drawable/banquet_detail_about_cuisine_btn_bg"-->
+                    <!--android:gravity="center"-->
+                    <!--android:paddingLeft="5dip"-->
+                    <!--android:paddingRight="5dip"-->
+                    <!--android:text="@string/all_comments"-->
+                    <!--android:textColor="@color/white"-->
+                    <!--android:textSize="14sp"-->
+                    <!--android:visibility="gone" />-->
             </LinearLayout>
         </LinearLayout>
 

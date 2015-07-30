@@ -4,7 +4,8 @@
     <item
         android:id="@+id/gourmet_detail_share"
         android:title="@string/share"
-        app:showAsAction="never"
+        android:icon="@drawable/share_btn"
+        app:showAsAction="always"
         android:menuCategory="system" />
     <!--<item-->
     <!--android:id="@+id/gourmet_detail_refresh"-->

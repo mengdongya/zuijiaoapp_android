@@ -5,6 +5,7 @@ import android.annotation.TargetApi;
 import android.app.ActionBar.LayoutParams;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -45,16 +46,20 @@ import com.lidroid.xutils.view.annotation.ViewInject;
 import com.sina.weibo.sdk.auth.AuthInfo;
 import com.sina.weibo.sdk.auth.sso.SsoHandler;
 import com.squareup.picasso.Picasso;
+import com.tencent.mm.sdk.openapi.IWXAPI;
 import com.umeng.socialize.bean.SHARE_MEDIA;
 import com.umeng.socialize.bean.SocializeEntity;
+import com.umeng.socialize.bean.UMShareMsg;
 import com.umeng.socialize.controller.UMServiceFactory;
 import com.umeng.socialize.controller.UMSocialService;
 import com.umeng.socialize.controller.listener.SocializeListeners;
 import com.umeng.socialize.media.UMImage;
 import com.umeng.socialize.sso.QZoneSsoHandler;
 import com.umeng.socialize.sso.SinaSsoHandler;
+import com.umeng.socialize.sso.SmsHandler;
 import com.umeng.socialize.sso.UMQQSsoHandler;
 import com.umeng.socialize.sso.UMSsoHandler;
+import com.umeng.socialize.utils.SocializeUtils;
 import com.umeng.socialize.weixin.controller.UMWXHandler;
 import com.zuijiao.adapter.GourmetCommentAdapter;
 import com.zuijiao.adapter.ImageViewPagerAdapter;
@@ -71,6 +76,7 @@ import com.zuijiao.thirdopensdk.QQApi;
 import com.zuijiao.thirdopensdk.WeiboApi;
 import com.zuijiao.thirdopensdk.WeixinApi;
 import com.zuijiao.utils.AdapterViewHeightCalculator;
+import com.zuijiao.utils.AlertDialogUtil;
 import com.zuijiao.utils.StrUtil;
 import com.zuijiao.view.GourmetDetailScrollView;
 import com.zuijiao.view.GourmetDetailScrollView.OnScrollListener;
@@ -94,6 +100,7 @@ public class GourmetDetailActivity extends BaseActivity implements
     private static final int SHARE_TO_FRIEND_CIRCLE = 2;
     private static final int SHARE_TO_QQ = 3;
     private static final int SHARE_TO_QQ_SPACE = 4;
+    private static final int SHARE_TO_SMS = 5;
     //share by umengSDK
     private final UMSocialService mController = UMServiceFactory.getUMSocialService("com.umeng.share");
     @ViewInject(R.id.food_detail_toolbar)
@@ -163,8 +170,8 @@ public class GourmetDetailActivity extends BaseActivity implements
     private Optional<WouldLikeToEatUsers> mWouldLikeToEatList = Optional.empty();
     private String mShareUrl = "/zuijiao/share/cuisine?id=";
 
-    private int mShareImageRes[] = {R.drawable.share_weibo, R.drawable.share_weixin, R.drawable.share_friend_circle, R.drawable.share_qq, R.drawable.share_qq_space};
-    private int mShareTextRes[] = {R.string.weibo, R.string.weixin_friend, R.string.weixin_friend_circle, R.string.qq_friend, R.string.qq_space};
+    private int mShareImageRes[] = {R.drawable.share_weibo, R.drawable.share_weixin, R.drawable.share_friend_circle, R.drawable.share_qq, R.drawable.share_qq_space,R.drawable.share_sms};
+    private int mShareTextRes[] = {R.string.weibo, R.string.weixin_friend, R.string.weixin_friend_circle, R.string.qq_friend, R.string.qq_space,R.string.sms};
     private AuthInfo mAuthInfo = null;
     private SsoHandler mSsoHandler;
     private int rootBottom = Integer.MIN_VALUE;
@@ -371,7 +378,7 @@ public class GourmetDetailActivity extends BaseActivity implements
 
 
     /**
-     * call the list of the share ways , including qq friend ,qq space ,weibo ,wechat space ,wechat friend
+     * call the list of the share ways , including qq friend ,qq space ,weibo ,wechat space ,wechat friend ,msg
      */
     private void createShareWindow() {
 
@@ -382,7 +389,7 @@ public class GourmetDetailActivity extends BaseActivity implements
         shareList.setAdapter(new BaseAdapter() {
             @Override
             public int getCount() {
-                return 5;
+                return 6;
             }
 
             @Override
@@ -450,7 +457,7 @@ public class GourmetDetailActivity extends BaseActivity implements
      * @param action
      */
     private void distributeShareAction(int action) {
-        mController.setShareContent(String.format(getString(R.string.share_content), gourmet.getName()));
+        mController.setShareContent(String.format(getString(R.string.share_content), gourmet.getName())+BuildConfig.Web_View_Url + mShareUrl + gourmet.getIdentifier());
         mController.setShareMedia(new UMImage(mContext,
                 BuildConfig.Web_View_Url + mShareUrl + gourmet.getIdentifier()));
         switch (action) {
@@ -482,6 +489,11 @@ public class GourmetDetailActivity extends BaseActivity implements
                 qZoneSsoHandler.addToSocialSDK();
                 performShare(SHARE_MEDIA.QZONE);
                 break;
+            case SHARE_TO_SMS:
+                SmsHandler smsHandler = new SmsHandler();
+                smsHandler.addToSocialSDK();
+                performShare(SHARE_MEDIA.SMS);
+                break;
         }
     }
 
@@ -491,6 +503,9 @@ public class GourmetDetailActivity extends BaseActivity implements
 
             @Override
             public void onStart() {
+                if (platform.equals(SHARE_MEDIA.SMS)){
+
+                }
             }
 
             @Override
@@ -524,20 +539,18 @@ public class GourmetDetailActivity extends BaseActivity implements
      * delete a gourmet
      */
     private void deleteGourmet() {
-        View confirmView = LayoutInflater.from(getApplicationContext()).inflate(
-                R.layout.logout_dialog, null);
-        AlertDialog dialog = new AlertDialog.Builder(GourmetDetailActivity.this).setView(confirmView).create();
-        ((TextView) confirmView.findViewById(R.id.logout_content)).setText(String.format(getString(R.string.confirm_delete_gourmet), gourmet.getName()));
-        confirmView.findViewById(R.id.logout_btn_cancel).setOnClickListener(new OnClickListener() {
+        AlertDialogUtil alertDialogUtil = AlertDialogUtil.getInstance();
+        alertDialogUtil.createPromptDialog(GourmetDetailActivity.this, getString(R.string.alert), String.format(getString(R.string.confirm_delete_gourmet), gourmet.getName()));
+        alertDialogUtil.setButtonText(getString(R.string.yes), getString(R.string.no));
+        alertDialogUtil.setOnClickListener(new AlertDialogUtil.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                dialog.dismiss();
+            public void CancelOnClick() {
+                alertDialogUtil.dismissDialog();
             }
-        });
-        confirmView.findViewById(R.id.logout_btn_confirm).setOnClickListener(new OnClickListener() {
+
             @Override
-            public void onClick(View v) {
-                dialog.dismiss();
+            public void ConfirmOnClick() {
+                alertDialogUtil.dismissDialog();
                 createDialog();
                 Router.getGourmetModule().removeMyRecommendation(gourmet.getIdentifier(), new LambdaExpression() {
                     @Override
@@ -558,7 +571,7 @@ public class GourmetDetailActivity extends BaseActivity implements
                 });
             }
         });
-        dialog.show();
+        alertDialogUtil.showDialog();
     }
 
     /**

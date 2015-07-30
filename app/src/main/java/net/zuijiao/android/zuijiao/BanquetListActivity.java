@@ -59,6 +59,7 @@ public class BanquetListActivity extends BaseActivity {
         if (mTendIntent != null) {
             isHold = mTendIntent.getBooleanExtra("b_hold", false);
             mAttendeeId = mTendIntent.getIntExtra("attendee_id", -1);
+
         }
         if (mAttendeeId == -1) {
             finish();

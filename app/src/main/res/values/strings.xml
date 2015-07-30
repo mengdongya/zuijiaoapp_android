@@ -394,6 +394,10 @@
     <string name="order_success_return_content">您的订单已提交成功，但还未完成支付，若退出，可进入”我的赏味单“完成支付操作。确认退出吗？</string>
     <string name="continue_pay">继续支付</string>
     <string name="exit_pay">退出支付</string>
+    <string name="distance">距您%dkm</string>
+    <string name="key_error">key值错误</string>
+    <string name="map">地图</string>
+    <string name="sms">短信</string>
     <string name="waiting_comment">等待评价</string>
     <string name="timeout_pay">支付超时</string>
     <string name="order_cancel_success">订单取消成功</string>

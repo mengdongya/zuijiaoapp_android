@@ -15,15 +15,23 @@ import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
 import com.baidu.location.GeofenceClient;
 import com.baidu.location.LocationClient;
+import com.baidu.mapapi.SDKInitializer;
 import com.facebook.stetho.Stetho;
 import com.facebook.stetho.okhttp.StethoInterceptor;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.squareup.okhttp.Interceptor;
+import com.umeng.message.proguard.T;
 import com.zuijiao.android.zuijiao.network.Router;
 import com.zuijiao.utils.OSUtil;
+import com.zuijiao.utils.UnCaughtException;
 
+import net.zuijiao.android.zuijiao.BanquetDetailActivity;
+import net.zuijiao.android.zuijiao.BanquetOrderActivity;
+import net.zuijiao.android.zuijiao.BanquetOrderCreateActivity;
+import net.zuijiao.android.zuijiao.BaseActivity;
 import net.zuijiao.android.zuijiao.BuildConfig;
 import net.zuijiao.android.zuijiao.LocationActivity;
+import net.zuijiao.android.zuijiao.MainActivity;
 import net.zuijiao.android.zuijiao.R;
 
 import java.io.File;
@@ -42,6 +50,12 @@ public class ActivityTask extends Application {
     public GeofenceClient mGeofenceClient;
     public MyLocationListener mMyLocationListener;
     private String mapUriStr = "http://maps.google.cn/maps/api/geocode/json?latlng={0},{1}&sensor=true&language=zh-CN";
+
+    public LinkedList<Activity> getActivitiesList() {
+        return mActivitiesList;
+    }
+
+
     // opened activities
     private LinkedList<Activity> mActivitiesList = new LinkedList<Activity>();
 
@@ -50,11 +64,14 @@ public class ActivityTask extends Application {
     }
 
     private DisplayImageOptions defaultDisplayImageOptions;
+    private UnCaughtException mExceptionHandler = null ;
 
 
     @Override
     public void onCreate() {
         super.onCreate();
+        // baidumap initialize
+        SDKInitializer.initialize(this);
         System.out.println(new Date().getTime());
         mLocationClient = new LocationClient(this.getApplicationContext());
         mMyLocationListener = new MyLocationListener();
@@ -62,7 +79,8 @@ public class ActivityTask extends Application {
         mGeofenceClient = new GeofenceClient(getApplicationContext());
         File cacheDirectory = getApplicationContext().getCacheDir();
         Interceptor interceptor = null;
-
+        mExceptionHandler = new UnCaughtException(this) ;
+        Thread.setDefaultUncaughtExceptionHandler(mExceptionHandler);
         defaultDisplayImageOptions = new DisplayImageOptions.Builder() //
                 .considerExifParams(false) // 调整图片方向
                 .resetViewBeforeLoading(true) // 载入之前重置ImageView
@@ -88,13 +106,13 @@ public class ActivityTask extends Application {
         int maxMemory = (int) Runtime.getRuntime().maxMemory();
         int mCacheSize = maxMemory / 4;
         Log.i("maxMemory", "sssss = " + mCacheSize);
+
     }
 
 
     public static ActivityTask getInstance() {
         if (mInstance == null) {
             mInstance = new ActivityTask();
-
         }
         return mInstance;
     }

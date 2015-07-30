@@ -9,8 +9,10 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.Spannable;
+import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
+import android.text.style.StyleSpan;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -267,6 +269,8 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
     private void initRegisterTextview() {
         String str = getResources().getString(R.string.notify_register);
         SpannableStringBuilder style = new SpannableStringBuilder(str);
+//        final StyleSpan bss = new StyleSpan(android.graphics.Typeface.BOLD); //
+//        Spannable wordSpanner = new SpannableString("") ;
         style.setSpan(new ForegroundColorSpan(Color.rgb(137, 60, 52)), str.length() - 4,
                 str.length(), Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
         TextView tvColor = (TextView) findViewById(R.id.tv_login_register);

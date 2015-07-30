@@ -1,5 +1,6 @@
 package net.zuijiao.android.zuijiao;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.support.v7.widget.Toolbar;
 import android.text.method.LinkMovementMethod;
@@ -17,9 +18,12 @@ import com.zuijiao.android.zuijiao.model.Banquent.Banquent;
 import com.zuijiao.android.zuijiao.model.Banquent.Order;
 import com.zuijiao.android.zuijiao.model.user.User;
 import com.zuijiao.android.zuijiao.network.Router;
+import com.zuijiao.controller.ActivityTask;
 import com.zuijiao.controller.MessageDef;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedList;
 
 /**
  * Created by xiaqibo on 2015/6/26.
@@ -112,6 +116,29 @@ public class BanquetOrderCallbackActivity extends BaseActivity implements View.O
         return strBuilder.toString();
     }
 
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        if(bSuccess){
+            LinkedList<Activity> list = ActivityTask.getInstance().getActivitiesList() ;
+            for(Activity activity: list){
+                if(activity instanceof BanquetDetailActivity
+                        ||activity instanceof BanquetOrderCreateActivity
+                        || activity instanceof BanquetOrderActivity ){
+                    try{
+                        activity.finish();
+                    }catch(Throwable t){
+                        t.printStackTrace();
+                    }
+                }
+            }
+            Intent intent = new Intent(BanquetOrderCallbackActivity.this, MainActivity.class);
+            startActivity(intent);
+        }
+        finish();
+    }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -135,9 +162,7 @@ public class BanquetOrderCallbackActivity extends BaseActivity implements View.O
                 });
                 break;
             case R.id.order_callback_finish_btn:
-                Intent intent = new Intent(BanquetOrderCallbackActivity.this, MainActivity.class);
-                startActivity(intent);
-                finish();
+                onBackPressed();
                 break;
             default:
                 break;

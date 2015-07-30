@@ -60,7 +60,6 @@ public class BanquetDisplayFragment extends Fragment implements RefreshAndInitLi
     }
     public static BanquetDisplayFragment newInstance (){
         BanquetDisplayFragment fragment = new BanquetDisplayFragment();
-        Bundle bundle = new Bundle();
         return fragment;
     }
 

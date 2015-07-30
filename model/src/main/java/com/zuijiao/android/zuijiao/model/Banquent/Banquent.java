@@ -39,8 +39,9 @@ public class Banquent implements Serializable {
     @SerializedName("price")
     private Float price;
 
-    @SerializedName("dishes")
-    private ArrayList<String> menu;
+    @SerializedName("menu")
+    private ArrayList<BanquentMenu> menus;
+
     @SerializedName("imageUrls")
     private ArrayList<String> imageUrls;
 
@@ -95,8 +96,8 @@ public class Banquent implements Serializable {
         return price;
     }
 
-    public List<String> getMenu() {
-        return menu;
+    public ArrayList<BanquentMenu> getMenus() {
+        return menus;
     }
 
     public ArrayList<String> getImageUrls() {
@@ -123,4 +124,5 @@ public class Banquent implements Serializable {
     public List<TinyUser> getAttendees() {
         return attendees;
     }
+
 }

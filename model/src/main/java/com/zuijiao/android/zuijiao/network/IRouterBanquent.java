@@ -19,7 +19,7 @@ import retrofit.http.Query;
  * Created by user on 6/18/15.
  */
 public interface IRouterBanquent {
-    String RootURL = "/feast/v2";
+    String RootURL = "/feast/v3";
 
     //MARK: - Order
     @POST(RootURL + "/ios/order/create")

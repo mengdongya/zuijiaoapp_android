@@ -5,11 +5,11 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.graphics.Bitmap;
-import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Handler;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -17,19 +17,17 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -40,6 +38,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.sina.weibo.sdk.auth.sso.SsoHandler;
 import com.squareup.picasso.Picasso;
+import com.umeng.socialize.bean.HandlerRequestCode;
 import com.umeng.socialize.bean.SHARE_MEDIA;
 import com.umeng.socialize.bean.SocializeEntity;
 import com.umeng.socialize.controller.UMServiceFactory;
@@ -50,6 +49,7 @@ import com.umeng.socialize.sso.QZoneSsoHandler;
 import com.umeng.socialize.sso.SinaSsoHandler;
 import com.umeng.socialize.sso.SmsHandler;
 import com.umeng.socialize.sso.UMQQSsoHandler;
+import com.umeng.socialize.utils.SocializeUtils;
 import com.umeng.socialize.weixin.controller.UMWXHandler;
 import com.zuijiao.adapter.ImageViewPagerAdapter;
 import com.zuijiao.android.util.functional.LambdaExpression;
@@ -58,6 +58,7 @@ import com.zuijiao.android.zuijiao.model.Banquent.Attendee;
 import com.zuijiao.android.zuijiao.model.Banquent.Banquent;
 import com.zuijiao.android.zuijiao.model.Banquent.BanquentCapacity;
 import com.zuijiao.android.zuijiao.model.Banquent.BanquentStatus;
+import com.zuijiao.android.zuijiao.model.Banquent.BanquentMenu;
 import com.zuijiao.android.zuijiao.model.Banquent.Review;
 import com.zuijiao.android.zuijiao.model.Banquent.Reviews;
 import com.zuijiao.android.zuijiao.model.user.TinyUser;
@@ -110,8 +111,8 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
     private Button mAboutHostBtn = null;
     @ViewInject(R.id.banquet_detail_menu_title)
     private TextView mMenuTitle;
-    @ViewInject(R.id.banquet_detail_menu_content)
-    private TextView mMenuContent;
+    /*@ViewInject(R.id.banquet_detail_menu_content)
+    private TextView mMenuContent;*/
     @ViewInject(R.id.banquet_detail_chara_title)
     private TextView mCharaTitle;
     @ViewInject(R.id.banquet_detail_chara_content)
@@ -154,6 +155,10 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
     private ReviewRatingBar mCommentRatingbar;
     @ViewInject(R.id.banquet_datail_root)
     private View rootView = null;
+
+    @ViewInject(R.id.lv_menu_dishes_item)
+    private ListView lvMenuDishesItem;
+
     private Reviews mReviews;
     private Banquent mBanquent;
     private String[] weekDays;
@@ -168,10 +173,17 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
     private String mShareUrl = "/zuijiao/share/cuisine?id=";
     private final UMSocialService mController = UMServiceFactory.getUMSocialService("com.umeng.share");
     private int mShareImageRes[] = {R.drawable.share_weibo, R.drawable.share_weixin, R.drawable.share_friend_circle, R.drawable.share_qq, R.drawable.share_qq_space,R.drawable.share_sms};
+    private int mUnShareImageRes[] = {R.drawable.unshare_weibo, R.drawable.unshare_weixin, R.drawable.unshare_friend_circle, R.drawable.unshare_qq, R.drawable.unshare_qq_space,R.drawable.unshare_sms};
     private int mShareTextRes[] = {R.string.weibo, R.string.weixin_friend, R.string.weixin_friend_circle, R.string.qq_friend, R.string.qq_space,R.string.sms};
     private int rootBottom = Integer.MIN_VALUE;
     private boolean withImage = true;
     private SsoHandler mSsoHandler;
+    boolean sineInstalled = false;
+    boolean qqInstalled = false;
+    boolean qoneInstalled = false;
+    boolean wxInstalled = false;
+    boolean wxCircleInstalled = false;
+    boolean smsInstalled = false;
 
     private TranslateAnimation hideToolbarAnim = new TranslateAnimation(Animation.RELATIVE_TO_SELF, 0.0f,
             Animation.RELATIVE_TO_SELF, 0.0f, Animation.RELATIVE_TO_SELF,
@@ -253,7 +265,69 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
                 TextView text = (TextView) contentView.findViewById(R.id.share_item_text);
                 ImageView image = (ImageView) contentView.findViewById(R.id.share_item_image);
                 text.setText(getString(mShareTextRes[position]));
-                image.setImageResource(mShareImageRes[position]);
+
+                switch (position) {
+                    case 0:
+                        mController.getConfig().setSsoHandler(new SinaSsoHandler());
+                        mController.getConfig().setSinaCallbackUrl(WeiboApi.REDIRECT_URL);
+                        sineInstalled = mController.getConfig().getSsoHandler(HandlerRequestCode.SINA_REQUEST_CODE).isClientInstalled();
+                        if (sineInstalled) {
+                            image.setImageResource(mShareImageRes[0]);
+                        } else {
+                            image.setImageResource(mUnShareImageRes[0]);
+                        }
+                        break;
+                    case 1:
+                        UMWXHandler wxHandler = new UMWXHandler(mContext, WeixinApi.WEIXIN_ID, WeixinApi.WEIXIN_PWD);
+                        wxHandler.addToSocialSDK();
+                        wxInstalled = mController.getConfig().getSsoHandler(HandlerRequestCode.WX_REQUEST_CODE).isClientInstalled();
+                        if (wxInstalled) {
+                            image.setImageResource(mShareImageRes[1]);
+                        } else {
+                            image.setImageResource(mUnShareImageRes[1]);
+                        }
+                        break;
+                    case 2:
+                        UMWXHandler wxCircleHandler = new UMWXHandler(mContext, WeixinApi.WEIXIN_ID, WeixinApi.WEIXIN_PWD);
+                        wxCircleHandler.setToCircle(true);
+                        wxCircleHandler.addToSocialSDK();
+                        wxCircleInstalled = mController.getConfig().getSsoHandler(HandlerRequestCode.WX_CIRCLE_REQUEST_CODE).isClientInstalled();
+                        if (wxCircleInstalled) {
+                            image.setImageResource(mShareImageRes[2]);
+                        } else {
+                            image.setImageResource(mUnShareImageRes[2]);
+                        }
+                        break;
+                    case 3:
+                        UMQQSsoHandler qqSsoHandler = new UMQQSsoHandler(BanquetDetailActivity.this,QQApi.QQ_ID, QQApi.QQ_PWD);
+                        qqSsoHandler.addToSocialSDK();
+                        qqInstalled = mController.getConfig().getSsoHandler(HandlerRequestCode.QQ_REQUEST_CODE).isClientInstalled();
+                        if (qqInstalled) {
+                            image.setImageResource(mShareImageRes[3]);
+                        } else {
+                            image.setImageResource(mUnShareImageRes[3]);
+                        }
+                        break;
+                    case 4:
+                        QZoneSsoHandler qZoneSsoHandler = new QZoneSsoHandler(BanquetDetailActivity.this,
+                                QQApi.QQ_ID, QQApi.QQ_PWD);
+                        qZoneSsoHandler.addToSocialSDK();
+                        qoneInstalled = mController.getConfig().getSsoHandler(HandlerRequestCode.QZONE_REQUEST_CODE).isClientInstalled();
+                        if (qoneInstalled) {
+                            image.setImageResource(mShareImageRes[4]);
+                        } else {
+                            image.setImageResource(mUnShareImageRes[4]);
+                        }
+                        break;
+                    case 5:
+                        smsInstalled = ((TelephonyManager)mContext.getSystemService(TELEPHONY_SERVICE)).getSimState()==1?false:true;
+                        if (smsInstalled) {
+                            image.setImageResource(mShareImageRes[5]);
+                        } else {
+                            image.setImageResource(mUnShareImageRes[5]);
+                        }
+                        break;
+                }
                 return contentView;
             }
         });
@@ -289,37 +363,61 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
                 BuildConfig.Web_View_Url + mShareUrl + mBanquent.getIdentifier()));
         switch (action) {
             case SHARE_TO_WEIBO:
-                mController.getConfig().setSsoHandler(new SinaSsoHandler());
-                mController.getConfig().setSinaCallbackUrl(WeiboApi.REDIRECT_URL);
-                performShare(SHARE_MEDIA.SINA);
+                if (sineInstalled) {
+                    mController.getConfig().setSsoHandler(new SinaSsoHandler());
+                    mController.getConfig().setSinaCallbackUrl(WeiboApi.REDIRECT_URL);
+                    performShare(SHARE_MEDIA.SINA);
+                }else{
+                    Toast.makeText(mContext,"您尚未安装此应用...",Toast.LENGTH_SHORT).show();
+                }
                 break;
             case SHARE_TO_WECHAT:
-                UMWXHandler wxHandler = new UMWXHandler(this, WeixinApi.WEIXIN_ID, WeixinApi.WEIXIN_PWD);
-                wxHandler.addToSocialSDK();
-                performShare(SHARE_MEDIA.WEIXIN);
+                if (wxInstalled) {
+                    UMWXHandler wxHandler = new UMWXHandler(mContext, WeixinApi.WEIXIN_ID, WeixinApi.WEIXIN_PWD);
+                    wxHandler.addToSocialSDK();
+                    performShare(SHARE_MEDIA.WEIXIN);
+                }else {
+                    Toast.makeText(mContext,"您尚未安装此应用...",Toast.LENGTH_SHORT).show();
+                }
                 break;
             case SHARE_TO_FRIEND_CIRCLE:
-                UMWXHandler wxCircleHandler = new UMWXHandler(this, WeixinApi.WEIXIN_ID, WeixinApi.WEIXIN_PWD);
-                wxCircleHandler.setToCircle(true);
-                wxCircleHandler.addToSocialSDK();
-                performShare(SHARE_MEDIA.WEIXIN_CIRCLE);
+                if (wxCircleInstalled) {
+                    UMWXHandler wxCircleHandler = new UMWXHandler(mContext, WeixinApi.WEIXIN_ID, WeixinApi.WEIXIN_PWD);
+                    wxCircleHandler.setToCircle(true);
+                    wxCircleHandler.addToSocialSDK();
+                    performShare(SHARE_MEDIA.WEIXIN_CIRCLE);
+                }else {
+                    Toast.makeText(mContext,"您尚未安装此应用...",Toast.LENGTH_SHORT).show();
+                }
                 break;
             case SHARE_TO_QQ:
-                UMQQSsoHandler qqSsoHandler = new UMQQSsoHandler(this,
-                        QQApi.QQ_ID, QQApi.QQ_PWD);
-                qqSsoHandler.addToSocialSDK();
-                performShare(SHARE_MEDIA.QQ);
+                if (qqInstalled) {
+                    UMQQSsoHandler qqSsoHandler = new UMQQSsoHandler(this,
+                            QQApi.QQ_ID, QQApi.QQ_PWD);
+                    qqSsoHandler.addToSocialSDK();
+                    performShare(SHARE_MEDIA.QQ);
+                }else {
+                    Toast.makeText(mContext,"您尚未安装此应用...",Toast.LENGTH_SHORT).show();
+                }
                 break;
             case SHARE_TO_QQ_SPACE:
-                QZoneSsoHandler qZoneSsoHandler = new QZoneSsoHandler(this,
-                        QQApi.QQ_ID, QQApi.QQ_PWD);
-                qZoneSsoHandler.addToSocialSDK();
-                performShare(SHARE_MEDIA.QZONE);
+                if (qoneInstalled) {
+                    QZoneSsoHandler qZoneSsoHandler = new QZoneSsoHandler(this,
+                            QQApi.QQ_ID, QQApi.QQ_PWD);
+                    qZoneSsoHandler.addToSocialSDK();
+                    performShare(SHARE_MEDIA.QZONE);
+                }else {
+                    Toast.makeText(mContext,"您尚未安装此应用...",Toast.LENGTH_SHORT).show();
+                }
                 break;
             case SHARE_TO_SMS:
-                SmsHandler smsHandler = new SmsHandler();
-                smsHandler.addToSocialSDK();
-                performShare(SHARE_MEDIA.SMS);
+                if (smsInstalled) {
+                    SmsHandler smsHandler = new SmsHandler();
+                    smsHandler.addToSocialSDK();
+                    performShare(SHARE_MEDIA.SMS);
+                }else {
+                    Toast.makeText(mContext,"您尚未安装SMS卡...",Toast.LENGTH_SHORT).show();
+                }
                 break;
         }
     }
@@ -445,11 +543,16 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
         mImagePages.setOnPageChangeListener(mPageListener);
         mImagesIndex.setText(1 + "/" + mViewPagerAdapter.getCount());
         initViewsByBanquet();
+        lvMenuDishesItem.setAdapter(MyAdapter);
+        AdapterViewHeightCalculator.setListViewHeightBasedOnChildren(lvMenuDishesItem);
         mInstructPosition.setOnClickListener(this);
         mAllCommentBtn.setOnClickListener(this);
         mAboutHostBtn.setOnClickListener(this);
         mOrderBtn.setOnClickListener(this);
         mHostHead.setOnClickListener(this);
+
+//        initShareIcon();
+
         Router.getBanquentModule().commentsofBanquent(mBanquent.getMaster().getIdentifier(), null, 1, new OneParameterExpression<Reviews>() {
             @Override
             public void action(Reviews reviews) {
@@ -462,6 +565,7 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
                 Toast.makeText(mContext, getString(R.string.get_history_list_failed), Toast.LENGTH_SHORT).show();
             }
         });
+
         RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mBottomView.getLayoutParams();
         mBottomPrice.measure(0 , 0 );
         int priceHeight = mBottomPrice.getMeasuredHeight();
@@ -473,6 +577,58 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
         layoutParams.bottomMargin = params.height ;
     }
 
+    private BaseAdapter MyAdapter = new BaseAdapter(){
+        @Override
+        public int getCount() {
+            if (mBanquent.getMenus() != null){
+                return mBanquent.getMenus().size();
+            }else {
+                return 0;
+            }
+        }
+
+        @Override
+        public Object getItem(int i) {
+            return i;
+        }
+
+        @Override
+        public long getItemId(int i) {
+            return i;
+        }
+
+        @Override
+        public View getView(int i, View view, ViewGroup viewGroup) {
+            ViewHolder holder;
+            if (view == null){
+                view = LayoutInflater.from(mContext).inflate(R.layout.menu_dishes_item, null);
+                holder = new ViewHolder();
+                holder.menu = (TextView)(view .findViewById(R.id.menu_dishes_item_menu));
+                holder.dishes = (TextView)(view .findViewById(R.id.menu_dishes_item_dishes));
+                view.setTag(holder);
+            }else{
+                holder = (ViewHolder) view.getTag();
+            }
+            BanquentMenu menu = mBanquent.getMenus().get(i);
+            holder.menu.setText(menu.getCategoryName());
+            ArrayList<String> dishes =  mBanquent.getMenus().get(i).getDishes();
+            StringBuilder strBuilder = new StringBuilder();
+            for(int j = 0;j < dishes.size();j++ ){
+                if (j != dishes.size()-1) {
+                    strBuilder.append(dishes.get(j) + "\n");
+                }else{
+                    strBuilder.append(dishes.get(j));
+                }
+            }
+            String dishList = strBuilder.toString();
+            holder.dishes.setText(dishList);
+            return view;
+        }
+    };
+    class ViewHolder{
+        TextView menu;
+        TextView dishes;
+    }
     private void registerCommentView() {
         List<Review> reviewList = mReviews.getReviewList();
         if (reviewList != null && reviewList.size() != 0) {
@@ -532,11 +688,7 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
                     .centerCrop()
                     .into(mHostHead);
         mHostName.setText(mBanquent.getMaster().getNickName());
-        String menu = formatMenuContent();
-        if (menu.equals("")) {
-            mMenuContainer.setVisibility(View.GONE);
-        } else
-            mMenuContent.setText(menu);
+
         String characteristic = mBanquent.getCharacteristic();
         if (characteristic == null || characteristic.equals("")) {
             mCharactContainer.setVisibility(View.GONE);
@@ -619,7 +771,7 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
         if (mBanquent.getImageUrls() == null)
             return null;
         for (String imageUrl : mBanquent.getImageUrls()) {
-            ImageView image = new ImageView(this);
+            ImageView image = new ImageView(mContext);
             image.setLayoutParams(new ActionBar.LayoutParams(ActionBar.LayoutParams.MATCH_PARENT,
                     ActionBar.LayoutParams.MATCH_PARENT));
             image.setScaleType(ImageView.ScaleType.CENTER_CROP);
@@ -665,18 +817,18 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
      *
      * @return formatted string
      */
-    private String formatMenuContent() {
-        if (mBanquent.getMenu() == null || mBanquent.getMenu().size() == 0) {
+    /*private String formatMenuContent() {
+        if (mBanquent.getMenus() == null || mBanquent.getMenus().size() == 0) {
             return "";
         }
         StringBuilder strBuilder = new StringBuilder();
-        for (String menuItem : mBanquent.getMenu()) {
+        for (String menuItem : mBanquent.getMenus()) {
             strBuilder.append(menuItem);
-            if (mBanquent.getMenu().indexOf(menuItem) != mBanquent.getMenu().size() - 1)
+            if (mBanquent.getMenus().indexOf(menuItem) != mBanquent.getMenus().size() - 1)
                 strBuilder.append("\n");
         }
         return strBuilder.toString();
-    }
+    }*/
 
     private void hideToolbar() {
         if (mToolbar.getVisibility() == View.GONE)
@@ -762,6 +914,8 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
                 }
                 break;
             case R.id.banquet_detail_location_text:
+            case R.id.banquet_detail_location_icon:
+            case R.id.banquet_detail_location_img:
                 intent = new Intent();
                 intent.setClass(mContext,BaiDuMapActivity.class);
                 intent.putExtra("address",mBanquent.getAddress());

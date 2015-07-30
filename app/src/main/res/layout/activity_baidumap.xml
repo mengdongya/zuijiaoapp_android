@@ -45,7 +45,7 @@
                 android:layout_height="wrap_content"
                 android:textSize="16sp"
                 android:gravity="center_vertical"
-                android:text="距您5.8km"
+                android:text="正在定位中..."
                 android:textColor="@color/bg_light_gray2"
                 android:layout_marginBottom="10dip" />
         </LinearLayout>

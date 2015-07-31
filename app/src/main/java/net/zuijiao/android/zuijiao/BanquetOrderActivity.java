@@ -95,6 +95,7 @@ public class BanquetOrderActivity extends BaseActivity implements View.OnClickLi
     private int attendeeNum;
     public static Order mOrder;
     private boolean isCreate = false;
+    private boolean isTimeOut = false;
 
     /**
      * handler and runnable for surplus time
@@ -104,6 +105,13 @@ public class BanquetOrderActivity extends BaseActivity implements View.OnClickLi
         @Override
         public void run() {
             mBanquetSurplusTime.setText(formatTime(mSurplusTime));
+            if (mSurplusTime <= 0) {
+                mPayBtn.setEnabled(false);
+                mPayBtn.setText(getString(R.string.timeout_pay));
+                mPayBtn.setTextColor(getResources().getColor(R.color.tv_light_gray));
+                isTimeOut = true;
+                setResult(MainActivity.ORDER_CANCEL);
+            }
             mSurplusTime--;
             handler.postDelayed(this, 1000);
         }
@@ -321,22 +329,26 @@ public class BanquetOrderActivity extends BaseActivity implements View.OnClickLi
 
     @Override
     public void onBackPressed() {
-        AlertDialogUtil alertDialogUtil = AlertDialogUtil.getInstance();
-        alertDialogUtil.createPromptDialog(BanquetOrderActivity.this, null, getString(R.string.order_success_return_content));
-        alertDialogUtil.setButtonText(getString(R.string.exit_pay), getString(R.string.continue_pay));
-        alertDialogUtil.setOnClickListener(new AlertDialogUtil.OnClickListener() {
-            @Override
-            public void CancelOnClick() {
-                alertDialogUtil.dismissDialog();
-            }
+        if (isTimeOut) {
+            finish();
+        } else {
+            AlertDialogUtil alertDialogUtil = AlertDialogUtil.getInstance();
+            alertDialogUtil.createPromptDialog(BanquetOrderActivity.this, null, getString(R.string.order_success_return_content));
+            alertDialogUtil.setButtonText(getString(R.string.exit_pay), getString(R.string.continue_pay));
+            alertDialogUtil.setOnClickListener(new AlertDialogUtil.OnClickListener() {
+                @Override
+                public void CancelOnClick() {
+                    alertDialogUtil.dismissDialog();
+                }
 
-            @Override
-            public void ConfirmOnClick() {
-                alertDialogUtil.dismissDialog();
-                finish();
-            }
-        });
-        alertDialogUtil.showDialog();
+                @Override
+                public void ConfirmOnClick() {
+                    alertDialogUtil.dismissDialog();
+                    finish();
+                }
+            });
+            alertDialogUtil.showDialog();
+        }
     }
 
     /**

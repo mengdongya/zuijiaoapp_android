@@ -155,7 +155,15 @@ public class BaiDuMapActivity extends BaseActivity implements OnGetGeoCoderResul
         setSupportActionBar(mToolBar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(R.string.map);
+
+        mMapView.onResume();
         mBaiduMap = mMapView.getMap();
+        mBaiduMap.getUiSettings().setAllGesturesEnabled(true);
+        mSearch = GeoCoder.newInstance();
+        mSearch.setOnGetGeoCodeResultListener(this);
+        mSearch.geocode(new GeoCodeOption().city(getString(R.string.shanghai)).address(address));
+        mHostAddress.setText(address);
+
         mBaiduMap.setMapType(BaiduMap.MAP_TYPE_NORMAL);
         mBaiduMap.setMaxAndMinZoomLevel(8, 19);
         mBaiduMap.setMyLocationConfigeration(new MyLocationConfiguration(MyLocationConfiguration.LocationMode.NORMAL, true, null));
@@ -174,13 +182,6 @@ public class BaiDuMapActivity extends BaseActivity implements OnGetGeoCoderResul
         }
         zoom.setVisibility(View.GONE);
 
-        mMapView.onResume();
-        mBaiduMap.getUiSettings().setAllGesturesEnabled(true);
-        mSearch = GeoCoder.newInstance();
-        mSearch.setOnGetGeoCodeResultListener(this);
-        mSearch.geocode(new GeoCodeOption().city(getString(R.string.shanghai)).address(address));
-        mHostAddress.setText(address);
-
         drivingRoutePlanOption = new DrivingRoutePlanOption();
         drivingRoutePlanOption.policy(DrivingRoutePlanOption.DrivingPolicy.ECAR_FEE_FIRST);
 
@@ -191,9 +192,20 @@ public class BaiDuMapActivity extends BaseActivity implements OnGetGeoCoderResul
                     Toast.makeText(mContext, getString(R.string.on_location), Toast.LENGTH_SHORT).show();
                     return;
                 }
-                Uri uri = Uri.parse("geo:" + end.latitude +"," + end.longitude);
-                Intent it = new Intent(Intent.ACTION_VIEW,uri);
-                startActivity(it);
+
+                try {
+                    Uri uri = Uri.parse("geo:" + end.latitude +"," + end.longitude);
+                    Intent it = new Intent(Intent.ACTION_VIEW,uri);
+                    startActivity(it);
+                }catch (Exception e){
+                    NaviParaOption para = new NaviParaOption();
+                    para.startPoint(start);
+                    para.endPoint(end);
+                    boolean result = BaiduMapNavigation.openBaiduMapNavi(para, BaiDuMapActivity.this);
+                    if(!result)
+                        Toast.makeText(mContext,getString(R.string.uninstalled_app),Toast.LENGTH_SHORT).show();
+                }
+
 //                NaviParaOption para = new NaviParaOption();
 //                para.startPoint(start);
 //                para.endPoint(end);
@@ -215,7 +227,7 @@ public class BaiDuMapActivity extends BaseActivity implements OnGetGeoCoderResul
     @Override
     public void onGetGeoCodeResult(GeoCodeResult geoCodeResult) {
         if (geoCodeResult == null || geoCodeResult.error != SearchResult.ERRORNO.NO_ERROR) {
-            Toast.makeText(mContext, "抱歉，未能找到结果", Toast.LENGTH_LONG).show();
+            Toast.makeText(mContext, getString(R.string.no_result), Toast.LENGTH_LONG).show();
             return;
         }
         mBaiduMap.clear();
@@ -241,7 +253,7 @@ public class BaiDuMapActivity extends BaseActivity implements OnGetGeoCoderResul
             @Override
             public void onGetDrivingRouteResult(DrivingRouteResult drivingRouteResult) {
                 if (drivingRouteResult == null || drivingRouteResult.error != SearchResult.ERRORNO.NO_ERROR) {
-                    Toast.makeText(mContext, "抱歉，未找到结果", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext, getString(R.string.no_result), Toast.LENGTH_SHORT).show();
                     return;
                 }
                 if (drivingRouteResult.error == SearchResult.ERRORNO.NO_ERROR) {
@@ -254,8 +266,7 @@ public class BaiDuMapActivity extends BaseActivity implements OnGetGeoCoderResul
                     } else {
                         distance = drivingRouteLine.getDistance();
                     }
-                    DecimalFormat df = new DecimalFormat("#.##");
-                    mDistence.setText("距您" + df.format(distance / 1000) + "km");
+                    mDistence.setText(String.format(getString(R.string.distance),distance/1000));
                 }
 
             }
@@ -268,7 +279,6 @@ public class BaiDuMapActivity extends BaseActivity implements OnGetGeoCoderResul
 
     public class MyLocationListenner implements BDLocationListener {
         public void onReceiveLocation(BDLocation location) {
-            // map view 销毁后不在处理新接收的位置
             if (location == null || mMapView == null)
                 return;
 

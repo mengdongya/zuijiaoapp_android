@@ -369,7 +369,7 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
                     mController.getConfig().setSinaCallbackUrl(WeiboApi.REDIRECT_URL);
                     performShare(SHARE_MEDIA.SINA);
 //                }else{
-//                    Toast.makeText(mContext,"您尚未安装此应用...",Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(mContext,getString(R.string.uninstalled_app),Toast.LENGTH_SHORT).show();
 //                }
                 break;
             case SHARE_TO_WECHAT:
@@ -378,7 +378,7 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
                     wxHandler.addToSocialSDK();
                     performShare(SHARE_MEDIA.WEIXIN);
                 }else {
-                    Toast.makeText(mContext,"您尚未安装此应用...",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext,getString(R.string.uninstalled_app),Toast.LENGTH_SHORT).show();
                 }
                 break;
             case SHARE_TO_FRIEND_CIRCLE:
@@ -388,7 +388,7 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
                     wxCircleHandler.addToSocialSDK();
                     performShare(SHARE_MEDIA.WEIXIN_CIRCLE);
                 }else {
-                    Toast.makeText(mContext,"您尚未安装此应用...",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext,getString(R.string.uninstalled_app),Toast.LENGTH_SHORT).show();
                 }
                 break;
             case SHARE_TO_QQ:
@@ -398,7 +398,7 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
                     qqSsoHandler.addToSocialSDK();
                     performShare(SHARE_MEDIA.QQ);
                 }else {
-                    Toast.makeText(mContext,"您尚未安装此应用...",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext,getString(R.string.uninstalled_app),Toast.LENGTH_SHORT).show();
                 }
                 break;
             case SHARE_TO_QQ_SPACE:
@@ -408,7 +408,7 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
                     qZoneSsoHandler.addToSocialSDK();
                     performShare(SHARE_MEDIA.QZONE);
                 }else {
-                    Toast.makeText(mContext,"您尚未安装此应用...",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext,getString(R.string.uninstalled_app),Toast.LENGTH_SHORT).show();
                 }
                 break;
             case SHARE_TO_SMS:
@@ -417,7 +417,7 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
                     smsHandler.addToSocialSDK();
                     performShare(SHARE_MEDIA.SMS);
                 }else {
-                    Toast.makeText(mContext,"您尚未安装SMS卡...",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext,getString(R.string.uninstalled_smscard),Toast.LENGTH_SHORT).show();
                 }
                 break;
         }

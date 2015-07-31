@@ -410,4 +410,8 @@
     <string name="beyond_max_quantity">可预定数量不足</string>
     <string name="data_error">数据异常</string>
     <string name="max_quantify">最多可预订%d人</string>
+    <string name="uninstalled_app">您尚未安装此应用...</string>
+    <string name="uninstalled_smscard">无卡</string>
+    <string name="no_result">抱歉，未能找到结果</string>
+    <string name="no_map_app">您尚未安装任何地图应用...</string>
 </resources>

@@ -106,9 +106,9 @@ public class BanquetOrderActivity extends BaseActivity implements View.OnClickLi
         public void run() {
             mBanquetSurplusTime.setText(formatTime(mSurplusTime));
             if (mSurplusTime <= 0) {
-                mPayBtn.setEnabled(false);
-                mPayBtn.setText(getString(R.string.timeout_pay));
-                mPayBtn.setTextColor(getResources().getColor(R.color.tv_light_gray));
+                mBottomPayBtn.setEnabled(false);
+                mBottomPayBtn.setText(getString(R.string.timeout_pay));
+                mBottomPayBtn.setTextColor(getResources().getColor(R.color.tv_light_gray));
                 isTimeOut = true;
                 setResult(MainActivity.ORDER_CANCEL);
             }

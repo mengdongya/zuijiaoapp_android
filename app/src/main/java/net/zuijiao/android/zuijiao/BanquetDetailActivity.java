@@ -605,7 +605,11 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
                 holder = (ViewHolder) view.getTag();
             }
             BanquentMenu menu = mBanquent.getMenus().get(i);
-            holder.menu.setText(menu.getCategoryName());
+            String categoryName = menu.getCategoryName() ;
+            if(categoryName == null || categoryName.equals(""))
+                holder.menu.setVisibility(View.GONE);
+            else
+            holder.menu.setText(categoryName);
             ArrayList<String> dishes =  mBanquent.getMenus().get(i).getDishes();
             StringBuilder strBuilder = new StringBuilder();
             for(int j = 0;j < dishes.size();j++ ){

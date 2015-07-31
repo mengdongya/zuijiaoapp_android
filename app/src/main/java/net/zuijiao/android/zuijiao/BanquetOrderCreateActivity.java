@@ -316,6 +316,7 @@ public class BanquetOrderCreateActivity extends BaseActivity implements View.OnC
                     attendeeNum = mBanquent.getBanquentCapacity().getMax() - mBanquent.getBanquentCapacity().getCount();
                     mBanquetPlus.setEnabled(false);
                     mBanquetPlus.setTextColor(Color.WHITE);
+                    Toast.makeText(mContext, String.format(getString(R.string.max_quantify), attendeeNum), Toast.LENGTH_SHORT).show();
                 }
                 mBanquetNum.setText(attendeeNum + getString(R.string.people));
                 mBottomOrderCountTv.setText(String.format(getString(R.string.total_person_count), attendeeNum));

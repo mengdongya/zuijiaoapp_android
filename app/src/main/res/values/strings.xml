@@ -409,4 +409,5 @@
     <string name="out_of_stock">已售完</string>
     <string name="beyond_max_quantity">可预定数量不足</string>
     <string name="data_error">数据异常</string>
+    <string name="max_quantify">最多可预订%d人</string>
 </resources>

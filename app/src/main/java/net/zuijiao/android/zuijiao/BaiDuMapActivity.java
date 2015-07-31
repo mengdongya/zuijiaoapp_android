@@ -106,6 +106,8 @@ public class BaiDuMapActivity extends BaseActivity implements OnGetGeoCoderResul
     private TextView mHostAddress;
     @ViewInject(R.id.baidu_map_distance)
     private TextView mDistence;
+    @ViewInject(R.id.baidu_map_navibtn)
+    private TextView naviBtn;
     private int distance;
     private GeoCoder mSearch = null;
     private BaiduMap mBaiduMap = null;
@@ -180,6 +182,23 @@ public class BaiDuMapActivity extends BaseActivity implements OnGetGeoCoderResul
 
         drivingRoutePlanOption = new DrivingRoutePlanOption();
         drivingRoutePlanOption.policy(DrivingRoutePlanOption.DrivingPolicy.ECAR_FEE_FIRST);
+
+        naviBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                NaviParaOption para = new NaviParaOption();
+                para.startPoint(start);
+                para.startName("开始位置");
+                para.endPoint(end);
+                para.endName("结束位置");
+                try {
+                    BaiduMapNavigation.openBaiduMapNavi(para, mContext);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Toast.makeText(mContext, "您尚未安装百度地图app或app版本过低，请原谅无法为你导航！", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
     }
 
     @Override
@@ -217,6 +236,8 @@ public class BaiDuMapActivity extends BaseActivity implements OnGetGeoCoderResul
                 if (drivingRouteResult.error == SearchResult.ERRORNO.NO_ERROR) {
                     DrivingRouteOverlay routeOverlay = new DrivingRouteOverlay(mBaiduMap);
                     drivingRouteLine = drivingRouteResult.getRouteLines().get(0);
+                    routeOverlay.setData(drivingRouteLine);
+                    routeOverlay.addToMap();
                     if (drivingRouteLine == null) {
                         distance = (int) DistanceUtil.getDistance(start, end);
                     } else {
@@ -255,7 +276,7 @@ public class BaiDuMapActivity extends BaseActivity implements OnGetGeoCoderResul
         }
     }
 
-    public void navi(View view) {
+    /*public void navi(View view) {
         NaviParaOption para = new NaviParaOption();
         para.startPoint(start);
         para.startName("开始位置");
@@ -267,7 +288,7 @@ public class BaiDuMapActivity extends BaseActivity implements OnGetGeoCoderResul
             e.printStackTrace();
             Toast.makeText(mContext, "您尚未安装百度地图app或app版本过低，请原谅无法为你导航！", Toast.LENGTH_LONG).show();
         }
-    }
+    }*/
 
     @Override
     public void onResume() {

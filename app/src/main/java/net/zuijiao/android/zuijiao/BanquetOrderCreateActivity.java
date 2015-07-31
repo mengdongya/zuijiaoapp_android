@@ -99,7 +99,6 @@ public class BanquetOrderCreateActivity extends BaseActivity implements View.OnC
     private int attendeeNum = 1;
 
 
-
     @Override
     protected void registerViews() {
         setSupportActionBar(mToolbar);
@@ -157,7 +156,15 @@ public class BanquetOrderCreateActivity extends BaseActivity implements View.OnC
                     banquentCapacity.getMax(),
                     banquentCapacity.getCount()));
         }
-
+        if (attendeeNum <= 1) {
+            attendeeNum = 1;
+            mBanquetSubtract.setEnabled(false);
+            mBanquetSubtract.setTextColor(Color.WHITE);
+            if (banquentCapacity.getMax() - banquentCapacity.getCount() <= 1) {
+                mBanquetPlus.setEnabled(false);
+                mBanquetPlus.setTextColor(Color.WHITE);
+            }
+        }
     }
 
     @Override

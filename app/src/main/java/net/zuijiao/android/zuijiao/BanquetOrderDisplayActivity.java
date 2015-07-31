@@ -90,7 +90,7 @@ public class BanquetOrderDisplayActivity extends BaseActivity {
         @Override
         public void run() {
             mOrder_tv_surplus.setText(formatTime(mSurplusTime));
-            if (mSurplusTime == 0) {
+            if (mSurplusTime <= 0) {
                 mOrderPay.setText(getString(R.string.timeout_pay));
                 mOrderPay.setTextColor(getResources().getColor(R.color.tv_light_gray));
                 mOrderPay.setEnabled(false);
@@ -98,7 +98,8 @@ public class BanquetOrderDisplayActivity extends BaseActivity {
                 mOrderCancel.setEnabled(false);
                 mOrderCancel.setBackgroundResource(R.drawable.order_timeout_btn);
                 handler.removeCallbacks(this);
-                setResult(MainActivity.ORDER_CANCEL);
+                if (mSurplusTime == 0)
+                    setResult(MainActivity.ORDER_CANCEL);
             }
             mSurplusTime--;
             handler.postDelayed(this, 1000);

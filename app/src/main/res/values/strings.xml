@@ -404,4 +404,9 @@
     <string name="need_to_pay">需支付:</string>
     <string name="total_person_count">共%d人</string>
     <string name="navigation">导航</string>
+    <string name="event_close">活动已关闭</string>
+    <string name="event_overtime">活动已截止预定</string>
+    <string name="out_of_stock">已售完</string>
+    <string name="beyond_max_quantity">可预定数量不足</string>
+    <string name="data_error">数据异常</string>
 </resources>

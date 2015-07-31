@@ -173,7 +173,7 @@ public class OrderListFragment extends Fragment implements
             case 0:
                 //status = OrderStatus.Waiting;
                 //status = OrderStatus.Unclosed;
-                status = OrderStatus.Unfinished ;
+                status = OrderStatus.Unfinished;
                 break;
             case 1:
                 status = OrderStatus.Uncomment;
@@ -217,12 +217,6 @@ public class OrderListFragment extends Fragment implements
                     mListView.setAdapter(mAdapter);
                 else
                     mAdapter.notifyDataSetChanged();
-                if (tabIndex == 0) {
-                    Intent intent = new Intent();
-                    intent.setAction(MessageDef.ACTION_ORDER_SURPLUS_TIME);
-                    intent.putExtra("orders", orders);
-                    getActivity().sendBroadcast(intent);
-                }
                 mRefreshLayout.setRefreshing(false);
             }
         }, new OneParameterExpression<String>() {

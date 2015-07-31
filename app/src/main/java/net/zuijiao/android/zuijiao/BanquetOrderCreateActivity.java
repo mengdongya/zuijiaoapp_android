@@ -1,5 +1,6 @@
 package net.zuijiao.android.zuijiao;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -33,13 +34,21 @@ import com.lidroid.xutils.view.annotation.ViewInject;
 import com.zuijiao.android.util.functional.OneParameterExpression;
 import com.zuijiao.android.zuijiao.model.Banquent.Banquent;
 import com.zuijiao.android.zuijiao.model.Banquent.BanquentCapacity;
+import com.zuijiao.android.zuijiao.model.Banquent.OrderCreateErrorMessage;
 import com.zuijiao.android.zuijiao.model.Banquent.Orders;
 import com.zuijiao.android.zuijiao.model.OrderAuth;
 import com.zuijiao.android.zuijiao.network.Router;
+import com.zuijiao.controller.ActivityTask;
+import com.zuijiao.controller.MessageDef;
 import com.zuijiao.thirdopensdk.Alipay;
 import com.zuijiao.thirdopensdk.WeixinPay;
 
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.Date;
+import java.util.LinkedList;
 
 /**
  * Created by yitianhao on 2015/7/22.
@@ -68,28 +77,28 @@ public class BanquetOrderCreateActivity extends BaseActivity implements View.OnC
     private TextView mBanquetTotalPrice;
 
 
-//    @ViewInject(R.id.order_create_total_price)
+    //    @ViewInject(R.id.order_create_total_price)
 //    private TextView mOrderTotalPrice;
     @ViewInject(R.id.banquet_order_create_plus)
     private Button mBanquetPlus;
     @ViewInject(R.id.banquet_order_create_subtract)
     private Button mBanquetSubtract;
-//    @ViewInject(R.id.order_create_pay)
+    //    @ViewInject(R.id.order_create_pay)
 //    private Button mOrderPay;
     @ViewInject(R.id.banquet_order_create_scrollview)
     private ScrollView mScrollView;
     @ViewInject(R.id.order_create_bottom)
     private RelativeLayout mBottomView;
     @ViewInject(R.id.banquet_detail_bottom_price)
-    private TextView mBottomPriceTv ;
+    private TextView mBottomPriceTv;
     @ViewInject(R.id.banquet_detail_bottom_text2)
-    private TextView mBottomPriceUnitTv ;
+    private TextView mBottomPriceUnitTv;
     @ViewInject(R.id.banquet_detail_bottom_date)
-    private TextView mBottomOrderCountTv ;
+    private TextView mBottomOrderCountTv;
     @ViewInject(R.id.banquet_detail_bottom_order)
-    private Button mBottomCommitBtn ;
+    private Button mBottomCommitBtn;
     @ViewInject(R.id.banquet_detail_bottom_text1)
-    private TextView mBottomText1 ;
+    private TextView mBottomText1;
     public static Banquent mBanquent;
     private String[] weekDays;
     private String mRemark;
@@ -123,7 +132,7 @@ public class BanquetOrderCreateActivity extends BaseActivity implements View.OnC
         mBanquetPlus.setOnClickListener(this);
         mBanquetSubtract.setOnClickListener(this);
         mBottomCommitBtn.setText(R.string.place_the_order);
-        mBottomOrderCountTv.setText(String.format(getString(R.string.total_person_count) ,attendeeNum)) ;
+        mBottomOrderCountTv.setText(String.format(getString(R.string.total_person_count), attendeeNum));
         mBottomCommitBtn.setOnClickListener(this);
         mBottomText1.setVisibility(View.VISIBLE);
         mBottomPriceUnitTv.setText(R.string.yuan);
@@ -132,11 +141,11 @@ public class BanquetOrderCreateActivity extends BaseActivity implements View.OnC
         mBottomPriceTv.measure(0, 0);
         int priceHeight = mBottomPriceTv.getMeasuredHeight();
         mBottomOrderCountTv.measure(0, 0);
-        int dateHeight = mBottomOrderCountTv.getMeasuredHeight() ;
-        int margin = (int) (3* getResources().getDimension(R.dimen.end_z));
-        params.height = priceHeight + dateHeight + margin ;
+        int dateHeight = mBottomOrderCountTv.getMeasuredHeight();
+        int margin = (int) (3 * getResources().getDimension(R.dimen.end_z));
+        params.height = priceHeight + dateHeight + margin;
         RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) mScrollView.getLayoutParams();
-        layoutParams.bottomMargin = params.height ;
+        layoutParams.bottomMargin = params.height;
     }
 
     private void initViewsByBanquet() {
@@ -219,8 +228,56 @@ public class BanquetOrderCreateActivity extends BaseActivity implements View.OnC
                     @Override
                     public void action(String s) {
                         mRemark = null;
-                        Toast.makeText(mContext, s, Toast.LENGTH_SHORT).show();
-                        finalizeDialog();
+                        if (s.contains("retrofit.RetrofitError:")) {
+                            Toast.makeText(mContext, getString(R.string.notify_net2), Toast.LENGTH_SHORT).show();
+                            finalizeDialog();
+                        } else {
+                            try {
+                                JSONObject object = new JSONObject(s);
+                                JSONObject json = object.getJSONObject("error");
+                                String reason = json.getString("reason");
+                                if (reason.equalsIgnoreCase(OrderCreateErrorMessage.MOBILE)) {
+                                    Toast.makeText(mContext, getString(R.string.data_error), Toast.LENGTH_SHORT).show();
+                                }
+                                if (reason.equalsIgnoreCase(OrderCreateErrorMessage.EVENTID)) {
+                                    Toast.makeText(mContext, getString(R.string.data_error), Toast.LENGTH_SHORT).show();
+                                }
+                                if (reason.equalsIgnoreCase(OrderCreateErrorMessage.QUANTITY)) {
+                                    Toast.makeText(mContext, getString(R.string.data_error), Toast.LENGTH_SHORT).show();
+                                }
+                                if (reason.equalsIgnoreCase(OrderCreateErrorMessage.CLOSED)) {
+                                    Toast.makeText(mContext, getString(R.string.event_close), Toast.LENGTH_SHORT).show();
+                                }
+                                if (reason.equalsIgnoreCase(OrderCreateErrorMessage.OVERTIME)) {
+                                    Toast.makeText(mContext, getString(R.string.event_overtime), Toast.LENGTH_SHORT).show();
+                                }
+                                if (reason.equalsIgnoreCase(OrderCreateErrorMessage.OUTOFSTOCK)) {
+                                    Toast.makeText(mContext, getString(R.string.out_of_stock), Toast.LENGTH_SHORT).show();
+                                }
+                                if (reason.equalsIgnoreCase(OrderCreateErrorMessage.BEYONDMAXQUANTITY)) {
+                                    Toast.makeText(mContext, getString(R.string.beyond_max_quantity), Toast.LENGTH_SHORT).show();
+                                }
+                                LinkedList<Activity> list = ActivityTask.getInstance().getActivitiesList();
+                                for (Activity activity : list) {
+                                    if (activity instanceof BanquetDetailActivity) {
+                                        try {
+                                            activity.finish();
+                                        } catch (Throwable t) {
+                                            t.printStackTrace();
+                                        }
+                                    }
+                                }
+                                finalizeDialog();
+                                Intent intent = new Intent();
+                                intent.setAction(MessageDef.ACTION_ORDER_CREATED);
+                                intent.putExtra("tabIndex", 1);
+                                sendBroadcast(intent);
+                                finish();
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+
                     }
                 });
                 break;
@@ -246,7 +303,7 @@ public class BanquetOrderCreateActivity extends BaseActivity implements View.OnC
                     mBanquetSubtract.setTextColor(Color.WHITE);
                 }
                 mBanquetNum.setText(attendeeNum + getString(R.string.people));
-                mBottomOrderCountTv.setText(String.format(getString(R.string.total_person_count) ,attendeeNum)) ;
+                mBottomOrderCountTv.setText(String.format(getString(R.string.total_person_count), attendeeNum));
                 mBanquetTotalPrice.setText(String.format("%.2f", mBanquent.getPrice() * attendeeNum) + getString(R.string.yuan));
                 mBottomPriceTv.setText(String.format(getString(R.string.order_total_price), mBanquent.getPrice() * attendeeNum));
                 break;
@@ -261,7 +318,7 @@ public class BanquetOrderCreateActivity extends BaseActivity implements View.OnC
                     mBanquetPlus.setTextColor(Color.WHITE);
                 }
                 mBanquetNum.setText(attendeeNum + getString(R.string.people));
-                mBottomOrderCountTv.setText(String.format(getString(R.string.total_person_count) ,attendeeNum)) ;
+                mBottomOrderCountTv.setText(String.format(getString(R.string.total_person_count), attendeeNum));
                 mBanquetTotalPrice.setText(String.format("%.2f", mBanquent.getPrice() * attendeeNum) + getString(R.string.yuan));
                 mBottomPriceTv.setText(String.format(getString(R.string.order_total_price), mBanquent.getPrice() * attendeeNum));
                 break;

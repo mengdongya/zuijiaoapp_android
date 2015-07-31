@@ -191,19 +191,20 @@ public class BaiDuMapActivity extends BaseActivity implements OnGetGeoCoderResul
                     Toast.makeText(mContext, getString(R.string.on_location), Toast.LENGTH_SHORT).show();
                     return;
                 }
-                Uri uri = Uri.parse("geo:" + end.latitude +"," + end.longitude);
-                Intent it = new Intent(Intent.ACTION_VIEW,uri);
-                startActivity(it);
+
 //                NaviParaOption para = new NaviParaOption();
 //                para.startPoint(start);
 //                para.endPoint(end);
                 try {
-
+                    Uri uri = Uri.parse("geo:" + end.latitude +"," + end.longitude);
+                    Intent it = new Intent(Intent.ACTION_VIEW,uri);
+                    startActivity(it);
 //                    BaiduMapNavigation.setSupportWebNavi(false);
 //                    boolean result = BaiduMapNavigation.openBaiduMapNavi(para, BaiDuMapActivity.this);
 //                    if(!result)
 //                        throw  new Exception("open baidu map failed") ;
-                } catch (Exception e) {
+                } catch (Throwable e) {
+                    Toast.makeText(mContext, getString(R.string.no_map_app), Toast.LENGTH_SHORT).show();
 //                    Uri uri = Uri.parse("geo:" + end.latitude +"," + end.longitude);
 //                    Intent it = new Intent(Intent.ACTION_VIEW,uri);
 //                    startActivity(it);

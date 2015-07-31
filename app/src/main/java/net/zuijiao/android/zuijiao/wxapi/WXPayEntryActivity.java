@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.tencent.mm.sdk.constants.ConstantsAPI;
 import com.tencent.mm.sdk.modelbase.BaseReq;
@@ -16,6 +17,7 @@ import com.umeng.analytics.MobclickAgent;
 import com.zuijiao.thirdopensdk.WeixinApi;
 
 import net.zuijiao.android.zuijiao.BanquetOrderCallbackActivity;
+import net.zuijiao.android.zuijiao.R;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -73,16 +75,21 @@ public class WXPayEntryActivity extends Activity implements IWXAPIEventHandler {
     public void onResp(BaseResp resp) {
         Log.i(Tag, "onResp");
         Intent intent = new Intent(this, BanquetOrderCallbackActivity.class);
+//        resp.errStr
         switch (resp.errCode) {
-            case BaseResp.ErrCode.ERR_OK:
+
+            case BaseResp.ErrCode. ERR_OK:
                 intent.putExtra("b_success", true);
                 startActivity(intent);
                 finish();
                 break;
+            case BaseResp.ErrCode.ERR_USER_CANCEL :
+//                intent.putExtra("user_cancel" , true) ;
             default:
-                Log.d("wxPay", "failed");
-                intent.putExtra("b_success", false);
-                startActivity(intent);
+                Toast.makeText(getApplicationContext() , getString(R.string.pay_failed) , Toast.LENGTH_SHORT).show();
+//                Log.d("wxPay", "failed");
+//                intent.putExtra("b_success", false);
+//                startActivity(intent);
                 finish();
                 break;
         }

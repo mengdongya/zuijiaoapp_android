@@ -70,7 +70,12 @@ public class BanquetOrderCallbackActivity extends BaseActivity implements View.O
             sendBroadcast(intent);
             showSuccess();
         } else {
-            showFailed();
+            finish();
+//            boolean bUserCancel = mTendIntent.getBooleanExtra("user_cancel" ,false) ;
+//            if(bUserCancel)
+//                finish();
+//            else
+//                showFailed();
         }
     }
 
@@ -121,7 +126,7 @@ public class BanquetOrderCallbackActivity extends BaseActivity implements View.O
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        if (bSuccess) {
+//        if (bSuccess) {
             LinkedList<Activity> list = ActivityTask.getInstance().getActivitiesList();
             for (Activity activity : list) {
                 if (activity instanceof BanquetDetailActivity
@@ -136,7 +141,7 @@ public class BanquetOrderCallbackActivity extends BaseActivity implements View.O
             }
             Intent intent = new Intent(BanquetOrderCallbackActivity.this, MainActivity.class);
             startActivity(intent);
-        }
+//        }
         finish();
     }
 

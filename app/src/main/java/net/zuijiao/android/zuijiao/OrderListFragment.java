@@ -172,7 +172,8 @@ public class OrderListFragment extends Fragment implements
         switch (tabIndex) {
             case 0:
                 //status = OrderStatus.Waiting;
-                status = OrderStatus.Unfinished ;
+                //status = OrderStatus.Unclosed;
+                status = OrderStatus.Unfinished;
                 break;
             case 1:
                 status = OrderStatus.Uncomment;
@@ -424,7 +425,6 @@ public class OrderListFragment extends Fragment implements
         Intent intent = new Intent(getActivity(), BanquetOrderDisplayActivity.class);
         intent.putExtra("order", orderList.get(position));
         long surplusTime = (orderList.get(position).getDeadline().getTime() / 1000) - mOrders.getCurrentServerTime();
-        System.out.println("surplusTime:" + surplusTime);
         intent.putExtra("surplusTime", surplusTime);
         //startActivity(intent);
         getActivity().startActivityForResult(intent, MainActivity.ORDER_REQUEST);

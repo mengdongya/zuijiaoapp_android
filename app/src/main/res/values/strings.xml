@@ -409,4 +409,10 @@
     <string name="pay_failed">支付失败，请重新支付</string>
     <string name="wx_circle_share_title">嘴角家庭料理</string>
     <string name="banquet_share_content">沪上最最时尚的家庭料理【%s】，别再宅啦，跟我出来嗨呀！</string>
+    <string name="event_close">活动已关闭</string>
+    <string name="event_overtime">活动已截止预定</string>
+    <string name="out_of_stock">已售完</string>
+    <string name="beyond_max_quantity">可预定数量不足</string>
+    <string name="data_error">数据异常</string>
+    <string name="max_quantify">最多可预订%d人</string>
 </resources>

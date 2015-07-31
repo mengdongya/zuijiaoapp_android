@@ -52,8 +52,8 @@ public enum OrderStatus {
                 rawValue = "unclosed";
                 break;
             case Unfinished:
-                rawValue = "unfinished" ;
-                break ;
+                rawValue = "unfinished";
+                break;
             case All:
                 rawValue = "";
         }

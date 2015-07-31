@@ -108,8 +108,9 @@ public class BanquetOrderDisplayActivity extends BaseActivity {
                 mOrderCancel.setEnabled(false);
                 mOrderCancel.setBackgroundResource(R.drawable.order_timeout_btn);
                 handler.removeCallbacks(this);
-                if (mSurplusTime == 0)
-                    setResult(MainActivity.ORDER_CANCEL);
+                //if (mSurplusTime == 0)
+                setResult(MainActivity.ORDER_CANCEL);
+                handler.removeCallbacks(this);
             }
             mSurplusTime--;
             handler.postDelayed(this, 1000);

@@ -173,7 +173,7 @@ public class OrderListFragment extends Fragment implements
             case 0:
                 //status = OrderStatus.Waiting;
                 //status = OrderStatus.Unclosed;
-                status = OrderStatus.Finished;
+                status = OrderStatus.Unfinished ;
                 break;
             case 1:
                 status = OrderStatus.Uncomment;

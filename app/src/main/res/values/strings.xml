@@ -381,7 +381,7 @@
     <string name="num">数量</string>
     <string name="people">人</string>
     <string name="order_cancel">取消订单</string>
-    <string name="order_total_price">需支付： %.2f  元</string>
+    <string name="order_total_price"> %.2f</string>
     <string name="order_cancel_content">取消订单后，订单将被关闭，确定取消吗？</string>
     <string name="order_confirm">提交订单</string>
     <string name="banquet_name">料理</string>
@@ -401,4 +401,7 @@
     <string name="waiting_comment">等待评价</string>
     <string name="timeout_pay">支付超时</string>
     <string name="order_cancel_success">订单取消成功</string>
+    <string name="need_to_pay">需支付:</string>
+    <string name="total_person_count">共%d人</string>
+    <string name="navigation">导航</string>
 </resources>

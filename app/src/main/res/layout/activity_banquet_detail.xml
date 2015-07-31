@@ -548,59 +548,8 @@
         android:layout_alignParentBottom="true"
         android:background="@color/white">
 
-        <RelativeLayout
-            android:id="@+id/banquet_detail_bottom_can_order"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <TextView
-                android:id="@+id/banquet_detail_bottom_price"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dip"
-                android:layout_marginTop="5dip"
-                android:text="198"
-                android:textColor="@color/banquet_price_text"
-                android:textSize="18sp" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignBottom="@id/banquet_detail_bottom_price"
-                android:layout_marginLeft="3dip"
-                android:layout_toRightOf="@id/banquet_detail_bottom_price"
-                android:text="@string/price_unit"
-                android:textColor="@color/banquet_price_text"
-                android:textSize="14sp" />
-
-            <TextView
-                android:id="@+id/banquet_detail_bottom_date"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_below="@id/banquet_detail_bottom_price"
-                android:layout_marginBottom="5dip"
-                android:layout_marginLeft="10dip"
-                android:text="14月18日 周六 18：00"
-                android:textColor="@color/bg_light_gray"
-                android:textSize="13sp" />
-
-            <Button
-                android:id="@+id/banquet_detail_bottom_order"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:layout_marginRight="10dip"
-                android:background="@drawable/banquet_detail_order_bg"
-                android:gravity="center"
-                android:paddingLeft="5dip"
-                android:paddingRight="5dip"
-                android:text="@string/order_now"
-                android:textColor="@color/banquet_theme"
-                android:textSize="19sp" />
-        </RelativeLayout>
-
+        <include layout="@layout/fixed_bottom"
+            android:id="@+id/banquet_detail_bottom_can_order"/>
 
         <TextView
             android:id="@+id/banquet_detail_finished"

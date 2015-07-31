@@ -51,22 +51,14 @@ public class BanquetOrderActivity extends BaseActivity implements View.OnClickLi
     private TextView mBanquetTime;
     @ViewInject(R.id.banquet_order_banquet_price)
     private TextView mBanquetPrice;
-    //    @ViewInject(R.id.banquet_order_banquet_location)
-//    private TextView mBanquetLocation;
-//    @ViewInject(R.id.banquet_order_banquet_phone)
-//    private TextView mBanquetPhone;
-//    @ViewInject(R.id.banquet_order_banquet_remark)
-//    private TextView mBanquetRemark;
-    @ViewInject(R.id.banquet_order_bottom_pay)
-    private Button mPayBtn;
-    @ViewInject(R.id.banquet_order_bottom_price)
-    private TextView mBottomPrice;
-    //    @ViewInject(R.id.banquet_order_bottom_pay_way)
-//    private TextView mBottomPayWay;
+//    @ViewInject(R.id.banquet_order_bottom_pay)
+//    private Button mPayBtn;
+//    @ViewInject(R.id.banquet_order_bottom_price)
+//    private TextView mBottomPrice;
     @ViewInject(R.id.banquet_order_pay_way_list)
     private ListView mPayWayList;
     @ViewInject(R.id.banquet_order_bottom)
-    private LinearLayout mBottomView;
+    private RelativeLayout mBottomView;
     @ViewInject(R.id.banquet_surplus_time)
     private TextView mBanquetSurplusTime;
     @ViewInject(R.id.banquet_order_banquet_name)
@@ -77,6 +69,17 @@ public class BanquetOrderActivity extends BaseActivity implements View.OnClickLi
     private TextView mBanquetTotalPrice;
     @ViewInject(R.id.banquet_order_scrollview)
     private ScrollView mScrollView;
+    @ViewInject(R.id.banquet_detail_bottom_price)
+    private TextView mBottomPriceTv ;
+    @ViewInject(R.id.banquet_detail_bottom_date)
+    private TextView mBottomPayWayTv ;
+    @ViewInject(R.id.banquet_detail_bottom_order)
+    private Button mBottomPayBtn ;
+    @ViewInject(R.id.banquet_detail_bottom_text1)
+    private TextView mBottomText1 ;
+    @ViewInject(R.id.banquet_detail_bottom_text2)
+    private TextView mBottomPriceUnit ;
+
     // public static Banquent mBanquent;
     private String[] weekDays;
     private String mRemark;
@@ -103,9 +106,9 @@ public class BanquetOrderActivity extends BaseActivity implements View.OnClickLi
         public void run() {
             mBanquetSurplusTime.setText(formatTime(mSurplusTime));
             if (mSurplusTime <= 0) {
-                mPayBtn.setEnabled(false);
-                mPayBtn.setText(getString(R.string.timeout_pay));
-                mPayBtn.setTextColor(getResources().getColor(R.color.tv_light_gray));
+                mBottomPayBtn.setEnabled(false);
+                mBottomPayBtn.setText(getString(R.string.timeout_pay));
+                mBottomPayBtn.setTextColor(getResources().getColor(R.color.tv_light_gray));
                 isTimeOut = true;
                 setResult(MainActivity.ORDER_CANCEL);
             }
@@ -119,7 +122,7 @@ public class BanquetOrderActivity extends BaseActivity implements View.OnClickLi
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             if (mSelectedPayWay == position) return;
             mSelectedPayWay = position;
-            //mBottomPayWay.setText(getString(R.string.use) + payWayRes[mSelectedPayWay]);
+            mBottomPayWayTv.setText( getString(R.string.use) + payWayRes[mSelectedPayWay]);
             mPayWayAdapter.notifyDataSetChanged();
         }
     };
@@ -145,9 +148,14 @@ public class BanquetOrderActivity extends BaseActivity implements View.OnClickLi
                 convertView = LayoutInflater.from(mContext).inflate(R.layout.pay_way_item, null);
             TextView textView = (TextView) convertView.findViewById(R.id.pay_way_text);
             ImageView image = (ImageView) convertView.findViewById(R.id.pay_way_image);
+            ImageView icon = (ImageView) convertView.findViewById(R.id.pay_way_icon) ;
             if (mSelectedPayWay == position) {
                 image.setVisibility(View.VISIBLE);
             } else image.setVisibility(View.INVISIBLE);
+            if(position == 0)
+                icon.setImageResource(R.drawable.weixin_pay);
+            else
+                icon.setImageResource(R.drawable.alipay);
             textView.setText(payWayRes[position]);
             return convertView;
         }
@@ -186,14 +194,15 @@ public class BanquetOrderActivity extends BaseActivity implements View.OnClickLi
         payWayStr = getResources().getStringArray(R.array.pay_way_str);
         mPayWayList.setAdapter(mPayWayAdapter);
         mPayWayList.setOnItemClickListener(mPayWaySwitcher);
-//        if (phoneNum != null && !phoneNum.equals("")) {
-//            mBanquetPhone.setText(phoneNum);
-//            mBanquetPhone.setTextColor(getResources().getColor(R.color.tv_deep_gray));
-//        }
+        mBottomText1.setVisibility(View.VISIBLE);
+        mBottomPriceUnit.setText(R.string.yuan);
+        mBottomPayBtn.setText(R.string.pay_right_now);
+        mBottomPayWayTv.setText( getString(R.string.use) + payWayRes[mSelectedPayWay]);
+        mBottomPayBtn.setOnClickListener(this);
         initViewsByBanquet();
 //        mBanquetPhone.setOnClickListener(this);
 //        mBanquetRemark.setOnClickListener(this);
-        mPayBtn.setOnClickListener(this);
+        mBottomPayBtn.setOnClickListener(this);
         if (isCreate) {
             AlertDialogUtil alertDialogUtil = AlertDialogUtil.getInstance();
             alertDialogUtil.createNoticeDialog(BanquetOrderActivity.this, getString(R.string.order_success), getString(R.string.order_success_content));
@@ -214,41 +223,36 @@ public class BanquetOrderActivity extends BaseActivity implements View.OnClickLi
 
 
         RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mBottomView.getLayoutParams();
-        mBottomPrice.measure(0, 0);
-        int priceHeight = mBottomPrice.getMeasuredHeight();
-        //mBottomPayWay.measure(0 , 0);
-        //int dateHeight = mBottomPayWay.getMeasuredHeight() ;
-        int margin = (int) (6 * getResources().getDimension(R.dimen.end_z));
-        params.height = priceHeight + margin;
+        mBottomPriceTv.measure(0, 0);
+        int priceHeight = mBottomPriceTv.getMeasuredHeight();
+        mBottomPayWayTv.measure(0 , 0);
+        int dateHeight = mBottomPayWayTv.getMeasuredHeight() ;
+        int margin = (int) (3* getResources().getDimension(R.dimen.end_z));
+        params.height = priceHeight + dateHeight + margin ;
         RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) mScrollView.getLayoutParams();
-        layoutParams.bottomMargin = params.height;
+        layoutParams.bottomMargin = params.height ;
     }
 
     private void initViewsByBanquet() {
         mBanquetTime.setText(mOrder.getCreateTime().toLocaleString());
         mBanquetPrice.setText(String.format(getString(R.string.price_per_one), mOrder.getRealPrice()));
 //        mBottomPrice.setText(String.format(getString(R.string.price_per_one), mBanquent.getPrice()));
-        mBottomPrice.setText(String.format(getString(R.string.order_total_price), mOrder.getTotalPrice()));
+        mBottomPriceTv.setText(String.format(getString(R.string.order_total_price), mOrder.getTotalPrice()));
         mBanquetName.setText(mOrder.getEvent().getAddress());
         mBanquetTotalPrice.setText(String.format("%.2f", mOrder.getTotalPrice()) + getString(R.string.yuan));
 //        mBottomPayWay.setText(getString(R.string.use) + payWayRes[mSelectedPayWay]);
 //        mBanquetLocation.setText(mBanquent.getAddress());
+//        mBottomPriceTv.setText(String.format(getString(R.string.order_total_price), (mBanquent != null ? mBanquent.getPrice() : mOrder.getPrice()) * attendeeNum));
+//        mBanquetName.setText(mBanquent != null ? mBanquent.getTitle() : mOrder.getTitle());
+//        mBanquetTotalPrice.setText(String.format("%.2f", (mBanquent != null ? mBanquent.getPrice() : mOrder.getPrice()) * attendeeNum) + getString(R.string.yuan));
     }
 
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        if (requestCode == VERIFY_PHONE && resultCode == RESULT_OK) {
-//            verifyCode = data.getStringExtra("verify_code");
-//            phoneNum = data.getStringExtra("verified_phone_num");
-//            mBanquetPhone.setText(phoneNum);
-//        }
-//        super.onActivityResult(requestCode, resultCode, data);
-//    }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.banquet_order_bottom_pay:
+
+            case R.id.banquet_detail_bottom_order:
 //                if (phoneNum == null || phoneNum.equals("")) {
 //                    AlertDialog dialog = new AlertDialog.Builder(BanquetOrderActivity.this)
 //                            .setTitle(getString(R.string.alert))

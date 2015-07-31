@@ -360,7 +360,7 @@
                     android:layout_height="40dip"
                     android:background="@drawable/banquet_detail_order_bg"
                     android:gravity="center"
-                    android:text="@string/show_all_comments"
+                    android:text="@string/show_all_banquet"
                     android:textColor="@color/banquet_theme"
                     android:textSize="18sp"
                     />
@@ -389,7 +389,7 @@
 
                 <View
                     android:layout_width="30dip"
-                    android:layout_height="3dip"
+                    android:layout_height="2dip"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginBottom="10dip"
                     android:layout_marginTop="15dip"
@@ -439,7 +439,7 @@
                     android:layout_height="40dip"
                     android:background="@drawable/banquet_detail_order_bg"
                     android:gravity="center"
-                    android:text="@string/show_all_comments"
+                    android:text="@string/show_all_banquet"
                     android:textColor="@color/banquet_theme"
                     android:textSize="18sp"
                     />
@@ -471,7 +471,7 @@
 
                 <View
                     android:layout_width="30dip"
-                    android:layout_height="3dip"
+                    android:layout_height="2dip"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginBottom="10dip"
                     android:layout_marginTop="15dip"

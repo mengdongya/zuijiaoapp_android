@@ -24,14 +24,14 @@
         android:id="@+id/baidu_map_bottom"
         android:layout_width="match_parent"
         android:layout_alignParentBottom="true"
-        android:layout_height="60dip"
+        android:layout_height="wrap_content"
         android:background="@color/white"
         android:orientation="horizontal">
         <LinearLayout
             android:layout_width="0dip"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:layout_marginLeft="15dip"
+            android:layout_marginLeft="10dip"
             android:orientation="vertical">
             <TextView
                 android:id="@+id/baidu_map_address"
@@ -41,7 +41,7 @@
                 android:textSize="16sp"
                 android:textColor="@color/black"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dip" />
+                android:layout_marginTop="5dip" />
             <TextView
                 android:id="@+id/baidu_map_distance"
                 android:layout_width="match_parent"
@@ -50,18 +50,16 @@
                 android:gravity="center_vertical"
                 android:text="正在测算中..."
                 android:textColor="@color/bg_light_gray2"
-                android:layout_marginBottom="10dip" />
+                android:layout_marginBottom="5dip" />
         </LinearLayout>
-        <TextView
+        <Button
             android:id="@+id/baidu_map_navibtn"
-            android:layout_width="60dip"
-            android:layout_height="60dip"
-            android:paddingRight="10dip"
-            android:paddingLeft="10dip"
-            android:paddingTop="20dip"
-            android:layout_marginRight="10dip"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:background="@drawable/banquet_detail_order_bg"
             android:layout_marginLeft="10dip"
-            android:text="导航"
+            android:text="@string/navigation"
             android:textColor="@color/banquet_theme"
             android:textSize="18sp"
             />

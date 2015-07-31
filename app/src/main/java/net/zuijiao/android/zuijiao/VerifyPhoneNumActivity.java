@@ -47,7 +47,7 @@ public class VerifyPhoneNumActivity extends BaseActivity {
     private EditText mVerifyNumEditor = null;
     @ViewInject(R.id.verify_number_btn_send)
     private Button mSendBtn = null;
-    private boolean securityCodeSent = false;
+//    private boolean securityCodeSent = false;
     private boolean bFromOrder = false;
     private Handler mHandler = new Handler() {
         @Override
@@ -121,7 +121,7 @@ public class VerifyPhoneNumActivity extends BaseActivity {
                             msg.arg1 = 60;
                             mHandler.sendMessage(msg);
                             mSendBtn.setText(getString(R.string.re_send_verification_code));
-                            securityCodeSent = true;
+//                            securityCodeSent = true;
                         }
                     }, new LambdaExpression() {
                         @Override
@@ -152,9 +152,9 @@ public class VerifyPhoneNumActivity extends BaseActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.menu_confirm_phone_num) {
-            if (!securityCodeSent) {
-                return super.onOptionsItemSelected(item);
-            }
+//            if (!securityCodeSent) {
+//                return super.onOptionsItemSelected(item);
+//            }
             String securityCode = mVerifyNumEditor.getText().toString().trim();
             if (securityCode == null || securityCode.equals("")) {
                 Toast.makeText(mContext, getString(R.string.input_verification_num), Toast.LENGTH_SHORT).show();

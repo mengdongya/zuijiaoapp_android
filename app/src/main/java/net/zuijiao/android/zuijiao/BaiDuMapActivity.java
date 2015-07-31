@@ -14,6 +14,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ZoomControls;
@@ -107,7 +108,7 @@ public class BaiDuMapActivity extends BaseActivity implements OnGetGeoCoderResul
     @ViewInject(R.id.baidu_map_distance)
     private TextView mDistence;
     @ViewInject(R.id.baidu_map_navibtn)
-    private TextView naviBtn;
+    private Button naviBtn;
     private int distance;
     private GeoCoder mSearch = null;
     private BaiduMap mBaiduMap = null;
@@ -186,16 +187,26 @@ public class BaiDuMapActivity extends BaseActivity implements OnGetGeoCoderResul
         naviBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                NaviParaOption para = new NaviParaOption();
-                para.startPoint(start);
-                para.startName("开始位置");
-                para.endPoint(end);
-                para.endName("结束位置");
+                if(start == null || end == null){
+                    Toast.makeText(mContext, getString(R.string.on_location), Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                Uri uri = Uri.parse("geo:" + end.latitude +"," + end.longitude);
+                Intent it = new Intent(Intent.ACTION_VIEW,uri);
+                startActivity(it);
+//                NaviParaOption para = new NaviParaOption();
+//                para.startPoint(start);
+//                para.endPoint(end);
                 try {
-                    BaiduMapNavigation.openBaiduMapNavi(para, mContext);
+
+//                    BaiduMapNavigation.setSupportWebNavi(false);
+//                    boolean result = BaiduMapNavigation.openBaiduMapNavi(para, BaiDuMapActivity.this);
+//                    if(!result)
+//                        throw  new Exception("open baidu map failed") ;
                 } catch (Exception e) {
-                    e.printStackTrace();
-                    Toast.makeText(mContext, "您尚未安装百度地图app或app版本过低，请原谅无法为你导航！", Toast.LENGTH_LONG).show();
+//                    Uri uri = Uri.parse("geo:" + end.latitude +"," + end.longitude);
+//                    Intent it = new Intent(Intent.ACTION_VIEW,uri);
+//                    startActivity(it);
                 }
             }
         });

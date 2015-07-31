@@ -49,7 +49,6 @@ import com.umeng.socialize.sso.QZoneSsoHandler;
 import com.umeng.socialize.sso.SinaSsoHandler;
 import com.umeng.socialize.sso.SmsHandler;
 import com.umeng.socialize.sso.UMQQSsoHandler;
-import com.umeng.socialize.utils.SocializeUtils;
 import com.umeng.socialize.weixin.controller.UMWXHandler;
 import com.zuijiao.adapter.ImageViewPagerAdapter;
 import com.zuijiao.android.util.functional.LambdaExpression;
@@ -157,7 +156,7 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
     private View rootView = null;
 
     @ViewInject(R.id.lv_menu_dishes_item)
-    private ListView lvMenuDishesItem;
+    private ListView menuList;
 
     private Reviews mReviews;
     private Banquent mBanquent;
@@ -170,7 +169,7 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
     private static final int SHARE_TO_QQ = 3;
     private static final int SHARE_TO_QQ_SPACE = 4;
     private static final int SHARE_TO_SMS = 5;
-    private String mShareUrl = "/zuijiao/share/cuisine?id=";
+    private String mShareUrl = "/feast/";
     private final UMSocialService mController = UMServiceFactory.getUMSocialService("com.umeng.share");
     private int mShareImageRes[] = {R.drawable.share_weibo, R.drawable.share_weixin, R.drawable.share_friend_circle, R.drawable.share_qq, R.drawable.share_qq_space,R.drawable.share_sms};
     private int mUnShareImageRes[] = {R.drawable.unshare_weibo, R.drawable.unshare_weixin, R.drawable.unshare_friend_circle, R.drawable.unshare_qq, R.drawable.unshare_qq_space,R.drawable.unshare_sms};
@@ -358,18 +357,20 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
      * @param action
      */
     private void distributeShareAction(int action) {
-        mController.setShareContent(String.format(getString(R.string.share_content), mBanquent.getTitle())+BuildConfig.Web_View_Url + mShareUrl + mBanquent.getIdentifier());
+//        mController.setShareImage(new UMImage(mContext, mBanquent.getSurfaceImageUrl()));
+        mController.setShareContent(String.format(getString(R.string.share_content), mBanquent.getTitle()) +"\n" +BuildConfig.Banquet_Web_Url + mShareUrl + mBanquent.getIdentifier());
         mController.setShareMedia(new UMImage(mContext,
-                BuildConfig.Web_View_Url + mShareUrl + mBanquent.getIdentifier()));
+                BuildConfig.Banquet_Web_Url + mShareUrl + mBanquent.getIdentifier()));
+//        mController.setAppWebSite(SHARE_MEDIA.WEIXIN, mBanquent.getSurfaceImageUrl());
         switch (action) {
             case SHARE_TO_WEIBO:
-                if (sineInstalled) {
+//                if (sineInstalled) {
                     mController.getConfig().setSsoHandler(new SinaSsoHandler());
                     mController.getConfig().setSinaCallbackUrl(WeiboApi.REDIRECT_URL);
                     performShare(SHARE_MEDIA.SINA);
-                }else{
-                    Toast.makeText(mContext,"您尚未安装此应用...",Toast.LENGTH_SHORT).show();
-                }
+//                }else{
+//                    Toast.makeText(mContext,"您尚未安装此应用...",Toast.LENGTH_SHORT).show();
+//                }
                 break;
             case SHARE_TO_WECHAT:
                 if (wxInstalled) {
@@ -542,8 +543,14 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
         mImagePages.setOnPageChangeListener(mPageListener);
         mImagesIndex.setText(1 + "/" + mViewPagerAdapter.getCount());
         initViewsByBanquet();
-        lvMenuDishesItem.setAdapter(MyAdapter);
-        AdapterViewHeightCalculator.setListViewHeightBasedOnChildren(lvMenuDishesItem);
+        menuList.setAdapter(MyAdapter);
+        menuList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                return;
+            }
+        });
+        AdapterViewHeightCalculator.setListViewHeightBasedOnChildren(menuList);
         mInstructPosition.setOnClickListener(this);
         mAllCommentBtn.setOnClickListener(this);
         mAboutHostBtn.setOnClickListener(this);
@@ -582,6 +589,16 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
             }
         }
 
+
+        @Override
+        public boolean areAllItemsEnabled() {
+            return false;
+        }
+
+        @Override
+        public boolean isEnabled(int position) {
+            return false;
+        }
         @Override
         public Object getItem(int i) {
             return i;
@@ -732,7 +749,6 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
                     banquentCapacity.getCount()));
         }
         mOrderedPersonShow.setAdapter(mGridAdapter);
-        mOrderedPersonShow.setOnItemClickListener(mGridListener);
         AdapterViewHeightCalculator.setGridViewHeightBasedOnChildren(mOrderedPersonShow);
         switch (BanquentStatus.fromString(mBanquent.getStatus())) {
             case Selling:

@@ -352,7 +352,7 @@ public class GourmetDetailActivity extends BaseActivity implements
         if (Router.getInstance().getCurrentUser().isPresent() && Router.getInstance().getCurrentUser().get().getIdentifier().equals(gourmet.getUser().getIdentifier())) {
             getMenuInflater().inflate(R.menu.gourmet_detail, menu);
         } else {
-            getMenuInflater().inflate(R.menu.gourmet_detail_simple, menu);
+//            getMenuInflater().inflate(R.menu.gourmet_detail_simple, menu);
         }
         return true;
     }

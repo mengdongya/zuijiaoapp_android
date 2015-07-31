@@ -37,6 +37,7 @@ android {
             buildConfigField "String", "Web_View_Url", "\"http://huangyi2.zuijiaodev.com\""
             buildConfigField "String", "Request_Key", "\"zuijiaoapp\""
             buildConfigField "Boolean", "OpenUmeng" ,"false"
+            buildConfigField "String", "Banquet_Web_Url" ,"\"http://mobile.zuijiaodev.com\""
             signingConfig signingConfigs.release
         }
 
@@ -49,6 +50,7 @@ android {
             buildConfigField "String", "Gourmet_Base_Url", "\"/Gourmet\""
             buildConfigField "String", "Request_Key", "\"zuijiaoapp\""
             buildConfigField "Boolean", "OpenUmeng" ,"true"
+            buildConfigField "String", "Banquet_Web_Url" ,"\"http://mobile.zuijiao.net\""
             signingConfig signingConfigs.release
 
             applicationVariants.all { variant ->

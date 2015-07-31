@@ -59,8 +59,8 @@ public class OrderListFragment extends Fragment implements
     private String[] weekDays;
     private TextView mBlankText;
     private int[] mBlankTextRes = {R.string.no_coming_order, R.string.no_finished_order, R.string.no_order};
-    //private Orders mOrders;
-    private long currentSystemTime;//sec
+    private Orders mOrders;
+    //private long currentSystemTime;//sec
     private UpdateBroadCast updateBroadCast;
 
 //    public OrderListFragment(int index) {
@@ -68,14 +68,14 @@ public class OrderListFragment extends Fragment implements
 //        this.tabIndex = index;
 //    }
 
-    Handler handler = new Handler();
-    Runnable runnable = new Runnable() {
-        @Override
-        public void run() {
-            currentSystemTime++;
-            handler.postDelayed(this, 1000);
-        }
-    };
+//    Handler handler = new Handler();
+//    Runnable runnable = new Runnable() {
+//        @Override
+//        public void run() {
+//            currentSystemTime++;
+//            handler.postDelayed(this, 1000);
+//        }
+//    };
 
     @Override
     public void onResume() {
@@ -172,7 +172,7 @@ public class OrderListFragment extends Fragment implements
         switch (tabIndex) {
             case 0:
                 //status = OrderStatus.Waiting;
-                status = OrderStatus.Unclosed;
+                status = OrderStatus.Unfinished ;
                 break;
             case 1:
                 status = OrderStatus.Uncomment;
@@ -187,13 +187,13 @@ public class OrderListFragment extends Fragment implements
         Router.getBanquentModule().orders(status, lastedId, 20, new OneParameterExpression<Orders>() {
             @Override
             public void action(Orders orders) {
-                //mOrders = orders;
-                currentSystemTime = orders.getCurrentServerTime();
+                mOrders = orders;
+                //currentSystemTime = orders.getCurrentServerTime();
                 //runnable.run();
-                if (tabIndex != 1) {
-                    handler.removeCallbacks(runnable);
-                    handler.post(runnable);
-                }
+//                if (tabIndex != 1) {
+//                    handler.removeCallbacks(runnable);
+//                    handler.post(runnable);
+//                }
                 if (bRefresh) {
                     orderList = orders.getOrderList();
                     if (orderList.size() == 0) {
@@ -297,7 +297,7 @@ public class OrderListFragment extends Fragment implements
                         public void onClick(View view) {
                             Intent intent = new Intent(getActivity(), BanquetOrderActivity.class);
                             intent.putExtra("order", order);
-                            intent.putExtra("surplusTime", (order.getDeadline().getTime() / 1000) - currentSystemTime);
+                            intent.putExtra("surplusTime", (order.getDeadline().getTime() / 1000) - mOrders.getCurrentServerTime());
                             intent.putExtra("isCreate", false);
                             intent.putExtra("attendeeNum", order.getQuantity());
                             //startActivity(intent);
@@ -392,7 +392,7 @@ public class OrderListFragment extends Fragment implements
                     holder.situation.setText(getString(R.string.finished_banquet));
                     break;
                 case Unpaid:
-                    if (order.getDeadline().getTime() / 1000 - currentSystemTime < 0) {
+                    if (order.getDeadline().getTime() / 1000 - mOrders.getCurrentServerTime() < 0) {
                         holder.review.setVisibility(View.GONE);
                         holder.situation.setText(getString(R.string.timeout_pay));
                     } else {
@@ -423,7 +423,7 @@ public class OrderListFragment extends Fragment implements
         position -= 1;
         Intent intent = new Intent(getActivity(), BanquetOrderDisplayActivity.class);
         intent.putExtra("order", orderList.get(position));
-        long surplusTime = (orderList.get(position).getDeadline().getTime() / 1000) - currentSystemTime;
+        long surplusTime = (orderList.get(position).getDeadline().getTime() / 1000) - mOrders.getCurrentServerTime();
         System.out.println("surplusTime:" + surplusTime);
         intent.putExtra("surplusTime", surplusTime);
         //startActivity(intent);

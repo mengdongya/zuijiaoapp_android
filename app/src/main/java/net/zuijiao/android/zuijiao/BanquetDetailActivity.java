@@ -155,33 +155,27 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
     private ReviewRatingBar mCommentRatingbar;
     @ViewInject(R.id.banquet_datail_root)
     private View rootView = null;
-
+    @ViewInject(R.id.banquet_detail_notice)
+    private TextView mBanquetNotice ;
     @ViewInject(R.id.lv_menu_dishes_item)
     private ListView menuList;
-
+    @ViewInject(R.id.banquet_detail_instruction_content_position)
+    private LinearLayout mLocationLayout ;
     private Reviews mReviews;
     private Banquent mBanquent;
     private String[] weekDays;
     private ImageViewPagerAdapter mViewPagerAdapter = null;
 
-//    private static final int SHARE_TO_WEIBO = 0;
-//    private static final int SHARE_TO_WECHAT = 1;
-//    private static final int SHARE_TO_FRIEND_CIRCLE = 2;
-//    private static final int SHARE_TO_QQ = 3;
-//    private static final int SHARE_TO_QQ_SPACE = 4;
-//    private static final int SHARE_TO_SMS = 5;
-        private static final int SHARE_TO_WECHAT = 0;
+    private static final int SHARE_TO_WECHAT = 0;
     private static final int SHARE_TO_FRIEND_CIRCLE = 1;
     private static final int SHARE_TO_QQ = 2;
     private static final int SHARE_TO_QQ_SPACE = 3;
     private static final int SHARE_TO_SMS = 4;
     private String mShareUrl = "/feast/";
     private final UMSocialService mController = UMServiceFactory.getUMSocialService("com.umeng.share");
-//    private int mShareImageRes[] = {R.drawable.share_weibo, R.drawable.share_weixin, R.drawable.share_friend_circle, R.drawable.share_qq, R.drawable.share_qq_space,R.drawable.share_sms};
     private int mShareImageRes[] = {R.drawable.share_weixin, R.drawable.share_friend_circle, R.drawable.share_qq, R.drawable.share_qq_space,R.drawable.share_sms};
 
     private int mUnShareImageRes[] = { R.drawable.unshare_weixin, R.drawable.unshare_friend_circle, R.drawable.unshare_qq, R.drawable.unshare_qq_space,R.drawable.unshare_sms};
-//    private int mUnShareImageRes[] = {R.drawable.unshare_weibo, R.drawable.unshare_weixin, R.drawable.unshare_friend_circle, R.drawable.unshare_qq, R.drawable.unshare_qq_space,R.drawable.unshare_sms};
 
     private int mShareTextRes[] = { R.string.weixin_friend, R.string.weixin_friend_circle, R.string.qq_friend, R.string.qq_space,R.string.sms};
     private int rootBottom = Integer.MIN_VALUE;
@@ -251,6 +245,18 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
         GridView shareList = null;
         view = LayoutInflater.from(mContext).inflate(R.layout.share_dialog, null);
         shareList = (GridView) view.findViewById(R.id.gv_share_dialog);
+        UMWXHandler wxHandler = new UMWXHandler(mContext, WeixinApi.WEIXIN_ID, WeixinApi.WEIXIN_PWD);
+                        wxHandler.addToSocialSDK();
+        UMWXHandler wxCircleHandler = new UMWXHandler(mContext, WeixinApi.WEIXIN_ID, WeixinApi.WEIXIN_PWD);
+                        wxCircleHandler.setToCircle(true);
+        wxCircleHandler.addToSocialSDK();
+        UMQQSsoHandler qqSsoHandler = new UMQQSsoHandler(BanquetDetailActivity.this,QQApi.QQ_ID, QQApi.QQ_PWD);
+                        qqSsoHandler.addToSocialSDK();
+        QZoneSsoHandler qZoneSsoHandler = new QZoneSsoHandler(BanquetDetailActivity.this,
+                                QQApi.QQ_ID, QQApi.QQ_PWD);
+        qZoneSsoHandler.addToSocialSDK();
+        SmsHandler smsHandler = new SmsHandler();
+        smsHandler.addToSocialSDK();
         shareList.setAdapter(new BaseAdapter() {
             @Override
             public int getCount() {
@@ -262,6 +268,18 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
                 return position;
             }
 
+
+            @Override
+            public boolean isEnabled(int position) {
+                switch (position){
+                    case 0:return mController.getConfig().getSsoHandler(HandlerRequestCode.WX_REQUEST_CODE).isClientInstalled();
+                    case 1:return mController.getConfig().getSsoHandler(HandlerRequestCode.WX_CIRCLE_REQUEST_CODE).isClientInstalled() ;
+                    case 2:return mController.getConfig().getSsoHandler(HandlerRequestCode.QQ_REQUEST_CODE).isClientInstalled();
+                    case 3:return mController.getConfig().getSsoHandler(HandlerRequestCode.QZONE_REQUEST_CODE).isClientInstalled();
+                    case 4:return mController.getConfig().getSsoHandler(HandlerRequestCode.SMS_REQUEST_CODE).isClientInstalled();
+                }
+                return super.isEnabled(position);
+            }
             @Override
             public long getItemId(int position) {
                 return position;
@@ -273,67 +291,10 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
                 TextView text = (TextView) contentView.findViewById(R.id.share_item_text);
                 ImageView image = (ImageView) contentView.findViewById(R.id.share_item_image);
                 text.setText(getString(mShareTextRes[position]));
-                switch (position) {
-//                    case 0:
-//                        mController.getConfig().setSsoHandler(new SinaSsoHandler());
-//                        mController.getConfig().setSinaCallbackUrl(WeiboApi.REDIRECT_URL);
-////                        sineInstalled = mController.getConfig().getSsoHandler(HandlerRequestCode.SINA_REQUEST_CODE).isClientInstalled();
-////                        if (sineInstalled) {
-//                               image.setImageResource(mShareImageRes[0]);
-////                        } else {
-////                            image.setImageResource(mUnShareImageRes[0]);
-////                        }
-//                        break;
-                    case 0:
-                        UMWXHandler wxHandler = new UMWXHandler(mContext, WeixinApi.WEIXIN_ID, WeixinApi.WEIXIN_PWD);
-                        wxHandler.addToSocialSDK();
-                        wxInstalled = mController.getConfig().getSsoHandler(HandlerRequestCode.WX_REQUEST_CODE).isClientInstalled();
-                        if (wxInstalled) {
-                            image.setImageResource(mShareImageRes[position]);
-                        } else {
-                            image.setImageResource(mUnShareImageRes[position]);
-                        }
-                        break;
-                    case 1:
-                        UMWXHandler wxCircleHandler = new UMWXHandler(mContext, WeixinApi.WEIXIN_ID, WeixinApi.WEIXIN_PWD);
-                        wxCircleHandler.setToCircle(true);
-                        wxCircleHandler.addToSocialSDK();
-                        wxCircleInstalled = mController.getConfig().getSsoHandler(HandlerRequestCode.WX_CIRCLE_REQUEST_CODE).isClientInstalled();
-                        if (wxCircleInstalled) {
-                            image.setImageResource(mShareImageRes[position]);
-                        } else {
-                            image.setImageResource(mUnShareImageRes[position]);
-                        }
-                        break;
-                    case 2:
-                        UMQQSsoHandler qqSsoHandler = new UMQQSsoHandler(BanquetDetailActivity.this,QQApi.QQ_ID, QQApi.QQ_PWD);
-                        qqSsoHandler.addToSocialSDK();
-                        qqInstalled = mController.getConfig().getSsoHandler(HandlerRequestCode.QQ_REQUEST_CODE).isClientInstalled();
-                        if (qqInstalled) {
-                            image.setImageResource(mShareImageRes[position]);
-                        } else {
-                            image.setImageResource(mUnShareImageRes[position]);
-                        }
-                        break;
-                    case 3:
-                        QZoneSsoHandler qZoneSsoHandler = new QZoneSsoHandler(BanquetDetailActivity.this,
-                                QQApi.QQ_ID, QQApi.QQ_PWD);
-                        qZoneSsoHandler.addToSocialSDK();
-                        qoneInstalled = mController.getConfig().getSsoHandler(HandlerRequestCode.QZONE_REQUEST_CODE).isClientInstalled();
-                        if (qoneInstalled) {
-                            image.setImageResource(mShareImageRes[position]);
-                        } else {
-                            image.setImageResource(mUnShareImageRes[position]);
-                        }
-                        break;
-                    case 4:
-                        smsInstalled = ((TelephonyManager)mContext.getSystemService(TELEPHONY_SERVICE)).getSimState()==1?false:true;
-                        if (smsInstalled) {
-                            image.setImageResource(mShareImageRes[position]);
-                        } else {
-                            image.setImageResource(mUnShareImageRes[position]);
-                        }
-                        break;
+                if(isEnabled(position)){
+                    image.setImageResource(mShareImageRes[position]);
+                }else{
+                    image.setImageResource(mUnShareImageRes[position]);
                 }
                 return contentView;
             }
@@ -365,8 +326,6 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
      * @param action
      */
     private void distributeShareAction(int action) {
-//        mController.setShareImage(new UMImage(mContext, mBanquent.getSurfaceImageUrl()));
-//        mController.setShareContent(String.format(getString(R.string.share_content), mBanquent.getTitle()) + "\n" + BuildConfig.Banquet_Web_Url + mShareUrl + mBanquent.getIdentifier());
         mController.setShareContent(String.format(getString(R.string.banquet_share_content ) , mBanquent.getTitle()));
         mController.setShareMedia(new UMImage(mContext,
                 mBanquent.getSurfaceImageUrl()));
@@ -385,61 +344,41 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
 //                }
 //                break;
             case SHARE_TO_WECHAT:
-                if (wxInstalled) {
-                    UMWXHandler wxHandler = new UMWXHandler(mContext, WeixinApi.WEIXIN_ID, WeixinApi.WEIXIN_PWD);
-                    wxHandler.setTargetUrl(BuildConfig.Banquet_Web_Url + mShareUrl + mBanquent.getIdentifier());
-                    wxHandler.addToSocialSDK();
-                    performShare(SHARE_MEDIA.WEIXIN);
-                }else {
-                    Toast.makeText(mContext,"您尚未安装此应用...",Toast.LENGTH_SHORT).show();
-                }
+                UMWXHandler wxHandler = new UMWXHandler(mContext, WeixinApi.WEIXIN_ID, WeixinApi.WEIXIN_PWD);
+                wxHandler.setTargetUrl(BuildConfig.Banquet_Web_Url + mShareUrl + mBanquent.getIdentifier());
+                wxHandler.addToSocialSDK();
+                performShare(SHARE_MEDIA.WEIXIN);
                 break;
             case SHARE_TO_FRIEND_CIRCLE:
-                if (wxCircleInstalled) {
-                    UMWXHandler wxCircleHandler = new UMWXHandler(mContext, WeixinApi.WEIXIN_ID, WeixinApi.WEIXIN_PWD);
-                    wxCircleHandler.setToCircle(true);
-                    wxCircleHandler.addToSocialSDK();
-                    wxCircleHandler.setRefreshTokenAvailable(true);
-                    wxCircleHandler.setTitle(getString(R.string.wx_circle_share_title));
-                    wxCircleHandler.setTargetUrl(BuildConfig.Banquet_Web_Url + mShareUrl + mBanquent.getIdentifier());
-                    performShare(SHARE_MEDIA.WEIXIN_CIRCLE);
-                }else {
-                    Toast.makeText(mContext,"您尚未安装此应用...",Toast.LENGTH_SHORT).show();
-                }
+                UMWXHandler wxCircleHandler = new UMWXHandler(mContext, WeixinApi.WEIXIN_ID, WeixinApi.WEIXIN_PWD);
+                wxCircleHandler.setToCircle(true);
+                wxCircleHandler.addToSocialSDK();
+                wxCircleHandler.setTitle(String.format(getString(R.string.banquet_share_content ) , mBanquent.getTitle()));
+                wxCircleHandler.setRefreshTokenAvailable(true);
+                wxCircleHandler.setTargetUrl(BuildConfig.Banquet_Web_Url + mShareUrl + mBanquent.getIdentifier());
+                performShare(SHARE_MEDIA.WEIXIN_CIRCLE);
                 break;
             case SHARE_TO_QQ:
-                if (qqInstalled) {
-                    UMQQSsoHandler qqSsoHandler = new UMQQSsoHandler(this,
-                            QQApi.QQ_ID, QQApi.QQ_PWD);
-                    qqSsoHandler.addToSocialSDK();
-                    qqSsoHandler.setTitle(getString(R.string.wx_circle_share_title));
-                    qqSsoHandler.setTargetUrl(BuildConfig.Banquet_Web_Url + mShareUrl + mBanquent.getIdentifier());
-                    performShare(SHARE_MEDIA.QQ);
-                }else {
-                    Toast.makeText(mContext,"您尚未安装此应用...",Toast.LENGTH_SHORT).show();
-                }
+                UMQQSsoHandler qqSsoHandler = new UMQQSsoHandler(this,
+                        QQApi.QQ_ID, QQApi.QQ_PWD);
+                qqSsoHandler.addToSocialSDK();
+                qqSsoHandler.setTitle(getString(R.string.wx_circle_share_title));
+                qqSsoHandler.setTargetUrl(BuildConfig.Banquet_Web_Url + mShareUrl + mBanquent.getIdentifier());
+                performShare(SHARE_MEDIA.QQ);
                 break;
             case SHARE_TO_QQ_SPACE:
-                if (qoneInstalled) {
-                    QZoneSsoHandler qZoneSsoHandler = new QZoneSsoHandler(this,
-                            QQApi.QQ_ID, QQApi.QQ_PWD);
-                    qZoneSsoHandler.addToSocialSDK();
-                    qZoneSsoHandler.setTargetUrl(BuildConfig.Banquet_Web_Url + mShareUrl + mBanquent.getIdentifier());
-                    performShare(SHARE_MEDIA.QZONE);
-                }else {
-                    Toast.makeText(mContext,"您尚未安装此应用...",Toast.LENGTH_SHORT).show();
-                }
+                QZoneSsoHandler qZoneSsoHandler = new QZoneSsoHandler(this,
+                        QQApi.QQ_ID, QQApi.QQ_PWD);
+                qZoneSsoHandler.addToSocialSDK();
+                qZoneSsoHandler.setTargetUrl(BuildConfig.Banquet_Web_Url + mShareUrl + mBanquent.getIdentifier());
+                performShare(SHARE_MEDIA.QZONE);
                 break;
             case SHARE_TO_SMS:
-                if (smsInstalled) {
-                    SmsHandler smsHandler = new SmsHandler();
-                    smsHandler.addToSocialSDK();
-                    mController.setShareContent(String.format(getString(R.string.banquet_share_content), mBanquent.getTitle())
-                            + "\n" + BuildConfig.Banquet_Web_Url + mShareUrl + mBanquent.getIdentifier());
-                    performShare(SHARE_MEDIA.SMS);
-                }else {
-                    Toast.makeText(mContext,"您尚未安装SMS卡...",Toast.LENGTH_SHORT).show();
-                }
+                SmsHandler smsHandler = new SmsHandler();
+                smsHandler.addToSocialSDK();
+                mController.setShareContent(String.format(getString(R.string.banquet_share_content), mBanquent.getTitle())
+                        + "\n" + BuildConfig.Banquet_Web_Url + mShareUrl + mBanquent.getIdentifier());
+                performShare(SHARE_MEDIA.SMS);
                 break;
         }
     }
@@ -511,6 +450,8 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
             return position;
         }
 
+
+
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             View contentView = LayoutInflater.from(mContext).inflate(R.layout.user_info_favor_item, null);
@@ -577,6 +518,7 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
         mAboutHostBtn.setOnClickListener(this);
         mOrderBtn.setOnClickListener(this);
         mHostHead.setOnClickListener(this);
+        mLocationLayout.setOnClickListener(this);
         Router.getBanquentModule().commentsOfBanquent(mBanquent.getMaster().getIdentifier(), null, 1, new OneParameterExpression<Reviews>() {
             @Override
             public void action(Reviews reviews) {
@@ -725,7 +667,7 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
                     .centerCrop()
                     .into(mHostHead);
         mHostName.setText(mBanquent.getMaster().getNickName());
-
+        getSupportActionBar().setTitle(mBanquent.getTitle());
         String characteristic = mBanquent.getCharacteristic();
         if (characteristic == null || characteristic.equals("")) {
             mCharactContainer.setVisibility(View.GONE);
@@ -733,7 +675,7 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
             mCharaContent.setText(characteristic);
         String address = mBanquent.getAddress();
         if (address == null || address.equals("")) {
-            findViewById(R.id.banquet_detail_instruction_content_position).setVisibility(View.GONE);
+            mLocationLayout.setVisibility(View.GONE);
         } else
             mInstructPosition.setText(address);
         if (mBanquent.getTime() == null) {
@@ -794,6 +736,7 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
         }
         mBottomPrice.setText(String.valueOf(mBanquent.getPrice()));
         mBottomDate.setText(formatDate(mBanquent.getTime()));
+        mBanquetNotice.setText(String.format(getString(R.string.banquet_notice) ,formatDate(mBanquent.getDeadLine()) ,mBanquent.getBanquentCapacity().getMin()));
     }
 
 
@@ -921,6 +864,7 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
                 }, new OneParameterExpression<String>() {
                     @Override
                     public void action(String s) {
+                        Toast.makeText(mContext , R.string.notify_net2,Toast.LENGTH_SHORT).show();
                         finalizeDialog();
                     }
                 });
@@ -953,6 +897,7 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
             case R.id.banquet_detail_location_text:
             case R.id.banquet_detail_location_icon:
             case R.id.banquet_detail_location_img:
+            case R.id.banquet_detail_instruction_content_position:
                 intent = new Intent();
                 intent.setClass(mContext,BaiDuMapActivity.class);
                 intent.putExtra("address",mBanquent.getAddress());

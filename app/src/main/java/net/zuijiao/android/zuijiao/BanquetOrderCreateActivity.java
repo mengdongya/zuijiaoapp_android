@@ -37,6 +37,7 @@ import com.zuijiao.android.zuijiao.model.Banquent.BanquentCapacity;
 import com.zuijiao.android.zuijiao.model.Banquent.OrderCreateErrorMessage;
 import com.zuijiao.android.zuijiao.model.Banquent.Orders;
 import com.zuijiao.android.zuijiao.model.OrderAuth;
+import com.zuijiao.android.zuijiao.network.ErrorType;
 import com.zuijiao.android.zuijiao.network.Router;
 import com.zuijiao.controller.ActivityTask;
 import com.zuijiao.controller.MessageDef;
@@ -49,6 +50,7 @@ import org.json.JSONObject;
 
 import java.util.Date;
 import java.util.LinkedList;
+import java.util.Map;
 
 /**
  * Created by yitianhao on 2015/7/22.
@@ -151,7 +153,7 @@ public class BanquetOrderCreateActivity extends BaseActivity implements View.OnC
     private void initViewsByBanquet() {
         mBanquetTime.setText(formatDate(mBanquent.getTime()));
         mBanquetPrice.setText(String.format(getString(R.string.price_per_one), mBanquent.getPrice()));
-        mBanquetTotalPrice.setText(String.format("%.2f", mBanquent.getPrice()) + getString(R.string.yuan));
+        mBanquetTotalPrice.setText(String.format(getString(R.string.order_total_price), mBanquent.getPrice()) + getString(R.string.yuan));
         mBanquetName.setText(mBanquent.getTitle());
         mBottomPriceTv.setText(String.format(getString(R.string.order_total_price), mBanquent.getPrice()));
         BanquentCapacity banquentCapacity = mBanquent.getBanquentCapacity();
@@ -224,61 +226,113 @@ public class BanquetOrderCreateActivity extends BaseActivity implements View.OnC
                         finalizeDialog();
                         finish();
                     }
-                }, new OneParameterExpression<String>() {
+                }, new OneParameterExpression<ErrorType>() {
                     @Override
-                    public void action(String s) {
+                    public void action(ErrorType err) {
                         mRemark = null;
-                        if (s.contains("retrofit.RetrofitError:")) {
-                            Toast.makeText(mContext, getString(R.string.notify_net2), Toast.LENGTH_SHORT).show();
-                            finalizeDialog();
-                        } else {
-                            try {
-                                JSONObject object = new JSONObject(s);
-                                JSONObject json = object.getJSONObject("error");
-                                String reason = json.getString("reason");
-                                if (reason.equalsIgnoreCase(OrderCreateErrorMessage.MOBILE)) {
-                                    Toast.makeText(mContext, getString(R.string.data_error), Toast.LENGTH_SHORT).show();
-                                }
-                                if (reason.equalsIgnoreCase(OrderCreateErrorMessage.EVENTID)) {
-                                    Toast.makeText(mContext, getString(R.string.data_error), Toast.LENGTH_SHORT).show();
-                                }
-                                if (reason.equalsIgnoreCase(OrderCreateErrorMessage.QUANTITY)) {
-                                    Toast.makeText(mContext, getString(R.string.data_error), Toast.LENGTH_SHORT).show();
-                                }
-                                if (reason.equalsIgnoreCase(OrderCreateErrorMessage.CLOSED)) {
-                                    Toast.makeText(mContext, getString(R.string.event_close), Toast.LENGTH_SHORT).show();
-                                }
-                                if (reason.equalsIgnoreCase(OrderCreateErrorMessage.OVERTIME)) {
-                                    Toast.makeText(mContext, getString(R.string.event_overtime), Toast.LENGTH_SHORT).show();
-                                }
-                                if (reason.equalsIgnoreCase(OrderCreateErrorMessage.OUTOFSTOCK)) {
-                                    Toast.makeText(mContext, getString(R.string.out_of_stock), Toast.LENGTH_SHORT).show();
-                                }
-                                if (reason.equalsIgnoreCase(OrderCreateErrorMessage.BEYONDMAXQUANTITY)) {
-                                    Toast.makeText(mContext, getString(R.string.beyond_max_quantity), Toast.LENGTH_SHORT).show();
-                                }
-                                LinkedList<Activity> list = ActivityTask.getInstance().getActivitiesList();
-                                for (Activity activity : list) {
-                                    if (activity instanceof BanquetDetailActivity) {
-                                        try {
-                                            activity.finish();
-                                        } catch (Throwable t) {
-                                            t.printStackTrace();
+                        finalizeDialog();
+                        try{
+
+                            String reason = ((Map<String, String>)err.body().get("error")).get("message");
+                            Toast.makeText(mContext, reason, Toast.LENGTH_SHORT).show();
+                            if(reason.equals(getString(R.string.beyond_max_quantity))){
+                                Router.getBanquentModule().theme(mBanquent.getIdentifier(), new OneParameterExpression<Banquent>() {
+                                    @Override
+                                    public void action(Banquent banquent) {
+//                                        int avaliableCount = banquent.getBanquentCapacity().getMax() - banquent.getBanquentCapacity().getCount() ;
+                                         mBanquent = banquent  ;
+                                        BanquentCapacity banquentCapacity = mBanquent.getBanquentCapacity();
+                                        if (banquentCapacity.getMax() == banquentCapacity.getMin()) {
+                                            mBanquetContent.setText(String.format(getString(R.string.banquent_capacity_simple),
+                                                    banquentCapacity.getMin(),
+                                                    banquentCapacity.getCount()));
+                                        } else {
+                                            mBanquetContent.setText(String.format(getString(R.string.banquent_capacity_muilt),
+                                                    banquentCapacity.getMin(),
+                                                    banquentCapacity.getMax(),
+                                                    banquentCapacity.getCount()));
                                         }
+                                        attendeeNum = banquentCapacity.getMax() - banquentCapacity.getCount() ;
+                                        if(attendeeNum == 0){
+                                            mBanquetPlus.setEnabled(false);
+                                            mBanquetSubtract.setEnabled(false);
+                                        }
+                                        if(attendeeNum > 1){
+                                            mBanquetPlus.setEnabled(false);
+                                        }
+                                        mBanquetNum.setText(attendeeNum + getString(R.string.people));
+                                        mBottomOrderCountTv.setText(String.format(getString(R.string.total_person_count), attendeeNum));
+                                        mBanquetTotalPrice.setText(String.format(getString(R.string.order_total_price), mBanquent.getPrice() * attendeeNum) + getString(R.string.yuan));
+                                        mBottomPriceTv.setText(String.format(getString(R.string.order_total_price), mBanquent.getPrice() * attendeeNum));
                                     }
-                                }
-                                finalizeDialog();
-                                Intent intent = new Intent();
-                                intent.setAction(MessageDef.ACTION_ORDER_CREATED);
-                                intent.putExtra("tabIndex", 1);
-                                sendBroadcast(intent);
-                                finish();
-                            } catch (JSONException e) {
-                                e.printStackTrace();
+                                }, new OneParameterExpression<String>() {
+                                    @Override
+                                    public void action(String s) {
+                                            //do nothing
+                                    }
+                                });
                             }
+                        }catch (Throwable t){
+                            t.printStackTrace();
+                            Toast.makeText(mContext, getString(R.string.notify_net2), Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+//                        LinkedList<Activity> list = ActivityTask.getInstance().getActivitiesList();
+//                        for (Activity activity : list) {
+//                            if (activity instanceof BanquetDetailActivity) {
+//                                try {
+//                                    activity.finish();
+//                                } catch (Throwable t) {
+//                                    t.printStackTrace();
+//                                }
+//                            }
+//                        }
+
+                        Intent intent = new Intent();
+                        intent.setAction(MessageDef.ACTION_ORDER_CREATED);
+                        intent.putExtra("tabIndex", 1);
+                        sendBroadcast(intent);
+//                        finish();
+//                        if (s.contains("retrofit.RetrofitError:")) {
+//                            Toast.makeText(mContext, getString(R.string.notify_net2), Toast.LENGTH_SHORT).show();
+//                            finalizeDialog();
+//                        } else {
+//                            try {
+//                                JSONObject object = new JSONObject(s);
+//                                JSONObject json = object.getJSONObject("error");
+//                                String reason = json.getString("reason");
+
+//                                if (reason.equalsIgnoreCase(OrderCreateErrorMessage.MOBILE)) {
+//                                    Toast.makeText(mContext, getString(R.string.data_error), Toast.LENGTH_SHORT).show();
+//                                }
+//                                if (reason.equalsIgnoreCase(OrderCreateErrorMessage.EVENTID)) {
+//                                    Toast.makeText(mContext, getString(R.string.data_error), Toast.LENGTH_SHORT).show();
+//                                }
+//                                if (reason.equalsIgnoreCase(OrderCreateErrorMessage.QUANTITY)) {
+//                                    Toast.makeText(mContext, getString(R.string.data_error), Toast.LENGTH_SHORT).show();
+//                                }
+//                                if (reason.equalsIgnoreCase(OrderCreateErrorMessage.CLOSED)) {
+//                                    Toast.makeText(mContext, getString(R.string.event_close), Toast.LENGTH_SHORT).show();
+//                                }
+//                                if (reason.equalsIgnoreCase(OrderCreateErrorMessage.OVERTIME)) {
+//                                    Toast.makeText(mContext, getString(R.string.event_overtime), Toast.LENGTH_SHORT).show();
+//                                }
+//                                if (reason.equalsIgnoreCase(OrderCreateErrorMessage.OUTOFSTOCK)) {
+//                                    Toast.makeText(mContext, getString(R.string.out_of_stock), Toast.LENGTH_SHORT).show();
+//                                }
+//                                if (reason.equalsIgnoreCase(OrderCreateErrorMessage.BEYONDMAXQUANTITY)) {
+//                                    Toast.makeText(mContext, getString(R.string.beyond_max_quantity), Toast.LENGTH_SHORT).show();
+//                                }else{
+//
+//                                    return;
+//                                }
+
+//                            } catch (JSONException e) {
+//                                e.printStackTrace();
+//                            }
                         }
 
-                    }
+//                    }
                 });
                 break;
             case R.id.banquet_order_create_phone:
@@ -304,7 +358,7 @@ public class BanquetOrderCreateActivity extends BaseActivity implements View.OnC
                 }
                 mBanquetNum.setText(attendeeNum + getString(R.string.people));
                 mBottomOrderCountTv.setText(String.format(getString(R.string.total_person_count), attendeeNum));
-                mBanquetTotalPrice.setText(String.format("%.2f", mBanquent.getPrice() * attendeeNum) + getString(R.string.yuan));
+                mBanquetTotalPrice.setText(String.format(getString(R.string.order_total_price), mBanquent.getPrice() * attendeeNum) + getString(R.string.yuan));
                 mBottomPriceTv.setText(String.format(getString(R.string.order_total_price), mBanquent.getPrice() * attendeeNum));
                 break;
             case R.id.banquet_order_create_plus:
@@ -320,7 +374,7 @@ public class BanquetOrderCreateActivity extends BaseActivity implements View.OnC
                 }
                 mBanquetNum.setText(attendeeNum + getString(R.string.people));
                 mBottomOrderCountTv.setText(String.format(getString(R.string.total_person_count), attendeeNum));
-                mBanquetTotalPrice.setText(String.format("%.2f", mBanquent.getPrice() * attendeeNum) + getString(R.string.yuan));
+                mBanquetTotalPrice.setText(String.format(getString(R.string.order_total_price), mBanquent.getPrice() * attendeeNum) + getString(R.string.yuan));
                 mBottomPriceTv.setText(String.format(getString(R.string.order_total_price), mBanquent.getPrice() * attendeeNum));
                 break;
         }

@@ -91,6 +91,7 @@ import com.zuijiao.android.zuijiao.model.Banquent.Banquent;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
 
@@ -121,19 +122,11 @@ public class BaiDuMapActivity extends BaseActivity implements OnGetGeoCoderResul
     private DrivingRouteLine drivingRouteLine = null;
     private LocationClient mLocClient;
     private DrivingRoutePlanOption drivingRoutePlanOption;
-
+    private  RoutePlanSearch routePlanSearch =null;
     @Override
     protected void registerViews() {
+        long onstart = System.currentTimeMillis() ;
         mContext = getApplicationContext() ;
-        mBMapMan=new BMapManager(mContext);
-        mBMapMan.init(new MKGeneralListener() {
-            @Override
-            public void onGetPermissionState(int i) {
-                if (i == 300) {
-                    Toast.makeText(mContext, R.string.key_error, Toast.LENGTH_LONG).show();
-                }
-            }
-        });
         if (mTendIntent != null) {
             address = mTendIntent.getStringExtra("address");
         }
@@ -141,7 +134,6 @@ public class BaiDuMapActivity extends BaseActivity implements OnGetGeoCoderResul
             finish();
             return;
         }
-
         mLocClient = new LocationClient(mContext);
         mLocClient.registerLocationListener(new MyLocationListenner());
         LocationClientOption option = new LocationClientOption();
@@ -151,7 +143,6 @@ public class BaiDuMapActivity extends BaseActivity implements OnGetGeoCoderResul
         option.setScanSpan(1000);
         mLocClient.setLocOption(option);
         mLocClient.start();
-
         setSupportActionBar(mToolBar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(R.string.map);
@@ -162,7 +153,6 @@ public class BaiDuMapActivity extends BaseActivity implements OnGetGeoCoderResul
         mBaiduMap.setMyLocationEnabled(true);
         mBaiduMap.setMapStatus(MapStatusUpdateFactory.newLatLng(end));
         mBaiduMap.setMapStatus(MapStatusUpdateFactory.zoomTo(18.0f));
-
         int childCount = mMapView.getChildCount();
         View zoom = null;
         for (int i = 0; i < childCount; i++) {
@@ -211,14 +201,22 @@ public class BaiDuMapActivity extends BaseActivity implements OnGetGeoCoderResul
                 }
             }
         });
+        long endtime= System.currentTimeMillis() - onstart ;
+        System.out.println("endtime ==" + endtime + "--------------------------------------------");
     }
 
     @Override
     public void onGetGeoCodeResult(GeoCodeResult geoCodeResult) {
         if (geoCodeResult == null || geoCodeResult.error != SearchResult.ERRORNO.NO_ERROR) {
-            Toast.makeText(mContext, "抱歉，未能找到结果", Toast.LENGTH_LONG).show();
+            Toast.makeText(mContext, getString(R.string.no_result), Toast.LENGTH_SHORT).show();
+            mDistence.setText(getString(R.string.unknown_distance));
             return;
         }
+        if(mBaiduMap == null){
+            mBaiduMap = mMapView.getMap();
+        }
+        if(mBaiduMap == null)
+            return;
         mBaiduMap.clear();
         end = geoCodeResult.getLocation();
         mBaiduMap.addOverlay(new MarkerOptions().position(end).icon(BitmapDescriptorFactory.fromResource(R.drawable.location_on_map)));
@@ -226,7 +224,7 @@ public class BaiDuMapActivity extends BaseActivity implements OnGetGeoCoderResul
 
 //        drivingRoutePlanOption.from(PlanNode.withLocation(start)).to(PlanNode.withCityNameAndPlaceName(getString(R.string.shanghai), address));
         drivingRoutePlanOption.from(PlanNode.withLocation(start)).to(PlanNode.withLocation(end));
-        RoutePlanSearch routePlanSearch = RoutePlanSearch.newInstance();
+        routePlanSearch = RoutePlanSearch.newInstance();
         routePlanSearch.drivingSearch(drivingRoutePlanOption);
         routePlanSearch.setOnGetRoutePlanResultListener(new OnGetRoutePlanResultListener() {
             @Override
@@ -242,7 +240,7 @@ public class BaiDuMapActivity extends BaseActivity implements OnGetGeoCoderResul
             @Override
             public void onGetDrivingRouteResult(DrivingRouteResult drivingRouteResult) {
                 if (drivingRouteResult == null || drivingRouteResult.error != SearchResult.ERRORNO.NO_ERROR) {
-                    Toast.makeText(mContext, "抱歉，未找到结果", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext,getString(R.string.no_result), Toast.LENGTH_SHORT).show();
                     return;
                 }
                 if (drivingRouteResult.error == SearchResult.ERRORNO.NO_ERROR) {
@@ -250,13 +248,8 @@ public class BaiDuMapActivity extends BaseActivity implements OnGetGeoCoderResul
                     drivingRouteLine = drivingRouteResult.getRouteLines().get(0);
                     routeOverlay.setData(drivingRouteLine);
                     routeOverlay.addToMap();
-                    if (drivingRouteLine == null) {
-                        distance = (int) DistanceUtil.getDistance(start, end);
-                    } else {
-                        distance = drivingRouteLine.getDistance();
-                    }
-                    DecimalFormat df = new DecimalFormat("#.##");
-                    mDistence.setText("距您" + df.format(distance / 1000) + "km");
+                    distance = drivingRouteLine.getDistance();
+                    mDistence.setText(String.format(getString(R.string.distance),distance/1000));
                 }
 
             }
@@ -304,21 +297,28 @@ public class BaiDuMapActivity extends BaseActivity implements OnGetGeoCoderResul
 
     @Override
     public void onResume() {
-        mMapView.onResume();
         super.onResume();
+        mMapView.onResume();
     }
 
     @Override
     public void onPause() {
-        mMapView.onPause();
         super.onPause();
+        mMapView.onPause();
     }
 
     @Override
     protected void onDestroy() {
-        mLocClient.stop();
-        mBaiduMap.setMyLocationEnabled(false);
-        mMapView.onDestroy();
         super.onDestroy();
+        if(mLocClient !=null)
+            mLocClient.stop();
+        if(mBaiduMap!= null){
+            mBaiduMap.setMyLocationEnabled(false);
+            mBaiduMap.clear();
+        }
+        if(mMapView!= null)
+            mMapView.onDestroy();
+        if(routePlanSearch!=null)
+            routePlanSearch.destroy();
     }
 }

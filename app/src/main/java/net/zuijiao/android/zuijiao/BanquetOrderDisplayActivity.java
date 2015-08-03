@@ -24,6 +24,7 @@ import com.zuijiao.android.zuijiao.model.Banquent.Banquent;
 import com.zuijiao.android.zuijiao.model.Banquent.Order;
 import com.zuijiao.android.zuijiao.model.Banquent.OrderStatus;
 import com.zuijiao.android.zuijiao.network.Router;
+import com.zuijiao.controller.MessageDef;
 import com.zuijiao.utils.AlertDialogUtil;
 
 import org.w3c.dom.Text;
@@ -202,6 +203,8 @@ public class BanquetOrderDisplayActivity extends BaseActivity {
                             Router.getBanquentModule().cancelOrder(mOrder.getIdentifier(), new LambdaExpression() {
                                 @Override
                                 public void action() {
+                                    Intent intent = new Intent(MessageDef.ACTION_ORDER_CREATED) ;
+                                    sendBroadcast(intent);
                                     Toast.makeText(mContext, getString(R.string.order_cancel_success), Toast.LENGTH_SHORT).show();
                                     setResult(MainActivity.ORDER_CANCEL);
                                     finish();
@@ -234,19 +237,17 @@ public class BanquetOrderDisplayActivity extends BaseActivity {
             mOrderCancel.setVisibility(View.GONE);
             mOrderBottom.setVisibility(View.GONE);
         }
-
         //test end
-
         fillGenInfo(mOrderStatus, getString(R.string.order_status), statusStr);
         fillGenInfo(mOrderNum, getString(R.string.order_num), mOrder.getSerialNumber());
-        fillGenInfo(mOrderPrice, getString(R.string.price), String.format("%.2f", mOrder.getRealPrice()) + getString(R.string.price_unit));
+        fillGenInfo(mOrderPrice, getString(R.string.price), String.format(getString(R.string.order_total_price), mOrder.getRealPrice()) + getString(R.string.price_unit));
         fillGenInfo(mAttendeeNum, getString(R.string.num), mOrder.getQuantity() + getString(R.string.people));
-        fillGenInfo(mOrderTotalPrice, getString(R.string.total_price), String.format("%.2f", mOrder.getTotalPrice()) + getString(R.string.yuan));
+        fillGenInfo(mOrderTotalPrice, getString(R.string.total_price), String.format(getString(R.string.order_total_price), mOrder.getTotalPrice()) + getString(R.string.yuan));
         fillGenInfo(mOrderPhone, getString(R.string.mobile_phone), mOrder.getPhoneNumber());
         fillGenInfo(mOrderRemark, getString(R.string.remark), mOrder.getRemark());
-        fillGenInfo(mOrderDate, getString(R.string.order_time), mOrder.getCreateTime().toLocaleString());
-
-
+//        fillGenInfo(mOrderDate, getString(R.string.order_time), mOrder.getCreateTime().toLocaleString());
+        fillGenInfo(mOrderDate , getString(R.string.order_time) ,formatDate(mOrder.getCreateTime()));
+        mOrderPay.setText(getString(R.string.pay_right_now));
         mNoticeText.setAutoLinkMask(Linkify.PHONE_NUMBERS);
         mNoticeText.setMovementMethod(LinkMovementMethod.getInstance());
         System.out.println("mOrder.getBanquentIdentifier():" + mOrder.getEvent().getIdentifier());

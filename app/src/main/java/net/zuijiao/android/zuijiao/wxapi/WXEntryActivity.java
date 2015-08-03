@@ -56,11 +56,11 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
 
             super.handleMessage(msg);
             if (msg.what == 0x101) {
-                Toast.makeText(
-                        WXEntryActivity.this,
-                        getResources().getString(
-                                R.string.login_error), Toast.LENGTH_SHORT)
-                        .show();
+//                Toast.makeText(
+//                        WXEntryActivity.this,
+//                        getResources().getString(
+//                                R.string.login_error), Toast.LENGTH_SHORT)
+//                        .show();
 
             }
         }
@@ -110,12 +110,6 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
             finish();
             return;
         }
-//        if (resp.getType() == ConstantsAPI.COMMAND_PAY_BY_WX) {
-//            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-//            builder.setTitle(R.string.banquet);
-//            builder.setMessage(getString(R.string.banquet, resp.errStr + ";code=" + String.valueOf(resp.errCode)));
-//            builder.show();
-//        }
         switch (resp.errCode) {
             case BaseResp.ErrCode.ERR_OK:
                 Bundle bundle = new Bundle();

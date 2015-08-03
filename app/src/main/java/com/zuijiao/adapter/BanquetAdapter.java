@@ -139,7 +139,7 @@ public class BanquetAdapter extends BaseAdapter implements AdapterView.OnItemCli
             holder.detail.setText(dateInfo + mContext.getString(R.string.center_dot) + banquent.getAddress());
             holder.description.setText(banquent.getDesc());
 //            holder.price.setText(String.format(mContext.getString(R.string.price_per_one), banquent.getPrice()));
-            holder.price.setText(String.valueOf(banquent.getPrice()));
+            holder.price.setText(String.valueOf(banquent.getPrice().intValue()));
             BanquentCapacity banquentCapacity = banquent.getBanquentCapacity();
             if (banquentCapacity.getMin() == banquentCapacity.getMax()) {
                 holder.status.setText(String.format(mContext.getString(R.string.banquent_capacity_simple), banquentCapacity.getMax(), banquentCapacity.getCount()));

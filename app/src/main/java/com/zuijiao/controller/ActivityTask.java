@@ -72,14 +72,15 @@ public class ActivityTask extends Application {
         super.onCreate();
         // baidumap initialize
         SDKInitializer.initialize(this);
+        Log.i("umengPushAgent", "ActivityTask.onCreate:system reboot---------------------------------zuijiao") ;
         mLocationClient = new LocationClient(this.getApplicationContext());
         mMyLocationListener = new MyLocationListener();
         mLocationClient.registerLocationListener(mMyLocationListener);
         mGeofenceClient = new GeofenceClient(getApplicationContext());
         File cacheDirectory = getApplicationContext().getCacheDir();
         Interceptor interceptor = null;
-//        mExceptionHandler = new UnCaughtException(this) ;
-//        Thread.setDefaultUncaughtExceptionHandler(mExceptionHandler);
+        mExceptionHandler = new UnCaughtException(this) ;
+        Thread.setDefaultUncaughtExceptionHandler(mExceptionHandler);
         defaultDisplayImageOptions = new DisplayImageOptions.Builder() //
                 .considerExifParams(false) // 调整图片方向
                 .resetViewBeforeLoading(true) // 载入之前重置ImageView

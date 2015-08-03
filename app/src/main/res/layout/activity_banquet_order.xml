@@ -10,6 +10,7 @@
         layout="@layout/toolbar" />
 
     <ScrollView
+        android:background="@color/white"
         android:id="@+id/banquet_order_scrollview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -226,14 +227,14 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dip"
                 android:text="@string/choose_the_way_to_pay"
-                android:textColor="@color/bg_light_gray"
-                android:textSize="13sp" />
+                android:textColor="@color/black"
+                android:textSize="18sp" />
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="1dip"
+                android:layout_height="2dip"
                 android:layout_marginTop="10dip"
-                android:background="@color/bg_light_gray" />
+                android:background="@color/black" />
 
             <ListView
                 android:id="@+id/banquet_order_pay_way_list"
@@ -254,39 +255,4 @@
 
     <include android:id="@+id/banquet_order_bottom"
         layout="@layout/fixed_bottom"/>
-    <!--<LinearLayout-->
-        <!--android:id="@+id/banquet_order_bottom"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="80dp"-->
-        <!--android:layout_alignParentBottom="true"-->
-        <!--android:background="@color/white"-->
-        <!--android:minHeight="50dp"-->
-        <!--android:orientation="horizontal">-->
-
-        <!--<TextView-->
-            <!--android:id="@+id/banquet_order_bottom_price"-->
-            <!--android:layout_width="0dip"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_gravity="center"-->
-            <!--android:layout_marginLeft="15dip"-->
-            <!--android:layout_weight="2"-->
-            <!--android:text="@string/order_total_price"-->
-            <!--android:textColor="@color/banquet_theme"-->
-            <!--android:textSize="18sp" />-->
-
-        <!--<Button-->
-            <!--android:id="@+id/banquet_order_bottom_pay"-->
-            <!--android:layout_width="0dip"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_marginRight="10dip"-->
-            <!--android:layout_weight="1"-->
-            <!--android:background="@drawable/banquet_detail_order_bg"-->
-            <!--android:gravity="center"-->
-            <!--android:layout_gravity="center"-->
-            <!--android:paddingLeft="5dip"-->
-            <!--android:paddingRight="5dip"-->
-            <!--android:text="@string/order_create_pay"-->
-            <!--android:textColor="@color/banquet_theme"-->
-            <!--android:textSize="18sp" />-->
-    <!--</LinearLayout>-->
 </RelativeLayout>

@@ -191,37 +191,4 @@
     <include
          layout="@layout/fixed_bottom"
         android:id="@+id/order_detail_bottom"/>
-    <!--<LinearLayout-->
-        <!--android:id="@+id/order_detail_bottom"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="50dp"-->
-        <!--android:layout_alignParentBottom="true"-->
-        <!--android:background="@color/white"-->
-        <!--android:orientation="horizontal"-->
-        <!--android:visibility="gone">-->
-
-        <!--<TextView-->
-            <!--android:id="@+id/order_detail_total_price"-->
-            <!--android:layout_width="0dip"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_gravity="center"-->
-            <!--android:layout_marginLeft="10dip"-->
-            <!--android:layout_weight="2"-->
-            <!--android:text="@string/order_total_price"-->
-            <!--android:textColor="@color/surplus_time"-->
-            <!--android:textSize="18sp" />-->
-
-        <!--<Button-->
-            <!--android:id="@+id/order_detail_pay"-->
-            <!--android:layout_width="0dip"-->
-            <!--android:layout_height="match_parent"-->
-            <!--android:layout_weight="1"-->
-            <!--android:background="@drawable/banquet_detail_order_bg"-->
-            <!--android:gravity="center"-->
-            <!--android:paddingLeft="5dip"-->
-            <!--android:paddingRight="5dip"-->
-            <!--android:text="@string/pay_right_now"-->
-            <!--android:textColor="@color/banquet_theme"-->
-            <!--android:textSize="18sp" />-->
-    <!--</LinearLayout>-->
 </RelativeLayout>

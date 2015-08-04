@@ -96,7 +96,7 @@ public class BanquetDisplayFragment extends Fragment implements RefreshAndInitLi
 
     private void netWorkStep(boolean bRefresh) {
         if (bRefresh) {
-            mRefreshLayout.setRefreshing(true);
+//            mRefreshLayout.setRefreshing(true);
             lastedId = null;
         }
         Router.getBanquentModule().themesOfPublic(lastedId, 20, new OneParameterExpression<Banquents>() {

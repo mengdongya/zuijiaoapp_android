@@ -10,6 +10,7 @@ import android.widget.Toast;
 import com.alipay.sdk.app.PayTask;
 
 import net.zuijiao.android.zuijiao.BanquetOrderCallbackActivity;
+import net.zuijiao.android.zuijiao.R;
 
 
 /**
@@ -39,13 +40,20 @@ public class Alipay {
 
                         intent.putExtra("b_success", true);
                         mActivity.startActivity(intent);
-                    } else if (TextUtils.equals(resultStatus, "8000")) {
-//                        intent.putExtra("b_success", "wait");
-                        mActivity.startActivity(intent);
-                    } else {
-                        intent.putExtra("b_success", false);
-                        mActivity.startActivity(intent);
                     }
+                    else
+                        Toast.makeText(mActivity , mActivity.getString(R.string.pay_failed) , Toast.LENGTH_SHORT).show();
+//                    else if (TextUtils.equals(resultStatus, "8000")) {
+////                        intent.putExtra("b_success", "wait");
+//                        mActivity.startActivity(intent);
+//                    } else if(TextUtils.equals(resultStatus, "6001")){
+//                        intent.putExtra("b_success", false);
+//                        intent.putExtra("user_cancel" , true) ;
+//                        mActivity.startActivity(intent);
+//                    }else {
+//                        intent.putExtra("b_success", false);
+//                        mActivity.startActivity(intent);
+//                    }
                     break;
                 }
                 case SDK_CHECK_FLAG: {

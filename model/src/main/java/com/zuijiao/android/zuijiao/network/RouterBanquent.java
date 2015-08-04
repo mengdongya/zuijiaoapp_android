@@ -1,15 +1,21 @@
 package com.zuijiao.android.zuijiao.network;
 
+import com.zuijiao.android.util.Optional;
 import com.zuijiao.android.util.functional.LambdaExpression;
 import com.zuijiao.android.util.functional.OneParameterExpression;
 import com.zuijiao.android.zuijiao.model.Banquent.Banquent;
 import com.zuijiao.android.zuijiao.model.Banquent.BanquentForTheme;
 import com.zuijiao.android.zuijiao.model.Banquent.Banquents;
+import com.zuijiao.android.zuijiao.model.Banquent.OrderCreateErrorMessage;
 import com.zuijiao.android.zuijiao.model.Banquent.OrderStatus;
 import com.zuijiao.android.zuijiao.model.Banquent.Orders;
 import com.zuijiao.android.zuijiao.model.Banquent.Reviews;
 import com.zuijiao.android.zuijiao.model.OrderAuth;
 import com.zuijiao.android.zuijiao.model.OrderAuthV3;
+
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.mime.TypedByteArray;
 
 /**
  * Created by user on 6/18/15.
@@ -36,8 +42,35 @@ public enum RouterBanquent {
                             String phoneNumber,
                             String code,
                             final OneParameterExpression<Orders> successCallback,
-                            final OneParameterExpression<String> failureCallback) {
-        service.createOrder(themeId, remark, quantity, phoneNumber, code, CallbackFactory.getInstance().callback(successCallback, failureCallback));
+                            final OneParameterExpression<ErrorType> failureCallback) {
+
+        final Optional<OneParameterExpression<Orders>> finalSuccessCallback = Optional.ofNullable(successCallback);
+        final Optional<OneParameterExpression<ErrorType>> finalFailureCallback = Optional.ofNullable(failureCallback);
+
+        Callback<Orders> callback = new Callback<Orders>() {
+            @Override
+            public void success(Orders t, retrofit.client.Response response) {
+                if (finalSuccessCallback.isPresent())
+                    finalSuccessCallback.get().action(t);
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                assert (error != null);
+                assert (finalFailureCallback != null);
+                assert (finalFailureCallback.get() != null);
+
+                error.printStackTrace();
+
+                if (finalFailureCallback.isPresent()) {
+                    ErrorType errorType = new ErrorType(error.getResponse().getStatus()
+                            , new String(((TypedByteArray) error.getResponse().getBody()).getBytes()));
+                    finalFailureCallback.get().action(errorType);
+                }
+            }
+        };
+
+        service.createOrder(themeId, remark, quantity, phoneNumber, code, callback);
     }
 
     public void createOrder(Integer themeId,

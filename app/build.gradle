@@ -22,8 +22,8 @@ android {
         applicationId "net.zuijiao.android.zuijiao"
         minSdkVersion 15
         targetSdkVersion 21
-        versionCode 5
-        versionName "2.1"
+        versionCode 8
+        versionName "2.2"
         manifestPlaceholders = [UMENG_CHANNEL_SOURCE: "zuijiao_net"]
     }
 

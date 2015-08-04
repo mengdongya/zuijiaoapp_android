@@ -72,7 +72,7 @@ public class ActivityTask extends Application {
         super.onCreate();
         // baidumap initialize
         SDKInitializer.initialize(this);
-        System.out.println(new Date().getTime());
+        Log.i("umengPushAgent", "ActivityTask.onCreate:system reboot---------------------------------zuijiao") ;
         mLocationClient = new LocationClient(this.getApplicationContext());
         mMyLocationListener = new MyLocationListener();
         mLocationClient.registerLocationListener(mMyLocationListener);
@@ -102,11 +102,6 @@ public class ActivityTask extends Application {
                             .build());
         }
         Router.setup(BuildConfig.Base_Url, BuildConfig.Request_Key, cacheDirectory, interceptor);
-//        System.out.println(new Date().getTime());
-        int maxMemory = (int) Runtime.getRuntime().maxMemory();
-        int mCacheSize = maxMemory / 4;
-        Log.i("maxMemory", "sssss = " + mCacheSize);
-
     }
 
 

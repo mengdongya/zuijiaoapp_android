@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 
 import com.umeng.message.UTrack;
 import com.umeng.message.UmengBaseIntentService;
@@ -28,11 +29,10 @@ public class UmengAgentPushService extends UmengBaseIntentService {
     @Override
     protected void onMessage(Context context, Intent intent) {
         super.onMessage(context, intent);
-
-        String message = intent.getStringExtra(BaseConstants.MESSAGE_BODY);
-
-        UMessage msg = null;
+        Log.i("umengPushAgent"  ,"UmengAgentPushService.onMessage:system reboot---------------------------------zuijiao") ;
         try {
+            String message = intent.getStringExtra(BaseConstants.MESSAGE_BODY);
+            UMessage msg = null;
             JSONObject jsonObject = new JSONObject(message);
             System.out.println(jsonObject.toString());
             JSONObject js = jsonObject.getJSONObject("body");

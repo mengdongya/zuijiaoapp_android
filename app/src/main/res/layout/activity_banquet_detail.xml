@@ -431,9 +431,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:layout_marginTop="15dip"
-                    android:layout_marginBottom="10dip"
-                    android:paddingBottom="10dip"
+                    android:paddingTop="15dip"
+                    android:paddingBottom="15dip"
                     android:paddingLeft="8dip"
                     android:paddingRight="8dip">
 
@@ -460,6 +459,7 @@
                         android:layout_width="20dip"
                         android:layout_height="20dip"
                         android:scaleType="center"
+                        android:layout_gravity="center_vertical"
                         android:src="@drawable/arrow_expend_right" />
 
                 </LinearLayout>
@@ -509,23 +509,18 @@
                     android:textColor="@color/banquet_theme"
                     android:textSize="18sp"
                      />
-                <!--<Button-->
-                    <!--android:id="@+id/banquet_detail_comment_btn"-->
-                    <!--style="?android:attr/buttonStyleSmall"-->
-                    <!--android:layout_width="wrap_content"-->
-                    <!--android:layout_height="35dip"-->
-                    <!--android:layout_gravity="center_horizontal"-->
-                    <!--android:layout_marginBottom="10dip"-->
-                    <!--android:layout_marginTop="10dip"-->
-                    <!--android:background="@drawable/banquet_detail_about_cuisine_btn_bg"-->
-                    <!--android:gravity="center"-->
-                    <!--android:paddingLeft="5dip"-->
-                    <!--android:paddingRight="5dip"-->
-                    <!--android:text="@string/all_comments"-->
-                    <!--android:textColor="@color/white"-->
-                    <!--android:textSize="14sp"-->
-                    <!--android:visibility="gone" />-->
             </LinearLayout>
+
+            <TextView
+                android:id="@+id/banquet_detail_notice"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dip"
+                android:lineSpacingExtra="7dip"
+                android:text="@string/banquet_notice"
+                android:textColor="@color/bg_light_gray"
+                android:textSize="14sp" />
+
         </LinearLayout>
 
     </com.zuijiao.view.BanquetDetailScrollView>

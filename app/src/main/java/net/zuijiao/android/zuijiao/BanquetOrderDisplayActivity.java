@@ -10,6 +10,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,6 +24,7 @@ import com.zuijiao.android.zuijiao.model.Banquent.Banquent;
 import com.zuijiao.android.zuijiao.model.Banquent.Order;
 import com.zuijiao.android.zuijiao.model.Banquent.OrderStatus;
 import com.zuijiao.android.zuijiao.network.Router;
+import com.zuijiao.controller.MessageDef;
 import com.zuijiao.utils.AlertDialogUtil;
 
 import org.w3c.dom.Text;
@@ -35,6 +38,8 @@ import java.util.Date;
  */
 @ContentView(R.layout.activity_banquet_order_display)
 public class BanquetOrderDisplayActivity extends BaseActivity {
+    @ViewInject(R.id.order_display_scroll_view)
+    private ScrollView mScrollView ;
     @ViewInject(R.id.order_display_toolbar)
     private Toolbar mToolbar = null;
     @ViewInject(R.id.banquet_order_display_image_view)
@@ -73,10 +78,16 @@ public class BanquetOrderDisplayActivity extends BaseActivity {
     @ViewInject(R.id.order_cancel)
     private Button mOrderCancel;
     @ViewInject(R.id.order_detail_bottom)
-    private LinearLayout mOrderBottom;
-    @ViewInject(R.id.order_detail_total_price)
+    private RelativeLayout mOrderBottom;
+    @ViewInject(R.id.banquet_detail_bottom_text1)
+    private TextView mBottomText1 ;
+    @ViewInject(R.id.banquet_detail_bottom_text2)
+    private TextView mBottomText2 ;
+    @ViewInject(R.id.banquet_detail_bottom_price)
     private TextView mOrderDetailTotalPrice;
-    @ViewInject(R.id.order_detail_pay)
+    @ViewInject(R.id.banquet_detail_bottom_date)
+    private TextView mBottomPeopleCount ;
+    @ViewInject(R.id.banquet_detail_bottom_order)
     private Button mOrderPay;
     private Order mOrder;
     private String[] weekDays;
@@ -159,6 +170,18 @@ public class BanquetOrderDisplayActivity extends BaseActivity {
             mOrderCancel.setVisibility(View.VISIBLE);
             mOrderBottom.setVisibility(View.VISIBLE);
             mOrderDetailTotalPrice.setText(String.format(getString(R.string.order_total_price), mOrder.getTotalPrice()));
+            mBottomText1.setVisibility(View.VISIBLE);
+            mBottomText2.setText(R.string.yuan);
+            mBottomPeopleCount.setText(String.format(getString(R.string.total_person_count),mOrder.getQuantity()));
+            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mOrderBottom.getLayoutParams();
+            mOrderDetailTotalPrice.measure(0 , 0 );
+            int priceHeight = mOrderDetailTotalPrice.getMeasuredHeight();
+            mBottomPeopleCount.measure(0 , 0);
+            int dateHeight = mBottomPeopleCount.getMeasuredHeight() ;
+            int margin = (int) (3* getResources().getDimension(R.dimen.end_z));
+            params.height = priceHeight + dateHeight + margin ;
+//            RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) mScrollView.getLayoutParams();
+//            layoutParams.bottomMargin = params.height ;
             //runnable.run();
             handler.removeCallbacks(runnable);
             handler.post(runnable);
@@ -180,6 +203,8 @@ public class BanquetOrderDisplayActivity extends BaseActivity {
                             Router.getBanquentModule().cancelOrder(mOrder.getIdentifier(), new LambdaExpression() {
                                 @Override
                                 public void action() {
+                                    Intent intent = new Intent(MessageDef.ACTION_ORDER_CREATED) ;
+                                    sendBroadcast(intent);
                                     Toast.makeText(mContext, getString(R.string.order_cancel_success), Toast.LENGTH_SHORT).show();
                                     setResult(MainActivity.ORDER_CANCEL);
                                     finish();
@@ -212,19 +237,17 @@ public class BanquetOrderDisplayActivity extends BaseActivity {
             mOrderCancel.setVisibility(View.GONE);
             mOrderBottom.setVisibility(View.GONE);
         }
-
         //test end
-
         fillGenInfo(mOrderStatus, getString(R.string.order_status), statusStr);
         fillGenInfo(mOrderNum, getString(R.string.order_num), mOrder.getSerialNumber());
-        fillGenInfo(mOrderPrice, getString(R.string.price), String.format("%.2f", mOrder.getRealPrice()) + getString(R.string.price_unit));
+        fillGenInfo(mOrderPrice, getString(R.string.price), String.format(getString(R.string.order_total_price), mOrder.getRealPrice()) + getString(R.string.price_unit));
         fillGenInfo(mAttendeeNum, getString(R.string.num), mOrder.getQuantity() + getString(R.string.people));
-        fillGenInfo(mOrderTotalPrice, getString(R.string.total_price), String.format("%.2f", mOrder.getTotalPrice()) + getString(R.string.yuan));
+        fillGenInfo(mOrderTotalPrice, getString(R.string.total_price), String.format(getString(R.string.order_total_price), mOrder.getTotalPrice()) + getString(R.string.yuan));
         fillGenInfo(mOrderPhone, getString(R.string.mobile_phone), mOrder.getPhoneNumber());
         fillGenInfo(mOrderRemark, getString(R.string.remark), mOrder.getRemark());
-        fillGenInfo(mOrderDate, getString(R.string.order_time), mOrder.getCreateTime().toLocaleString());
-
-
+//        fillGenInfo(mOrderDate, getString(R.string.order_time), mOrder.getCreateTime().toLocaleString());
+        fillGenInfo(mOrderDate , getString(R.string.order_time) ,formatDate(mOrder.getCreateTime()));
+        mOrderPay.setText(getString(R.string.pay_right_now));
         mNoticeText.setAutoLinkMask(Linkify.PHONE_NUMBERS);
         mNoticeText.setMovementMethod(LinkMovementMethod.getInstance());
         System.out.println("mOrder.getBanquentIdentifier():" + mOrder.getEvent().getIdentifier());

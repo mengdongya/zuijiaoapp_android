@@ -54,7 +54,7 @@ public class UnCaughtException implements Thread.UncaughtExceptionHandler {
             e.printStackTrace();
         } finally {
             try{fos.close(); fos = null ;}catch (Throwable t){t.printStackTrace();}
-            ActivityTask.getInstance().exit();
+
         }
     }
 }

@@ -36,7 +36,16 @@ public class Banquent implements Serializable {
 
     @SerializedName("endTime")
     private Date endTime;
+
+
+    @SerializedName("deadline")
+    private Date deadLine ;
+
+    @Deprecated
     @SerializedName("price")
+    private Float originalPrice;
+
+    @SerializedName("realPrice")
     private Float price;
 
     @SerializedName("menu")
@@ -92,8 +101,10 @@ public class Banquent implements Serializable {
 //        return price.intValue();
 //    }
 
-    public Float getPrice() {
-        return price;
+    public Integer getPrice() {
+        if(price == null )
+            return 0 ;
+        return price.intValue();
     }
 
     public ArrayList<BanquentMenu> getMenus() {
@@ -112,6 +123,11 @@ public class Banquent implements Serializable {
     public Date getEndTime() {
         return endTime;
     }
+
+    public Date getDeadLine() {
+        return deadLine;
+    }
+
 
     public BanquentCapacity getBanquentCapacity() {
         return banquentCapacity;

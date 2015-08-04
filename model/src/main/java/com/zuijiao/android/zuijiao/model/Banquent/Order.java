@@ -55,12 +55,16 @@ public class Order implements Serializable {
         return quantity;
     }
 
-    public Float getRealPrice() {
-        return realPrice;
+    public Integer getRealPrice() {
+        if(realPrice == null)
+            return 0 ;
+        return realPrice.intValue();
     }
 
-    public Float getTotalPrice() {
-        return totalPrice;
+    public Integer getTotalPrice() {
+        if(totalPrice == null)
+            return 0 ;
+        return totalPrice.intValue();
     }
 
     public Date getDeadline() {
@@ -112,8 +116,10 @@ public class Order implements Serializable {
 //        return address;
 //    }
 
-    public Float getPrice() {
-        return price;
+    public Integer getPrice() {
+        if(price == null)
+            return  0 ;
+        return price.intValue();
     }
 
     public OrderStatus getStatus() {

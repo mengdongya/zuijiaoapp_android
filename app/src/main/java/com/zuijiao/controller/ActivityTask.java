@@ -71,7 +71,7 @@ public class ActivityTask extends Application {
     public void onCreate() {
         super.onCreate();
         // baidumap initialize
-        SDKInitializer.initialize(this);
+        SDKInitializer.initialize(this.getApplicationContext());
         Log.i("umengPushAgent", "ActivityTask.onCreate:system reboot---------------------------------zuijiao") ;
         mLocationClient = new LocationClient(this.getApplicationContext());
         mMyLocationListener = new MyLocationListener();

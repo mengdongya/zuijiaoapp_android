@@ -102,18 +102,19 @@ public class BanquetDisplayFragment extends Fragment implements RefreshAndInitLi
         Router.getBanquentModule().themesOfPublic(lastedId, 20, new OneParameterExpression<Banquents>() {
             @Override
             public void action(Banquents banquents) {
-                FileManager fileMng = FileManager.getInstance(getActivity()) ;
-                fileMng.orderBanquetList(banquents.getBanquentList());
+                lastedId = banquents.getNextCursor() ;
+//                FileManager fileMng = FileManager.getInstance(getActivity()) ;
+//                fileMng.orderBanquetList(banquents.getBanquentList());
                 if (bRefresh) {
                     mAdapter.setData(banquents);
                 } else {
                     mAdapter.addData(banquents);
                 }
-                lastedId = banquents.getBanquentList().get(banquents.getBanquentList().size() - 1).getIdentifier();
-                if (banquents.getBanquentList().size() < 20)
+//                lastedId = banquents.getBanquentList().get(banquents.getBanquentList().size() - 1).getIdentifier();
+                if (banquents.getBanquentList().size() < 20 && !bRefresh)
                     mListView.setPullLoadEnable(false);
                 else
-                mListView.setPullLoadEnable(true);
+                    mListView.setPullLoadEnable(true);
                 mRefreshLayout.setRefreshing(false);
             }
         }, new OneParameterExpression<String>() {

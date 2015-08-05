@@ -28,7 +28,7 @@
             android:layout_height="60dip"
             android:layout_width="60dip"
             android:layout_marginTop="20dip"
-            android:src="@drawable/empty_information" />
+            android:src="@drawable/order_list_place_holder" />
     </LinearLayout>
 
     <android.support.v4.widget.SwipeRefreshLayout

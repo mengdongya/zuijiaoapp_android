@@ -63,6 +63,6 @@ public interface IRouterAccount {
     @GET("/users/v2/ios/buyer/{id}")
     void attendeeInfo(@Path("id") Integer attendeeId, Callback<Attendee> callback);
 
-    @GET("/users/v2/ios/person/{id}/home")
+    @GET("/users/v3/ios/person/{id}/home")
     void banquetUserInfo(@Path("id") Integer userId ,Callback<Attendee> callback) ;
 }

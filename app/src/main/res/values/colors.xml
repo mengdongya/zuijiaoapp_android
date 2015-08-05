@@ -89,4 +89,5 @@
     <color name="_aaaaaa">#aaaaaaaa</color>
     <color name="dialog_btn_pressed">#88eeeeee</color>
     <color name="surplus_time">#ff3000</color>
+    <color name="light_white">#cccccc</color>
 </resources>

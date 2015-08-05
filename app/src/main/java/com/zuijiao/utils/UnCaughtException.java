@@ -47,14 +47,14 @@ public class UnCaughtException implements Thread.UncaughtExceptionHandler {
             if(!file.exists())
                 file.createNewFile() ;
             fos = new FileOutputStream(file) ;
-            info = ex.getLocalizedMessage() ;
+            info = ex.getMessage() ;
             byte [] bytes=  info.getBytes() ;
             fos.write(info.getBytes());
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
             try{fos.close(); fos = null ;}catch (Throwable t){t.printStackTrace();}
-
+            System.exit(0);
         }
     }
 }

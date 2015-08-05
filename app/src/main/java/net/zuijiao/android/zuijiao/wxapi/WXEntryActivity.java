@@ -215,14 +215,14 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
                 }
                 break;
             case BaseResp.ErrCode.ERR_USER_CANCEL:
-                Toast.makeText(WXEntryActivity.this,
-                        getResources().getString(R.string.login_cancel), Toast.LENGTH_LONG)
-                        .show();
+//                Toast.makeText(WXEntryActivity.this,
+//                        getResources().getString(R.string.login_cancel), Toast.LENGTH_LONG)
+//                        .show();
                 finish();
                 break;
             case BaseResp.ErrCode.ERR_AUTH_DENIED:
-                Toast.makeText(WXEntryActivity.this,
-                        getResources().getString(R.string.login_deny), Toast.LENGTH_SHORT).show();
+//                Toast.makeText(WXEntryActivity.this,
+//                        getResources().getString(R.string.login_deny), Toast.LENGTH_SHORT).show();
                 finish();
                 break;
             default:

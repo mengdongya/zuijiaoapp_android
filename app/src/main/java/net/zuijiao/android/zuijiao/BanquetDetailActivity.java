@@ -3,6 +3,7 @@ package net.zuijiao.android.zuijiao;
 import android.app.ActionBar;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
@@ -240,66 +241,12 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
      * call the list of the share ways , including qq friend ,qq space ,weibo ,wechat space ,wechat friend ,msg
      */
     private void createShareWindow() {
-
         View view = null;
         GridView shareList = null;
         view = LayoutInflater.from(mContext).inflate(R.layout.share_dialog, null);
         shareList = (GridView) view.findViewById(R.id.gv_share_dialog);
-        UMWXHandler wxHandler = new UMWXHandler(mContext, WeixinApi.WEIXIN_ID, WeixinApi.WEIXIN_PWD);
-                        wxHandler.addToSocialSDK();
-        UMWXHandler wxCircleHandler = new UMWXHandler(mContext, WeixinApi.WEIXIN_ID, WeixinApi.WEIXIN_PWD);
-                        wxCircleHandler.setToCircle(true);
-        wxCircleHandler.addToSocialSDK();
-        UMQQSsoHandler qqSsoHandler = new UMQQSsoHandler(BanquetDetailActivity.this,QQApi.QQ_ID, QQApi.QQ_PWD);
-                        qqSsoHandler.addToSocialSDK();
-        QZoneSsoHandler qZoneSsoHandler = new QZoneSsoHandler(BanquetDetailActivity.this,
-                                QQApi.QQ_ID, QQApi.QQ_PWD);
-        qZoneSsoHandler.addToSocialSDK();
-        SmsHandler smsHandler = new SmsHandler();
-        smsHandler.addToSocialSDK();
-        shareList.setAdapter(new BaseAdapter() {
-            @Override
-            public int getCount() {
-                return 5;
-            }
-
-            @Override
-            public Object getItem(int position) {
-                return position;
-            }
-
-
-            @Override
-            public boolean isEnabled(int position) {
-                switch (position){
-                    case 0:return mController.getConfig().getSsoHandler(HandlerRequestCode.WX_REQUEST_CODE).isClientInstalled();
-                    case 1:return mController.getConfig().getSsoHandler(HandlerRequestCode.WX_CIRCLE_REQUEST_CODE).isClientInstalled() ;
-                    case 2:return mController.getConfig().getSsoHandler(HandlerRequestCode.QQ_REQUEST_CODE).isClientInstalled();
-                    case 3:return mController.getConfig().getSsoHandler(HandlerRequestCode.QZONE_REQUEST_CODE).isClientInstalled();
-                    case 4:return mController.getConfig().getSsoHandler(HandlerRequestCode.SMS_REQUEST_CODE).isClientInstalled();
-                }
-                return super.isEnabled(position);
-            }
-            @Override
-            public long getItemId(int position) {
-                return position;
-            }
-
-            @Override
-            public View getView(int position, View convertView, ViewGroup parent) {
-                View contentView = LayoutInflater.from(mContext).inflate(R.layout.share_item, null);
-                TextView text = (TextView) contentView.findViewById(R.id.share_item_text);
-                ImageView image = (ImageView) contentView.findViewById(R.id.share_item_image);
-                text.setText(getString(mShareTextRes[position]));
-                if(isEnabled(position)){
-                    image.setImageResource(mShareImageRes[position]);
-                }else{
-                    image.setImageResource(mUnShareImageRes[position]);
-                }
-                return contentView;
-            }
-        });
-
+        addToSocialSDK() ;
+        shareList.setAdapter(mShareListAdapter);
         final PopupWindow sharePopupWindow = new PopupWindow(view,
                 LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT, true);
         shareList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -320,6 +267,66 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
         backgroundAlpha(0.5f);
     }
 
+    private void addToSocialSDK(){
+        UMWXHandler wxHandler = new UMWXHandler(mContext, WeixinApi.WEIXIN_ID, WeixinApi.WEIXIN_PWD);
+        wxHandler.addToSocialSDK();
+        UMWXHandler wxCircleHandler = new UMWXHandler(mContext, WeixinApi.WEIXIN_ID, WeixinApi.WEIXIN_PWD);
+        wxCircleHandler.setToCircle(true);
+        wxCircleHandler.addToSocialSDK();
+        UMQQSsoHandler qqSsoHandler = new UMQQSsoHandler(BanquetDetailActivity.this,QQApi.QQ_ID, QQApi.QQ_PWD);
+        qqSsoHandler.addToSocialSDK();
+        QZoneSsoHandler qZoneSsoHandler = new QZoneSsoHandler(BanquetDetailActivity.this,
+                QQApi.QQ_ID, QQApi.QQ_PWD);
+        qZoneSsoHandler.addToSocialSDK();
+        SmsHandler smsHandler = new SmsHandler();
+        smsHandler.addToSocialSDK();
+    }
+
+
+    private BaseAdapter mShareListAdapter = new BaseAdapter() {
+        @Override
+        public int getCount() {
+            return mShareTextRes.length;
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return position;
+        }
+
+
+        @Override
+        public boolean isEnabled(int position) {
+            switch (position){
+                case 0:return mController.getConfig().getSsoHandler(HandlerRequestCode.WX_REQUEST_CODE).isClientInstalled();
+                case 1:return mController.getConfig().getSsoHandler(HandlerRequestCode.WX_CIRCLE_REQUEST_CODE).isClientInstalled() ;
+                case 2:return mController.getConfig().getSsoHandler(HandlerRequestCode.QQ_REQUEST_CODE).isClientInstalled();
+                case 3:return mController.getConfig().getSsoHandler(HandlerRequestCode.QZONE_REQUEST_CODE).isClientInstalled();
+                case 4:return mController.getConfig().getSsoHandler(HandlerRequestCode.SMS_REQUEST_CODE).isClientInstalled();
+            }
+            return super.isEnabled(position);
+        }
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            View contentView = LayoutInflater.from(mContext).inflate(R.layout.share_item, null);
+            TextView text = (TextView) contentView.findViewById(R.id.share_item_text);
+            ImageView image = (ImageView) contentView.findViewById(R.id.share_item_image);
+            text.setText(getString(mShareTextRes[position]));
+            if(isEnabled(position)){
+                image.setImageResource(mShareImageRes[position]);
+                text.setTextColor(Color.BLACK);
+            }else{
+                text.setTextColor(Color.LTGRAY);
+                image.setImageResource(mUnShareImageRes[position]);
+            }
+            return contentView;
+        }
+    } ;
     /**
      * share to different way
      *

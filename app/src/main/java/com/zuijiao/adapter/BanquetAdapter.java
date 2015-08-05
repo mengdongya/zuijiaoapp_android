@@ -2,6 +2,10 @@ package com.zuijiao.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Handler;
+import android.os.Message;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
@@ -19,6 +24,7 @@ import com.zuijiao.android.zuijiao.model.Banquent.BanquentCapacity;
 import com.zuijiao.android.zuijiao.model.Banquent.BanquentStatus;
 import com.zuijiao.android.zuijiao.model.Banquent.Banquents;
 import com.zuijiao.android.zuijiao.network.Router;
+import com.zuijiao.view.MyViewPager;
 
 import net.zuijiao.android.zuijiao.BanquetDetailActivity;
 import net.zuijiao.android.zuijiao.BaseActivity;
@@ -29,6 +35,10 @@ import net.zuijiao.android.zuijiao.R;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 /**
  * banquet display adapter and listener, for banquet list in main-fragment
@@ -42,6 +52,18 @@ public class BanquetAdapter extends BaseAdapter implements AdapterView.OnItemCli
     private int count = 0;
     private LayoutInflater mInflater;
     private View mBannerContainer;
+    private int currentItem = 0;
+    private MyViewPager bannerViewPager;
+    private LinearLayout dotContainer;
+    private ScheduledExecutorService scheduledExecutorService;
+    private Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            if (bannerViewPager != null) {
+                bannerViewPager.setCurrentItem(currentItem);
+            }
+        }
+    };
 
     public BanquetAdapter(Context context) {
         super();
@@ -53,20 +75,20 @@ public class BanquetAdapter extends BaseAdapter implements AdapterView.OnItemCli
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         position -= 1;
-        if (position == 0 && showBanner()) {
-            Intent intent = new Intent(mContext, CommonWebViewActivity.class);
-            intent.putExtra("title", "activity");
-            intent.putExtra("content_url", mBanquents.getBannerLinkUrl());
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            mContext.startActivity(intent);
-        }else {
-            if (showBanner())
-                position = position - 1;
-            Intent intent = new Intent(mContext, BanquetDetailActivity.class);
-            intent.putExtra("banquet", mBanquentList.get(position));
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            mContext.startActivity(intent);
-        }
+//        if (position == 0 && showBanner()) {
+//            Intent intent = new Intent(mContext, CommonWebViewActivity.class);
+//            intent.putExtra("title", "activity");
+//            intent.putExtra("content_url", mBanquents.getBannerLinkUrl());
+//            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//            mContext.startActivity(intent);
+//        } else {
+        if (showBanner())
+            position = position - 1;
+        Intent intent = new Intent(mContext, BanquetDetailActivity.class);
+        intent.putExtra("banquet", mBanquentList.get(position));
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        mContext.startActivity(intent);
+        //  }
     }
 
     @Override
@@ -100,8 +122,13 @@ public class BanquetAdapter extends BaseAdapter implements AdapterView.OnItemCli
             View view = null;
             if (mBannerContainer == null) {
                 mBannerContainer = mInflater.inflate(R.layout.banquet_banner, null);
-                ImageView bannerView = (ImageView) mBannerContainer.findViewById(R.id.banquet_banner);
-                Picasso.with(mContext).load(mBanquents.getBannerImageUrl()).placeholder(R.drawable.empty_view_greeting).fit().centerCrop().into(bannerView);
+                //ImageView bannerView = (ImageView) mBannerContainer.findViewById(R.id.banquet_banner);
+                bannerViewPager = (MyViewPager) mBannerContainer.findViewById(R.id.banquet_banner_viewpager);
+                dotContainer = (LinearLayout) mBannerContainer.findViewById(R.id.banquet_dot_container);
+                bannerViewPager.setAdapter(new BannerPagerAdapter());
+                bannerViewPager.setOnPageChangeListener(new BannerPagerChangeListener());
+                //startBanner();
+                // Picasso.with(mContext).load(mBanquents.getBannerImageUrl()).placeholder(R.drawable.empty_view_greeting).fit().centerCrop().into(bannerView);
             }
             return mBannerContainer;
         } else {
@@ -149,14 +176,14 @@ public class BanquetAdapter extends BaseAdapter implements AdapterView.OnItemCli
             holder.head.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    ((BaseActivity)mContext).createDialog();
+                    ((BaseActivity) mContext).createDialog();
                     Router.getAccountModule().banquetUserInfo(banquent.getMaster().getUserId(), new OneParameterExpression<Attendee>() {
                         @Override
                         public void action(Attendee attendee) {
-                            ((BaseActivity)mContext).finalizeDialog();
+                            ((BaseActivity) mContext).finalizeDialog();
                             Intent intent = new Intent(mContext, HostAndGuestActivity.class);
                             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            intent.putExtra("attendee_info" , attendee) ;
+                            intent.putExtra("attendee_info", attendee);
 //                            intent.putExtra("b_host", true);
 //                            intent.putExtra("attendee_id", banquent.getMaster().getUserId());
                             mContext.startActivity(intent);
@@ -164,7 +191,7 @@ public class BanquetAdapter extends BaseAdapter implements AdapterView.OnItemCli
                     }, new OneParameterExpression<String>() {
                         @Override
                         public void action(String s) {
-                            ((BaseActivity)mContext).finalizeDialog();
+                            ((BaseActivity) mContext).finalizeDialog();
                         }
                     });
 
@@ -241,5 +268,84 @@ public class BanquetAdapter extends BaseAdapter implements AdapterView.OnItemCli
         TextView price;
         TextView status;
         TextView finish;
+    }
+
+    private class BannerPagerAdapter extends PagerAdapter {
+
+        @Override
+        public int getCount() {
+            return 3;
+        }
+
+        @Override
+        public Object instantiateItem(ViewGroup container, int position) {
+            ImageView imageView = new ImageView(mContext);
+            Picasso.with(mContext).load(mBanquents.getBannerImageUrl()).placeholder(R.drawable.empty_view_greeting).fit().centerCrop().into(imageView);
+            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            ((ViewPager) container).addView(imageView);
+            imageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (showBanner()) {
+                        Intent intent = new Intent(mContext, CommonWebViewActivity.class);
+                        intent.putExtra("title", "activity");
+                        intent.putExtra("content_url", mBanquents.getBannerLinkUrl());
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        mContext.startActivity(intent);
+                    }
+                }
+            });
+            return imageView;
+        }
+
+        @Override
+        public void destroyItem(ViewGroup container, int position, Object object) {
+            ((ViewPager) container).removeView((View) object);
+        }
+
+        @Override
+        public boolean isViewFromObject(View view, Object object) {
+            return view == object;
+        }
+    }
+
+    private class BannerPagerChangeListener implements ViewPager.OnPageChangeListener {
+
+        private int oldPosition = 0;
+
+        @Override
+        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+        }
+
+        @Override
+        public void onPageSelected(int position) {
+            currentItem = position;
+            dotContainer.getChildAt(oldPosition).setBackgroundResource(R.drawable.dot_normal);
+            dotContainer.getChildAt(currentItem).setBackgroundResource(R.drawable.dot_focused);
+            oldPosition = position;
+
+        }
+
+        @Override
+        public void onPageScrollStateChanged(int state) {
+
+        }
+    }
+
+    private void startBanner() {
+        scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
+        scheduledExecutorService.scheduleWithFixedDelay(new BannerRunnable(), 1, 2, TimeUnit.SECONDS);
+    }
+
+    private class BannerRunnable implements Runnable {
+
+        @Override
+        public void run() {
+            synchronized (bannerViewPager) {
+                currentItem = (currentItem + 1) % 3;
+                handler.obtainMessage().sendToTarget();
+            }
+        }
     }
 }

@@ -177,7 +177,7 @@ public class BaiDuMapActivity extends BaseActivity implements OnGetGeoCoderResul
         naviBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(start == null || end == null){
+                if (start == null || end == null) {
                     Toast.makeText(mContext, getString(R.string.on_location), Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -186,8 +186,8 @@ public class BaiDuMapActivity extends BaseActivity implements OnGetGeoCoderResul
 //                para.startPoint(start);
 //                para.endPoint(end);
                 try {
-                    Uri uri = Uri.parse("geo:" + end.latitude +"," + end.longitude);
-                    Intent it = new Intent(Intent.ACTION_VIEW,uri);
+                    Uri uri = Uri.parse("geo:" + end.latitude + "," + end.longitude);
+                    Intent it = new Intent(Intent.ACTION_VIEW, uri);
                     startActivity(it);
 //                    BaiduMapNavigation.setSupportWebNavi(false);
 //                    boolean result = BaiduMapNavigation.openBaiduMapNavi(para, BaiDuMapActivity.this);
@@ -239,6 +239,7 @@ public class BaiDuMapActivity extends BaseActivity implements OnGetGeoCoderResul
 
             @Override
             public void onGetDrivingRouteResult(DrivingRouteResult drivingRouteResult) {
+
                 if (drivingRouteResult == null || drivingRouteResult.error != SearchResult.ERRORNO.NO_ERROR) {
                     Toast.makeText(mContext,getString(R.string.no_result), Toast.LENGTH_SHORT).show();
                     return;

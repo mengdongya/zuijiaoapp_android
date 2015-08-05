@@ -40,8 +40,6 @@ public class BanquetListActivity extends BaseActivity {
     private Toolbar mToolbar;
     @ViewInject(R.id.host_guest_history_list)
     private ListView mHistoryList;
-    @ViewInject(R.id.banquet_item_text)
-    private View holdAttendeeBanquet;
 
     private ArrayList<Banquent> banquentList;
     private String[] weekDays;

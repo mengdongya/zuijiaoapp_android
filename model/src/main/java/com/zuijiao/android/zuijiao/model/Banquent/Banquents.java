@@ -13,6 +13,15 @@ public class Banquents {
     private Banner banner;
     @SerializedName("items")
     private ArrayList<Banquent> banquentList;
+    @SerializedName("itemCount")
+    private Integer itemCount ;
+    @SerializedName("totalCount")
+    private Integer totalCount ;
+    @SerializedName("previousCursor")
+    private Integer previousCursor ;
+    @SerializedName("nextCursor")
+    private Integer nextCursor ;
+    private Integer lastIdentifer ;
 
     public String getBannerLinkUrl() {
         return banner.linkUrl;
@@ -24,6 +33,22 @@ public class Banquents {
 
     public ArrayList<Banquent> getBanquentList() {
         return banquentList;
+    }
+
+    public Integer getTotalCount() {
+        return totalCount;
+    }
+
+    public Integer getItemCount() {
+        return itemCount;
+    }
+
+    public Integer getPreviousCursor() {
+        return previousCursor;
+    }
+
+    public Integer getNextCursor() {
+        return nextCursor;
     }
 
     class Banner {

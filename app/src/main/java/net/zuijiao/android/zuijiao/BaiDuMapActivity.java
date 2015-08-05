@@ -40,23 +40,13 @@ import com.baidu.mapapi.map.MarkerOptions;
 import com.baidu.mapapi.map.MyLocationConfiguration;
 import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.model.LatLng;
-import com.baidu.mapapi.navi.BaiduMapAppNotSupportNaviException;
-import com.baidu.mapapi.navi.BaiduMapNavigation;
-import com.baidu.mapapi.navi.NaviParaOption;
-import com.baidu.mapapi.overlayutil.BusLineOverlay;
 import com.baidu.mapapi.overlayutil.DrivingRouteOverlay;
-import com.baidu.mapapi.search.busline.BusLineResult;
-import com.baidu.mapapi.search.busline.BusLineSearch;
-import com.baidu.mapapi.search.busline.OnGetBusLineSearchResultListener;
-import com.baidu.mapapi.search.core.CityInfo;
-import com.baidu.mapapi.search.core.RouteNode;
 import com.baidu.mapapi.search.core.SearchResult;
 import com.baidu.mapapi.search.geocode.GeoCodeOption;
 import com.baidu.mapapi.search.geocode.GeoCodeResult;
 import com.baidu.mapapi.search.geocode.GeoCoder;
 import com.baidu.mapapi.search.geocode.OnGetGeoCoderResultListener;
 import com.baidu.mapapi.search.geocode.ReverseGeoCodeResult;
-import com.baidu.mapapi.search.poi.PoiSearch;
 import com.baidu.mapapi.search.route.DrivingRouteLine;
 import com.baidu.mapapi.search.route.DrivingRoutePlanOption;
 import com.baidu.mapapi.search.route.DrivingRouteResult;
@@ -65,35 +55,8 @@ import com.baidu.mapapi.search.route.PlanNode;
 import com.baidu.mapapi.search.route.RoutePlanSearch;
 import com.baidu.mapapi.search.route.TransitRouteResult;
 import com.baidu.mapapi.search.route.WalkingRouteResult;
-import com.baidu.mapapi.utils.DistanceUtil;
-import com.baidu.navisdk.BNaviPoint;
-import com.baidu.navisdk.BaiduNaviManager;
-import com.baidu.navisdk.CommonParams;
-import com.baidu.navisdk.comapi.base.BNObserver;
-import com.baidu.navisdk.comapi.base.BNSubject;
-import com.baidu.navisdk.comapi.mapcontrol.BNMapController;
-import com.baidu.navisdk.comapi.mapcontrol.MapParams;
-import com.baidu.navisdk.comapi.routeplan.BNRoutePlaner;
-import com.baidu.navisdk.comapi.routeplan.IRouteResultObserver;
-import com.baidu.navisdk.comapi.routeplan.RoutePlanParams;
-import com.baidu.navisdk.model.NaviDataEngine;
-import com.baidu.navisdk.model.RoutePlanModel;
-import com.baidu.navisdk.model.datastruct.RoutePlanNode;
-import com.baidu.navisdk.ui.widget.RoutePlanObserver;
-import com.baidu.nplatform.comapi.basestruct.GeoPoint;
-import com.baidu.nplatform.comapi.map.MapController;
-import com.baidu.pano.platform.b.b;
 import com.lidroid.xutils.view.annotation.ContentView;
 import com.lidroid.xutils.view.annotation.ViewInject;
-import com.umeng.common.message.Log;
-import com.zuijiao.android.zuijiao.model.Banquent.Attendee;
-import com.zuijiao.android.zuijiao.model.Banquent.Banquent;
-
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Hashtable;
-import java.util.List;
 
 /**
  * Created by mengdongya on 2015/7/20.
@@ -123,8 +86,10 @@ public class BaiDuMapActivity extends BaseActivity implements OnGetGeoCoderResul
     private LocationClient mLocClient;
     private DrivingRoutePlanOption drivingRoutePlanOption;
     private  RoutePlanSearch routePlanSearch =null;
+    private MyLocationListenner myLocationListenner  ;
     @Override
     protected void registerViews() {
+        try{
         long onstart = System.currentTimeMillis() ;
         mContext = getApplicationContext() ;
         if (mTendIntent != null) {
@@ -135,7 +100,8 @@ public class BaiDuMapActivity extends BaseActivity implements OnGetGeoCoderResul
             return;
         }
         mLocClient = new LocationClient(mContext);
-        mLocClient.registerLocationListener(new MyLocationListenner());
+        myLocationListenner = new MyLocationListenner() ;
+        mLocClient.registerLocationListener(myLocationListenner);
         LocationClientOption option = new LocationClientOption();
         option.setLocationMode(LocationClientOption.LocationMode.Hight_Accuracy);
         option.setOpenGps(true);
@@ -163,7 +129,6 @@ public class BaiDuMapActivity extends BaseActivity implements OnGetGeoCoderResul
             }
         }
         zoom.setVisibility(View.GONE);
-
         mMapView.onResume();
         mBaiduMap.getUiSettings().setAllGesturesEnabled(true);
         mSearch = GeoCoder.newInstance();
@@ -177,36 +142,30 @@ public class BaiDuMapActivity extends BaseActivity implements OnGetGeoCoderResul
         naviBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(start == null || end == null){
+                if (start == null || end == null) {
                     Toast.makeText(mContext, getString(R.string.on_location), Toast.LENGTH_SHORT).show();
                     return;
                 }
-
-//                NaviParaOption para = new NaviParaOption();
-//                para.startPoint(start);
-//                para.endPoint(end);
                 try {
-                    Uri uri = Uri.parse("geo:" + end.latitude +"," + end.longitude);
-                    Intent it = new Intent(Intent.ACTION_VIEW,uri);
+                    String url = "geo:" ;
+                    url = url + "0,0?q=" + address ;
+//                    Uri uri = Uri.parse("geo:" + end.latitude + "," + end.longitude);
+                    Intent it = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
                     startActivity(it);
-//                    BaiduMapNavigation.setSupportWebNavi(false);
-//                    boolean result = BaiduMapNavigation.openBaiduMapNavi(para, BaiDuMapActivity.this);
-//                    if(!result)
-//                        throw  new Exception("open baidu map failed") ;
                 } catch (Throwable e) {
                     Toast.makeText(mContext, getString(R.string.no_map_app), Toast.LENGTH_SHORT).show();
-//                    Uri uri = Uri.parse("geo:" + end.latitude +"," + end.longitude);
-//                    Intent it = new Intent(Intent.ACTION_VIEW,uri);
-//                    startActivity(it);
                 }
             }
         });
         long endtime= System.currentTimeMillis() - onstart ;
-        System.out.println("endtime ==" + endtime + "--------------------------------------------");
+        }catch (Throwable t){
+            finish();
+        }
     }
 
     @Override
     public void onGetGeoCodeResult(GeoCodeResult geoCodeResult) {
+        try{
         if (geoCodeResult == null || geoCodeResult.error != SearchResult.ERRORNO.NO_ERROR) {
             Toast.makeText(mContext, getString(R.string.no_result), Toast.LENGTH_SHORT).show();
             mDistence.setText(getString(R.string.unknown_distance));
@@ -239,22 +198,30 @@ public class BaiDuMapActivity extends BaseActivity implements OnGetGeoCoderResul
 
             @Override
             public void onGetDrivingRouteResult(DrivingRouteResult drivingRouteResult) {
-                if (drivingRouteResult == null || drivingRouteResult.error != SearchResult.ERRORNO.NO_ERROR) {
-                    Toast.makeText(mContext,getString(R.string.no_result), Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                if (drivingRouteResult.error == SearchResult.ERRORNO.NO_ERROR) {
-                    DrivingRouteOverlay routeOverlay = new DrivingRouteOverlay(mBaiduMap);
-                    drivingRouteLine = drivingRouteResult.getRouteLines().get(0);
-                    routeOverlay.setData(drivingRouteLine);
-                    routeOverlay.addToMap();
-                     distance = drivingRouteLine.getDistance();
-                    mDistence.setText(String.format(getString(R.string.distance),distance/1000));
-                }
+                try{
 
+                    if (drivingRouteResult == null || drivingRouteResult.error != SearchResult.ERRORNO.NO_ERROR) {
+                        Toast.makeText(mContext,getString(R.string.no_result), Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    if (drivingRouteResult.error == SearchResult.ERRORNO.NO_ERROR) {
+                        DrivingRouteOverlay routeOverlay = new DrivingRouteOverlay(mBaiduMap);
+                        drivingRouteLine = drivingRouteResult.getRouteLines().get(0);
+                        routeOverlay.setData(drivingRouteLine);
+                        routeOverlay.addToMap();
+                        distance = drivingRouteLine.getDistance();
+                        mDistence.setText(String.format(getString(R.string.distance),distance/1000));
+                    }
+
+                }catch (Throwable t){
+                    finish();
+                }
             }
         });
-    }
+        }catch (Throwable t){
+            finish();
+        }
+        }
 
     @Override
     public void onGetReverseGeoCodeResult(ReverseGeoCodeResult reverseGeoCodeResult) {
@@ -262,37 +229,30 @@ public class BaiDuMapActivity extends BaseActivity implements OnGetGeoCoderResul
 
     public class MyLocationListenner implements BDLocationListener {
         public void onReceiveLocation(BDLocation location) {
-            if (location == null || mMapView == null)
-                return;
+            try{
+                if (location == null || mMapView == null)
+                    return;
 
-            MyLocationData locData = new MyLocationData.Builder()
-                    .accuracy(location.getRadius())
-                    .direction(0).latitude(location.getLatitude())
-                    .longitude(location.getLongitude()).build();
-          mBaiduMap.setMyLocationData(locData);
-            if (isFirstLoc) {
-                isFirstLoc = false;
-                start = new LatLng(location.getLatitude(), location.getLongitude());
-                MapStatusUpdate u = MapStatusUpdateFactory.newLatLng(start);
-                mBaiduMap.animateMapStatus(u);
+                MyLocationData locData = new MyLocationData.Builder()
+                        .accuracy(location.getRadius())
+                        .direction(0).latitude(location.getLatitude())
+                        .longitude(location.getLongitude()).build();
+                if(mBaiduMap != null)
+                    mBaiduMap.setMyLocationData(locData);
+                if (isFirstLoc) {
+                    isFirstLoc = false;
+                    start = new LatLng(location.getLatitude(), location.getLongitude());
+                    MapStatusUpdate u = MapStatusUpdateFactory.newLatLng(start);
+                    if(mBaiduMap != null)
+                        mBaiduMap.animateMapStatus(u);
+                }
+            }catch (Throwable t){
+                finish();
             }
+
 
         }
     }
-
-    /*public void navi(View view) {
-        NaviParaOption para = new NaviParaOption();
-        para.startPoint(start);
-        para.startName("开始位置");
-        para.endPoint(end);
-        para.endName("结束位置");
-        try {
-            BaiduMapNavigation.openBaiduMapNavi(para, mContext);
-        } catch (Exception e) {
-            e.printStackTrace();
-            Toast.makeText(mContext, "您尚未安装百度地图app或app版本过低，请原谅无法为你导航！", Toast.LENGTH_LONG).show();
-        }
-    }*/
 
     @Override
     public void onResume() {
@@ -309,15 +269,27 @@ public class BaiDuMapActivity extends BaseActivity implements OnGetGeoCoderResul
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if(mLocClient !=null)
+        try{
+        if(mLocClient !=null){
+            mLocClient.unRegisterLocationListener(myLocationListenner);
             mLocClient.stop();
+            mLocClient = null ;
+        }
         if(mBaiduMap!= null){
             mBaiduMap.setMyLocationEnabled(false);
             mBaiduMap.clear();
+            mBaiduMap = null ;
         }
-        if(mMapView!= null)
+        if(mMapView!= null) {
             mMapView.onDestroy();
-        if(routePlanSearch!=null)
+            mMapView = null;
+        }
+        if(routePlanSearch!=null){
             routePlanSearch.destroy();
+            routePlanSearch = null ;
+        }
+        }catch (Throwable t){
+            finish();
+        }
     }
 }

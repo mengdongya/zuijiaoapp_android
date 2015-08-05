@@ -166,7 +166,7 @@ public class HostAndGuestActivity extends BaseActivity {
         ((TextView) mAttendeeLanguage.findViewById(R.id.attendee_detail_info_item_title)).setText(getString(R.string.my_language));
         ((TextView) mAttendeeEducation.findViewById(R.id.attendee_detail_info_item_title)).setText(getString(R.string.education));
         ((TextView) mAttendeeHobby.findViewById(R.id.attendee_detail_info_item_title)).setText(getString(R.string.interest_hobby));
-        ((ImageView)mAttendeeAddress.findViewById(R.id.attendee_banquet_address_image)).setVisibility(View.VISIBLE);
+        mAttendeeAddress.findViewById(R.id.attendee_banquet_address_image).setVisibility(View.VISIBLE);
         mHostImages.setOnPageChangeListener(mPageListener);
         mHoldAllBanquet.setOnClickListener(mHeadListener);
         mAttendeeBanquet.setOnClickListener(mHeadListener);
@@ -174,7 +174,7 @@ public class HostAndGuestActivity extends BaseActivity {
         holdBanquet.setOnClickListener(mHeadListener);
         attendeeBanquet.setOnClickListener(mHeadListener);
         mAttendeePlace.setOnClickListener(mHeadListener);
-        mCommentRatingbar.setStepSize(0.5f);
+//        mCommentRatingbar.setStepSize(0.5f);
         if(mTendIntent != null)
             mAttendee = (Attendee) mTendIntent.getSerializableExtra("attendee_info");
         if(mAttendee == null){
@@ -487,6 +487,7 @@ public class HostAndGuestActivity extends BaseActivity {
     }
     private void registerCommentView(Review review) {
         if (review != null) {
+            mCommentRatingbar.setVisibility(View.VISIBLE);
             mEmptyIv.setVisibility(View.GONE);
             mLastestComment.setVisibility(View.VISIBLE);
             mCommentStars.setVisibility(View.VISIBLE);
@@ -549,7 +550,6 @@ public class HostAndGuestActivity extends BaseActivity {
         if (mAttendee.getProfile().getSelfIntroduction().isPresent()
                 && !mAttendee.getProfile().getSelfIntroduction().get().equals(""))
             mAttendeeIntroduction.setText(mAttendee.getProfile().getSelfIntroduction().get());
-
         if (mAttendee.getProfile().getCareer().isPresent() && !mAttendee.getProfile().getCareer().get().equals("")) {
             ((TextView) mAttendeeCareer.findViewById(R.id.attendee_detail_info_item_content)).setText(mAttendee.getProfile().getCareer().get());
         }

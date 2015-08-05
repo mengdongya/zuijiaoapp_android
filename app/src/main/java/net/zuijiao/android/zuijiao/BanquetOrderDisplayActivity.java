@@ -244,7 +244,7 @@ public class BanquetOrderDisplayActivity extends BaseActivity {
         fillGenInfo(mAttendeeNum, getString(R.string.num), mOrder.getQuantity() + getString(R.string.people));
         fillGenInfo(mOrderTotalPrice, getString(R.string.total_price), String.format(getString(R.string.order_total_price), mOrder.getTotalPrice()) + getString(R.string.yuan));
         fillGenInfo(mOrderPhone, getString(R.string.mobile_phone), mOrder.getPhoneNumber());
-        fillGenInfo(mOrderRemark, getString(R.string.remark), mOrder.getRemark());
+        fillGenInfo(mOrderRemark, getString(R.string.remark), mOrder.getRemark().trim());
 //        fillGenInfo(mOrderDate, getString(R.string.order_time), mOrder.getCreateTime().toLocaleString());
         fillGenInfo(mOrderDate , getString(R.string.order_time) ,formatDate(mOrder.getCreateTime()));
         mOrderPay.setText(getString(R.string.pay_right_now));

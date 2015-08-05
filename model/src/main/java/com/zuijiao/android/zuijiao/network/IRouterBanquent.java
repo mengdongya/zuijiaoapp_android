@@ -63,12 +63,17 @@ public interface IRouterBanquent {
 
     //MARK: - Theme
 
+//    @GET(RootURL_V3 + "/ios/events")
+//    void themesOfPublic(@Query("maxID") Integer sinceId
+//            , @Query("count") Integer count
+//            , Callback<Banquents> callback
+//    );
+
     @GET(RootURL_V3 + "/ios/events")
-    void themesOfPublic(@Query("maxID") Integer sinceId
+    void themesOfPublic(@Query("nextCursor") Integer nextCursor
             , @Query("count") Integer count
             , Callback<Banquents> callback
     );
-
     @GET(RootURL_V3 + "/ios/event/{id}")
     void theme(@Path("id") Integer identifier
             , Callback<BanquentForTheme> callback

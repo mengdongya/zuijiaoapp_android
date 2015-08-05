@@ -317,7 +317,7 @@
     <string name="attended_banquet">参加了%d场料理</string>
     <string name="get_history_list_failed">获取历史记录失败，请检查网络</string>
     <string name="total_attendee">共有%d人参加</string>
-    <string name="banquet_order_notice">须知\n·支付成功后，暂不支持在线退单\n·如有疑问请致电：021-58313201</string>
+    <string name="banquet_order_notice">须知\n   ● 支付成功后，暂不支持自主在线退单\n    ● 活动开始前24小时之内不支持退款\n   ● 如有退单或有其他疑问请联系工作人员或致电：021-58313201</string>
     <string name="canceled_banquet">已取消赏味</string>
     <string name="finished_banquet">已完成赏味</string>
     <string name="waiting_banquet">即将到来</string>
@@ -344,7 +344,7 @@
     <string name="notify_choose_avatar">请选择头像</string>
     <string name="price_unit">元/位</string>
     <string name="no_coming_order">没有即将开始的赏味单</string>
-    <string name="no_finished_order">没有已完成的赏味单</string>
+    <string name="no_finished_order">没有待评价的赏味单</string>
     <string name="no_order">没有赏味记录</string>
     <string name="detail_order">预订详情</string>
     <string name="banquet_format_time">%1$02d : %2$02d</string>
@@ -395,7 +395,7 @@
     <string name="not_cancel">不取消</string>
     <string name="order_success_return_content">您的订单已提交成功，但还未完成支付，若退出，可进入”我的赏味单“完成支付操作。确认退出吗？</string>
     <string name="continue_pay">继续支付</string>
-    <string name="exit_pay">退出支付</string>
+    <string name="exit_pay">退出</string>
     <string name="distance">距您%dkm</string>
     <string name="key_error">key值错误</string>
     <string name="map">地图</string>
@@ -417,7 +417,7 @@
     <string name="pay_failed">支付失败，请重新支付</string>
     <string name="wx_circle_share_title">嘴角家庭料理</string>
     <string name="banquet_share_content">沪上最最时尚的家庭料理【%s】，别再宅啦，跟我出来嗨呀！</string>
-    <string name="banquet_notice">须知：\n&#160;●&#160;本活动在%1$s后截止预订。\n&#160;●&#160;本活动最低成团人数为%2$d人,若您已付款且活动未成团，我们将会把款项退回您的账户</string>
+    <string name="banquet_notice">须知：\n&#160;●&#160;本活动在%1$s后截止预订。\n&#160;●&#160;本活动最低成团人数为%2$d人,若您已付款且活动未成团，我们将会把款项退回您的账户。</string>
     <string name="no_result">抱歉，未能找到结果</string>
     <string name="unknown_distance">距离未知</string>
     <!-- umeng socialize strings begin-->

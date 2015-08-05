@@ -147,7 +147,7 @@ public class RoundImageView extends ImageView {
         return bitmap;
     }
 
-    public Bitmap getCroppedRoundBitmap(Bitmap bmp, int radius) throws Throwable{
+    public Bitmap getCroppedRoundBitmap(Bitmap bmp, int radius) throws Throwable {
         if(bmp == null || bmp.isRecycled())
             return null;
         Bitmap scaledSrcBmp;

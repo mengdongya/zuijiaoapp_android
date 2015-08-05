@@ -236,10 +236,10 @@ public class BanquetOrderActivity extends BaseActivity implements View.OnClickLi
 
     private void initViewsByBanquet() {
 //        mBanquetTime.setText(mOrder.getCreateTime().toLocaleString());
-        mBanquetTime.setText(formatDate(mOrder.getCreateTime()));
+        mBanquetTime.setText(formatDate(mOrder.getEvent().getTime()));
         mBanquetPrice.setText(String.format(getString(R.string.price_per_one), mOrder.getRealPrice()));
         mBottomPriceTv.setText(String.format(getString(R.string.order_total_price), mOrder.getTotalPrice()));
-        mBanquetName.setText(mOrder.getEvent().getAddress());
+        mBanquetName.setText(mOrder.getEvent().getTitle());
         mBanquetTotalPrice.setText(String.format(getString(R.string.order_total_price), mOrder.getTotalPrice()) + getString(R.string.yuan));
     }
 

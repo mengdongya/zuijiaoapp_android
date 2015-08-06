@@ -101,11 +101,14 @@ public final class MainActivity extends BaseActivity {
     private ArrayList<Fragment> mFragmentList = null;
     //private GourmetDisplayFragment mMainFragment = null;
     //drop gourmet
-    private MainFragment mMainFragment = null;
-    //    private BanquetDisplayFragment mMainFragment= null ;
-    private GourmetDisplayFragment mRecommendFragment = null;
-    private GourmetDisplayFragment mFavorFragment = null;
+//    private MainFragment mMainFragment = null;
+    private BanquetDisplayFragment mMainFragment= null ;
+    //drop gourmet begin
+//    private GourmetDisplayFragment mRecommendFragment = null;
+//    private GourmetDisplayFragment mFavorFragment = null;
+    //drop gourmet end
     private MyOrderFragment mMyOrderFragment = null;
+//    private
     private Fragment mCurrentFragment = null;
     private FragmentManager mFragmentMng = null;
     private FragmentTransaction mFragmentTransaction = null;
@@ -124,40 +127,53 @@ public final class MainActivity extends BaseActivity {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position,
                                 long id) {
-            mFragmentTransaction = mFragmentMng.beginTransaction();
-            if (!mFragmentList.get(position).isAdded()) {
-                mFragmentTransaction.hide(mCurrentFragment).add(R.id.main_content_container, mFragmentList.get(position)).commit();
-            } else {
+            if(position == mFragmentList.size()){
+                Intent intent = new Intent();
+                intent.putExtra("content_url", "www.baidu.com");
+                intent.setClass(MainActivity.this, CommonWebViewActivity.class);
+                startActivity(intent);
+            }else{
+                mFragmentTransaction = mFragmentMng.beginTransaction();
+                if (!mFragmentList.get(position).isAdded()) {
+                    mFragmentTransaction.hide(mCurrentFragment).add(R.id.main_content_container, mFragmentList.get(position)).commit();
+                } else {
 //                if(mFragmentList.indexOf(mCurrentFragment) == 0){
 //                    mFragmentTransaction.hide(mCurrentFragment).addToBackStack("main_fragment").show(mFragmentList.get(position)).commit();
 //                }else{
-                mFragmentTransaction.hide(mCurrentFragment).show(mFragmentList.get(position)).commit();
+                    mFragmentTransaction.hide(mCurrentFragment).show(mFragmentList.get(position)).commit();
 //                }
-            }
-            mCurrentFragment = mFragmentList.get(position);
-            mToolBar.setTitle(titles[position]);
-            if (position == 3) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    mToolBar.setElevation(0);
                 }
-            } else {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    mToolBar.setElevation(30);
+                mCurrentFragment = mFragmentList.get(position);
+                mToolBar.setTitle(titles[position]);
+                if (position != 0) {
+                    mLocationView.setVisibility(View.INVISIBLE);
                 }
             }
-            if (position != 0) {
-                mLocationView.setVisibility(View.INVISIBLE);
-            } else {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    mToolBar.setElevation(0);
-                }
-                mLocationView.setVisibility(View.VISIBLE);
-            }
+//            if (position == 3) {
+//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//                    mToolBar.setElevation(0);
+//                }
+//            } else {
+//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//                    mToolBar.setElevation(30);
+//                }
+//            }
+//            if (position != 0) {
+//                mLocationView.setVisibility(View.INVISIBLE);
+//            } else {
+//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//                    mToolBar.setElevation(0);
+//                }
+//                mLocationView.setVisibility(View.VISIBLE);
+//            }
             mDrawerLayout.closeDrawer(Gravity.LEFT);
         }
     };
-    private int[] mTabImages = {R.drawable.setting_home, R.drawable.setting_recommend, R.drawable.setting_favor, R.drawable.setting_orders};
-    private int[] mTabTitles = {R.string.main_page, R.string.recommend_page, R.string.favor_page, R.string.my_order};
+//    private int[] mTabImages = {R.drawable.setting_home, R.drawable.setting_recommend, R.drawable.setting_favor, R.drawable.setting_orders};
+//    private int[] mTabTitles = {R.string.main_page, R.string.recommend_page, R.string.favor_page, R.string.my_order};
+    private int[] mTabImages = {R.drawable.setting_home, R.drawable.setting_orders , R.drawable.icon};
+    private int[] mTabTitles = {R.string.main_page, R.string.my_order,R.string.apply_to_be_host};
+
     private View mLocationView = null;
     private BadgeView mBadgeView = null;
     private OnClickListener mLocationListener = new OnClickListener() {
@@ -178,7 +194,7 @@ public final class MainActivity extends BaseActivity {
         @Override
         public void onClick(View v) {
             Intent intent = new Intent();
-            intent.setClass(MainActivity.this, UserInfoActivity.class);
+            intent.setClass(MainActivity.this, EditUserInfoActivity.class);
             Optional<TinyUser> user = Router.getInstance().getCurrentUser();
             if (!user.isPresent()) {
                 user = Optional.of(new TinyUser());
@@ -225,17 +241,17 @@ public final class MainActivity extends BaseActivity {
 
         @Override
         public long getItemId(int position) {
-            return 0;
+            return position;
         }
 
         @Override
         public Object getItem(int position) {
-            return null;
+            return position;
         }
 
         @Override
         public int getCount() {
-            return 4;
+            return mFragmentList.size() +1;
         }
     };
     private String[] mSettingArray = null;
@@ -288,7 +304,7 @@ public final class MainActivity extends BaseActivity {
             if (intent.getAction().equals(MessageDef.ACTION_GET_THIRD_PARTY_USER)) {
                 onUserInfoGot();
             } else if (intent.getAction().equals(MessageDef.ACTION_REFRESH_RECOMMENDATION)) {
-                onRecommendationChanged();
+//                onRecommendationChanged();
             } else if (intent.getAction().equals(MessageDef.ACTION_PUSH_RECEIVED)) {
                 onPushReceived();
             } else if (intent.getAction().equals(MessageDef.ACTION_ORDER_CREATED)) {
@@ -377,23 +393,24 @@ public final class MainActivity extends BaseActivity {
         mDrawerToggle.syncState();
         mDrawerLayout.setDrawerListener(mDrawerToggle);
         mBtnLogin.setOnClickListener(loginBtnListener);
-        mMainTabsTitle.setAdapter(mTabTitleAdapter);
-        mMainTabsTitle.setOnItemClickListener(mTabsListener);
+
         mThirdPartyUserHead.setOnClickListener(mUserInfoDetail);
         mFragmentList = new ArrayList<Fragment>();
         //drop gourmet begin ;
 //        mMainFragment =   MainFragment.getInstance();
 //        mFragmentList.add(mMainFragment);
         //drop gourmet end
-        mMainFragment = MainFragment.getInstance();
+        mMainFragment = BanquetDisplayFragment.newInstance();
         mFragmentList.add(mMainFragment);
 //        mFragmentList.add(mMainFragment) ;
-        mRecommendFragment = GourmetDisplayFragment.newInstance(GourmetDisplayFragment.RECOMMEND_PAGE);
-        mFragmentList.add(mRecommendFragment);
-        mFavorFragment = GourmetDisplayFragment.newInstance(GourmetDisplayFragment.FAVOR_PAGE);
-        mFragmentList.add(mFavorFragment);
+//        mRecommendFragment = GourmetDisplayFragment.newInstance(GourmetDisplayFragment.RECOMMEND_PAGE);
+//        mFragmentList.add(mRecommendFragment);
+//        mFavorFragment = GourmetDisplayFragment.newInstance(GourmetDisplayFragment.FAVOR_PAGE);
+//        mFragmentList.add(mFavorFragment);
         mMyOrderFragment = MyOrderFragment.getInstance();
         mFragmentList.add(mMyOrderFragment);
+        mMainTabsTitle.setAdapter(mTabTitleAdapter);
+        mMainTabsTitle.setOnItemClickListener(mTabsListener);
         mFragmentMng = getSupportFragmentManager();
         mFragmentTransaction = mFragmentMng.beginTransaction();
         mFragmentTransaction.add(R.id.main_content_container,
@@ -563,9 +580,9 @@ public final class MainActivity extends BaseActivity {
             return;
         }
         //drop gourmet begin
-        if (mFragmentList.indexOf(mCurrentFragment) == 0 && mMainFragment.onBackPressed()) {
-            return;
-        }
+//        if (mFragmentList.indexOf(mCurrentFragment) == 0 && mMainFragment.onBackPressed()) {
+//            return;
+//        }
         //drop gourmet end
         if (mFragmentList.indexOf(mCurrentFragment) != 0) {
             mTabsListener.onItemClick(mMainTabsTitle, null, 0, 0);
@@ -615,7 +632,7 @@ public final class MainActivity extends BaseActivity {
 
     private void onOrderCreated() {
         //drop gourmet
-        mMainFragment.refreshBanquetList();
+        mMainFragment.onRefresh();
     }
 
     protected void onUserInfoGot() {
@@ -663,11 +680,13 @@ public final class MainActivity extends BaseActivity {
             mMyOrderFragment.onActivityResult(requestCode, resultCode, data);
         }
         if (requestCode == SETTING_REQ && resultCode == LOGOUT_RESULT) {
-            mFavorFragment.clearPersonalData();
-            mRecommendFragment.clearPersonalData();
-//            mMyOrderFragment.clearMessage();
-            mFavorFragment.mDisplayUser = null;
-            mRecommendFragment.mDisplayUser = null;
+            //drop gourmet begin
+//            mFavorFragment.clearPersonalData();
+//            mRecommendFragment.clearPersonalData();
+////            mMyOrderFragment.clearMessage();
+//            mFavorFragment.mDisplayUser = null;
+//            mRecommendFragment.mDisplayUser = null;
+            //drop gourmet end
             Toast.makeText(mContext, getString(R.string.logout_msg), Toast.LENGTH_SHORT).show();
             mBtnLogin.setVisibility(View.VISIBLE);
             mThirdPartyUserName.setVisibility(View.GONE);
@@ -676,19 +695,19 @@ public final class MainActivity extends BaseActivity {
             mSettingList.setAdapter(mSettingAdapter);
         }
     }
-
-    protected void onRecommendationChanged() {
-
-        try {
-            if (mRecommendFragment.isAdded())
-                mRecommendFragment.firstInit();
-        } catch (Exception r) {
-            r.printStackTrace();
-        } catch (Throwable t) {
-            t.printStackTrace();
-        }
-    }
-
+    //drop gourmet begin
+//    protected void onRecommendationChanged() {
+//
+//        try {
+//            if (mRecommendFragment.isAdded())
+//                mRecommendFragment.firstInit();
+//        } catch (Exception r) {
+//            r.printStackTrace();
+//        } catch (Throwable t) {
+//            t.printStackTrace();
+//        }
+//    }
+    //drop gourmet end
     public void click(View v) {
         File file = new File(getCacheDir().getPath() + File.separator + "head.jpg");
         File file2 = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "h.jpg");

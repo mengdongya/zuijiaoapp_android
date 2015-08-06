@@ -10,7 +10,6 @@ import android.graphics.drawable.BitmapDrawable;
 import android.os.Handler;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
-import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -47,7 +46,6 @@ import com.umeng.socialize.controller.UMSocialService;
 import com.umeng.socialize.controller.listener.SocializeListeners;
 import com.umeng.socialize.media.UMImage;
 import com.umeng.socialize.sso.QZoneSsoHandler;
-import com.umeng.socialize.sso.SinaSsoHandler;
 import com.umeng.socialize.sso.SmsHandler;
 import com.umeng.socialize.sso.UMQQSsoHandler;
 import com.umeng.socialize.sso.UMSsoHandler;
@@ -67,7 +65,6 @@ import com.zuijiao.android.zuijiao.model.user.User;
 import com.zuijiao.android.zuijiao.network.Router;
 import com.zuijiao.controller.ActivityTask;
 import com.zuijiao.thirdopensdk.QQApi;
-import com.zuijiao.thirdopensdk.WeiboApi;
 import com.zuijiao.thirdopensdk.WeixinApi;
 import com.zuijiao.utils.AdapterViewHeightCalculator;
 import com.zuijiao.view.BanquetDetailScrollView;
@@ -512,7 +509,7 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
         mImagePages.setOnPageChangeListener(mPageListener);
         mImagesIndex.setText(1 + "/" + mViewPagerAdapter.getCount());
         initViewsByBanquet();
-        menuList.setAdapter(MyAdapter);
+        menuList.setAdapter(menuAdapter);
         menuList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -549,7 +546,7 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
         layoutParams.bottomMargin = params.height ;
     }
 
-    private BaseAdapter MyAdapter = new BaseAdapter(){
+    private BaseAdapter menuAdapter = new BaseAdapter(){
         @Override
         public int getCount() {
             if (mBanquent.getMenus() != null){

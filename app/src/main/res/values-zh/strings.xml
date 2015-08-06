@@ -420,6 +420,8 @@
     <string name="banquet_notice">须知：\n&#160;●&#160;本活动在%1$s后截止预订。\n&#160;●&#160;本活动最低成团人数为%2$d人,若您已付款且活动未成团，我们将会把款项退回您的账户。</string>
     <string name="no_result">抱歉，未能找到结果</string>
     <string name="unknown_distance">距离未知</string>
+    <string name="error_storage">请检查你的存储卡是否正常</string>
+    <string name="apply_to_be_host">申请成为主人</string>
     <!-- umeng socialize strings begin-->
     <!--<string name="pull_to_refresh_pull_label" translatable="false">向下拉动可以刷新</string>-->
     <!--<string name="pull_to_refresh_release_label" translatable="false">松开可以刷新</string>-->

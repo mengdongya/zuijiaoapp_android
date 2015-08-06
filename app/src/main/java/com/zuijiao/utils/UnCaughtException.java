@@ -36,6 +36,7 @@ public class UnCaughtException implements Thread.UncaughtExceptionHandler {
 
     @Override
     public void uncaughtException(Thread thread, Throwable ex) {
+        ex.printStackTrace();
         String info = null;
         FileOutputStream fos = null ;
         ByteArrayOutputStream baos = null;

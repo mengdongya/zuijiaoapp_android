@@ -33,8 +33,10 @@ import com.squareup.picasso.Picasso;
 import com.upyun.block.api.listener.CompleteListener;
 import com.zuijiao.android.util.Optional;
 import com.zuijiao.android.util.functional.LambdaExpression;
+import com.zuijiao.android.util.functional.OneParameterExpression;
 import com.zuijiao.android.zuijiao.model.common.TasteTag;
 import com.zuijiao.android.zuijiao.model.user.ContactInfo;
+import com.zuijiao.android.zuijiao.model.user.TinyUser;
 import com.zuijiao.android.zuijiao.model.user.User;
 import com.zuijiao.android.zuijiao.network.Cache;
 import com.zuijiao.android.zuijiao.network.Router;
@@ -116,6 +118,7 @@ public class EditUserInfoActivity extends BaseActivity {
     private String etEducation = null;
     private List<String> etLanguage = null;
     private String mCurrentEdit = null;
+    private TinyUser mTinyUser ;
     private OnItemClickListener mUserInfoItemListener = new OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -447,31 +450,50 @@ public class EditUserInfoActivity extends BaseActivity {
     protected void registerViews() {
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        mFullUser = mFileMng.getFullUser();
-        if (mFullUser == null) {
+//        mFullUser = mFileMng.getFullUser();
+//        if (mFullUser == null) {
+//            finish();
+//            return;
+//        }
+        mTinyUser = (TinyUser) mTendIntent.getSerializableExtra("tiny_user");
+        if(mTinyUser== null){
             finish();
             return;
         }
-        mTmpFullUser = mFullUser.clone();
-        if (mTmpFullUser.getAvatarURLSmall().isPresent())
-            Picasso.with(mContext).load(mTmpFullUser.getAvatarURLSmall().get()).placeholder(R.drawable.default_user_head).fit().centerCrop().into(mUserHead);
-        mBaseInfoAdapter = new GeneralUserInfoAdapter(getResources().getStringArray(R.array.user_base_info_title), BASE_INFO_ADAPTER);
-        mBaseInfoList.setAdapter(mBaseInfoAdapter);
-        AdapterViewHeightCalculator.setListViewHeightBasedOnChildren(mBaseInfoList);
-        mFavorGridView.setAdapter(mFavorAdapter);
-        mFavorGridView.setOnItemClickListener(mTasteItemListener);
-        AdapterViewHeightCalculator.setGridViewHeightBasedOnChildren(mFavorGridView);
-        mContactInfoAdapter = new GeneralUserInfoAdapter(getResources().getStringArray(R.array.user_contact_info_title), CONTACT_INFO_ADAPTER);
-        mContactInfoList.setAdapter(mContactInfoAdapter);
-        mContactInfoList.setOnItemClickListener(mContactListener);
-        AdapterViewHeightCalculator.setListViewHeightBasedOnChildren(mContactInfoList);
-        mDetailInfoAdapter = new GeneralUserInfoAdapter(getResources().getStringArray(R.array.user_detail_info_title), DETAIL_INFO_ADAPTER);
-        mDetailInfoList.setAdapter(mDetailInfoAdapter);
-        mDetailInfoList.setOnItemClickListener(mDetailListener);
-        AdapterViewHeightCalculator.setListViewHeightBasedOnChildren(mDetailInfoList);
-        mBaseInfoList.setItemsCanFocus(true);
-        mBaseInfoList.setOnItemClickListener(mUserInfoItemListener);
-        mUserHead.setOnClickListener(mHeadListener);
+        if (mTinyUser.getAvatarURLSmall().isPresent())
+            Picasso.with(mContext).load(mTinyUser.getAvatarURLSmall().get() ).placeholder(R.drawable.default_user_head).fit().centerCrop().into(mUserHead);
+        Router.getAccountModule().fetchMyInfo( new OneParameterExpression<User>() {
+            @Override
+            public void action(User user) {
+                mFullUser = user ;
+                mTmpFullUser = mFullUser.clone();
+                if (mTmpFullUser.getAvatarURLSmall().isPresent())
+                    Picasso.with(mContext).load(mTmpFullUser.getAvatarURLSmall().get()).placeholder(R.drawable.default_user_head).fit().centerCrop().into(mUserHead);
+                mBaseInfoAdapter = new GeneralUserInfoAdapter(getResources().getStringArray(R.array.user_base_info_title), BASE_INFO_ADAPTER);
+                mBaseInfoList.setAdapter(mBaseInfoAdapter);
+                AdapterViewHeightCalculator.setListViewHeightBasedOnChildren(mBaseInfoList);
+                mFavorGridView.setAdapter(mFavorAdapter);
+                mFavorGridView.setOnItemClickListener(mTasteItemListener);
+                AdapterViewHeightCalculator.setGridViewHeightBasedOnChildren(mFavorGridView);
+                mContactInfoAdapter = new GeneralUserInfoAdapter(getResources().getStringArray(R.array.user_contact_info_title), CONTACT_INFO_ADAPTER);
+                mContactInfoList.setAdapter(mContactInfoAdapter);
+                mContactInfoList.setOnItemClickListener(mContactListener);
+                AdapterViewHeightCalculator.setListViewHeightBasedOnChildren(mContactInfoList);
+                mDetailInfoAdapter = new GeneralUserInfoAdapter(getResources().getStringArray(R.array.user_detail_info_title), DETAIL_INFO_ADAPTER);
+                mDetailInfoList.setAdapter(mDetailInfoAdapter);
+                mDetailInfoList.setOnItemClickListener(mDetailListener);
+                AdapterViewHeightCalculator.setListViewHeightBasedOnChildren(mDetailInfoList);
+                mBaseInfoList.setItemsCanFocus(true);
+                mBaseInfoList.setOnItemClickListener(mUserInfoItemListener);
+                mUserHead.setOnClickListener(mHeadListener);
+            }
+        }, new OneParameterExpression<String>() {
+            @Override
+            public void action(String s) {
+                Toast.makeText(mContext  , R.string.notify_net2 , Toast.LENGTH_SHORT).show();
+            }
+        });
+
     }
 
     private void createBirthdayDialog() {

@@ -1,13 +1,16 @@
 package com.zuijiao.adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.util.Pair;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -30,6 +33,7 @@ import net.zuijiao.android.zuijiao.BanquetDetailActivity;
 import net.zuijiao.android.zuijiao.BaseActivity;
 import net.zuijiao.android.zuijiao.CommonWebViewActivity;
 import net.zuijiao.android.zuijiao.HostAndGuestActivity;
+import net.zuijiao.android.zuijiao.MainActivity;
 import net.zuijiao.android.zuijiao.R;
 
 import java.util.ArrayList;
@@ -87,6 +91,7 @@ public class BanquetAdapter extends BaseAdapter implements AdapterView.OnItemCli
         Intent intent = new Intent(mContext, BanquetDetailActivity.class);
         intent.putExtra("banquet", mBanquentList.get(position));
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        ImageView imageView = (ImageView) view.findViewWithTag("image");
         mContext.startActivity(intent);
         //  }
     }
@@ -126,6 +131,13 @@ public class BanquetAdapter extends BaseAdapter implements AdapterView.OnItemCli
                 bannerViewPager = (MyViewPager) mBannerContainer.findViewById(R.id.banquet_banner_viewpager);
                 dotContainer = (LinearLayout) mBannerContainer.findViewById(R.id.banquet_dot_container);
                 bannerViewPager.setAdapter(new BannerPagerAdapter());
+//                bannerViewPager.setOnTouchListener(new View.OnTouchListener() {
+//                    @Override
+//                    public boolean onTouch(View view, MotionEvent motionEvent) {
+//                        view.getParent().requestDisallowInterceptTouchEvent(true);
+//                        return false;
+//                    }
+//                });
                 bannerViewPager.setOnPageChangeListener(new BannerPagerChangeListener());
                 //startBanner();
                 // Picasso.with(mContext).load(mBanquents.getBannerImageUrl()).placeholder(R.drawable.empty_view_greeting).fit().centerCrop().into(bannerView);
@@ -158,6 +170,7 @@ public class BanquetAdapter extends BaseAdapter implements AdapterView.OnItemCli
                 position -= 1;
             Banquent banquent = mBanquentList.get(position);
             Picasso.with(mContext).load(banquent.getSurfaceImageUrl()).placeholder(R.drawable.empty_view_greeting).fit().centerCrop().into(holder.image);
+            holder.image.setTag("image");
             if (banquent.getMaster().getAvatarURLSmall().isPresent())
                 Picasso.with(mContext).load(banquent.getMaster().getAvatarURLSmall().get()).placeholder(R.drawable.default_user_head).fit().centerCrop().into(holder.head);
             holder.title.setText(banquent.getTitle());

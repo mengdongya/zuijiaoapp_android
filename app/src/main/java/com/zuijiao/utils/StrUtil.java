@@ -1,12 +1,15 @@
 package com.zuijiao.utils;
 
 import android.content.Context;
+import android.text.TextUtils;
 
 import net.zuijiao.android.zuijiao.R;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -135,13 +138,49 @@ public class StrUtil {
     }
 
     /**
-     *  if str are num
+     * if str are num
+     *
      * @param str
      * @return
      */
-    public static boolean isNumer(String str){
-        Pattern pattern =Pattern.compile("[0-9]*");
+    public static boolean isNumer(String str) {
+        Pattern pattern = Pattern.compile("[0-9]*");
         Matcher isNum = pattern.matcher(str);
         return isNum.matches();
+    }
+
+    /**
+     * parse url string
+     * @param url
+     * @return
+     */
+    public static Map parseHttpString(String url) {
+        if (url == null || url.length() == 0)
+            return null;
+        int paramsIndex = url.indexOf('?');
+        if (paramsIndex == -1)
+            return null;
+        String params = url.substring(paramsIndex + 1, url.length());
+        if (params == null || params.length() == 0)
+            return null;
+        Map paramsMap = new HashMap<String, String>();
+        int ampersandIndex, lastAmpersandIndex = 0;
+        String subStr, param, value;
+        String[] paramPair;
+        do {
+            ampersandIndex = params.indexOf('&', lastAmpersandIndex) + 1;
+            if (ampersandIndex > 0) {
+                subStr = params.substring(lastAmpersandIndex, ampersandIndex - 1);
+                lastAmpersandIndex = ampersandIndex;
+            } else {
+                subStr = params.substring(lastAmpersandIndex);
+            }
+            paramPair = subStr.split("=");
+            param = paramPair[0];
+            value = paramPair.length == 1 ? "" : paramPair[1];
+            paramsMap.put(param, value);
+        } while (ampersandIndex > 0);
+
+        return paramsMap;
     }
 }

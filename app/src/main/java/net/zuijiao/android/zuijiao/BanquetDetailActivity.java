@@ -1,5 +1,7 @@
 package net.zuijiao.android.zuijiao;
 
+import android.animation.Animator;
+import android.animation.ValueAnimator;
 import android.app.ActionBar;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -154,11 +156,11 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
     @ViewInject(R.id.banquet_datail_root)
     private View rootView = null;
     @ViewInject(R.id.banquet_detail_notice)
-    private TextView mBanquetNotice ;
+    private TextView mBanquetNotice;
     @ViewInject(R.id.lv_menu_dishes_item)
     private ListView menuList;
     @ViewInject(R.id.banquet_detail_instruction_content_position)
-    private LinearLayout mLocationLayout ;
+    private LinearLayout mLocationLayout;
     private Reviews mReviews;
     private Banquent mBanquent;
     private String[] weekDays;
@@ -171,11 +173,11 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
     private static final int SHARE_TO_SMS = 4;
     private String mShareUrl = "/feast/";
     private final UMSocialService mController = UMServiceFactory.getUMSocialService("com.umeng.share");
-    private int mShareImageRes[] = {R.drawable.share_weixin, R.drawable.share_friend_circle, R.drawable.share_qq, R.drawable.share_qq_space,R.drawable.share_sms};
+    private int mShareImageRes[] = {R.drawable.share_weixin, R.drawable.share_friend_circle, R.drawable.share_qq, R.drawable.share_qq_space, R.drawable.share_sms};
 
-    private int mUnShareImageRes[] = { R.drawable.unshare_weixin, R.drawable.unshare_friend_circle, R.drawable.unshare_qq, R.drawable.unshare_qq_space,R.drawable.unshare_sms};
+    private int mUnShareImageRes[] = {R.drawable.unshare_weixin, R.drawable.unshare_friend_circle, R.drawable.unshare_qq, R.drawable.unshare_qq_space, R.drawable.unshare_sms};
 
-    private int mShareTextRes[] = { R.string.weixin_friend, R.string.weixin_friend_circle, R.string.qq_friend, R.string.qq_space,R.string.sms};
+    private int mShareTextRes[] = {R.string.weixin_friend, R.string.weixin_friend_circle, R.string.qq_friend, R.string.qq_space, R.string.sms};
     private int rootBottom = Integer.MIN_VALUE;
     private boolean withImage = true;
     private SsoHandler mSsoHandler;
@@ -184,6 +186,7 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
     boolean wxInstalled = false;
     boolean wxCircleInstalled = false;
     boolean smsInstalled = false;
+   // private ExitActivityTransition exitTransition;
 
     private TranslateAnimation hideToolbarAnim = new TranslateAnimation(Animation.RELATIVE_TO_SELF, 0.0f,
             Animation.RELATIVE_TO_SELF, 0.0f, Animation.RELATIVE_TO_SELF,
@@ -242,7 +245,7 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
         GridView shareList = null;
         view = LayoutInflater.from(mContext).inflate(R.layout.share_dialog, null);
         shareList = (GridView) view.findViewById(R.id.gv_share_dialog);
-        addToSocialSDK() ;
+        addToSocialSDK();
         shareList.setAdapter(mShareListAdapter);
         final PopupWindow sharePopupWindow = new PopupWindow(view,
                 LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT, true);
@@ -264,13 +267,13 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
         backgroundAlpha(0.5f);
     }
 
-    private void addToSocialSDK(){
+    private void addToSocialSDK() {
         UMWXHandler wxHandler = new UMWXHandler(mContext, WeixinApi.WEIXIN_ID, WeixinApi.WEIXIN_PWD);
         wxHandler.addToSocialSDK();
         UMWXHandler wxCircleHandler = new UMWXHandler(mContext, WeixinApi.WEIXIN_ID, WeixinApi.WEIXIN_PWD);
         wxCircleHandler.setToCircle(true);
         wxCircleHandler.addToSocialSDK();
-        UMQQSsoHandler qqSsoHandler = new UMQQSsoHandler(BanquetDetailActivity.this,QQApi.QQ_ID, QQApi.QQ_PWD);
+        UMQQSsoHandler qqSsoHandler = new UMQQSsoHandler(BanquetDetailActivity.this, QQApi.QQ_ID, QQApi.QQ_PWD);
         qqSsoHandler.addToSocialSDK();
         QZoneSsoHandler qZoneSsoHandler = new QZoneSsoHandler(BanquetDetailActivity.this,
                 QQApi.QQ_ID, QQApi.QQ_PWD);
@@ -294,15 +297,21 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
 
         @Override
         public boolean isEnabled(int position) {
-            switch (position){
-                case 0:return mController.getConfig().getSsoHandler(HandlerRequestCode.WX_REQUEST_CODE).isClientInstalled();
-                case 1:return mController.getConfig().getSsoHandler(HandlerRequestCode.WX_CIRCLE_REQUEST_CODE).isClientInstalled() ;
-                case 2:return mController.getConfig().getSsoHandler(HandlerRequestCode.QQ_REQUEST_CODE).isClientInstalled();
-                case 3:return mController.getConfig().getSsoHandler(HandlerRequestCode.QZONE_REQUEST_CODE).isClientInstalled();
-                case 4:return mController.getConfig().getSsoHandler(HandlerRequestCode.SMS_REQUEST_CODE).isClientInstalled();
+            switch (position) {
+                case 0:
+                    return mController.getConfig().getSsoHandler(HandlerRequestCode.WX_REQUEST_CODE).isClientInstalled();
+                case 1:
+                    return mController.getConfig().getSsoHandler(HandlerRequestCode.WX_CIRCLE_REQUEST_CODE).isClientInstalled();
+                case 2:
+                    return mController.getConfig().getSsoHandler(HandlerRequestCode.QQ_REQUEST_CODE).isClientInstalled();
+                case 3:
+                    return mController.getConfig().getSsoHandler(HandlerRequestCode.QZONE_REQUEST_CODE).isClientInstalled();
+                case 4:
+                    return mController.getConfig().getSsoHandler(HandlerRequestCode.SMS_REQUEST_CODE).isClientInstalled();
             }
             return super.isEnabled(position);
         }
+
         @Override
         public long getItemId(int position) {
             return position;
@@ -314,23 +323,24 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
             TextView text = (TextView) contentView.findViewById(R.id.share_item_text);
             ImageView image = (ImageView) contentView.findViewById(R.id.share_item_image);
             text.setText(getString(mShareTextRes[position]));
-            if(isEnabled(position)){
+            if (isEnabled(position)) {
                 image.setImageResource(mShareImageRes[position]);
                 text.setTextColor(Color.BLACK);
-            }else{
+            } else {
                 text.setTextColor(Color.LTGRAY);
                 image.setImageResource(mUnShareImageRes[position]);
             }
             return contentView;
         }
-    } ;
+    };
+
     /**
      * share to different way
      *
      * @param action
      */
     private void distributeShareAction(int action) {
-        mController.setShareContent(String.format(getString(R.string.banquet_share_content ) , mBanquent.getTitle()));
+        mController.setShareContent(String.format(getString(R.string.banquet_share_content), mBanquent.getTitle()));
         mController.setShareMedia(new UMImage(mContext,
                 mBanquent.getSurfaceImageUrl()));
 //        mController.setAppWebSite(SHARE_MEDIA.WEIXIN, mBanquent.getSurfaceImageUrl());
@@ -357,7 +367,7 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
                 UMWXHandler wxCircleHandler = new UMWXHandler(mContext, WeixinApi.WEIXIN_ID, WeixinApi.WEIXIN_PWD);
                 wxCircleHandler.setToCircle(true);
                 wxCircleHandler.addToSocialSDK();
-                wxCircleHandler.setTitle(String.format(getString(R.string.banquet_share_content ) , mBanquent.getTitle()));
+                wxCircleHandler.setTitle(String.format(getString(R.string.banquet_share_content), mBanquent.getTitle()));
                 wxCircleHandler.setRefreshTokenAvailable(true);
                 wxCircleHandler.setTargetUrl(BuildConfig.Banquet_Web_Url + mShareUrl + mBanquent.getIdentifier());
                 performShare(SHARE_MEDIA.WEIXIN_CIRCLE);
@@ -412,6 +422,7 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
             backgroundAlpha(1f);
         }
     }
+
     private AdapterView.OnItemClickListener mGridListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -453,7 +464,6 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
         public long getItemId(int position) {
             return position;
         }
-
 
 
         @Override
@@ -536,22 +546,22 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
             }
         });
         RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mBottomView.getLayoutParams();
-        mBottomPrice.measure(0 , 0 );
+        mBottomPrice.measure(0, 0);
         int priceHeight = mBottomPrice.getMeasuredHeight();
-        mBottomDate.measure(0 , 0);
-        int dateHeight = mBottomDate.getMeasuredHeight() ;
-        int margin = (int) (3* getResources().getDimension(R.dimen.end_z));
-        params.height = priceHeight + dateHeight + margin ;
+        mBottomDate.measure(0, 0);
+        int dateHeight = mBottomDate.getMeasuredHeight();
+        int margin = (int) (3 * getResources().getDimension(R.dimen.end_z));
+        params.height = priceHeight + dateHeight + margin;
         RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) mScrollView.getLayoutParams();
-        layoutParams.bottomMargin = params.height ;
+        layoutParams.bottomMargin = params.height;
     }
 
-    private BaseAdapter menuAdapter = new BaseAdapter(){
+    private BaseAdapter menuAdapter = new BaseAdapter() {
         @Override
         public int getCount() {
-            if (mBanquent.getMenus() != null){
+            if (mBanquent.getMenus() != null) {
                 return mBanquent.getMenus().size();
-            }else {
+            } else {
                 return 0;
             }
         }
@@ -566,6 +576,7 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
         public boolean isEnabled(int position) {
             return false;
         }
+
         @Override
         public Object getItem(int i) {
             return i;
@@ -579,27 +590,27 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
         @Override
         public View getView(int i, View view, ViewGroup viewGroup) {
             ViewHolder holder;
-            if (view == null){
+            if (view == null) {
                 view = LayoutInflater.from(mContext).inflate(R.layout.menu_dishes_item, null);
                 holder = new ViewHolder();
-                holder.menu = (TextView)(view .findViewById(R.id.menu_dishes_item_menu));
-                holder.dishes = (TextView)(view .findViewById(R.id.menu_dishes_item_dishes));
+                holder.menu = (TextView) (view.findViewById(R.id.menu_dishes_item_menu));
+                holder.dishes = (TextView) (view.findViewById(R.id.menu_dishes_item_dishes));
                 view.setTag(holder);
-            }else{
+            } else {
                 holder = (ViewHolder) view.getTag();
             }
             BanquentMenu menu = mBanquent.getMenus().get(i);
-            String categoryName = menu.getCategoryName() ;
-            if(categoryName == null || categoryName.equals(""))
+            String categoryName = menu.getCategoryName();
+            if (categoryName == null || categoryName.equals(""))
                 holder.menu.setVisibility(View.GONE);
             else
-            holder.menu.setText(categoryName);
-            ArrayList<String> dishes =  mBanquent.getMenus().get(i).getDishes();
+                holder.menu.setText(categoryName);
+            ArrayList<String> dishes = mBanquent.getMenus().get(i).getDishes();
             StringBuilder strBuilder = new StringBuilder();
-            for(int j = 0;j < dishes.size();j++ ){
-                if (j != dishes.size()-1) {
+            for (int j = 0; j < dishes.size(); j++) {
+                if (j != dishes.size() - 1) {
                     strBuilder.append(dishes.get(j) + "\n");
-                }else{
+                } else {
                     strBuilder.append(dishes.get(j));
                 }
             }
@@ -608,10 +619,17 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
             return view;
         }
     };
-    class ViewHolder{
+
+    class ViewHolder {
         TextView menu;
         TextView dishes;
     }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
+
     private void registerCommentView() {
         List<Review> reviewList = mReviews.getReviewList();
         if (reviewList != null && reviewList.size() != 0) {
@@ -740,7 +758,7 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
         }
         mBottomPrice.setText(String.valueOf(mBanquent.getPrice()));
         mBottomDate.setText(formatDate(mBanquent.getTime()));
-        mBanquetNotice.setText(String.format(getString(R.string.banquet_notice) ,formatDate(mBanquent.getDeadLine()) ,mBanquent.getBanquentCapacity().getMin()));
+        mBanquetNotice.setText(String.format(getString(R.string.banquet_notice), formatDate(mBanquent.getDeadLine()), mBanquent.getBanquentCapacity().getMin()));
     }
 
 
@@ -813,7 +831,6 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
         }
         return strBuilder.toString();
     }*/
-
     private void hideToolbar() {
         if (mToolbar.getVisibility() == View.GONE)
             return;
@@ -868,7 +885,7 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
                 }, new OneParameterExpression<String>() {
                     @Override
                     public void action(String s) {
-                        Toast.makeText(mContext , R.string.notify_net2,Toast.LENGTH_SHORT).show();
+                        Toast.makeText(mContext, R.string.notify_net2, Toast.LENGTH_SHORT).show();
                         finalizeDialog();
                     }
                 });
@@ -903,8 +920,8 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
             case R.id.banquet_detail_location_img:
             case R.id.banquet_detail_instruction_content_position:
                 intent = new Intent();
-                intent.setClass(mContext,BaiDuMapActivity.class);
-                intent.putExtra("address",mBanquent.getAddress());
+                intent.setClass(mContext, BaiDuMapActivity.class);
+                intent.putExtra("address", mBanquent.getAddress());
                 startActivity(intent);
                 break;
         }
@@ -945,12 +962,11 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
     }
 
 
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        UMSsoHandler ssoHandler = mController.getConfig().getSsoHandler(requestCode) ;
-        if(ssoHandler != null){
+        UMSsoHandler ssoHandler = mController.getConfig().getSsoHandler(requestCode);
+        if (ssoHandler != null) {
             ssoHandler.authorizeCallBack(requestCode, resultCode, data);
         }
     }
@@ -971,6 +987,4 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
         strBuilder.append(" ");
         return strBuilder.toString();
     }
-
-
 }

@@ -29,9 +29,15 @@ public class MyViewPager extends ViewPager {
 ////        return true;
 //    }
 
-    @Override
-    public boolean dispatchTouchEvent(MotionEvent ev) {
-        getParent().requestDisallowInterceptTouchEvent(true);
-        return super.dispatchTouchEvent(ev);
-    }
+//    @Override
+//    public boolean onInterceptTouchEvent(MotionEvent ev) {
+//        getParent().requestDisallowInterceptTouchEvent(true);
+//        return super.onInterceptTouchEvent(ev);
+//    }
+//
+//    @Override
+//    public boolean dispatchTouchEvent(MotionEvent ev) {
+//        getParent().requestDisallowInterceptTouchEvent(true);
+//        return super.dispatchTouchEvent(ev);
+//    }
 }

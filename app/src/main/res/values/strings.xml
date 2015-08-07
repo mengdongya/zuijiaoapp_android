@@ -415,9 +415,13 @@
     <string name="beyond_max_quantity">可预订数量不足</string>
     <string name="data_error">数据异常</string>
     <string name="max_quantify">最多可预订%d人</string>
-    <string name="banquet_notice">须知：\n&#160;●&#160;本活动在%1$s后截止预订。\n&#160;●&#160;本活动最低成团人数为%2$d人,若您已付款且活动未成团，我们将会把款项退回您的账户。</string>
+    <string name="banquet_notice">须知</string>
     <string name="no_result">抱歉，未能找到结果</string>
     <string name="unknown_distance">距离未知</string>
-    <string name="error_storage">请检查你的存储卡是否正常</string>
-    <string name="apply_to_be_host">申请成为主人</string>
+    <string name="banquet_notice1">本活动在%1$s后截止预订。</string>
+    <string name="banquet_notice2">本活动最低成团人数为%1$d人,若您已付款且活动未成团，我们将会把款项退回您的账户。</string>
+    <string name="msg_draw_back_money">您购买的「%d」已经退款成功，预计在3-10个工作日返回您的支付账户。</string>
+    <string name="msg_go_to_comment">「%d」已经完成了赏味，赶紧为料理人写下你的评价吧！（点击去评价）</string>
+    <string name="msg_thanks_register">感谢你注册嘴角，完善个人资料可以帮助你找到美味相投的朋友。（点击去完善）</string>
+    <string name="msg_apply_host">很高兴通知你，你的申请已通过审核，欢迎你加入嘴角料理人，完善收款信息后就可以发布料理活动了，期待你的美味作品。（点击去完善收款信息）</string>
 </resources>

@@ -108,7 +108,7 @@ public class HostAndGuestActivity extends BaseActivity {
     @ViewInject(R.id.host_detail_group)
     private LinearLayout mhostMsg;
     @ViewInject(R.id.ll_host_comment_stars)
-    private LinearLayout mCommentStars;
+    private RelativeLayout mCommentStars;
     @ViewInject(R.id.host_guest_lastest_comment)
     private RelativeLayout mLastestComment;
     @ViewInject(R.id.host_guest_review_title)
@@ -179,11 +179,11 @@ public class HostAndGuestActivity extends BaseActivity {
         attendeeBanquet.setOnClickListener(mHeadListener);
         mAttendeePlace.setOnClickListener(mHeadListener);
 //        mCommentRatingbar.setStepSize(0.5f);
-        if (mTendIntent != null)
+        if(mTendIntent != null)
             mAttendee = (Attendee) mTendIntent.getSerializableExtra("attendee_info");
-        if (mAttendee == null) {
+        if(mAttendee == null){
             networkStep();
-        } else {
+        }else{
             //register common user info
             registerViewsByAttendee();
             //register last attend banquet begin
@@ -199,10 +199,10 @@ public class HostAndGuestActivity extends BaseActivity {
                 mAttendeeBanquet.setVisibility(View.VISIBLE);
                 mHostAttendee.setText(String.format(getString(R.string.attended_banquet), mAttendee.getAttendCount()));
                 Picasso.with(mContext).load(lastAttendBanquet.getSurfaceImageUrl()).placeholder(R.drawable.empty_view_greeting).fit().centerCrop().into((ImageView) attendeeBanquet.findViewById(R.id.banquet_history_item_image1));
-                setBanquetStatus(lastAttendBanquet, attendeeBanquet);
+                setBanquetStatus(lastAttendBanquet,attendeeBanquet);
                 ((TextView) attendeeBanquet.findViewById(R.id.banquet_history_item_title1)).setText(lastAttendBanquet.getTitle());
                 ((TextView) attendeeBanquet.findViewById(R.id.banquet_history_item_date1)).setText(formatDate(lastAttendBanquet.getTime()));
-                ((TextView) attendeeBanquet.findViewById(R.id.banquet_history_item_price1)).setText(String.format(getString(R.string.price_per_one), lastAttendBanquet.getPrice()));
+                ((TextView) attendeeBanquet.findViewById(R.id.banquet_history_item_price1)).setText(String.valueOf(lastAttendBanquet.getPrice().intValue()));
                 ((TextView) attendeeBanquet.findViewById(R.id.banquet_history_item_situation1)).setText(String.format(getString(R.string.total_attendee), lastAttendBanquet.getAttendees().size()));
             }
             //register last attend banquet end
@@ -225,11 +225,11 @@ public class HostAndGuestActivity extends BaseActivity {
             } else {
                 String culinary = sellerInfo.getCulinary();
                 if (culinary != null && !culinary.equals("")) {
-                    ((TextView) mAttendeeSkilled.findViewById(R.id.attendee_detail_info_item_content)).setText(culinary);
+                    ((TextView)mAttendeeSkilled.findViewById(R.id.attendee_detail_info_item_content)).setText(culinary);
                 }
                 String cookSkill = sellerInfo.getSkill();
                 if (cookSkill != null && !cookSkill.equals("")) {
-                    ((TextView) mAttendeeCooking.findViewById(R.id.attendee_detail_info_item_content)).setText(cookSkill);
+                    ((TextView)  mAttendeeCooking.findViewById(R.id.attendee_detail_info_item_content)).setText(cookSkill);
                 }
                 Seller.SellerPlace sellerPlace = sellerInfo.getPlace();
                 if (sellerPlace != null) {
@@ -299,10 +299,10 @@ public class HostAndGuestActivity extends BaseActivity {
 
                     mHostHold.setText(String.format(getString(R.string.hosted_banquet), sellerInfo.getEventCount(), sellerInfo.getSoldCount()));
                     Picasso.with(mContext).load(lastHoldBanquet.getSurfaceImageUrl()).placeholder(R.drawable.empty_view_greeting).fit().centerCrop().into((ImageView) holdBanquet.findViewById(R.id.banquet_history_item_image1));
-                    setBanquetStatus(lastHoldBanquet, holdBanquet);
+                    setBanquetStatus(lastHoldBanquet,holdBanquet);
                     ((TextView) holdBanquet.findViewById(R.id.banquet_history_item_title1)).setText(lastHoldBanquet.getTitle());
                     ((TextView) holdBanquet.findViewById(R.id.banquet_history_item_date1)).setText(formatDate(lastHoldBanquet.getTime()));
-                    ((TextView) holdBanquet.findViewById(R.id.banquet_history_item_price1)).setText(String.format(getString(R.string.price_per_one), lastHoldBanquet.getPrice()));
+                    ((TextView) holdBanquet.findViewById(R.id.banquet_history_item_price1)).setText(String.valueOf(lastHoldBanquet.getPrice().intValue()));
                     ((TextView) holdBanquet.findViewById(R.id.banquet_history_item_situation1)).setText(String.format(getString(R.string.total_attendee), lastHoldBanquet.getAttendees().size()));
                 } else {
                     mHoldAllBanquet.setVisibility(View.GONE);
@@ -341,10 +341,10 @@ public class HostAndGuestActivity extends BaseActivity {
                     mAttendeeBanquet.setVisibility(View.VISIBLE);
                     mHostAttendee.setText(String.format(getString(R.string.attended_banquet), mAttendee.getAttendCount()));
                     Picasso.with(mContext).load(lastAttendBanquet.getSurfaceImageUrl()).placeholder(R.drawable.empty_view_greeting).fit().centerCrop().into((ImageView) attendeeBanquet.findViewById(R.id.banquet_history_item_image1));
-                    setBanquetStatus(lastAttendBanquet, attendeeBanquet);
+                    setBanquetStatus(lastAttendBanquet,attendeeBanquet);
                     ((TextView) attendeeBanquet.findViewById(R.id.banquet_history_item_title1)).setText(lastAttendBanquet.getTitle());
                     ((TextView) attendeeBanquet.findViewById(R.id.banquet_history_item_date1)).setText(formatDate(lastAttendBanquet.getTime()));
-                    ((TextView) attendeeBanquet.findViewById(R.id.banquet_history_item_price1)).setText(String.format(getString(R.string.price_per_one), lastAttendBanquet.getPrice()));
+                    ((TextView) attendeeBanquet.findViewById(R.id.banquet_history_item_price1)).setText(String.valueOf(lastAttendBanquet.getPrice().intValue()));
                     ((TextView) attendeeBanquet.findViewById(R.id.banquet_history_item_situation1)).setText(String.format(getString(R.string.total_attendee), lastAttendBanquet.getAttendees().size()));
                 }
                 //register last attend banquet end
@@ -367,11 +367,11 @@ public class HostAndGuestActivity extends BaseActivity {
                 } else {
                     String culinary = sellerInfo.getCulinary();
                     if (culinary != null && !culinary.equals("")) {
-                        ((TextView) mAttendeeSkilled.findViewById(R.id.attendee_detail_info_item_content)).setText(culinary);
+                        ((TextView)mAttendeeSkilled.findViewById(R.id.attendee_detail_info_item_content)).setText(culinary);
                     }
                     String cookSkill = sellerInfo.getSkill();
                     if (cookSkill != null && !cookSkill.equals("")) {
-                        ((TextView) mAttendeeCooking.findViewById(R.id.attendee_detail_info_item_content)).setText(cookSkill);
+                        ((TextView)  mAttendeeCooking.findViewById(R.id.attendee_detail_info_item_content)).setText(cookSkill);
                     }
                     Seller.SellerPlace sellerPlace = sellerInfo.getPlace();
                     if (sellerPlace != null) {
@@ -441,10 +441,10 @@ public class HostAndGuestActivity extends BaseActivity {
 
                         mHostHold.setText(String.format(getString(R.string.hosted_banquet), sellerInfo.getEventCount(), sellerInfo.getSoldCount()));
                         Picasso.with(mContext).load(lastHoldBanquet.getSurfaceImageUrl()).placeholder(R.drawable.empty_view_greeting).fit().centerCrop().into((ImageView) holdBanquet.findViewById(R.id.banquet_history_item_image1));
-                        setBanquetStatus(lastHoldBanquet, holdBanquet);
+                        setBanquetStatus(lastHoldBanquet,holdBanquet);
                         ((TextView) holdBanquet.findViewById(R.id.banquet_history_item_title1)).setText(lastHoldBanquet.getTitle());
                         ((TextView) holdBanquet.findViewById(R.id.banquet_history_item_date1)).setText(formatDate(lastHoldBanquet.getTime()));
-                        ((TextView) holdBanquet.findViewById(R.id.banquet_history_item_price1)).setText(String.format(getString(R.string.price_per_one), lastHoldBanquet.getPrice()));
+                        ((TextView) holdBanquet.findViewById(R.id.banquet_history_item_price1)).setText(String.valueOf(lastHoldBanquet.getPrice().intValue()));
                         ((TextView) holdBanquet.findViewById(R.id.banquet_history_item_situation1)).setText(String.format(getString(R.string.total_attendee), lastHoldBanquet.getAttendees().size()));
                     } else {
                         mHoldAllBanquet.setVisibility(View.GONE);
@@ -468,8 +468,8 @@ public class HostAndGuestActivity extends BaseActivity {
 
     }
 
-    private void setBanquetStatus(Banquent banquet, View v) {
-        TextView finish = (TextView) v.findViewById(R.id.banquet_history_item_status_finished1);
+    private void setBanquetStatus(Banquent banquet,View v){
+        TextView finish = (TextView)v.findViewById(R.id.banquet_history_item_status_finished1);
         switch (BanquentStatus.fromString(banquet.getStatus())) {
             case Selling:
                 finish.setVisibility(View.GONE);
@@ -488,7 +488,6 @@ public class HostAndGuestActivity extends BaseActivity {
                 break;
         }
     }
-
     private void registerCommentView(Review review) {
         if (review != null) {
             mCommentRatingbar.setVisibility(View.VISIBLE);
@@ -683,10 +682,10 @@ public class HostAndGuestActivity extends BaseActivity {
         }
     };
 
-    public void j2baidumap(View view) {
+    public void j2baidumap(View view){
         Intent intent = new Intent();
         intent.setClass(mContext, BaiDuMapActivity.class);
-        intent.putExtra("address", mAttendee.getSellerInfo().getPlace().getAddress());
+        intent.putExtra("address",mAttendee.getSellerInfo().getPlace().getAddress());
         startActivity(intent);
 
     }

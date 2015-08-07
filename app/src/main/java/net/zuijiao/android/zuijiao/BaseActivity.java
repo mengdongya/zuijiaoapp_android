@@ -51,7 +51,7 @@ public abstract class BaseActivity extends ActionBarActivity {
     protected ProgressDialog mDialog = null;
     protected Context mContext = null;
     protected ThirdPartySDKManager authMng = null;
-    protected String updateApkName = null ;
+    protected String updateApkName = "zuijiao-update.apk";
     protected long mUpdateDownloadId = Integer.MIN_VALUE;
 
     /**
@@ -255,16 +255,15 @@ public abstract class BaseActivity extends ActionBarActivity {
 
         } else {
             //visitor mode
-            Router.getOAuthModule().visitor(
-                    new LambdaExpression() {
-                        @Override
-                        public void action() {
-                            PreferenceManager.getInstance(mContext).clearThirdPartyLoginMsg();
-                            //saveAuthInfo(new AuthorInfo()) ;
-                            if (successCallback != null)
-                                successCallback.action();
-                        }
-                    },
+            Router.getOAuthModule().visitor(new LambdaExpression() {
+                                                @Override
+                                                public void action() {
+                                                    PreferenceManager.getInstance(mContext).clearThirdPartyLoginMsg();
+                                                    //saveAuthInfo(new AuthorInfo()) ;
+                                                    if (successCallback != null)
+                                                        successCallback.action();
+                                                }
+                                            },
                     new OneParameterExpression<Integer>() {
                         @Override
                         public void action(Integer errorMessage) {
@@ -329,17 +328,11 @@ public abstract class BaseActivity extends ActionBarActivity {
             public void ConfirmOnClick() {
                 alertDialogUtil.dismissDialog();
 //                updateAlertDialog.dismiss();
-                try{
-                    DownloadManager downloadManager = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
-                    Uri uri = Uri.parse(downloadUrl);
-                    DownloadManager.Request request = new DownloadManager.Request(uri);
-                    updateApkName = "zuijiao-update" + new Date().getTime() + ".apk" ;
-                    request.setDestinationInExternalFilesDir(mContext, null, updateApkName);
-                    mUpdateDownloadId = downloadManager.enqueue(request);
-                }catch (Throwable t){
-                    t.printStackTrace();
-                    Toast.makeText(mContext , R.string.error_storage , Toast.LENGTH_SHORT).show();
-                }
+                DownloadManager downloadManager = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
+                Uri uri = Uri.parse(downloadUrl);
+                DownloadManager.Request request = new DownloadManager.Request(uri);
+                request.setDestinationInExternalFilesDir(mContext, null, updateApkName);
+                mUpdateDownloadId = downloadManager.enqueue(request);
             }
         });
         alertDialogUtil.showDialog();

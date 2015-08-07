@@ -422,11 +422,6 @@
                 <action android:name="net.zuijiao.android.zuijiao.intent.action.COMMAND" />
             </intent-filter>
         </receiver>
-        <receiver android:name="com.umeng.message.BootBroadcastReceiver">
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-            </intent-filter>
-        </receiver>
 
         <service
             android:name="com.umeng.message.UmengService"
@@ -460,7 +455,7 @@
             </intent-filter>
         </service>
         <!-- V1.3.0 umeng push , download resource from notification -->
-        <service android:name="com.umeng.message.UmengDownloadResourceService" />
+        <!--<service android:name="com.umeng.message.UmengDownloadResourceService" />-->
         <service android:name="net.zuijiao.android.zuijiao.UmengAgentPushService" />
         <!--umeng feedback-->
         <activity android:name="com.umeng.fb.ConversationActivity" />

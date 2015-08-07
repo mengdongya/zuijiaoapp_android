@@ -57,6 +57,7 @@
         <item>澳门</item>
         <item>台湾</item>
         <item>海外</item>
+        <item>其他</item>
     </string-array>
     <string-array name="user_base_info_title">
         <item>昵称</item>

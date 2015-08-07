@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.umeng.analytics.MobclickAgent;
 import com.umeng.message.PushAgent;
@@ -38,6 +39,7 @@ import com.zuijiao.entity.AuthorInfo;
 import com.zuijiao.utils.AlertDialogUtil;
 
 import java.io.File;
+import java.util.Date;
 
 public abstract class BaseActivity extends ActionBarActivity {
     public static final int LOGIN_REQ = 10001;
@@ -49,7 +51,7 @@ public abstract class BaseActivity extends ActionBarActivity {
     protected ProgressDialog mDialog = null;
     protected Context mContext = null;
     protected ThirdPartySDKManager authMng = null;
-    protected String updateApkName = "zuijiao-update.apk";
+    protected String updateApkName = null ;
     protected long mUpdateDownloadId = Integer.MIN_VALUE;
 
     /**
@@ -253,15 +255,16 @@ public abstract class BaseActivity extends ActionBarActivity {
 
         } else {
             //visitor mode
-            Router.getOAuthModule().visitor(new LambdaExpression() {
-                                                @Override
-                                                public void action() {
-                                                    PreferenceManager.getInstance(mContext).clearThirdPartyLoginMsg();
-                                                    //saveAuthInfo(new AuthorInfo()) ;
-                                                    if (successCallback != null)
-                                                        successCallback.action();
-                                                }
-                                            },
+            Router.getOAuthModule().visitor(
+                    new LambdaExpression() {
+                        @Override
+                        public void action() {
+                            PreferenceManager.getInstance(mContext).clearThirdPartyLoginMsg();
+                            //saveAuthInfo(new AuthorInfo()) ;
+                            if (successCallback != null)
+                                successCallback.action();
+                        }
+                    },
                     new OneParameterExpression<Integer>() {
                         @Override
                         public void action(Integer errorMessage) {
@@ -326,11 +329,17 @@ public abstract class BaseActivity extends ActionBarActivity {
             public void ConfirmOnClick() {
                 alertDialogUtil.dismissDialog();
 //                updateAlertDialog.dismiss();
-                DownloadManager downloadManager = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
-                Uri uri = Uri.parse(downloadUrl);
-                DownloadManager.Request request = new DownloadManager.Request(uri);
-                request.setDestinationInExternalFilesDir(mContext, null, updateApkName);
-                mUpdateDownloadId = downloadManager.enqueue(request);
+                try{
+                    DownloadManager downloadManager = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
+                    Uri uri = Uri.parse(downloadUrl);
+                    DownloadManager.Request request = new DownloadManager.Request(uri);
+                    updateApkName = "zuijiao-update" + new Date().getTime() + ".apk" ;
+                    request.setDestinationInExternalFilesDir(mContext, null, updateApkName);
+                    mUpdateDownloadId = downloadManager.enqueue(request);
+                }catch (Throwable t){
+                    t.printStackTrace();
+                    Toast.makeText(mContext , R.string.error_storage , Toast.LENGTH_SHORT).show();
+                }
             }
         });
         alertDialogUtil.showDialog();

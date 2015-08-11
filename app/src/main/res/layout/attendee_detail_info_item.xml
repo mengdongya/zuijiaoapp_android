@@ -29,14 +29,4 @@
         android:textColor="@color/tv_deep_gray"
         android:text="@string/un_setting" />
 
-    <ImageView
-        android:id="@+id/attendee_banquet_address_image"
-        android:layout_width="20dip"
-        android:layout_height="20dip"
-        android:layout_gravity="center"
-        android:layout_marginTop="5dip"
-        android:layout_marginRight="10dip"
-        android:visibility="gone"
-        android:scaleType="center"
-        android:src="@drawable/arrow_expend_right" />
 </LinearLayout>

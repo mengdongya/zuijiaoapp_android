@@ -44,7 +44,7 @@ public class Gourmet implements Serializable, Cloneable {
     }
 
     public List<String> getImageURLs() {
-        List<String> result = new ArrayList<>();
+        List<String> result = new ArrayList<String>();
         for (String url : imageURLs) {
             if (url.length() > 0 && url.startsWith("http://"))
                 result.add(url);

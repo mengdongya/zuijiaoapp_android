@@ -156,8 +156,10 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
     private ReviewRatingBar mCommentRatingbar;
     @ViewInject(R.id.banquet_datail_root)
     private View rootView = null;
-    @ViewInject(R.id.banquet_detail_notice)
-    private TextView mBanquetNotice;
+    @ViewInject(R.id.banquet_detail_notice1)
+    private TextView mBanquetNotice1;
+    @ViewInject(R.id.banquet_detail_notice2)
+    private TextView mBanquetNotice2;
     @ViewInject(R.id.lv_menu_dishes_item)
     private ListView menuList;
     @ViewInject(R.id.banquet_detail_instruction_content_position)
@@ -573,7 +575,6 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
             }
         }
 
-
         @Override
         public boolean areAllItemsEnabled() {
             return false;
@@ -761,8 +762,7 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
         }
         mBottomPrice.setText(String.valueOf(mBanquent.getPrice()));
         mBottomDate.setText(formatDate(mBanquent.getTime()));
-        mBanquetNotice.setText(String.format(getString(R.string.banquet_notice) ,formatDate(mBanquent.getDeadLine()) ,mBanquent.getBanquentCapacity().getMin()));
-        mBanquetNotice1.setText(String.format(getString(R.string.banquet_notice1), formatDate(mBanquent.getDeadLine()) ));
+        mBanquetNotice1.setText(String.format(getString(R.string.banquet_notice1), formatDate(mBanquent.getDeadLine())));
         mBanquetNotice2.setText(String.format(getString(R.string.banquet_notice2) ,mBanquent.getBanquentCapacity().getMin()));
     }
 

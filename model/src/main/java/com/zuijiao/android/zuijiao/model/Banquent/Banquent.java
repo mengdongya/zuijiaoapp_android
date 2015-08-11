@@ -112,7 +112,7 @@ public class Banquent implements Serializable {
     }
 
     public ArrayList<String> getImageUrls() {
-        ArrayList<String> arrayList = new ArrayList<>();
+        ArrayList<String> arrayList = new ArrayList<String>();
         for (String imageUrl : imageUrls) {
             imageUrl = ImageUrlUtil.imageUrl(imageUrl);
             arrayList.add(imageUrl);

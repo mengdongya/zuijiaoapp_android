@@ -106,7 +106,7 @@ public class Seller implements Serializable{
             if (placeImages == null) {
                 return null;
             }
-            ArrayList<String> arrayList = new ArrayList<>();
+            ArrayList<String> arrayList = new ArrayList<String>();
             for (String imageUrl : placeImages) {
                 imageUrl = ImageUrlUtil.imageUrl(imageUrl);
                 arrayList.add(imageUrl);

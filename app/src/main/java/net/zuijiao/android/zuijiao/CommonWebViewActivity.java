@@ -1,10 +1,14 @@
 package net.zuijiao.android.zuijiao;
 
 import android.content.Intent;
+import android.annotation.TargetApi;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -12,6 +16,7 @@ import android.widget.Toast;
 
 import com.lidroid.xutils.view.annotation.ContentView;
 import com.lidroid.xutils.view.annotation.ViewInject;
+import com.zuijiao.utils.OSUtil;
 import com.zuijiao.android.util.functional.LambdaExpression;
 import com.zuijiao.android.util.functional.OneParameterExpression;
 import com.zuijiao.android.zuijiao.model.Banquent.Banquent;
@@ -33,6 +38,7 @@ public class CommonWebViewActivity extends BaseActivity {
     private String title = null;
     private String contentUrl = null;
     private WebViewClient mWvClient = null;
+    private boolean bApplyHost = false ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +55,7 @@ public class CommonWebViewActivity extends BaseActivity {
         if (mTendIntent != null) {
             title = mTendIntent.getStringExtra("title");
             contentUrl = mTendIntent.getStringExtra("content_url");
+            bApplyHost =mTendIntent.getBooleanExtra("apply_host" , false );
         }
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -116,12 +123,34 @@ public class CommonWebViewActivity extends BaseActivity {
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        if(bApplyHost ){
+            getMenuInflater().inflate(R.menu.web_view , menu);
+        }
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @TargetApi(Build.VERSION_CODES.KITKAT)
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-//                Toast.makeText(getApplicationContext(), "onbackpressed", 1000)
-//                        .show();
-                break;
+                if(OSUtil.getAPILevel() >= android.os.Build.VERSION_CODES.KITKAT)
+                     mWebView.evaluateJavascript("xxxx()", new ValueCallback<String>() {
+                         @Override
+                         public void onReceiveValue(String value) {
+                             Toast.makeText(mContext, value , Toast.LENGTH_SHORT).show();
+                         }
+                     });
+                else{
+                    mWebView.loadUrl("javascript:xxxx()");
+                }
+                return true ;
+//                if(bApplyHost && mWebView.canGoBack())
+//                    mWebView.goBack();
+            case R.id.menu_web_view:
+//                if(bApplyHost && mWebView.canGoForward())
+//                    mWebView.goForward();
 
             default:
                 break;

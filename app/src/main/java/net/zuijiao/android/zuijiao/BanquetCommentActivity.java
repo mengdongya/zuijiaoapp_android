@@ -20,8 +20,10 @@ import com.zuijiao.android.util.functional.OneParameterExpression;
 import com.zuijiao.android.zuijiao.model.Banquent.Attendee;
 import com.zuijiao.android.zuijiao.model.Banquent.Review;
 import com.zuijiao.android.zuijiao.model.Banquent.Reviews;
+import com.zuijiao.android.zuijiao.model.user.TinyUser;
 import com.zuijiao.android.zuijiao.network.Router;
 import com.zuijiao.controller.ActivityTask;
+import com.zuijiao.listener.AttendeeAvatarListener;
 import com.zuijiao.view.RefreshAndInitListView;
 import com.zuijiao.view.ReviewRatingBar;
 
@@ -66,7 +68,7 @@ public class BanquetCommentActivity extends BaseActivity implements RefreshAndIn
         }
         mCommentList.setPullRefreshEnable(false);
         mCommentList.setAdapter(mAdapter);
-        mCommentList.setOnItemClickListener(itemClickListener);
+//        mCommentList.setOnItemClickListener(itemClickListener);
         getSupportActionBar().setTitle(String.format(getString(R.string.toolbar_comments), totalCount));
         mRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -92,8 +94,6 @@ public class BanquetCommentActivity extends BaseActivity implements RefreshAndIn
                     Intent intent = new Intent(mContext, HostAndGuestActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     intent.putExtra("attendee_info" , attendee) ;
-//                            intent.putExtra("b_host", true);
-//                            intent.putExtra("attendee_id", banquent.getMaster().getUserId());
                     mContext.startActivity(intent);
                 }
             }, new OneParameterExpression<String>() {
@@ -149,6 +149,8 @@ public class BanquetCommentActivity extends BaseActivity implements RefreshAndIn
             }
             Review review = reviewList.get(position);
             ImageLoader.getInstance().displayImage(review.getReviewer().getAvatarURLSmall().get(), holder.head);
+            holder.head.setTag(reviewList.get(position).getReviewer());
+            holder.head.setOnClickListener(new AttendeeAvatarListener(mContext));
             holder.name.setText(review.getReviewer().getNickName());
             holder.issue.setText(review.getEvent().getTitle() + " · " + formatDate(review.getEvent().getTime()));
             holder.stars.setRating(review.getScore());

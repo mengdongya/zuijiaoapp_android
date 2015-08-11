@@ -7,6 +7,7 @@ import android.os.Environment;
 import com.zuijiao.controller.ActivityTask;
 import com.zuijiao.controller.FileManager;
 
+import net.zuijiao.android.zuijiao.BuildConfig;
 import net.zuijiao.android.zuijiao.MainActivity;
 
 import java.io.ByteArrayOutputStream;
@@ -49,13 +50,14 @@ public class UnCaughtException implements Thread.UncaughtExceptionHandler {
                 file.createNewFile() ;
             fos = new FileOutputStream(file) ;
             info = ex.getMessage() ;
-            byte [] bytes=  info.getBytes() ;
             fos.write(info.getBytes());
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
             try{fos.close(); fos = null ;}catch (Throwable t){t.printStackTrace();}
-            System.exit(0);
+            if(!BuildConfig.DEBUG){
+                System.exit(0);
+            }
         }
     }
 }

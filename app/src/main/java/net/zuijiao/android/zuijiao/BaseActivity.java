@@ -53,7 +53,7 @@ public abstract class BaseActivity extends ActionBarActivity {
     protected ThirdPartySDKManager authMng = null;
     protected String updateApkName = "zuijiao-update.apk";
     protected long mUpdateDownloadId = Integer.MIN_VALUE;
-
+    protected boolean mInfoGot = false ;
     /**
      * listen to the downloading of update package
      */
@@ -90,9 +90,7 @@ public abstract class BaseActivity extends ActionBarActivity {
         mFileMng = FileManager.getInstance(mContext);
         dbMng = DBOpenHelper.getmInstance(mContext);
         authMng = ThirdPartySDKManager.getInstance(this);
-//        if (savedInstanceState == null) {
-            mTendIntent = getIntent();
-//        }
+        mTendIntent = getIntent();
         registerViews();
         IntentFilter filter = new IntentFilter();
         filter.addAction(DownloadManager.ACTION_DOWNLOAD_COMPLETE);
@@ -144,6 +142,7 @@ public abstract class BaseActivity extends ActionBarActivity {
             if (mDialog != null)
                 mDialog.dismiss();
             mDialog = ProgressDialog.show(this, "", message);
+            mDialog.setCancelable(true);
         } catch (Throwable t) {
             t.printStackTrace();
         }
@@ -155,6 +154,7 @@ public abstract class BaseActivity extends ActionBarActivity {
         try {
             if (mDialog != null && mDialog.isShowing()) return;
             mDialog = ProgressDialog.show(this, "", getString(R.string.on_loading));
+            mDialog.setCancelable(true);
         } catch (Throwable t) {
             t.printStackTrace();
         }
@@ -358,4 +358,11 @@ public abstract class BaseActivity extends ActionBarActivity {
      * register views
      */
     protected abstract void registerViews();
+
+    /**
+     * fetch current activity display content ;
+     */
+    protected void fetchContent(){
+
+    }
 }

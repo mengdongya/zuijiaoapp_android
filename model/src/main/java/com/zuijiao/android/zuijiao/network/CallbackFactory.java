@@ -1,9 +1,13 @@
 package com.zuijiao.android.zuijiao.network;
 
+import com.google.gson.Gson;
 import com.squareup.okhttp.Response;
 import com.zuijiao.android.util.Optional;
 import com.zuijiao.android.util.functional.LambdaExpression;
 import com.zuijiao.android.util.functional.OneParameterExpression;
+import com.zuijiao.android.util.functional.OneParamsErrorExpression;
+import com.zuijiao.android.zuijiao.model.Banquent.Banquents;
+import com.zuijiao.android.zuijiao.model.user.TinyUser;
 
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -99,4 +103,7 @@ class CallbackFactory<T> {
             }
         };
     }
+
+
+
 }

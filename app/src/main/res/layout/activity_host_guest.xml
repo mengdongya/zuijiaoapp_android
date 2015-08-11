@@ -49,7 +49,7 @@
                     android:layout_alignParentBottom="true"
                     android:layout_alignParentRight="true"
                     android:layout_marginBottom="40dip"
-                    android:layout_marginRight="40dip"
+                    android:layout_marginRight="10dip"
                     android:background="@drawable/banquet_detail_image_index_bg"
                     android:textColor="@color/white"
                     android:textSize="15sp" />
@@ -68,7 +68,7 @@
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="10dip"
                     android:src="@drawable/default_user_head"
-                    android:visibility="gone" />
+                     />
 
                 <TextView
                     android:id="@+id/host_guest_attendee_name"
@@ -151,6 +151,7 @@
                         android:layout_margin="10dip"
                         android:lineSpacingExtra="5dip"
                         android:textColor="@color/_555555"
+                        android:text="@string/default_self_introduction"
                         android:textSize="14sp" />
                 </LinearLayout>
             </LinearLayout>

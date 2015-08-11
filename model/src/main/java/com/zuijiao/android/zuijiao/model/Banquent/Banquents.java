@@ -2,13 +2,14 @@ package com.zuijiao.android.zuijiao.model.Banquent;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by user on 6/19/15.
  */
-public class Banquents {
+public class Banquents implements Serializable{
     @SerializedName("banner")
     private Banner banner;
     @SerializedName("items")
@@ -21,7 +22,7 @@ public class Banquents {
     private Integer previousCursor ;
     @SerializedName("nextCursor")
     private Integer nextCursor ;
-    private Integer lastIdentifer ;
+//    private Integer lastIdentifer ;
 
     public String getBannerLinkUrl() {
         return banner.linkUrl;
@@ -51,7 +52,7 @@ public class Banquents {
         return nextCursor;
     }
 
-    class Banner {
+    class Banner implements  Serializable{
         @SerializedName("url")
         private String linkUrl;
         @SerializedName("imageUrl")

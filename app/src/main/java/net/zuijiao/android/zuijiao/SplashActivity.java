@@ -20,11 +20,13 @@ import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.umeng.message.PushAgent;
 import com.zuijiao.android.util.Optional;
 import com.zuijiao.android.zuijiao.model.Gourmet;
+import com.zuijiao.android.zuijiao.network.Cache;
 import com.zuijiao.controller.ActivityTask;
 import com.zuijiao.controller.FileManager;
 import com.zuijiao.controller.PreferenceManager;
 import com.zuijiao.controller.PreferenceManager.PreferenceInfo;
 import com.zuijiao.db.DBOpenHelper;
+import com.zuijiao.utils.CacheUtils;
 import com.zuijiao.utils.OSUtil;
 
 import java.io.InputStream;
@@ -55,6 +57,7 @@ public class SplashActivity extends BaseActivity {
         mPushAgent.enable();
         super.onCreate(savedInstanceState);
         if (mPreferInfo.isAppFirstLaunch()) {
+            CacheUtils.clearData(this);
             goToGuide();
         } else {
             InputStream is = getResources().openRawResource(R.raw.splash_bg);

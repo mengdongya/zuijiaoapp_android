@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <include
+        android:id="@+id/apply1_tool_bar"
+        layout="@layout/toolbar" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="8dip">
+        <ImageView android:layout_height="230dip"
+            android:layout_width="match_parent"
+            android:id="@+id/apply1_image_view"
+            android:src="@drawable/shanghai"
+            android:scaleType="centerCrop"
+            android:layout_marginBottom="10dip"/>
+        <TextView android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:lineSpacingExtra="4dip"
+            android:id="@+id/apply1_text_view"
+            android:layout_weight="1"
+            android:textSize="15sp"
+            android:gravity="center_horizontal"
+            android:textColor="@color/tv_deep_gray"
+            android:text="@string/apply_introduction"/>
+        <Button android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:textColor="@color/white"
+            android:id="@+id/apply1_button"
+            android:layout_marginLeft="10dip"
+            android:layout_marginRight="10dip"
+            android:text="@string/apply_now"
+            android:layout_gravity="center"
+            android:background="@drawable/banquet_detail_about_cuisine_btn_bg"/>
+    </LinearLayout>
+
+
+</LinearLayout>

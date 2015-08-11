@@ -319,7 +319,7 @@ public class HostAndGuestActivity extends BaseActivity {
             setBanquetStatus(lastAttendBanquet,attendeeBanquet);
             ((TextView) attendeeBanquet.findViewById(R.id.banquet_history_item_title1)).setText(lastAttendBanquet.getTitle());
             ((TextView) attendeeBanquet.findViewById(R.id.banquet_history_item_date1)).setText(formatDate(lastAttendBanquet.getTime()));
-            ((TextView) attendeeBanquet.findViewById(R.id.banquet_history_item_price1)).setText(String.format(getString(R.string.price_per_one), lastAttendBanquet.getPrice()));
+            ((TextView) attendeeBanquet.findViewById(R.id.banquet_history_item_price1)).setText(String.valueOf(lastAttendBanquet.getPrice().intValue()));
             ((TextView) attendeeBanquet.findViewById(R.id.banquet_history_item_situation1)).setText(String.format(getString(R.string.total_attendee), lastAttendBanquet.getAttendees().size()));
         }
         //register last attend banquet end
@@ -416,10 +416,10 @@ public class HostAndGuestActivity extends BaseActivity {
                 banquetImageHoldNull.setVisibility(View.GONE);
                 mHostHold.setText(String.format(getString(R.string.hosted_banquet), sellerInfo.getEventCount(), sellerInfo.getSoldCount()));
                 Picasso.with(mContext).load(lastHoldBanquet.getSurfaceImageUrl()).placeholder(R.drawable.empty_view_greeting).fit().centerCrop().into((ImageView) holdBanquet.findViewById(R.id.banquet_history_item_image1));
-                setBanquetStatus(lastHoldBanquet,holdBanquet);
+                setBanquetStatus(lastHoldBanquet, holdBanquet);
                 ((TextView) holdBanquet.findViewById(R.id.banquet_history_item_title1)).setText(lastHoldBanquet.getTitle());
                 ((TextView) holdBanquet.findViewById(R.id.banquet_history_item_date1)).setText(formatDate(lastHoldBanquet.getTime()));
-                ((TextView) holdBanquet.findViewById(R.id.banquet_history_item_price1)).setText(String.format(getString(R.string.price_per_one), lastHoldBanquet.getPrice()));
+                ((TextView) holdBanquet.findViewById(R.id.banquet_history_item_price1)).setText(String.valueOf(lastHoldBanquet.getPrice().intValue()));
                 ((TextView) holdBanquet.findViewById(R.id.banquet_history_item_situation1)).setText(String.format(getString(R.string.total_attendee), lastHoldBanquet.getAttendees().size()));
             } else {
                 mHoldAllBanquet.setVisibility(View.GONE);

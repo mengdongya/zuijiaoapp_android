@@ -2,6 +2,7 @@ package com.zuijiao.view;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.view.GestureDetector;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -61,6 +62,7 @@ public class RefreshAndInitListView extends ListView implements
     private int mScrollBack;
     // feature.
     private Context context = null;
+    private GestureDetector mGestureDetector;
 
     /**
      * @param context
@@ -89,6 +91,7 @@ public class RefreshAndInitListView extends ListView implements
     }
 
     private void initWithContext(Context context) {
+        mGestureDetector = new GestureDetector(context, new YScrollDetector());
         mScroller = new Scroller(context, new DecelerateInterpolator());
         // XListView need the scroll event, and it will dispatch the event to
         // user's listener (as a proxy).
@@ -333,6 +336,22 @@ public class RefreshAndInitListView extends ListView implements
                 break;
         }
         return super.onTouchEvent(ev);
+    }
+
+    @Override
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+        return super.onInterceptTouchEvent(ev) && mGestureDetector.onTouchEvent(ev);
+    }
+
+    class YScrollDetector extends GestureDetector.SimpleOnGestureListener {
+
+        @Override
+        public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+            /**
+             * if we're scrolling more closer to x direction, return false, let subview to process it
+             */
+            return (Math.abs(distanceY) > Math.abs(distanceX));
+        }
     }
 
     @Override

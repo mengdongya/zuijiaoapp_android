@@ -168,7 +168,6 @@ public final class MainActivity extends BaseActivity {
 //                }
 //                mLocationView.setVisibility(View.VISIBLE);
 //            }
-            mMainTabsTitle.setItemChecked(position , true );
             mDrawerLayout.closeDrawer(Gravity.LEFT);
         }
     };
@@ -413,7 +412,6 @@ public final class MainActivity extends BaseActivity {
         mMyOrderFragment = MyOrderFragment.getInstance();
         mFragmentList.add(mMyOrderFragment);
         mMainTabsTitle.setAdapter(mTabTitleAdapter);
-        mMainTabsTitle.setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
         mMainTabsTitle.setOnItemClickListener(mTabsListener);
         mFragmentMng = getSupportFragmentManager();
         mFragmentTransaction = mFragmentMng.beginTransaction();

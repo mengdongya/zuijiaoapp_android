@@ -1,18 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <ImageView
-        android:layout_height="140dip"
-        android:layout_marginLeft="8dip"
-        android:scaleType="centerCrop"
-        android:layout_marginBottom="8dip"
-        android:src="@drawable/empty_view_greeting"
-        android:layout_marginRight="8dip"
+    <!--<ImageView-->
+    <!--android:id="@+id/banquet_banner"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="140dip"-->
+    <!--android:layout_marginBottom="8dip"-->
+    <!--android:layout_marginLeft="8dip"-->
+    <!--android:layout_marginRight="8dip"-->
+    <!--android:scaleType="centerCrop"-->
+    <!--android:src="@drawable/empty_view_greeting" />-->
+    <FrameLayout
         android:layout_width="match_parent"
-        android:id="@+id/banquet_banner" />
+        android:layout_height="wrap_content">
+
+        <com.zuijiao.view.MyViewPager
+            android:id="@+id/banquet_banner_viewpager"
+            android:layout_width="match_parent"
+            android:layout_height="140dip"
+            android:layout_marginBottom="8dip"
+            android:layout_marginLeft="8dip"
+            android:layout_marginRight="8dip" />
+
+        <LinearLayout
+            android:id="@+id/banquet_dot_container"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center_horizontal"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dip"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <View
+                style="@style/dot_style"
+                android:background="@drawable/dot_focused" />
+
+            <View style="@style/dot_style" />
+
+            <View style="@style/dot_style" />
+        </LinearLayout>
+
+    </FrameLayout>
 
     <!--<ImageView-->
     <!--android:layout_height="20dip"-->

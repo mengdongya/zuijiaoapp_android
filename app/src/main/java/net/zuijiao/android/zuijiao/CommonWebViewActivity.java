@@ -1,5 +1,6 @@
 package net.zuijiao.android.zuijiao;
 
+import android.content.Intent;
 import android.annotation.TargetApi;
 import android.os.Build;
 import android.os.Bundle;
@@ -16,6 +17,14 @@ import android.widget.Toast;
 import com.lidroid.xutils.view.annotation.ContentView;
 import com.lidroid.xutils.view.annotation.ViewInject;
 import com.zuijiao.utils.OSUtil;
+import com.zuijiao.android.util.functional.LambdaExpression;
+import com.zuijiao.android.util.functional.OneParameterExpression;
+import com.zuijiao.android.zuijiao.model.Banquent.Banquent;
+import com.zuijiao.android.zuijiao.network.Router;
+import com.zuijiao.utils.StrUtil;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * display a designated web content
@@ -31,7 +40,6 @@ public class CommonWebViewActivity extends BaseActivity {
     private WebViewClient mWvClient = null;
     private boolean bApplyHost = false ;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,7 +52,7 @@ public class CommonWebViewActivity extends BaseActivity {
 
     @Override
     protected void registerViews() {
-        if(mTendIntent != null ){
+        if (mTendIntent != null) {
             title = mTendIntent.getStringExtra("title");
             contentUrl = mTendIntent.getStringExtra("content_url");
             bApplyHost =mTendIntent.getBooleanExtra("apply_host" , false );
@@ -56,7 +64,39 @@ public class CommonWebViewActivity extends BaseActivity {
         mWebView.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
         mWvClient = new WebViewClient() {
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                view.loadUrl(url);
+                if (url.contains("content_url")) {
+                    if (url.contains("banquetDetail")) {
+                        Map params = StrUtil.parseHttpString(url);
+                        createDialog();
+                        tryLoginFirst(new LambdaExpression() {
+                            @Override
+                            public void action() {
+                                Router.getBanquentModule().theme(Integer.valueOf((String) params.get("id")), new OneParameterExpression<Banquent>() {
+                                    @Override
+                                    public void action(Banquent banquent) {
+                                        Intent intent = new Intent(mContext, BanquetDetailActivity.class);
+                                        intent.putExtra("banquet", banquent);
+                                        startActivity(intent);
+                                        finalizeDialog();
+                                    }
+                                }, new OneParameterExpression<String>() {
+                                    @Override
+                                    public void action(String errorMsg) {
+                                        Toast.makeText(mContext, getString(R.string.notify_net2), Toast.LENGTH_SHORT).show();
+                                        finalizeDialog();
+                                    }
+                                });
+                            }
+                        }, new OneParameterExpression<Integer>() {
+                            @Override
+                            public void action(Integer integer) {
+                                Toast.makeText(mContext, getString(R.string.notify_net2), Toast.LENGTH_SHORT).show();
+                                finalizeDialog();
+                            }
+                        });
+                    }
+                } else
+                    view.loadUrl(url);
                 return true;
             }
 

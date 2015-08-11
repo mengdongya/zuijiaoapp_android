@@ -16,22 +16,24 @@ public enum Cache {
 
     public List<TasteTag> tasteTags;
     public List<String> gourmetTags;
-    public List<Language> languages;
+    public List<Language> languages ;
 
     public void setup() {
-        Router.getCommonModule().gourmetTags(new OneParameterExpression<List<String>>() {
-            @Override
-            public void action(List<String> tags) {
-                gourmetTags = tags;
-            }
-        }, null);
+        //drop gourmet
+//        Router.getCommonModule().gourmetTags(new OneParameterExpression<List<String>>() {
+//            @Override
+//            public void action(List<String> tags) {
+//                gourmetTags = tags;
+//            }
+//        }, null);
 
-        Router.getCommonModule().tasteTags(new OneParameterExpression<TasteTags>() {
-            @Override
-            public void action(TasteTags tags) {
-                tasteTags = tags.getTags();
-            }
-        }, null);
+//        drop gourmet ;
+//        Router.getCommonModule().tasteTags(new OneParameterExpression<TasteTags>() {
+//            @Override
+//            public void action(TasteTags tags) {
+//                tasteTags = tags.getTags();
+//            }
+//        }, null);
 
         Router.getCommonModule().languages(new OneParameterExpression<Languages>() {
             @Override
@@ -39,8 +41,5 @@ public enum Cache {
                 languages = lan.getLanguages();
             }
         }, null);
-
-
-
     }
 }

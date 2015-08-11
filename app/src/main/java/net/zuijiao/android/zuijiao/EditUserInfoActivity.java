@@ -69,16 +69,6 @@ public class EditUserInfoActivity extends BaseActivity {
     public static final int LANGUAGE_CHOOSE_REQ = 1003;
     public static final int LOCATION_CHOOSE_REQ = 1004;
     private static final int TASTE_TAG_REQ = 1005;
-    private OnItemClickListener mTasteItemListener = new OnItemClickListener() {
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            Intent intent = new Intent();
-            intent.setClass(mContext, TasteActivity.class);
-            if (mTmpFullUser.getProfile().getTasteTags().isPresent())
-                intent.putStringArrayListExtra("my_taste_tag", (ArrayList) mTmpFullUser.getProfile().getTasteTags().get());
-            startActivityForResult(intent, TASTE_TAG_REQ);
-        }
-    };
     private static final int BASE_INFO_ADAPTER = 0;
     private static final int CONTACT_INFO_ADAPTER = 1;
     private static final int DETAIL_INFO_ADAPTER = 2;
@@ -93,8 +83,8 @@ public class EditUserInfoActivity extends BaseActivity {
     private ListView mContactInfoList = null;
     @ViewInject(R.id.edit_info_detail_lv)
     private ListView mDetailInfoList = null;
-    @ViewInject(R.id.edit_info_favor_gv)
-    private GridView mFavorGridView = null;
+//    @ViewInject(R.id.edit_info_favor_gv)
+//    private GridView mFavorGridView = null;
     private Date mSelectedDate = null;
     private int[] mBaseInfoTitles = {R.string.nick_name, R.string.gender, R.string.birthday, R.string.residence, R.string.personal_introduction};
     private GeneralUserInfoAdapter mBaseInfoAdapter = null;
@@ -122,6 +112,15 @@ public class EditUserInfoActivity extends BaseActivity {
     private OnItemClickListener mUserInfoItemListener = new OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            if(mFullUser ==null){
+                fetchMyInfo(new LambdaExpression() {
+                    @Override
+                    public void action() {
+                        onItemClick(parent , view , position , id);
+                    }
+                });
+                return;
+            }
             switch (position) {
                 case 0:
                     createGeneralEditTextDialog(mFullUser.getNickname().get(), getString(R.string.nick_name), getString(R.string.nick_name_hint), 1, 15, new DialogInterface.OnClickListener() {
@@ -175,6 +174,15 @@ public class EditUserInfoActivity extends BaseActivity {
     private OnItemClickListener mContactListener = new OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            if(mFullUser ==null){
+                fetchMyInfo(new LambdaExpression() {
+                    @Override
+                    public void action() {
+                        onItemClick(parent , view , position , id);
+                    }
+                });
+                return;
+            }
             switch (position) {
                 case 0:
                     String email = null;
@@ -214,10 +222,19 @@ public class EditUserInfoActivity extends BaseActivity {
     private OnItemClickListener mDetailListener = new OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            if(mFullUser ==null){
+                fetchMyInfo(new LambdaExpression() {
+                    @Override
+                    public void action() {
+                        onItemClick(parent , view , position , id);
+                    }
+                });
+                return;
+            }
             switch (position) {
                 case 0:
                     String industry = null;
-                    if (mFullUser.getProfile().getCareer().isPresent()) {
+                    if ( mFullUser.getProfile().getCareer().isPresent()) {
                         industry = mFullUser.getProfile().getCareer().get();
                     }
                     createGeneralEditTextDialog(industry, getString(R.string.industry), getString(R.string.industry_hint), 4, 100, new DialogInterface.OnClickListener() {
@@ -240,7 +257,7 @@ public class EditUserInfoActivity extends BaseActivity {
                     break;
                 case 1:
                     String hobby = null;
-                    if (mFullUser.getProfile().getHobby().isPresent())
+                    if ( mFullUser.getProfile().getHobby().isPresent())
                         hobby = mFullUser.getProfile().getHobby().get();
                     createGeneralEditTextDialog(hobby, getString(R.string.interest_hobby), getString(R.string.interest_hobby_hint), 4, 100, new DialogInterface.OnClickListener() {
                         @Override
@@ -262,7 +279,7 @@ public class EditUserInfoActivity extends BaseActivity {
                     break;
                 case 2:
                     String education = null;
-                    if (mFullUser.getProfile().getEducationBackground().isPresent()) {
+                    if ( mFullUser.getProfile().getEducationBackground().isPresent()) {
                         education = mFullUser.getProfile().getEducationBackground().get();
                     }
                     createGeneralEditTextDialog(education, getString(R.string.education), getString(R.string.education_hint), 4, 100, new DialogInterface.OnClickListener() {
@@ -306,50 +323,50 @@ public class EditUserInfoActivity extends BaseActivity {
         }
     };
     private boolean bAnyInfoChanged = false;
-    private BaseAdapter mFavorAdapter = new BaseAdapter() {
-        @Override
-        public int getCount() {
-            if (mFullUser.getProfile() != null && mFullUser.getProfile().getTasteTags().isPresent() && mFullUser.getProfile().getTasteTags().get().size() != 0) {
-                return mFullUser.getProfile().getTasteTags().get().size() + 1;
-            }
-            return 1;
-        }
-
-        @Override
-        public String getItem(int position) {
-            try {
-                return mFullUser.getProfile().getTasteTags().get().get(position);
-            } catch (Exception e) {
-                return null;
-            }
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return position;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            View contentView = LayoutInflater.from(mContext).inflate(R.layout.user_info_favor_item, null);
-            TextView text = (TextView) contentView.findViewById(R.id.user_info_favor_item_text);
-            ImageView image = (ImageView) contentView.findViewById(R.id.user_info_favor_item_image);
-            String taste = getItem(position);
-            if (taste != null) {
-                for (TasteTag tag : Cache.INSTANCE.tasteTags) {
-                    if (tag.getName().equals(taste)) {
-                        Picasso.with(mContext).load(tag.getImageURL()).fit().centerCrop().into(image);
-                    }
-                }
-                text.setText(taste);
-            } else {
-                image.setImageResource(R.drawable.add_taste);
-                image.setBackgroundColor(Color.TRANSPARENT);
-                text.setText(getString(R.string.add));
-            }
-            return contentView;
-        }
-    };
+//    private BaseAdapter mFavorAdapter = new BaseAdapter() {
+//        @Override
+//        public int getCount() {
+//            if (mFullUser != null && mFullUser.getProfile() != null && mFullUser.getProfile().getTasteTags().isPresent() && mFullUser.getProfile().getTasteTags().get().size() != 0) {
+//                return mFullUser.getProfile().getTasteTags().get().size() + 1;
+//            }
+//            return 1;
+//        }
+//
+//        @Override
+//        public String getItem(int position) {
+//            try {
+//                return mFullUser.getProfile().getTasteTags().get().get(position);
+//            } catch (Exception e) {
+//                return null;
+//            }
+//        }
+//
+//        @Override
+//        public long getItemId(int position) {
+//            return position;
+//        }
+//
+//        @Override
+//        public View getView(int position, View convertView, ViewGroup parent) {
+//            View contentView = LayoutInflater.from(mContext).inflate(R.layout.user_info_favor_item, null);
+//            TextView text = (TextView) contentView.findViewById(R.id.user_info_favor_item_text);
+//            ImageView image = (ImageView) contentView.findViewById(R.id.user_info_favor_item_image);
+//            String taste = getItem(position);
+//            if (taste != null) {
+//                for (TasteTag tag : Cache.INSTANCE.tasteTags) {
+//                    if (tag.getName().equals(taste)) {
+//                        Picasso.with(mContext).load(tag.getImageURL()).fit().centerCrop().into(image);
+//                    }
+//                }
+//                text.setText(taste);
+//            } else {
+//                image.setImageResource(R.drawable.add_taste);
+//                image.setBackgroundColor(Color.TRANSPARENT);
+//                text.setText(getString(R.string.add));
+//            }
+//            return contentView;
+//        }
+//    };
     private int mGenderCheckItem = 0;
 
     private void createGeneralEditTextDialog(String message, String title, String etHint, int lineNum, int maxText, DialogInterface.OnClickListener finishListener) {
@@ -426,13 +443,16 @@ public class EditUserInfoActivity extends BaseActivity {
                 bAnyInfoChanged = true;
                 if (!mFullUser.getNickname().equals(mTmpFullUser.getNickname())) {
                     mPreferMng.saveNickname(mTmpFullUser.getNickname().get());
+                    Intent intent = new Intent();
+                    intent.setAction(MessageDef.ACTION_GET_THIRD_PARTY_USER);
+                    sendBroadcast(intent);
                 }
                 mFullUser = mTmpFullUser.clone();
                 mBaseInfoAdapter.notifyDataSetChanged();
                 mContactInfoAdapter.notifyDataSetChanged();
                 mDetailInfoAdapter.notifyDataSetChanged();
-                mFavorAdapter.notifyDataSetChanged();
-                AdapterViewHeightCalculator.setGridViewHeightBasedOnChildren(mFavorGridView);
+//                mFavorAdapter.notifyDataSetChanged();
+//                AdapterViewHeightCalculator.setGridViewHeightBasedOnChildren(mFavorGridView);
                 finalizeDialog();
             }
         }, new LambdaExpression() {
@@ -462,6 +482,26 @@ public class EditUserInfoActivity extends BaseActivity {
         }
         if (mTinyUser.getAvatarURLSmall().isPresent())
             Picasso.with(mContext).load(mTinyUser.getAvatarURLSmall().get() ).placeholder(R.drawable.default_user_head).fit().centerCrop().into(mUserHead);
+        mBaseInfoAdapter = new GeneralUserInfoAdapter(getResources().getStringArray(R.array.user_base_info_title), BASE_INFO_ADAPTER);
+        mBaseInfoList.setAdapter(mBaseInfoAdapter);
+        mBaseInfoList.setOnItemClickListener(mUserInfoItemListener);
+        AdapterViewHeightCalculator.setListViewHeightBasedOnChildren(mBaseInfoList);
+//        mFavorGridView.setAdapter(mFavorAdapter);
+//        mFavorGridView.setOnItemClickListener(mTasteItemListener);
+//        AdapterViewHeightCalculator.setGridViewHeightBasedOnChildren(mFavorGridView);
+        mContactInfoAdapter = new GeneralUserInfoAdapter(getResources().getStringArray(R.array.user_contact_info_title), CONTACT_INFO_ADAPTER);
+        mContactInfoList.setAdapter(mContactInfoAdapter);
+        mContactInfoList.setOnItemClickListener(mContactListener);
+        AdapterViewHeightCalculator.setListViewHeightBasedOnChildren(mContactInfoList);
+        mDetailInfoAdapter = new GeneralUserInfoAdapter(getResources().getStringArray(R.array.user_detail_info_title), DETAIL_INFO_ADAPTER);
+        mDetailInfoList.setAdapter(mDetailInfoAdapter);
+        mDetailInfoList.setOnItemClickListener(mDetailListener);
+        AdapterViewHeightCalculator.setListViewHeightBasedOnChildren(mDetailInfoList);
+        mUserHead.setOnClickListener(mHeadListener);
+        fetchMyInfo(null);
+    }
+
+    private void fetchMyInfo(LambdaExpression fetchCallBack){
         Router.getAccountModule().fetchMyInfo( new OneParameterExpression<User>() {
             @Override
             public void action(User user) {
@@ -469,31 +509,45 @@ public class EditUserInfoActivity extends BaseActivity {
                 mTmpFullUser = mFullUser.clone();
                 if (mTmpFullUser.getAvatarURLSmall().isPresent())
                     Picasso.with(mContext).load(mTmpFullUser.getAvatarURLSmall().get()).placeholder(R.drawable.default_user_head).fit().centerCrop().into(mUserHead);
-                mBaseInfoAdapter = new GeneralUserInfoAdapter(getResources().getStringArray(R.array.user_base_info_title), BASE_INFO_ADAPTER);
-                mBaseInfoList.setAdapter(mBaseInfoAdapter);
-                AdapterViewHeightCalculator.setListViewHeightBasedOnChildren(mBaseInfoList);
-                mFavorGridView.setAdapter(mFavorAdapter);
-                mFavorGridView.setOnItemClickListener(mTasteItemListener);
-                AdapterViewHeightCalculator.setGridViewHeightBasedOnChildren(mFavorGridView);
-                mContactInfoAdapter = new GeneralUserInfoAdapter(getResources().getStringArray(R.array.user_contact_info_title), CONTACT_INFO_ADAPTER);
-                mContactInfoList.setAdapter(mContactInfoAdapter);
-                mContactInfoList.setOnItemClickListener(mContactListener);
-                AdapterViewHeightCalculator.setListViewHeightBasedOnChildren(mContactInfoList);
-                mDetailInfoAdapter = new GeneralUserInfoAdapter(getResources().getStringArray(R.array.user_detail_info_title), DETAIL_INFO_ADAPTER);
-                mDetailInfoList.setAdapter(mDetailInfoAdapter);
-                mDetailInfoList.setOnItemClickListener(mDetailListener);
-                AdapterViewHeightCalculator.setListViewHeightBasedOnChildren(mDetailInfoList);
-                mBaseInfoList.setItemsCanFocus(true);
-                mBaseInfoList.setOnItemClickListener(mUserInfoItemListener);
-                mUserHead.setOnClickListener(mHeadListener);
+//                mBaseInfoAdapter = new GeneralUserInfoAdapter(getResources().getStringArray(R.array.user_base_info_title), BASE_INFO_ADAPTER);
+//                mBaseInfoList.setAdapter(mBaseInfoAdapter);
+//                AdapterViewHeightCalculator.setListViewHeightBasedOnChildren(mBaseInfoList);
+                mBaseInfoAdapter.notifyDataSetChanged();
+//                mFavorGridView.setAdapter(mFavorAdapter);
+//                mFavorGridView.setOnItemClickListener(mTasteItemListener);
+//                AdapterViewHeightCalculator.setGridViewHeightBasedOnChildren(mFavorGridView);
+//                mFavorAdapter.notifyDataSetChanged();
+//                mContactInfoAdapter = new GeneralUserInfoAdapter(getResources().getStringArray(R.array.user_contact_info_title), CONTACT_INFO_ADAPTER);
+//                mContactInfoList.setAdapter(mContactInfoAdapter);
+//                mContactInfoList.setOnItemClickListener(mContactListener);
+//                AdapterViewHeightCalculator.setListViewHeightBasedOnChildren(mContactInfoList);
+                mContactInfoAdapter.notifyDataSetChanged();
+//                mDetailInfoAdapter = new GeneralUserInfoAdapter(getResources().getStringArray(R.array.user_detail_info_title), DETAIL_INFO_ADAPTER);
+//                mDetailInfoList.setAdapter(mDetailInfoAdapter);
+//                mDetailInfoList.setOnItemClickListener(mDetailListener);
+//                AdapterViewHeightCalculator.setListViewHeightBasedOnChildren(mDetailInfoList);
+                mDetailInfoAdapter.notifyDataSetChanged();
+
+                if(fetchCallBack != null)
+                    fetchCallBack.action();
+//                mBaseInfoList.setItemsCanFocus(true);
+//                mBaseInfoList.setOnItemClickListener(mUserInfoItemListener);
+//                mUserHead.setOnClickListener(mHeadListener);
             }
         }, new OneParameterExpression<String>() {
             @Override
             public void action(String s) {
+                if(s.contains("401")){
+                    tryLoginFirst(new LambdaExpression() {
+                        @Override
+                        public void action() {
+                            fetchMyInfo(null);
+                        }
+                    }, null);
+                }
                 Toast.makeText(mContext  , R.string.notify_net2 , Toast.LENGTH_SHORT).show();
             }
         });
-
     }
 
     private void createBirthdayDialog() {
@@ -584,20 +638,6 @@ public class EditUserInfoActivity extends BaseActivity {
         alertDialog.show();
     }
 
-    private void doChangeIntroduction(String introduction) {
-    }
-
-    private void doChangeNickName(String newName) {
-    }
-
-    private void doChangeGender(String gender) {
-    }
-
-    @Override
-    protected void findViews() {
-
-    }
-
     @Override
     public void onBackPressed() {
         if (bAnyInfoChanged) {
@@ -621,6 +661,15 @@ public class EditUserInfoActivity extends BaseActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == CHOOSE_HEAD_IMAGE_REQ && resultCode == RESULT_OK) {
+            if(mFullUser ==null){
+                fetchMyInfo(new LambdaExpression() {
+                    @Override
+                    public void action() {
+                        doChangeUserAvatar();
+                    }
+                });
+                return;
+            }
             doChangeUserAvatar();
         } else if (requestCode == LOCATION_CHOOSE_REQ && resultCode == RESULT_OK) {
             Bundle bundle = data.getBundleExtra("location");
@@ -701,12 +750,6 @@ public class EditUserInfoActivity extends BaseActivity {
     }
 
 
-    private String checkSet(String str) {
-        if (str != null) {
-
-        }
-        return getString(R.string.un_setting);
-    }
 
     private class GeneralUserInfoAdapter extends BaseAdapter {
         private String[] titles = null;
@@ -741,136 +784,141 @@ public class EditUserInfoActivity extends BaseActivity {
             TextView valueText = (TextView) convertView.findViewById(R.id.edit_base_info_item_value);
             keyText.setText(titles[position]);
             keyText.setFocusable(false);
-            switch (infoType) {
-                case BASE_INFO_ADAPTER:
-                    switch (position) {
-                        case 0:
-                            if (mFullUser.getNickname().isPresent()) {
-                                valueText.setText(mFullUser.getNickname().get());
-                            } else {
-                                valueText.setText(getString(R.string.un_setting));
-                            }
-                            break;
-                        case 1:
-                            if (mFullUser.getProfile() != null) {
-                                if (mFullUser.getProfile().getGender().equals("female")) {
-                                    valueText.setText(getString(R.string.gender_female));
-                                } else if (mFullUser.getProfile().getGender().equals("male")) {
-                                    valueText.setText(getString(R.string.gender_male));
+            if(mFullUser != null)
+                switch (infoType) {
+                    case BASE_INFO_ADAPTER:
+                        switch (position) {
+                            case 0:
+                                if (mFullUser.getNickname().isPresent()) {
+                                    valueText.setText(mFullUser.getNickname().get());
+                                }
+                                else {
+                                    valueText.setText(getString(R.string.un_setting));
+                                }
+                                break;
+                            case 1:
+                                if (mFullUser.getProfile() != null) {
+                                    if (mFullUser.getProfile().getGender().equals("female")) {
+                                        valueText.setText(getString(R.string.gender_female));
+                                    } else if (mFullUser.getProfile().getGender().equals("male")) {
+                                        valueText.setText(getString(R.string.gender_male));
+                                    } else {
+                                        valueText.setText(getString(R.string.gender_keep_secret));
+                                    }
                                 } else {
                                     valueText.setText(getString(R.string.gender_keep_secret));
                                 }
-                            } else {
-                                valueText.setText(getString(R.string.gender_keep_secret));
-                            }
-                            break;
-                        case 2:
-                            if (mFullUser.getProfile() != null
-                                    && mFullUser.getProfile().getBirthday().isPresent()) {
-                                Date date = mFullUser.getProfile().getBirthday().get();
-                                String formatBirth = String.format(getString(R.string.year_month_day), date.getYear() + 1900, date.getMonth() + 1, date.getDate());
-                                valueText.setText(formatBirth);
-                            } else {
-                                valueText.setText(getString(R.string.un_setting));
-                            }
-                            break;
-                        case 3:
-                            if (mFullUser.getProfile() != null) {
-                                int cityId = mFullUser.getProfile().getCityId();
-                                int provinceId = mFullUser.getProfile().getProvinceId();
-                                String location = dbMng.getLocationByIds(provinceId, cityId);
-                                if (location != null && !location.equals(""))
-                                    valueText.setText(location);
-                                else
-                                    valueText.setText(getString(R.string.un_setting));
-                            } else
-                                valueText.setText(getString(R.string.un_setting));
-                            break;
-                        case 4:
-                            if (mFullUser.getProfile() != null) {
-                                Optional<String> introduction = mFullUser.getProfile().getSelfIntroduction();
-                                if (introduction.isPresent() && !introduction.get().equals("")) {
-                                    valueText.setText(introduction.get());
-                                } else {
-                                    valueText.setText(getString(R.string.un_setting));
-                                }
-                            } else {
-                                valueText.setText(getString(R.string.un_setting));
-                            }
-                            break;
-                    }
-//                    valueText.setText();
-                    break;
-                case CONTACT_INFO_ADAPTER:
-                    if (mFullUser.getContactInfo().isPresent()) {
-                        switch (position) {
-                            case 0:
-                                String email = mFullUser.getContactInfo().get().getEmail();
-                                if (email != null && !email.equals("")) {
-                                    valueText.setText(email);
-                                } else {
-                                    valueText.setText(getString(R.string.un_setting));
-                                }
                                 break;
-                            case 1:
-                                String phone = mFullUser.getContactInfo().get().getPhoneNumber();
-                                if (phone != null && !phone.equals("")) {
-                                    valueText.setText(phone);
-
-                                } else {
-                                    valueText.setText(getString(R.string.un_setting));
-                                }
-                                break;
-                        }
-
-                    } else
-                        valueText.setText(getString(R.string.un_setting));
-                    break;
-                case DETAIL_INFO_ADAPTER:
-                    if (mFullUser.getProfile() != null) {
-                        switch (position) {
-                            case 0:
-                                Optional<String> career = mFullUser.getProfile().getCareer();
-                                if (career.isPresent() && !career.get().equals("")) {
-                                    valueText.setText(career.get());
-                                } else {
-                                    valueText.setText(getString(R.string.un_setting));
-                                }
-                                break;
-                            case 1:
-                                Optional<String> hobby = mFullUser.getProfile().getHobby();
-                                if (hobby.isPresent() && !hobby.get().equals("")) {
-                                    valueText.setText(hobby.get());
-                                } else {
-                                    valueText.setText(getString(R.string.un_setting));
-                                }
-                                break;
-
                             case 2:
-                                Optional<String> education = mFullUser.getProfile().getEducationBackground();
-                                if (education.isPresent() && !education.get().equals("")) {
-                                    valueText.setText(education.get());
+                                if (mFullUser.getProfile() != null
+                                        && mFullUser.getProfile().getBirthday().isPresent()) {
+                                    Date date = mFullUser.getProfile().getBirthday().get();
+                                    String formatBirth = String.format(getString(R.string.year_month_day), date.getYear() + 1900, date.getMonth() + 1, date.getDate());
+                                    valueText.setText(formatBirth);
                                 } else {
                                     valueText.setText(getString(R.string.un_setting));
                                 }
                                 break;
                             case 3:
-                                Optional<List<String>> language = mFullUser.getProfile().getLanguages();
-                                if (language.isPresent() && language.get().size() != 0) {
-//                                    String languageStr = "";
-//                                    for (String lan : language.get()) {
-//                                        languageStr += lan;
-//                                    }
-                                    valueText.setText(String.format(getString(R.string.language_count), language.get().size()));
+                                if (mFullUser.getProfile() != null) {
+                                    int cityId = mFullUser.getProfile().getCityId();
+                                    int provinceId = mFullUser.getProfile().getProvinceId();
+                                    String location = dbMng.getLocationByIds(provinceId, cityId);
+                                    if (location != null && !location.equals(""))
+                                        valueText.setText(location);
+                                    else
+                                        valueText.setText(getString(R.string.un_setting));
+                                } else
+                                    valueText.setText(getString(R.string.un_setting));
+                                break;
+                            case 4:
+                                if (mFullUser.getProfile() != null) {
+                                    Optional<String> introduction = mFullUser.getProfile().getSelfIntroduction();
+                                    if (introduction.isPresent() && !introduction.get().equals("")) {
+                                        valueText.setText(introduction.get());
+                                    } else {
+                                        valueText.setText(getString(R.string.un_setting));
+                                    }
                                 } else {
                                     valueText.setText(getString(R.string.un_setting));
                                 }
+                                break;
                         }
-                    } else {
-                        valueText.setText(getString(R.string.un_setting));
-                    }
-                    break;
+    //                    valueText.setText();
+                        break;
+                    case CONTACT_INFO_ADAPTER:
+                        if (mFullUser.getContactInfo().isPresent()) {
+                            switch (position) {
+                                case 0:
+                                    String email = mFullUser.getContactInfo().get().getEmail();
+                                    if (email != null && !email.equals("")) {
+                                        valueText.setText(email);
+                                    } else {
+                                        valueText.setText(getString(R.string.un_setting));
+                                    }
+                                    break;
+                                case 1:
+                                    String phone = mFullUser.getContactInfo().get().getPhoneNumber();
+                                    if (phone != null && !phone.equals("")) {
+                                        valueText.setText(phone);
 
+                                    } else {
+                                        valueText.setText(getString(R.string.un_setting));
+                                    }
+                                    break;
+                            }
+
+                        } else
+                            valueText.setText(getString(R.string.un_setting));
+                        break;
+                    case DETAIL_INFO_ADAPTER:
+                        if (mFullUser.getProfile() != null) {
+                            switch (position) {
+                                case 0:
+                                    Optional<String> career = mFullUser.getProfile().getCareer();
+                                    if (career.isPresent() && !career.get().equals("")) {
+                                        valueText.setText(career.get());
+                                    } else {
+                                        valueText.setText(getString(R.string.un_setting));
+                                    }
+                                    break;
+                                case 1:
+                                    Optional<String> hobby = mFullUser.getProfile().getHobby();
+                                    if (hobby.isPresent() && !hobby.get().equals("")) {
+                                        valueText.setText(hobby.get());
+                                    } else {
+                                        valueText.setText(getString(R.string.un_setting));
+                                    }
+                                    break;
+
+                                case 2:
+                                    Optional<String> education = mFullUser.getProfile().getEducationBackground();
+                                    if (education.isPresent() && !education.get().equals("")) {
+                                        valueText.setText(education.get());
+                                    } else {
+                                        valueText.setText(getString(R.string.un_setting));
+                                    }
+                                    break;
+                                case 3:
+                                    Optional<List<String>> language = mFullUser.getProfile().getLanguages();
+                                    if (language.isPresent() && language.get().size() != 0) {
+    //                                    String languageStr = "";
+    //                                    for (String lan : language.get()) {
+    //                                        languageStr += lan;
+    //                                    }
+                                        valueText.setText(String.format(getString(R.string.language_count), language.get().size()));
+                                    } else {
+                                        valueText.setText(getString(R.string.un_setting));
+                                    }
+                            }
+                        } else {
+                            valueText.setText(getString(R.string.un_setting));
+                        }
+                        break;
+
+                }
+            else if(infoType == BASE_INFO_ADAPTER && position == 0){
+                valueText.setText(mTinyUser.getNickName());
             }
             if (valueText.getText().toString().equals(getString(R.string.un_setting))) {
                 valueText.setTextColor(getResources().getColor(R.color.bg_light_gray));

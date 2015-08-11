@@ -3,10 +3,12 @@ package com.zuijiao.android.zuijiao.model.Banquent;
 import com.google.gson.annotations.SerializedName;
 import com.zuijiao.android.zuijiao.model.user.TinyUser;
 
+import java.io.Serializable;
+
 /**
  * Created by user on 6/19/15.
  */
-public class Master extends TinyUser {
+public class Master extends TinyUser implements Serializable {
     @SerializedName("userID")
     private Integer userId ;
     @SerializedName("commentCount")

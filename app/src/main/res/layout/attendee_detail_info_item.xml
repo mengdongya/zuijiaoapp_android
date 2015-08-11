@@ -38,12 +38,4 @@
         android:visibility="gone"
         android:scaleType="center"
         android:src="@drawable/arrow_expend_right" />
-<!--
-    <View
-        android:id="@+id/attendee_detail_info_item_view"
-        android:layout_height="1dip"
-        android:layout_width="match_parent"
-        android:layout_margin="8dip"
-        android:layout_below="@id/attendee_detail_info_item_content"
-        android:background="@color/bg_gray_white" />-->
 </LinearLayout>

@@ -20,6 +20,7 @@ import com.facebook.stetho.Stetho;
 import com.facebook.stetho.okhttp.StethoInterceptor;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.squareup.okhttp.Interceptor;
+import com.squareup.okhttp.OkHttpClient;
 import com.umeng.message.proguard.T;
 import com.zuijiao.android.zuijiao.network.Router;
 import com.zuijiao.utils.OSUtil;
@@ -65,7 +66,12 @@ public class ActivityTask extends Application {
 
     private DisplayImageOptions defaultDisplayImageOptions;
     private UnCaughtException mExceptionHandler = null ;
-
+//    private static OkHttpClient okHttpClient = new OkHttpClient();
+//    static {
+//        if (BuildConfig.DEBUG) {
+//            okHttpClient.networkInterceptors().add(new StethoInterceptor());
+//        }
+//    }
 
     @Override
     public void onCreate() {
@@ -90,6 +96,7 @@ public class ActivityTask extends Application {
                 .delayBeforeLoading(0) // 载入之前的延迟时间
                 .build(); //
 
+        Router.setup(BuildConfig.Base_Url, BuildConfig.Request_Key, cacheDirectory, interceptor);
         if (BuildConfig.DEBUG) {
             interceptor = new StethoInterceptor();
 
@@ -100,7 +107,6 @@ public class ActivityTask extends Application {
                             .enableWebKitInspector(Stetho.defaultInspectorModulesProvider(this))
                             .build());
         }
-        Router.setup(BuildConfig.Base_Url, BuildConfig.Request_Key, cacheDirectory, interceptor);
     }
 
 

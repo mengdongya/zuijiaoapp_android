@@ -32,6 +32,7 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.lidroid.xutils.view.annotation.ContentView;
 import com.lidroid.xutils.view.annotation.ViewInject;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -64,9 +65,11 @@ import com.zuijiao.android.zuijiao.model.user.TinyUser;
 import com.zuijiao.android.zuijiao.model.user.User;
 import com.zuijiao.android.zuijiao.network.Router;
 import com.zuijiao.controller.ActivityTask;
+import com.zuijiao.listener.AttendeeAvatarListener;
 import com.zuijiao.thirdopensdk.QQApi;
 import com.zuijiao.thirdopensdk.WeixinApi;
 import com.zuijiao.utils.AdapterViewHeightCalculator;
+import com.zuijiao.utils.CacheUtils;
 import com.zuijiao.view.BanquetDetailScrollView;
 import com.zuijiao.view.ReviewRatingBar;
 import com.zuijiao.view.RoundImageView;
@@ -415,22 +418,35 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
     private AdapterView.OnItemClickListener mGridListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            createDialog();
-            Router.getAccountModule().banquetUserInfo(mBanquent.getAttendees().get(position).getIdentifier(), new OneParameterExpression<Attendee>() {
-                @Override
-                public void action(Attendee attendee) {
-                    finalizeDialog();
-                    Intent intent = new Intent(mContext, HostAndGuestActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    intent.putExtra("attendee_info", attendee);
-                    mContext.startActivity(intent);
-                }
-            }, new OneParameterExpression<String>() {
-                @Override
-                public void action(String s) {
-                    finalizeDialog();
-                }
-            });
+
+
+            Integer attendeeId = mBanquent.getAttendees().get(position).getIdentifier() ;
+            Gson gson = new Gson();
+            Attendee attendee = gson.fromJson(CacheUtils.getAttendee(attendeeId, mContext), Attendee.class);
+            Intent intent = new Intent(mContext , HostAndGuestActivity.class) ;
+            if(attendee != null)
+                intent.putExtra("attendee_info" , attendee) ;
+            else
+                intent.putExtra("tiny_user" , mBanquent.getAttendees().get(position)) ;
+            intent.putExtra("attendee_id", attendeeId);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK) ;
+            startActivity(intent);
+//            createDialog();
+//            Router.getAccountModule().banquetUserInfo(mBanquent.getAttendees().get(position).getIdentifier(), new OneParameterExpression<Attendee>() {
+//                @Override
+//                public void action(Attendee attendee) {
+//                    finalizeDialog();
+//                    Intent intent = new Intent(mContext, HostAndGuestActivity.class);
+//                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                    intent.putExtra("attendee_info", attendee);
+//                    mContext.startActivity(intent);
+//                }
+//            }, new OneParameterExpression<String>() {
+//                @Override
+//                public void action(String s) {
+//                    finalizeDialog();
+//                }
+//            });
         }
     };
     /**
@@ -532,7 +548,7 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
         }, new OneParameterExpression<String>() {
             @Override
             public void action(String s) {
-                Toast.makeText(mContext, getString(R.string.get_history_list_failed), Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, getString(R.string.fetch_comment_failed), Toast.LENGTH_SHORT).show();
             }
         });
         RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mBottomView.getLayoutParams();
@@ -629,27 +645,29 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
             mHostScore.setText("(" + mReviews.getTotalCount() + ")");
             ImageView head = (RoundImageView) mLastComment.findViewById(R.id.banquet_comment_item_head);
             ImageLoader.getInstance().displayImage(review.getReviewer().getAvatarURLSmall().get(), head);
-            head.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    createDialog();
-                    Router.getAccountModule().banquetUserInfo(review.getReviewer().getIdentifier(), new OneParameterExpression<Attendee>() {
-                        @Override
-                        public void action(Attendee attendee) {
-                            finalizeDialog();
-                            Intent intent = new Intent(mContext, HostAndGuestActivity.class);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            intent.putExtra("attendee_info", attendee);
-                            mContext.startActivity(intent);
-                        }
-                    }, new OneParameterExpression<String>() {
-                        @Override
-                        public void action(String s) {
-                            finalizeDialog();
-                        }
-                    });
-                }
-            });
+            head.setTag(review.getReviewer());
+            head.setOnClickListener(new AttendeeAvatarListener(mContext));
+//            head.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//                    createDialog();
+//                    Router.getAccountModule().banquetUserInfo(review.getReviewer().getIdentifier(), new OneParameterExpression<Attendee>() {
+//                        @Override
+//                        public void action(Attendee attendee) {
+//                            finalizeDialog();
+//                            Intent intent = new Intent(mContext, HostAndGuestActivity.class);
+//                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                            intent.putExtra("attendee_info", attendee);
+//                            mContext.startActivity(intent);
+//                        }
+//                    }, new OneParameterExpression<String>() {
+//                        @Override
+//                        public void action(String s) {
+//                            finalizeDialog();
+//                        }
+//                    });
+//                }
+//            });
             ((TextView) mLastComment.findViewById(R.id.banquet_comment_item_user_name)).setText(review.getReviewer().getNickName());
             ((TextView) mLastComment.findViewById(R.id.banquet_comment_item_issue)).setText(review.getEvent().getTitle() + " · " + formatDate(review.getEvent().getTime()));
             ((ReviewRatingBar) mLastComment.findViewById(R.id.banquet_comment_item_stars)).setRating(review.getScore());
@@ -852,30 +870,37 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
                 break;
             case R.id.banquet_detail_host_head:
             case R.id.banquet_detail_about_host:
-
-                createDialog();
-                Router.getAccountModule().banquetUserInfo(mBanquent.getMaster().getUserId(), new OneParameterExpression<Attendee>() {
-                    @Override
-                    public void action(Attendee attendee) {
-                        finalizeDialog();
-                        Intent intent = new Intent(mContext, HostAndGuestActivity.class);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        intent.putExtra("attendee_info", attendee);
-//                            intent.putExtra("b_host", true);
-//                            intent.putExtra("attendee_id", banquent.getMaster().getUserId());
-                        mContext.startActivity(intent);
-                    }
-                }, new OneParameterExpression<String>() {
-                    @Override
-                    public void action(String s) {
-                        Toast.makeText(mContext , R.string.notify_net2,Toast.LENGTH_SHORT).show();
-                        finalizeDialog();
-                    }
-                });
-//                intent.putExtra("b_host", true);
-//                intent.putExtra("attendee_id", mBanquent.getMaster().getUserId());
-//                intent.setClass(mContext, HostAndGuestActivity.class);
-//                startActivity(intent);
+                Integer attendeeId = mBanquent.getMaster().getUserId();
+                Gson gson = new Gson();
+                Attendee attendee = gson.fromJson(CacheUtils.getAttendee(attendeeId, mContext), Attendee.class);
+//                Intent intent = new Intent(mCxt , HostAndGuestActivity.class) ;
+                intent.setClass(mContext, HostAndGuestActivity.class) ;
+                if(attendee != null)
+                    intent.putExtra("attendee_info" , attendee) ;
+                else
+                    intent.putExtra("tiny_user" ,mBanquent.getMaster() ) ;
+                intent.putExtra("attendee_id" , attendeeId);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK) ;
+                startActivity(intent);
+//                createDialog();
+//                Router.getAccountModule().banquetUserInfo(mBanquent.getMaster().getUserId(), new OneParameterExpression<Attendee>() {
+//                    @Override
+//                    public void action(Attendee attendee) {
+//                        finalizeDialog();
+//                        Intent intent = new Intent(mContext, HostAndGuestActivity.class);
+//                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                        intent.putExtra("attendee_info", attendee);
+////                            intent.putExtra("b_host", true);
+////                            intent.putExtra("attendee_id", banquent.getMaster().getUserId());
+//                        mContext.startActivity(intent);
+//                    }
+//                }, new OneParameterExpression<String>() {
+//                    @Override
+//                    public void action(String s) {
+//                        Toast.makeText(mContext , R.string.notify_net2,Toast.LENGTH_SHORT).show();
+//                        finalizeDialog();
+//                    }
+//                });
                 break;
             case R.id.banquet_detail_bottom_order:
                 if (!Router.getInstance().getCurrentUser().isPresent()) {

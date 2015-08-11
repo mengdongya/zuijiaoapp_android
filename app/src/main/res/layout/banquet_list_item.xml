@@ -20,7 +20,7 @@
         <ImageView
             android:id="@+id/banquet_item_image"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/main_item_image_height"
+            android:layout_height="@dimen/banquet_list_image_height"
             android:scaleType="centerCrop"
             android:src="@drawable/shanghai" />
 
@@ -28,7 +28,7 @@
             android:background="@drawable/banquet_list_item_status_bg"
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
-            android:layout_marginLeft="8dip"
+            android:layout_marginLeft="5dip"
             android:id="@+id/banquet_item_finished"
             android:layout_marginTop="5dip"
             android:visibility="gone"
@@ -38,15 +38,15 @@
 
         <com.zuijiao.view.RoundImageView
             android:layout_width="50dip"
+            android:layout_height="50dip"
             myattr:border_thickness="1dip"
             myattr:border_outside_color="#eeeeee"
             myattr:border_inside_color="#eeeeee"
             android:padding="2dip"
-            android:layout_height="50dip"
             android:id="@+id/banquet_item_user_head"
             android:layout_alignParentRight="true"
             android:layout_marginRight="20dip"
-            android:layout_marginTop="207dip"
+            android:layout_marginTop="175dip"
             android:src="@drawable/default_user_head" />
 
         <TextView
@@ -56,8 +56,8 @@
             android:singleLine="false"
             android:gravity="left"
             android:layout_toLeftOf="@id/banquet_item_user_head"
-            android:layout_marginTop="10dip"
-            android:layout_marginLeft="10dip"
+            android:layout_marginTop="5dip"
+            android:layout_marginLeft="8dip"
             android:layout_below="@id/banquet_item_image"
             android:textColor="@color/black"
             android:textSize="18sp" />
@@ -67,8 +67,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:singleLine="false"
-            android:layout_marginTop="10dip"
-            android:layout_marginLeft="10dip"
+            android:layout_marginTop="5dip"
+            android:layout_marginLeft="8dip"
+            android:layout_marginRight="8dip"
             android:textColor="#999999"
             android:layout_below="@id/banquet_item_title"
             android:textSize="@dimen/main_item_content_text_size" />
@@ -81,7 +82,9 @@
             android:maxLines="4"
             android:lineSpacingExtra="5dip"
             android:ellipsize="end"
-            android:layout_margin="10dip"
+            android:layout_marginLeft="8dip"
+            android:layout_marginTop="5dip"
+            android:layout_marginRight="8dip"
             android:textColor="@color/_555555"
             android:layout_below="@id/banquet_item_detail"
             android:textSize="@dimen/main_item_content_text_size" />
@@ -89,12 +92,13 @@
         <TextView
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
-            android:layout_marginBottom="10dip"
+            android:layout_marginBottom="5dip"
+            android:layout_marginTop="2dip"
             android:id="@+id/banquet_item_price"
             android:textSize="18sp"
             android:text="10"
             android:textColor="@color/banquet_price_text"
-            android:layout_marginLeft="10dip"
+            android:layout_marginLeft="8dip"
             android:layout_below="@id/banquet_item_description" />
 
         <TextView
@@ -103,10 +107,10 @@
             android:textSize="14sp"
             android:layout_alignBottom="@id/banquet_item_price"
             android:text="@string/price_unit"
-            android:layout_marginLeft="3dip"
+            android:padding="3dip"
             android:textColor="@color/banquet_price_text"
             android:layout_toRightOf="@id/banquet_item_price" />
-
+        <!--android:layout_marginLeft="3dip"-->
         <TextView
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
@@ -115,7 +119,7 @@
             android:layout_alignParentRight="true"
             android:textColor="#999999"
             android:textSize="14sp"
-            android:layout_marginRight="10dip"
+            android:layout_marginRight="8dip"
             android:layout_alignBottom="@id/banquet_item_price" />
     </RelativeLayout>
 

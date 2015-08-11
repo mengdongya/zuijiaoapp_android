@@ -27,6 +27,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
@@ -122,6 +123,7 @@ public final class MainActivity extends BaseActivity {
     public static final int ORDER_PAY_SUCCESS = 20012;
 
 
+
     private OnItemClickListener mTabsListener = new OnItemClickListener() {
 
         @Override
@@ -129,8 +131,8 @@ public final class MainActivity extends BaseActivity {
                                 long id) {
             if(position == mFragmentList.size()){
                 Intent intent = new Intent();
-                intent.putExtra("content_url", "www.baidu.com");
-                intent.setClass(MainActivity.this, CommonWebViewActivity.class);
+//                intent.putExtra("content_url", "http://db.zuijiaodev.com:3000/");
+                intent.setClass(mContext, ApplyForHostStep1Activity.class);
                 startActivity(intent);
             }else{
                 mFragmentTransaction = mFragmentMng.beginTransaction();
@@ -166,6 +168,7 @@ public final class MainActivity extends BaseActivity {
 //                }
 //                mLocationView.setVisibility(View.VISIBLE);
 //            }
+            mMainTabsTitle.setItemChecked(position , true );
             mDrawerLayout.closeDrawer(Gravity.LEFT);
         }
     };
@@ -410,6 +413,7 @@ public final class MainActivity extends BaseActivity {
         mMyOrderFragment = MyOrderFragment.getInstance();
         mFragmentList.add(mMyOrderFragment);
         mMainTabsTitle.setAdapter(mTabTitleAdapter);
+        mMainTabsTitle.setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
         mMainTabsTitle.setOnItemClickListener(mTabsListener);
         mFragmentMng = getSupportFragmentManager();
         mFragmentTransaction = mFragmentMng.beginTransaction();
@@ -720,4 +724,10 @@ public final class MainActivity extends BaseActivity {
         boolean b = file.renameTo(file2);
     }
 
+    @Override
+    protected void fetchContent() {
+        if(mFragmentList.indexOf(mCurrentFragment) == 0){
+            mMainFragment.onRefresh();
+        }
+    }
 }

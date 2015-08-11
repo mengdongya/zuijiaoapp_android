@@ -15,7 +15,7 @@
         android:paddingBottom="15dip"
         android:paddingTop="15dip"
         android:textSize="15sp"
-        android:text="@string/honey_name" />
+         />
 
     <TextView
         android:layout_height="wrap_content"
@@ -29,6 +29,6 @@
         android:id="@+id/edit_base_info_item_value"
         android:textSize="15sp"
         android:padding="10dip"
-        android:text="@string/default_user_name" />
+        android:text="@string/un_setting" />
 
 </LinearLayout>

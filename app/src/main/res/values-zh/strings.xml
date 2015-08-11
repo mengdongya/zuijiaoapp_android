@@ -422,6 +422,19 @@
     <string name="unknown_distance">距离未知</string>
     <string name="error_storage">请检查你的存储卡是否正常</string>
     <string name="apply_to_be_host">申请成为主人</string>
+    <string name="banquet_fetch_failed">都神马年代了，竟然还没有网络..</string>
+    <string name="new_setting_order_closed">订单关闭</string>
+    <string name="new_setting_refund">退款成功</string>
+    <string name="new_setting_evaluation">评价邀请</string>
+    <string name="default_self_introduction">还没有留下自我介绍</string>
+    <string name="fetch_comment_failed">获取评论信息失败，请检查您的网络</string>
+    <string name="apply_now">立刻申请</string>
+    <string name="form_host_information_title">在申请之前，请完善你的信息，方便嘴能够在第一时间联系到您</string>
+    <string name="apply_introduction">为了给更多的吃货谋福利，也给身怀绝技的料理人一个大显身手的机会，嘴角决定开启全城料理人大搜寻，无论你本人就是那个手艺了得的料理人，还是你身边有这样的朋友，都可以自荐或推荐，一大波福利等着你哦。</string>
+
+    <string name="avatar">头像</string>
+    <string name="go_on">继续</string>
+    <string name="next_step">下一步</string>
     <!-- umeng socialize strings begin-->
     <!--<string name="pull_to_refresh_pull_label" translatable="false">向下拉动可以刷新</string>-->
     <!--<string name="pull_to_refresh_release_label" translatable="false">松开可以刷新</string>-->

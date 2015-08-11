@@ -12,18 +12,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
-import com.zuijiao.android.util.functional.OneParameterExpression;
-import com.zuijiao.android.zuijiao.model.Banquent.Attendee;
 import com.zuijiao.android.zuijiao.model.Banquent.Banquent;
 import com.zuijiao.android.zuijiao.model.Banquent.BanquentCapacity;
 import com.zuijiao.android.zuijiao.model.Banquent.BanquentStatus;
 import com.zuijiao.android.zuijiao.model.Banquent.Banquents;
-import com.zuijiao.android.zuijiao.network.Router;
+import com.zuijiao.listener.AttendeeAvatarListener;
 
 import net.zuijiao.android.zuijiao.BanquetDetailActivity;
-import net.zuijiao.android.zuijiao.BaseActivity;
 import net.zuijiao.android.zuijiao.CommonWebViewActivity;
-import net.zuijiao.android.zuijiao.HostAndGuestActivity;
 import net.zuijiao.android.zuijiao.R;
 
 import java.util.ArrayList;
@@ -42,12 +38,15 @@ public class BanquetAdapter extends BaseAdapter implements AdapterView.OnItemCli
     private int count = 0;
     private LayoutInflater mInflater;
     private View mBannerContainer;
+    private AttendeeAvatarListener mAvatarListener ;
+    private static final String TAG = "BanquetAdapter" ;
 
     public BanquetAdapter(Context context) {
         super();
         this.mContext = context;
         weekDays = mContext.getResources().getStringArray(R.array.week_days);
         mInflater = LayoutInflater.from(mContext);
+        mAvatarListener = new AttendeeAvatarListener(mContext);
     }
 
     @Override
@@ -97,7 +96,6 @@ public class BanquetAdapter extends BaseAdapter implements AdapterView.OnItemCli
          * judge if banner view exist
          */
         if (position == 0 && showBanner()) {
-            View view = null;
             if (mBannerContainer == null) {
                 mBannerContainer = mInflater.inflate(R.layout.banquet_banner, null);
                 ImageView bannerView = (ImageView) mBannerContainer.findViewById(R.id.banquet_banner);
@@ -135,10 +133,8 @@ public class BanquetAdapter extends BaseAdapter implements AdapterView.OnItemCli
                 Picasso.with(mContext).load(banquent.getMaster().getAvatarURLSmall().get()).placeholder(R.drawable.default_user_head).fit().centerCrop().into(holder.head);
             holder.title.setText(banquent.getTitle());
             String dateInfo = formatDate(banquent.getTime());
-
             holder.detail.setText(dateInfo + mContext.getString(R.string.center_dot) + banquent.getAddress());
             holder.description.setText(banquent.getDesc());
-//            holder.price.setText(String.format(mContext.getString(R.string.price_per_one), banquent.getPrice()));
             holder.price.setText(String.valueOf(banquent.getPrice().intValue()));
             BanquentCapacity banquentCapacity = banquent.getBanquentCapacity();
             if (banquentCapacity.getMin() == banquentCapacity.getMax()) {
@@ -146,30 +142,8 @@ public class BanquetAdapter extends BaseAdapter implements AdapterView.OnItemCli
             } else {
                 holder.status.setText(String.format(mContext.getString(R.string.banquent_capacity_muilt), banquentCapacity.getMin(), banquentCapacity.getMax(), banquentCapacity.getCount()));
             }
-            holder.head.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    ((BaseActivity)mContext).createDialog();
-                    Router.getAccountModule().banquetUserInfo(banquent.getMaster().getUserId(), new OneParameterExpression<Attendee>() {
-                        @Override
-                        public void action(Attendee attendee) {
-                            ((BaseActivity)mContext).finalizeDialog();
-                            Intent intent = new Intent(mContext, HostAndGuestActivity.class);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            intent.putExtra("attendee_info" , attendee) ;
-//                            intent.putExtra("b_host", true);
-//                            intent.putExtra("attendee_id", banquent.getMaster().getUserId());
-                            mContext.startActivity(intent);
-                        }
-                    }, new OneParameterExpression<String>() {
-                        @Override
-                        public void action(String s) {
-                            ((BaseActivity)mContext).finalizeDialog();
-                        }
-                    });
-
-                }
-            });
+            holder.head.setTag(banquent.getMaster());
+            holder.head.setOnClickListener(mAvatarListener);
             switch (BanquentStatus.fromString(banquent.getStatus())) {
                 case Selling:
                     holder.finish.setVisibility(View.GONE);
@@ -242,4 +216,6 @@ public class BanquetAdapter extends BaseAdapter implements AdapterView.OnItemCli
         TextView status;
         TextView finish;
     }
+
+
 }

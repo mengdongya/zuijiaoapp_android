@@ -282,7 +282,7 @@
                     android:onClick="j2baidumap">
                     <include
                         android:id="@+id/attendee_detail_address_item"
-                        layout="@layout/attendee_detail_info_item"
+                        layout="@layout/attendee_detail_info_item1"
                         />
                 </RelativeLayout>
 

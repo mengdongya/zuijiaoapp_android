@@ -5,8 +5,6 @@
     android:id="@+id/ll_menu_dishes_item"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="10dip"
-    android:layout_marginBottom="10dip"
     android:gravity="center"
     >
     <TextView
@@ -14,18 +12,20 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="热菜"
+        android:layout_marginTop="10dip"
         android:gravity="center"
         android:textSize="16sp"
-        android:layout_marginTop="20dip"
         android:textColor="@color/black"
         android:textStyle="bold" />
+
     <TextView
         android:id="@+id/menu_dishes_item_dishes"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:lineSpacingExtra="5dip"
-        android:layout_marginTop="10dip"
+        android:layout_marginTop="5dip"
+        android:paddingBottom="10dip"
         android:text="山楂梅子洋柿子\n山楂梅子洋柿子"
         android:textSize="16sp"
         android:textColor="@color/_555555"

@@ -1,5 +1,6 @@
 package net.zuijiao.android.zuijiao;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -12,19 +13,27 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.lidroid.xutils.view.annotation.ContentView;
 import com.lidroid.xutils.view.annotation.ViewInject;
 import com.squareup.picasso.Picasso;
 import com.zuijiao.android.util.Optional;
+import com.zuijiao.android.util.functional.LambdaExpression;
+import com.zuijiao.android.util.functional.OneParameterExpression;
+import com.zuijiao.android.zuijiao.model.Gourmet;
 import com.zuijiao.android.zuijiao.model.message.Message;
+import com.zuijiao.android.zuijiao.model.user.TinyUser;
+import com.zuijiao.android.zuijiao.network.Router;
 import com.zuijiao.utils.StrUtil;
+import com.zuijiao.view.ImageItem;
 import com.zuijiao.view.PagerSlidingTab;
 import com.zuijiao.view.RefreshAndInitListView;
 
@@ -43,15 +52,17 @@ public class MessageActivity extends BaseActivity implements MessageFragment.OnM
     private PagerSlidingTab mTabs = null;
     @ViewInject(R.id.message_view_pager)
     private ViewPager mViewPager = null;*/
-   /* @ViewInject(R.id.message_list_view)
-    private ListView mMsgListView=null;*/
+    @ViewInject(R.id.message_list_view)
+    private ListView mMsgListView=null;
+    @ViewInject(R.id.message_empty_content)
+    private LinearLayout mNullMsgList;
 //    private MessageFragment mMsgFragment = null;
 //    private MessageFragment mNotifyFragment = null;
     private View mContentView = null;
     public MessageAdapter mAdapter = null;
     private int msgType = -1;
 //    private MessagePagerAdapter mPagerAdapter = null;
-    private int msgPicIcons[] = {R.drawable.share_btn,R.drawable.share_qq,R.drawable.share_weibo,R.drawable.share_weixin};
+    private int msgPicIcons[] = {R.drawable.msg_banquent_list,R.drawable.msg_goto_comment,R.drawable.msg_apply_host,R.drawable.msg_improve_personal};
     private int msgContains[] = {R.string.msg_draw_back_money,R.string.msg_go_to_comment,R.string.msg_thanks_register,R.string.msg_apply_host};
 
     @Override
@@ -62,7 +73,8 @@ public class MessageActivity extends BaseActivity implements MessageFragment.OnM
 //        mPagerAdapter = new MessagePagerAdapter(getSupportFragmentManager());
 //        mViewPager.setAdapter(mPagerAdapter);
 //        mTabs.setViewPager(mViewPager);
-//        mMsgListView.setAdapter(mAdapter);
+        mMsgListView.setAdapter(mAdapter);
+        mMsgListView.setOnItemClickListener(onItemClickListener);
     }
 
     /*private void initTabsValue() {
@@ -90,107 +102,35 @@ public class MessageActivity extends BaseActivity implements MessageFragment.OnM
 
     }
 
-   /* private class MessageAdapter extends BaseAdapter {
-        public List<Message> mData = new ArrayList<>();
-
+    private AdapterView.OnItemClickListener onItemClickListener = new AdapterView.OnItemClickListener() {
         @Override
-        public int getCount() {
-            if (mData == null) {
-                return 0;
-            }
-            return mData.size();
-        }
-
-        @Override
-        public Message getItem(int position) {
-            return mData.get(position);
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return position;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            ViewHolder holder = null;
-            if (convertView == null) {
-                convertView = mInflater.inflate(R.layout.msg_item, null);
-                holder = new ViewHolder();
-                holder.comment = (TextView) convertView.findViewById(R.id.msg_item_msg_content);
-                holder.gourmetName = (TextView) convertView.findViewById(R.id.msg_item_food_name);
-                holder.gourmetPic = (ImageView) convertView.findViewById(R.id.msg_item_food_image);
-                holder.time = (TextView) convertView.findViewById(R.id.msg_item_date);
-                holder.userhead = (ImageView) convertView.findViewById(R.id.msg_item_user_head);
-                holder.userName = (TextView) convertView.findViewById(R.id.msg_item_user_name);
-                holder.nameOrPic = (FrameLayout) convertView.findViewById(R.id.msg_item_food);
-                convertView.setTag(holder);
-            } else {
-                holder = (ViewHolder) convertView.getTag();
-            }
-            Message msg = mData.get(position);
-            holder.userName.setText(msg.getFromUser().getNickName());
-            if (msg.getFromUser().getAvatarURLSmall().isPresent())
-                Picasso.with(parent.getContext())
-                        .load(msg.getFromUser().getAvatarURLSmall().get())
-                        .placeholder(R.drawable.default_user_head)
-                        .fit()
-                        .centerCrop()
-                        .into(holder.userhead);
-            if (msg.getType() == Message.Type.Comment)
-                holder.comment.setText(msg.getDescription());
-            else {
-                String description = null;
-                if (msg.getType() == Message.Type.Favorite) {
-                    description = String.format(getString(R.string.favor_your_recommendation), msg.getGourmet().isPresent() ? msg.getGourmet().get().getName() : "");
-                } else if (msg.getType() == Message.Type.Follower) {
-                    description = getString(R.string.follow_you);
+        public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+            Message msg = (Message)mAdapter.getItem(position -1);
+            if (msg.getType() == Message.Type.Favorite || msg.getType() == Message.Type.Comment){
+                if (msg.getGourmet().isPresent()){
+                    Gourmet gourmet = msg.getGourmet().get();
+                    Intent intent = new Intent();
+                    intent.putExtra("selected_gourmet", gourmet);
+                    intent.setClass(mContext, GourmetDetailActivity.class);
+                    startActivity(intent);
+                }else{
+                    Toast.makeText(mContext,getString(R.string.no_gourmet_related),Toast.LENGTH_SHORT).show();
                 }
-                holder.comment.setText(description);
-            }
-            if (msg.getIsRead())
-                holder.comment.setTextColor(Color.GRAY);
-            else
-                holder.comment.setTextColor(Color.BLACK);
-            holder.time.setText(StrUtil.formatTime(msg.getCreateTime(), mContext));
-            if (msg.getType() == Message.Type.Favorite && msg.getType() == Message.Type.Follower) {
-                holder.nameOrPic.setVisibility(View.GONE);
-            } else {
-                if (msg.getGourmet().isPresent() && msg.getGourmet().get().getImageURLs() != null && msg.getGourmet().get().getImageURLs().size() != 0) {
-                    Optional<String> gourmetImage = Optional.of(msg.getGourmet().get().getImageURLs().get(0) + "!Thumbnails");
-                    Picasso.with(parent.getContext())
-                            .load(gourmetImage.get())
-                            .placeholder(R.drawable.empty_view_greeting)
-                            .fit()
-                            .centerCrop()
-                            .into(holder.gourmetPic);
-                    holder.gourmetName.setVisibility(View.GONE);
-                    holder.gourmetPic.setVisibility(View.VISIBLE);
+            }else if (msg.getType() == Message.Type.Follower){
+                if (msg.getFromUser() != null) {
+                    TinyUser user = msg.getFromUser();
+                    Intent intent = new Intent();
+                    intent.setClass(mContext, UserInfoActivity.class);
+                    intent.putExtra("tiny_user", user);
+                    startActivity(intent);
                 } else {
-                    if (msg.getGourmet().isPresent())
-                        holder.gourmetName.setText(msg.getGourmet().get().getName());
-                    holder.gourmetName.setVisibility(View.VISIBLE);
-                    holder.gourmetPic.setVisibility(View.GONE);
+                    Toast.makeText(mContext, getString(R.string.no_user_related), Toast.LENGTH_SHORT).show();
                 }
+            }else {
+
             }
-            return convertView;
         }
-
-        public void setMessage(List<Message> list) {
-            mData = list;
-            notifyDataSetChanged();
-        }
-
-        class ViewHolder {
-            TextView userName;
-            TextView time;
-            TextView comment;
-            TextView gourmetName;
-            ImageView userhead;
-            ImageView gourmetPic;
-            FrameLayout nameOrPic;
-        }
-    }*/
+    };
 
     public class MessageAdapter extends BaseAdapter{
         public List<Message> mData = new ArrayList<>();
@@ -224,19 +164,29 @@ public class MessageActivity extends BaseActivity implements MessageFragment.OnM
             }else {
                 holder = (ViewHolder) view.getTag();
             }
+            if (mData.size() == 0){
+                mNullMsgList.setVisibility(View.VISIBLE);
+            }
             Message msg = mData.get(i);
             Message.Type msgType = msg.getType();
-          /*  switch (msgType){
-                case 0:
-                    holder.msgContent.setText(String.format(getString(R.string.msg_draw_back_money),mBanquet.getTitle()));
+            switch (msgType){
+                case Comment:
+                    holder.msgPic.setImageDrawable(getDrawable(msgPicIcons[0]));
+                    holder.msgContent.setText(String.format(getString(msgContains[0]),0));
                     break;
-                case 1:
+                case Favorite:
+                    holder.msgPic.setImageDrawable(getDrawable(msgPicIcons[2]));
+                    holder.msgContent.setText(getString(msgContains[2]));
                     break;
-                case 2:
+                case Follower:
+                    holder.msgPic.setImageDrawable(getDrawable(msgPicIcons[1]));
+                    holder.msgContent.setText(String.format(getString(msgContains[1]),0));
                     break;
-                case 3:
+                case Empty:
+                    holder.msgPic.setImageDrawable(getDrawable(msgPicIcons[3]));
+                    holder.msgContent.setText(getString(msgContains[3]));
                     break;
-            }*/
+            }
             holder.dateTime.setText(StrUtil.formatTime(msg.getCreateTime(), mContext));
             return view;
         }

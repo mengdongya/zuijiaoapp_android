@@ -322,7 +322,14 @@
 
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
-
+        <activity
+            android:name="net.zuijiao.android.zuijiao.ReceivingAccountActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name="net.zuijiao.android.zuijiao.BanquetOrderDetailActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
 
         <!--<activity-->
         <!--android:configChanges="keyboardHidden|orientation|screenSize"-->

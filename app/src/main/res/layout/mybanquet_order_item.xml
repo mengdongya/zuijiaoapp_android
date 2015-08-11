@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:myattr="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal">
+
+    <LinearLayout
+        android:layout_width="0dip"
+        android:layout_weight="1"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical">
+        <com.zuijiao.view.RoundImageView
+            android:id="@+id/mybanquet_order_item_head"
+            myattr:border_thickness="1dip"
+            myattr:border_outside_color="#eeeeee"
+            myattr:border_inside_color="#eeeeee"
+            android:padding="2dip"
+            android:layout_width="66dip"
+            android:layout_height="66dip"
+            android:layout_gravity="center"
+            android:src="@drawable/default_user_head" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textSize="16sp"
+            android:textColor="@color/tv_deep_gray"
+            android:text="昵称"
+            android:id="@+id/mybanquet_order_item_nickname"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="0dip"
+        android:layout_weight="4"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Sonian的台味厨房"
+            android:layout_marginLeft="8dip"
+            android:textSize="18sp"
+            android:textColor="@color/black"/>
+
+        <LinearLayout
+            android:id="@+id/mybanquet_order_item_datetime"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="10dip">
+
+            <ImageView
+                android:layout_width="20dip"
+                android:layout_height="20dip"
+                android:layout_centerVertical="true"
+                android:src="@drawable/time_surplus"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="23dip"
+                android:textSize="15sp"
+                android:text="时间日期元/位可接纳人数昌平路时间日期元/位可接纳人数昌平路"
+                android:singleLine="true"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/mybanquet_order_item_person_count"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="10dip">
+
+            <ImageView
+                android:layout_width="20dip"
+                android:layout_height="20dip"
+                android:layout_centerVertical="true"
+                android:src="@drawable/banquet_detail_location"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="23dip"
+                android:textSize="15sp"
+                android:text="时间日期元/位可接纳人数昌平路时间日期元/位可接纳人数昌平路"
+                android:singleLine="true"/>
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/mybanquet_order_item_message"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="10dip">
+
+            <ImageView
+                android:layout_width="20dip"
+                android:layout_height="20dip"
+                android:layout_centerVertical="true"
+                android:src="@drawable/banquet_detail_location"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="23dip"
+                android:textSize="15sp"
+                android:text="时间日期元/位可接纳人数昌平路时间日期元/位可接纳人数昌平路"
+                android:singleLine="true"/>
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

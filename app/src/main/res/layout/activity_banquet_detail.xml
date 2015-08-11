@@ -7,16 +7,11 @@
     android:id="@+id/banquet_datail_root"
     android:orientation="vertical">
 
-    <include
-        android:id="@+id/banquet_detail_toolbar"
-        layout="@layout/toolbar" />
-
     <com.zuijiao.view.BanquetDetailScrollView
         android:id="@+id/banquet_detail_scroll_view"
-        android:layout_below="@id/banquet_detail_toolbar"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="50dip"
+        android:layout_marginBottom="80dip"
         android:scrollbars="none">
 
         <LinearLayout
@@ -291,7 +286,7 @@
                     android:id="@+id/banquet_detail_instruction_content_date"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="24dip"
+                    android:layout_marginTop="20dip"
                     android:paddingLeft="10dip"
                     android:paddingRight="10dip">
 
@@ -578,6 +573,10 @@
         </LinearLayout>
 
     </com.zuijiao.view.BanquetDetailScrollView>
+
+    <include
+        android:id="@+id/banquet_detail_toolbar"
+        layout="@layout/toolbar" />
 
     <View
         android:id="@+id/banquet_detail_division"

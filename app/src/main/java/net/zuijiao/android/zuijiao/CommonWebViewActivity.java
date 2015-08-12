@@ -1,5 +1,6 @@
 package net.zuijiao.android.zuijiao;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.annotation.TargetApi;
 import android.os.Build;
@@ -8,6 +9,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.webkit.JsResult;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
@@ -59,37 +61,27 @@ public class CommonWebViewActivity extends BaseActivity {
         }
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        contentUrl = "http://www.baidu.com" ;
 //        getSupportActionBar().setTitle(title);
         mWebView.getSettings().setJavaScriptEnabled(true);
         mWebView.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
         mWvClient = new WebViewClient() {
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
+
                 if (url.contains("content_url")) {
                     if (url.contains("banquetDetail")) {
                         Map params = StrUtil.parseHttpString(url);
-                        createDialog();
-                        tryLoginFirst(new LambdaExpression() {
+                        Router.getBanquentModule().theme(Integer.valueOf((String) params.get("id")), new OneParameterExpression<Banquent>() {
                             @Override
-                            public void action() {
-                                Router.getBanquentModule().theme(Integer.valueOf((String) params.get("id")), new OneParameterExpression<Banquent>() {
-                                    @Override
-                                    public void action(Banquent banquent) {
-                                        Intent intent = new Intent(mContext, BanquetDetailActivity.class);
-                                        intent.putExtra("banquet", banquent);
-                                        startActivity(intent);
-                                        finalizeDialog();
-                                    }
-                                }, new OneParameterExpression<String>() {
-                                    @Override
-                                    public void action(String errorMsg) {
-                                        Toast.makeText(mContext, getString(R.string.notify_net2), Toast.LENGTH_SHORT).show();
-                                        finalizeDialog();
-                                    }
-                                });
+                            public void action(Banquent banquent) {
+                                Intent intent = new Intent(mContext, BanquetDetailActivity.class);
+                                intent.putExtra("banquet", banquent);
+                                startActivity(intent);
+                                finalizeDialog();
                             }
-                        }, new OneParameterExpression<Integer>() {
+                        }, new OneParameterExpression<String>() {
                             @Override
-                            public void action(Integer integer) {
+                            public void action(String errorMsg) {
                                 Toast.makeText(mContext, getString(R.string.notify_net2), Toast.LENGTH_SHORT).show();
                                 finalizeDialog();
                             }
@@ -117,6 +109,22 @@ public class CommonWebViewActivity extends BaseActivity {
                     mToolbar.setTitle(title);
                 }
             }
+
+            @Override
+            public boolean onJsAlert(WebView view, String url, String message, JsResult result) {
+                final AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
+
+                builder.setTitle("资料填写有误")
+                        .setMessage(message)
+                        .setPositiveButton("确定", null);
+                // 禁止响应按back键的事件
+                builder.setCancelable(false);
+                AlertDialog dialog = builder.create();
+                dialog.show();
+                result.confirm();
+                return true;
+            }
+
         });
         mWebView.loadUrl(contentUrl);
 
@@ -136,22 +144,27 @@ public class CommonWebViewActivity extends BaseActivity {
         switch (item.getItemId()) {
             case android.R.id.home:
                 if(OSUtil.getAPILevel() >= android.os.Build.VERSION_CODES.KITKAT)
-                     mWebView.evaluateJavascript("xxxx()", new ValueCallback<String>() {
-                         @Override
-                         public void onReceiveValue(String value) {
-                             Toast.makeText(mContext, value , Toast.LENGTH_SHORT).show();
-                         }
-                     });
+                    mWebView.evaluateJavascript("window.d_router.previousPage()", new ValueCallback<String>() {
+                        @Override
+                        public void onReceiveValue(String value) {
+                            Toast.makeText(mContext, value , Toast.LENGTH_SHORT).show();
+                        }
+                    });
                 else{
-                    mWebView.loadUrl("javascript:xxxx()");
+                    mWebView.loadUrl("javascript:window.d_router.previousPage()");
                 }
                 return true ;
-//                if(bApplyHost && mWebView.canGoBack())
-//                    mWebView.goBack();
             case R.id.menu_web_view:
-//                if(bApplyHost && mWebView.canGoForward())
-//                    mWebView.goForward();
-
+                 if(OSUtil.getAPILevel() >= android.os.Build.VERSION_CODES.KITKAT)
+                mWebView.evaluateJavascript("window.d_router.nextPage()", new ValueCallback<String>() {
+                    @Override
+                    public void onReceiveValue(String value) {
+                        Toast.makeText(mContext, value , Toast.LENGTH_SHORT).show();
+                    }
+                });
+                else{
+                mWebView.loadUrl("javascript:window.d_router.nextPage()");
+            }
             default:
                 break;
         }

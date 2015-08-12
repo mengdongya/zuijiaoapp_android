@@ -5,9 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.res.Configuration;
 import android.graphics.Typeface;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.Fragment;
@@ -27,7 +25,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
@@ -52,24 +49,21 @@ import com.zuijiao.android.util.Optional;
 import com.zuijiao.android.util.functional.LambdaExpression;
 import com.zuijiao.android.util.functional.OneParameterExpression;
 import com.zuijiao.android.zuijiao.model.Banquent.Banquent;
-import com.zuijiao.android.zuijiao.model.Gourmet;
-import com.zuijiao.android.zuijiao.model.Gourmets;
+import com.zuijiao.android.zuijiao.model.Banquent.Notifications;
+import com.zuijiao.android.zuijiao.model.Banquent.SellerStatus;
 import com.zuijiao.android.zuijiao.model.message.News;
 import com.zuijiao.android.zuijiao.model.message.NewsList;
 import com.zuijiao.android.zuijiao.model.user.TinyUser;
 import com.zuijiao.android.zuijiao.network.Router;
 import com.zuijiao.controller.ActivityTask;
-import com.zuijiao.controller.FileManager;
 import com.zuijiao.controller.MessageDef;
 import com.zuijiao.controller.PreferenceManager;
-import com.zuijiao.db.DBOpenHelper;
 import com.zuijiao.entity.AuthorInfo;
 import com.zuijiao.utils.StrUtil;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 @ContentView(R.layout.activity_main)
 public final class MainActivity extends BaseActivity {
@@ -437,6 +431,18 @@ public final class MainActivity extends BaseActivity {
         });
         if (mTendIntent != null)
             startNewActivity(mTendIntent);
+        Router.getAccountModule().sellerStatus(new OneParameterExpression<SellerStatus>() {
+            @Override
+            public void action(SellerStatus sellerStatus) {
+                Log.e("sellerstatus" , sellerStatus.toString()) ;
+                //TODO different left side bar with status ;
+            }
+        }, new OneParameterExpression<String>() {
+            @Override
+            public void action(String s) {
+                Log.e("sellerstatus" , s) ;
+            }
+        });
     }
 
     @Override

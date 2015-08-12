@@ -49,7 +49,7 @@ public class Order implements Serializable {
     @SerializedName("event")
     private Event event;
     @SerializedName("seller")
-    private TinyUser seller;
+    private TinyUser user;
 
     public Integer getQuantity() {
         return quantity;
@@ -130,7 +130,7 @@ public class Order implements Serializable {
         return event;
     }
 
-    public TinyUser getSeller() {
-        return seller;
+    public TinyUser getUser() {
+        return user;
     }
 }

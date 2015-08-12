@@ -8,6 +8,7 @@ import android.os.Build.VERSION;
 import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
@@ -19,8 +20,12 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.umeng.message.PushAgent;
 import com.zuijiao.android.util.Optional;
+import com.zuijiao.android.util.functional.LambdaExpression;
+import com.zuijiao.android.util.functional.OneParameterExpression;
+import com.zuijiao.android.zuijiao.model.Banquent.Notifications;
 import com.zuijiao.android.zuijiao.model.Gourmet;
 import com.zuijiao.android.zuijiao.network.Cache;
+import com.zuijiao.android.zuijiao.network.Router;
 import com.zuijiao.controller.ActivityTask;
 import com.zuijiao.controller.FileManager;
 import com.zuijiao.controller.PreferenceManager;
@@ -68,18 +73,6 @@ public class SplashActivity extends BaseActivity {
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    try {
-                        List<Gourmet> list = dbMng.initGourmets();
-                        if (list != null) {
-                            FileManager.mainGourmet = Optional.ofNullable(list);
-                        } else {
-                            FileManager.mainGourmet = Optional.empty();
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    } catch (Throwable t) {
-                        t.printStackTrace();
-                    }
                     DBOpenHelper.copyLocationDb(SplashActivity.this.getApplicationContext());
                     goToMain();
                 }

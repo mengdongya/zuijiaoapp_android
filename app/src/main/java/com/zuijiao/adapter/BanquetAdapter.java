@@ -143,7 +143,7 @@ public class BanquetAdapter extends BaseAdapter implements AdapterView.OnItemCli
 //                    }
 //                });
                 bannerViewPager.setOnPageChangeListener(new BannerPagerChangeListener());
-                //startBanner();
+                startBanner();
                 // Picasso.with(mContext).load(mBanquents.getBannerImageUrl()).placeholder(R.drawable.empty_view_greeting).fit().centerCrop().into(bannerView);
             }
             return mBannerContainer;
@@ -275,7 +275,7 @@ public class BanquetAdapter extends BaseAdapter implements AdapterView.OnItemCli
             ImageView imageView = new ImageView(mContext);
             Picasso.with(mContext).load(mBanquents.getBannerImageUrl()).placeholder(R.drawable.empty_view_greeting).fit().centerCrop().into(imageView);
             imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            ((ViewPager) container).addView(imageView);
+            container.addView(imageView);
             imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -293,7 +293,7 @@ public class BanquetAdapter extends BaseAdapter implements AdapterView.OnItemCli
 
         @Override
         public void destroyItem(ViewGroup container, int position, Object object) {
-            ((ViewPager) container).removeView((View) object);
+            container.removeView((View) object);
         }
 
         @Override
@@ -317,7 +317,6 @@ public class BanquetAdapter extends BaseAdapter implements AdapterView.OnItemCli
             dotContainer.getChildAt(oldPosition).setBackgroundResource(R.drawable.dot_normal);
             dotContainer.getChildAt(currentItem).setBackgroundResource(R.drawable.dot_focused);
             oldPosition = position;
-
         }
 
         @Override
@@ -328,7 +327,7 @@ public class BanquetAdapter extends BaseAdapter implements AdapterView.OnItemCli
 
     private void startBanner() {
         scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
-        scheduledExecutorService.scheduleWithFixedDelay(new BannerRunnable(), 1, 2, TimeUnit.SECONDS);
+        scheduledExecutorService.scheduleWithFixedDelay(new BannerRunnable(), 1, 5, TimeUnit.SECONDS);
     }
 
     private class BannerRunnable implements Runnable {

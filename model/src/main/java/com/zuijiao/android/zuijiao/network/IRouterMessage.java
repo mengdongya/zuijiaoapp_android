@@ -1,8 +1,11 @@
 package com.zuijiao.android.zuijiao.network;
 
 import com.squareup.okhttp.Response;
+import com.zuijiao.android.zuijiao.model.Banquent.Notifications;
 import com.zuijiao.android.zuijiao.model.message.Messages;
 import com.zuijiao.android.zuijiao.model.message.NewsList;
+
+import java.util.List;
 
 import retrofit.Callback;
 import retrofit.http.Field;
@@ -15,7 +18,8 @@ import retrofit.http.Query;
  * Created by user on 4/3/15.
  */
 public interface IRouterMessage {
-    final String RootURL = "/messages/v1";
+    String RootURL = "/messages/v1";
+    String RootURL_V4 = "/messages/v4";
 
     @GET(RootURL + "/ios/notifications/info")
     void news(Callback<NewsList> callback);
@@ -33,5 +37,15 @@ public interface IRouterMessage {
 
     @POST(RootURL + "/notifications/read")
     void markAsRead(Callback<Response> callback);
+
+    @POST(RootURL_V4 + "/web/notifications/read")
+    void markBanquetMsgAsRead(@Field("IDs") List<Integer> ids, Callback<Response> callback);
+
+
+    @GET("/messages/v4/web/notifications")
+    void banquetNotifications(@Query("status") String status
+            , @Query("nextCursor") Integer nextCursor
+            , @Query("count") Integer count
+            , Callback<Notifications> callback);
 
 }

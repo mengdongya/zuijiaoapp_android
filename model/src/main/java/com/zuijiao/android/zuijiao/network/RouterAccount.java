@@ -3,6 +3,7 @@ package com.zuijiao.android.zuijiao.network;
 import com.zuijiao.android.util.functional.LambdaExpression;
 import com.zuijiao.android.util.functional.OneParameterExpression;
 import com.zuijiao.android.zuijiao.model.Banquent.Attendee;
+import com.zuijiao.android.zuijiao.model.Banquent.SellerStatus;
 import com.zuijiao.android.zuijiao.model.user.User;
 
 import java.util.Calendar;
@@ -149,6 +150,13 @@ public enum RouterAccount {
 
     public void banquetUserInfo(Integer userId ,OneParameterExpression<Attendee> successCallback
             , OneParameterExpression<String> failureCallback){
-        service.banquetUserInfo(userId ,CallbackFactory.getInstance().callback(successCallback , failureCallback));
+        service.banquetUserInfo(userId, CallbackFactory.getInstance().callback(successCallback, failureCallback));
+    }
+
+
+
+    public void sellerStatus(OneParameterExpression<SellerStatus> successCallback
+            , OneParameterExpression<String> failureCallback){
+        service.sellerStatus(CallbackFactory.getInstance().callback(successCallback, failureCallback));
     }
 }

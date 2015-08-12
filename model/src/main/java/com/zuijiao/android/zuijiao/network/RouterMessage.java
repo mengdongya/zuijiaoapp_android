@@ -2,9 +2,12 @@ package com.zuijiao.android.zuijiao.network;
 
 import com.zuijiao.android.util.functional.LambdaExpression;
 import com.zuijiao.android.util.functional.OneParameterExpression;
+import com.zuijiao.android.zuijiao.model.Banquent.Notifications;
 import com.zuijiao.android.zuijiao.model.message.Messages;
 import com.zuijiao.android.zuijiao.model.message.News;
 import com.zuijiao.android.zuijiao.model.message.NewsList;
+
+import java.util.List;
 
 /**
  * Created by user on 4/3/15.
@@ -61,4 +64,21 @@ public enum RouterMessage {
         service.markAsRead(CallbackFactory.getInstance().callback(successCallback, failureCallback));
     }
 
+
+    public void markBanquetMsgAsRead(List<Integer> ids
+            , LambdaExpression successCallback
+            , LambdaExpression failureCallback
+    ) {
+        service.markBanquetMsgAsRead(ids, CallbackFactory.getInstance().callback(successCallback, failureCallback));
+    }
+
+
+    public void banquetNotifications(String status
+            , Integer nextCursor
+            , Integer count
+            , OneParameterExpression<Notifications> successCallback
+            , OneParameterExpression<String> failureCallback) {
+        service.banquetNotifications(status, nextCursor, count, CallbackFactory.getInstance().callback(successCallback, failureCallback)) ;
+
+    }
 }

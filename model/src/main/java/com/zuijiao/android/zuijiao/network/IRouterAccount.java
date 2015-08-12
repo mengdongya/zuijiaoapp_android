@@ -2,6 +2,7 @@ package com.zuijiao.android.zuijiao.network;
 
 import com.squareup.okhttp.Response;
 import com.zuijiao.android.zuijiao.model.Banquent.Attendee;
+import com.zuijiao.android.zuijiao.model.Banquent.SellerStatus;
 import com.zuijiao.android.zuijiao.model.user.User;
 
 import retrofit.Callback;
@@ -56,7 +57,7 @@ public interface IRouterAccount {
     @GET("/account/v2/ios/info")
     void fetchMyInfo(Callback<User> callback);
 
-    // MARK: - banquent
+    // MARK: - banquents
     @GET("/users/v2/ios/seller/{id}")
     void masterInfo(@Path("id") Integer chefId, Callback<Attendee> callback);
 
@@ -65,4 +66,8 @@ public interface IRouterAccount {
 
     @GET("/users/v3/ios/person/{id}/home")
     void banquetUserInfo(@Path("id") Integer userId ,Callback<Attendee> callback) ;
+
+
+    @GET("/seller/v4/web/application/status")
+    void sellerStatus(Callback<SellerStatus> callback);
 }

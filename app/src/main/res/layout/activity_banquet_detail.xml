@@ -30,8 +30,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:gravity="center"
-                    android:layout_marginLeft="5dip"
-                    android:layout_marginRight="5dip"
                     android:layout_marginTop="5dip"
                     android:scaleType="centerCrop"
                     android:src="@drawable/shanghai" />
@@ -415,10 +413,12 @@
                     android:id="@+id/banquet_detail_ordered_person"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="40dip"
+                    android:layout_marginRight="40dip"
                     android:layout_marginBottom="10dip"
                     android:layout_marginTop="10dip"
-                    android:horizontalSpacing="10dip"
-                    android:numColumns="5"
+                    android:horizontalSpacing="5dip"
+                    android:numColumns="4"
                     android:verticalSpacing="5dip" />
 
                 <View

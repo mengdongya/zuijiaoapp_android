@@ -67,6 +67,7 @@ public class SettingActivity extends BaseActivity {
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         mEmail = mPreferMng.getStoredBindEmail();
+//        mAccountCardStatus = mPreferMng
         mCurrentAccount.setText(mEmail.equals("") ? getString(R.string.un_setting) : mEmail);
         Router.getCommonModule().currentConfiguration(new OneParameterExpression<Configuration>() {
             @Override

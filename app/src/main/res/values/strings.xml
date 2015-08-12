@@ -453,4 +453,5 @@
     <string name="start_time">开始时间</string>
     <string name="book_banquent">预订料理</string>
     <string name="book_msg">预订信息</string>
+    <string name="bind_account_card">已绑定</string>
 </resources>

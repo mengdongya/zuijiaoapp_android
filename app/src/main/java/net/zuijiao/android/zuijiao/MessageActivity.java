@@ -1,21 +1,14 @@
 package net.zuijiao.android.zuijiao;
 
 import android.content.Intent;
-import android.graphics.Color;
-import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.ViewPager;
+import android.os.Handler;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.Toolbar;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -24,17 +17,17 @@ import android.widget.Toast;
 
 import com.lidroid.xutils.view.annotation.ContentView;
 import com.lidroid.xutils.view.annotation.ViewInject;
-import com.squareup.picasso.Picasso;
 import com.zuijiao.android.util.Optional;
 import com.zuijiao.android.util.functional.LambdaExpression;
 import com.zuijiao.android.util.functional.OneParameterExpression;
+import com.zuijiao.android.zuijiao.model.message.Messages;
+import com.zuijiao.android.zuijiao.model.message.News;
+import com.zuijiao.android.zuijiao.model.message.Notification;
 import com.zuijiao.android.zuijiao.model.Gourmet;
 import com.zuijiao.android.zuijiao.model.message.Message;
 import com.zuijiao.android.zuijiao.model.user.TinyUser;
 import com.zuijiao.android.zuijiao.network.Router;
 import com.zuijiao.utils.StrUtil;
-import com.zuijiao.view.ImageItem;
-import com.zuijiao.view.PagerSlidingTab;
 import com.zuijiao.view.RefreshAndInitListView;
 
 import java.util.ArrayList;
@@ -44,8 +37,8 @@ import java.util.List;
  * display notifications and comments , called from main activity menu button .
  * Created by xiaqibo on 2015/6/9.
  */
-@ContentView(R.layout.activity_message)
-public class MessageActivity extends BaseActivity implements MessageFragment.OnMessageFetch {
+@ContentView(R.layout.mybanquet_order_item)
+public class MessageActivity extends BaseActivity implements RefreshAndInitListView.MyListViewListener {
     @ViewInject(R.id.message_toolbar)
     private Toolbar mToolbar;
     /*@ViewInject(R.id.message_tabs)
@@ -53,9 +46,11 @@ public class MessageActivity extends BaseActivity implements MessageFragment.OnM
     @ViewInject(R.id.message_view_pager)
     private ViewPager mViewPager = null;*/
     @ViewInject(R.id.message_list_view)
-    private ListView mMsgListView=null;
+    private RefreshAndInitListView mMsgListView=null;
     @ViewInject(R.id.message_empty_content)
     private LinearLayout mNullMsgList;
+    @ViewInject(R.id.message_swipe_refresh)
+    private SwipeRefreshLayout mRefreshLayout = null;
 //    private MessageFragment mMsgFragment = null;
 //    private MessageFragment mNotifyFragment = null;
     private View mContentView = null;
@@ -63,7 +58,7 @@ public class MessageActivity extends BaseActivity implements MessageFragment.OnM
     private int msgType = -1;
 //    private MessagePagerAdapter mPagerAdapter = null;
     private int msgPicIcons[] = {R.drawable.msg_banquent_list,R.drawable.msg_goto_comment,R.drawable.msg_apply_host,R.drawable.msg_improve_personal};
-    private int msgContains[] = {R.string.msg_draw_back_money,R.string.msg_go_to_comment,R.string.msg_thanks_register,R.string.msg_apply_host};
+//    private int msgContains[] = {R.string.msg_draw_back_money,R.string.msg_go_to_comment,R.string.msg_thanks_register,R.string.msg_apply_host};
 
     @Override
     protected void registerViews() {
@@ -73,8 +68,12 @@ public class MessageActivity extends BaseActivity implements MessageFragment.OnM
 //        mPagerAdapter = new MessagePagerAdapter(getSupportFragmentManager());
 //        mViewPager.setAdapter(mPagerAdapter);
 //        mTabs.setViewPager(mViewPager);
-        mMsgListView.setAdapter(mAdapter);
+/*
         mMsgListView.setOnItemClickListener(onItemClickListener);
+        mMsgListView.setPullLoadEnable(false);
+        mMsgListView.setPullRefreshEnable(false);
+        mMsgListView.setListViewListener(this);
+        mMsgListView.setAdapter(mAdapter);*/
     }
 
     /*private void initTabsValue() {
@@ -97,43 +96,82 @@ public class MessageActivity extends BaseActivity implements MessageFragment.OnM
         mTabs.setTextColor(getResources().getColor(R.color.unselected_tab_text_color));
     }*/
 
-    @Override
-    public void onFetch(int tabIndex, int unReadCount) {
-
-    }
-
     private AdapterView.OnItemClickListener onItemClickListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-            Message msg = (Message)mAdapter.getItem(position -1);
-            if (msg.getType() == Message.Type.Favorite || msg.getType() == Message.Type.Comment){
-                if (msg.getGourmet().isPresent()){
-                    Gourmet gourmet = msg.getGourmet().get();
+            Notification notification = (Notification)mAdapter.getItem(position -1);
+            if ("order".equals(notification.getMsgType())||"seller".equals(notification.getMsgType())){
+                if (notification.getMsgLinkID() != null){
                     Intent intent = new Intent();
-                    intent.putExtra("selected_gourmet", gourmet);
-                    intent.setClass(mContext, GourmetDetailActivity.class);
+                    intent.putExtra("tradeNo",notification.getMsgLinkID() );
+                    intent.setClass(mContext, BanquetOrderDetailActivity.class);
                     startActivity(intent);
                 }else{
                     Toast.makeText(mContext,getString(R.string.no_gourmet_related),Toast.LENGTH_SHORT).show();
                 }
-            }else if (msg.getType() == Message.Type.Follower){
-                if (msg.getFromUser() != null) {
-                    TinyUser user = msg.getFromUser();
-                    Intent intent = new Intent();
-                    intent.setClass(mContext, UserInfoActivity.class);
-                    intent.putExtra("tiny_user", user);
-                    startActivity(intent);
-                } else {
-                    Toast.makeText(mContext, getString(R.string.no_user_related), Toast.LENGTH_SHORT).show();
-                }
-            }else {
-
             }
         }
     };
 
+    @Override
+    public void onRefresh() {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                networkStep(true);
+            }
+        }, 1000);
+    }
+
+    @Override
+    public void onLoadMore() {
+        networkStep(false);
+    }
+
+    private void networkStep(boolean bRefresh) {
+        if (Router.getInstance().getCurrentUser().equals(Optional.empty())) {
+            if(mContext != null)
+                ((BaseActivity) mContext).tryLoginFirst(new LambdaExpression() {
+                    @Override
+                    public void action() {
+                        if (Router.getInstance().getCurrentUser().equals(Optional.empty())) {
+                            mAdapter.mData.clear();
+                            mAdapter.notifyDataSetChanged();
+                            mMsgListView.setPullLoadEnable(false);
+                            mMsgListView.stopRefresh();
+                            mMsgListView.stopLoadMore();
+                            mRefreshLayout.setRefreshing(false);
+                            if(mContext != null)
+                                ((BaseActivity) mContext).notifyLogin(new LambdaExpression() {
+                                    @Override
+                                    public void action() {
+                                        if (Router.getInstance().getCurrentUser().equals(Optional.empty())) {
+
+                                        } else {
+                                            networkStep(bRefresh);
+                                        }
+                                    }
+                                });
+                        } else {
+                            networkStep(bRefresh);
+                        }
+                    }
+                }, new OneParameterExpression<Integer>() {
+                    @Override
+                    public void action(Integer integer) {
+                        if(mContext != null)
+                            Toast.makeText(mContext, getResources().getString(R.string.notify_net2), Toast.LENGTH_LONG).show();
+                        mRefreshLayout.setRefreshing(false);
+                        mMsgListView.stopLoadMore();
+                    }
+                });
+            return;
+        }
+
+    }
+
     public class MessageAdapter extends BaseAdapter{
-        public List<Message> mData = new ArrayList<>();
+        public List<Notification> mData = new ArrayList<Notification>();
         @Override
         public int getCount() {
             if (mData == null)
@@ -167,31 +205,26 @@ public class MessageActivity extends BaseActivity implements MessageFragment.OnM
             if (mData.size() == 0){
                 mNullMsgList.setVisibility(View.VISIBLE);
             }
-            Message msg = mData.get(i);
-            Message.Type msgType = msg.getType();
-            switch (msgType){
-                case Comment:
+            Notification msg = mData.get(i);
+            String msgType = msg.getMsgType();
+            if("order".equals(msgType)) {
+                holder.msgPic.setImageDrawable(getDrawable(msgPicIcons[0]));
+            }else if ("sellerOrder".equals(msgType)) {
                     holder.msgPic.setImageDrawable(getDrawable(msgPicIcons[0]));
-                    holder.msgContent.setText(String.format(getString(msgContains[0]),0));
-                    break;
-                case Favorite:
-                    holder.msgPic.setImageDrawable(getDrawable(msgPicIcons[2]));
-                    holder.msgContent.setText(getString(msgContains[2]));
-                    break;
-                case Follower:
+            }else if ("comment".equals(msgType)) {
                     holder.msgPic.setImageDrawable(getDrawable(msgPicIcons[1]));
-                    holder.msgContent.setText(String.format(getString(msgContains[1]),0));
-                    break;
-                case Empty:
+            }else if ("profile".equals(msgType)) {
                     holder.msgPic.setImageDrawable(getDrawable(msgPicIcons[3]));
-                    holder.msgContent.setText(getString(msgContains[3]));
-                    break;
+            }else if ("application".equals(msgType)) {
+                    holder.msgPic.setImageDrawable(getDrawable(msgPicIcons[2]));
+            }else {
             }
-            holder.dateTime.setText(StrUtil.formatTime(msg.getCreateTime(), mContext));
+            holder.msgContent.setText(msg.getMsgContent());
+            holder.dateTime.setText(msg.getCreateTime());
             return view;
         }
 
-        public void setMessage(List<Message> list) {
+        public void setMessage(List<Notification> list) {
             mData = list;
             notifyDataSetChanged();
         }

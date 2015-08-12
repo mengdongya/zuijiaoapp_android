@@ -30,7 +30,7 @@
         android:layout_width="match_parent"
         android:layout_marginLeft="20dip"
         android:layout_marginRight="20dip"
-        android:background="@color/black" />
+        android:background="@color/tv_deep_gray" />
 
     <LinearLayout
         android:paddingRight="20dip"
@@ -156,6 +156,7 @@
     </LinearLayout>
 
     <TextView
+        android:id="@+id/receiving_account_notice"
         android:text="@string/receiving_account_msg"
         android:textSize="15sp"
         android:gravity="center_horizontal"

@@ -2,6 +2,8 @@ package net.zuijiao.android.zuijiao;
 
 import android.content.Intent;
 import android.support.v7.widget.Toolbar;
+import android.text.method.LinkMovementMethod;
+import android.text.util.Linkify;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -25,12 +27,16 @@ public class ReceivingAccountActivity extends BaseActivity{
     private TextView mAccountCardNumber;
     @ViewInject(R.id.banquent_order_activity_ll)
     private LinearLayout ajkdhsk;
+    @ViewInject(R.id.receiving_account_notice)
+    private TextView receivingAccountNotice;
 
     @Override
     protected void registerViews() {
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(getString(R.string.receiving_account));
+        receivingAccountNotice.setAutoLinkMask(Linkify.PHONE_NUMBERS);
+        receivingAccountNotice.setMovementMethod(LinkMovementMethod.getInstance());
 //        Router.getAccountModule().masterInfo();
         ajkdhsk.setOnClickListener(new View.OnClickListener() {
             @Override

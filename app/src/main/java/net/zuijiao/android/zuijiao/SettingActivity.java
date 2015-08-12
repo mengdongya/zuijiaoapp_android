@@ -50,6 +50,11 @@ public class SettingActivity extends BaseActivity {
     private Button mLogoutBtn = null;
     @ViewInject(R.id.setting_current_account)
     private TextView mCurrentAccount;
+    @ViewInject(R.id.setting_account_card_status)
+    private TextView mAccountCardStatus;
+    @ViewInject(R.id.setting_account_card_layout)
+    private LinearLayout mAccountCardLayout;
+
     private Configuration mConfiguration = null;
     private LambdaExpression successCallback = null;
     private String mEmail = null;
@@ -89,6 +94,15 @@ public class SettingActivity extends BaseActivity {
         mSb1.setOnCheckedChangeListener(mSbListener1);
         mSb2.setOnCheckedChangeListener(mSbListener2);
         mSb3.setOnCheckedChangeListener(mSbListener3);
+
+        mAccountCardLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent();
+                intent.setClass(mContext,ReceivingAccountActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     /**

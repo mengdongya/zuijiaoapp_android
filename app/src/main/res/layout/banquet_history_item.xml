@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:background="@drawable/bg_radius"
     android:orientation="vertical"
     >
@@ -11,11 +11,11 @@
         android:layout_height="match_parent"
         android:layout_marginLeft="8dip"
         android:layout_marginRight="8dip"
-        android:layout_marginTop="8dip"
-        android:layout_marginBottom="0dip"
+        android:layout_marginTop="0dip"
+        android:layout_marginBottom="8dip"
         android:background="@drawable/bg_white_round_corner"
-        android:elevation="3dip"
-        android:orientation="vertical">
+        android:elevation="3dip">
+
         <ImageView
             android:id="@+id/banquet_history_item_image"
             android:src="@drawable/empty_view_greeting"
@@ -35,22 +35,15 @@
             android:textSize="15sp"
             android:text="@string/banquet_status_end" />
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/banquet_item_text"
-            android:layout_below="@id/banquet_history_item_image"
-            android:paddingBottom="0dip"
-            android:paddingLeft="5dip"
-            android:paddingRight="10dip"
-            android:paddingTop="10dip">
-
             <TextView
                 android:id="@+id/banquet_history_item_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:singleLine="true"
+                android:layout_below="@id/banquet_history_item_image"
                 android:text="Sonian的台味厨房"
+                android:layout_marginTop="10dip"
+                android:layout_marginLeft="10dip"
                 android:gravity="center_vertical|left"
                 android:textColor="@color/tv_deep_gray"
                 android:textSize="18sp" />
@@ -60,22 +53,34 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:singleLine="true"
-                android:layout_marginTop="10dip"
+                android:layout_marginTop="5dip"
+                android:layout_marginLeft="10dip"
                 android:layout_below="@id/banquet_history_item_title"
                 android:text="4月18日 周六 18：0"
                 android:textColor="@color/bg_light_gray"
-                android:textSize="16dip" />
+                android:textSize="16sp" />
 
-            <TextView
-                android:id="@+id/banquet_history_item_price"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:singleLine="true"
-                android:layout_marginTop="10dip"
-                android:layout_below="@id/banquet_history_item_date"
-                android:text="@string/price_per_one"
-                android:textColor="@color/tv_red"
-                android:textSize="16dip" />
+        <TextView
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_marginTop="5dip"
+            android:layout_marginBottom="10dip"
+            android:id="@+id/banquet_history_item_price"
+            android:textSize="18sp"
+            android:text="10"
+            android:textColor="@color/banquet_price_text"
+            android:layout_marginLeft="10dip"
+            android:layout_below="@id/banquet_history_item_date" />
+
+        <TextView
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:textSize="14sp"
+            android:layout_alignBottom="@id/banquet_history_item_price"
+            android:text="@string/price_unit"
+            android:layout_marginLeft="3dip"
+            android:textColor="@color/banquet_price_text"
+            android:layout_toRightOf="@id/banquet_history_item_price" />
 
             <TextView
                 android:id="@+id/banquet_history_item_situation"
@@ -84,18 +89,19 @@
                 android:singleLine="true"
                 android:layout_below="@id/banquet_history_item_date"
                 android:layout_marginTop="10dip"
+                android:layout_marginRight="10dip"
                 android:layout_alignParentRight="true"
+                android:layout_alignBottom="@id/banquet_history_item_price"
                 android:text="共有5人参加"
-                android:layout_marginBottom="10dip"
                 android:textColor="@color/bg_light_gray"
-                android:textSize="16dip" />
+                android:textSize="16sp" />
 
-            <!--<View-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="10dip"-->
-                <!--android:layout_below="@id/banquet_history_item_price"/>-->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="3dip"
+                android:layout_below="@id/banquet_history_item_price"/>
 
-        </RelativeLayout>
+
     </RelativeLayout>
 
 </LinearLayout>

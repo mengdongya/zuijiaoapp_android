@@ -889,8 +889,7 @@ public class GourmetDetailActivity extends BaseActivity implements
                     mEtComment.setFocusable(true);
                     mEtComment.setFocusableInTouchMode(true);
                     mEtComment.requestFocus();
-                    InputMethodManager inputManager =
-                            (InputMethodManager) mEtComment.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    InputMethodManager inputManager = (InputMethodManager) mEtComment.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
                     inputManager.showSoftInput(mEtComment, 0);
                     mEtComment.setHint(String.format(mResource.getString(R.string.reply_to), mComments.getCommentList().get(position).getUser().getNickName()));
                     mReplyId = mComments.getCommentList().get(position).getIdentifier();

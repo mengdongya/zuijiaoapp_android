@@ -176,7 +176,7 @@ public class BanquetListActivity extends BaseActivity {
             Picasso.with(mContext).load(banquet.getSurfaceImageUrl()).placeholder(R.drawable.empty_view_greeting).fit().centerCrop().into(holder.image);
             holder.title.setText(banquet.getTitle());
             holder.date.setText(formatDate(banquet.getTime()));
-            holder.price.setText(String.format(getString(R.string.price_per_one), banquet.getPrice()));
+            holder.price.setText(String.valueOf(banquet.getPrice().intValue()));
             holder.situation.setText(String.format(getString(R.string.total_attendee), banquet.getAttendees().size()));
             switch (BanquentStatus.fromString(banquet.getStatus())) {
                 case Selling:

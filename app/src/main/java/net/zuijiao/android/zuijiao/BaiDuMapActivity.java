@@ -9,6 +9,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.graphics.Point;
 import android.net.Uri;
 import android.os.Bundle;
@@ -40,6 +42,8 @@ import com.baidu.mapapi.map.MarkerOptions;
 import com.baidu.mapapi.map.MyLocationConfiguration;
 import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.model.LatLng;
+import com.baidu.mapapi.navi.BaiduMapNavigation;
+import com.baidu.mapapi.navi.NaviParaOption;
 import com.baidu.mapapi.overlayutil.DrivingRouteOverlay;
 import com.baidu.mapapi.search.core.SearchResult;
 import com.baidu.mapapi.search.geocode.GeoCodeOption;
@@ -57,6 +61,9 @@ import com.baidu.mapapi.search.route.TransitRouteResult;
 import com.baidu.mapapi.search.route.WalkingRouteResult;
 import com.lidroid.xutils.view.annotation.ContentView;
 import com.lidroid.xutils.view.annotation.ViewInject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by mengdongya on 2015/7/20.
@@ -78,7 +85,6 @@ public class BaiDuMapActivity extends BaseActivity implements OnGetGeoCoderResul
     private BaiduMap mBaiduMap = null;
     private String address=null;
     private Context mContext = null ;
-    private BMapManager mBMapMan;
     private boolean isFirstLoc = true;
     private LatLng start;
     private LatLng end;
@@ -142,18 +148,27 @@ public class BaiDuMapActivity extends BaseActivity implements OnGetGeoCoderResul
         naviBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (start == null || end == null) {
+                /*if (start == null || end == null) {
                     Toast.makeText(mContext, getString(R.string.on_location), Toast.LENGTH_SHORT).show();
                     return;
-                }
-                try {
-                    String url = "geo:" ;
-                    url = url + "0,0?q=" + address ;
-//                    Uri uri = Uri.parse("geo:" + end.latitude + "," + end.longitude);
-                    Intent it = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-                    startActivity(it);
-                } catch (Throwable e) {
-                    Toast.makeText(mContext, getString(R.string.no_map_app), Toast.LENGTH_SHORT).show();
+                }*/
+                Intent it = null;
+                if (isAvilible(mContext, "com.baidu.BaiduMap") ) {
+                    try {
+                        it = Intent.getIntent("intent://map/geocoder?address=" + getString(R.string.shanghai) + address +
+                                "&src=yourCompanyName|yourAppName#Intent;scheme=bdapp;package=com.baidu.BaiduMap;end");
+                        startActivity(it);
+                    } catch (Exception e) {
+                        Toast.makeText(mContext,getString(R.string.no_result),Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    try {
+                        Uri uri = Uri.parse("geo:" + 0 + "," + 0 + "?q=" + getString(R.string.shanghai) + address);
+                        it = new Intent(Intent.ACTION_VIEW, uri);
+                        startActivity(it);
+                    } catch (Throwable e) {
+                        Toast.makeText(mContext, getString(R.string.no_map_app), Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
         });
@@ -161,6 +176,19 @@ public class BaiDuMapActivity extends BaseActivity implements OnGetGeoCoderResul
         }catch (Throwable t){
             finish();
         }
+    }
+
+    private boolean isAvilible(Context context, String packageName){
+        final PackageManager packageManager = context.getPackageManager();
+        List<PackageInfo> packageInfos = packageManager.getInstalledPackages(0);
+        List<String> packageNames = new ArrayList<String>();
+        if(packageInfos != null){
+            for(int i = 0; i < packageInfos.size(); i++){
+                String packName = packageInfos.get(i).packageName;
+                packageNames.add(packName);
+            }
+        }
+        return packageNames.contains(packageName);
     }
 
     @Override
@@ -270,24 +298,24 @@ public class BaiDuMapActivity extends BaseActivity implements OnGetGeoCoderResul
     protected void onDestroy() {
         super.onDestroy();
         try{
-        if(mLocClient !=null){
-            mLocClient.unRegisterLocationListener(myLocationListenner);
-            mLocClient.stop();
-            mLocClient = null ;
-        }
-        if(mBaiduMap!= null){
-            mBaiduMap.setMyLocationEnabled(false);
-            mBaiduMap.clear();
-            mBaiduMap = null ;
-        }
-        if(mMapView!= null) {
-            mMapView.onDestroy();
-            mMapView = null;
-        }
-        if(routePlanSearch!=null){
-            routePlanSearch.destroy();
-            routePlanSearch = null ;
-        }
+            if(mLocClient !=null){
+                mLocClient.unRegisterLocationListener(myLocationListenner);
+                mLocClient.stop();
+                mLocClient = null ;
+            }
+            if(mBaiduMap!= null){
+                mBaiduMap.setMyLocationEnabled(false);
+                mBaiduMap.clear();
+                mBaiduMap = null ;
+            }
+            if(mMapView!= null) {
+                mMapView.onDestroy();
+                mMapView = null;
+            }
+            if(routePlanSearch!=null){
+                routePlanSearch.destroy();
+                routePlanSearch = null ;
+            }
         }catch (Throwable t){
             finish();
         }

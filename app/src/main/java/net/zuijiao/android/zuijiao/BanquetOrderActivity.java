@@ -222,7 +222,6 @@ public class BanquetOrderActivity extends BaseActivity implements View.OnClickLi
             alertDialogUtil.showDialog();
         }
 
-
         RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mBottomView.getLayoutParams();
         mBottomPriceTv.measure(0, 0);
         int priceHeight = mBottomPriceTv.getMeasuredHeight();

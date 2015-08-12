@@ -109,7 +109,7 @@ public class HostAndGuestActivity extends BaseActivity {
     @ViewInject(R.id.host_detail_group)
     private LinearLayout mhostMsg;
     @ViewInject(R.id.ll_host_comment_stars)
-    private LinearLayout mCommentStars;
+    private RelativeLayout mCommentStars;
     @ViewInject(R.id.host_guest_lastest_comment)
     private RelativeLayout mLastestComment;
     @ViewInject(R.id.host_guest_review_title)
@@ -166,29 +166,30 @@ public class HostAndGuestActivity extends BaseActivity {
         holdBanquet.setOnClickListener(mHeadListener);
         attendeeBanquet.setOnClickListener(mHeadListener);
         mAttendeePlace.setOnClickListener(mHeadListener);
-        if(mTendIntent != null){
+        if (mTendIntent != null) {
             mAttendee = (Attendee) mTendIntent.getSerializableExtra("attendee_info");
             mTinyUser = (TinyUser) mTendIntent.getSerializableExtra("tiny_user");
-            mAttendeeId = mTendIntent.getIntExtra("attendee_id" , -1 ) ;
+            mAttendeeId = mTendIntent.getIntExtra("attendee_id", -1);
         }
-        if(mAttendee == null){
-            if(mAttendeeId == -1)
+        if (mAttendee == null) {
+            if (mAttendeeId == -1) {
                 finish();
-            else{
+            } else {
                 networkStep();
-                registerViewsByTinyuser() ;
+                registerViewsByTinyuser();
             }
-        }else{
+        } else {
             registerViewsByAttendee();
             networkStep();
         }
     }
-
     private void networkStep() {
+
         mAttendeeIntroductionTitle.setText(getString(R.string.host_introduction));
         Router.getAccountModule().banquetUserInfo(mAttendeeId, new OneParameterExpression<Attendee>() {
             @Override
             public void action(Attendee attendee) {
+
                 mAttendee = attendee;
                 mAttendeeId = mAttendee.getIdentifier() ;
                 Gson gson = new Gson();
@@ -198,6 +199,7 @@ public class HostAndGuestActivity extends BaseActivity {
         }, new OneParameterExpression<String>() {
             @Override
             public void action(String s) {
+
                 Toast.makeText(mContext, R.string.notify_net2, Toast.LENGTH_SHORT).show();
                 if(mAttendee == null)
                     finish();
@@ -226,6 +228,7 @@ public class HostAndGuestActivity extends BaseActivity {
                 break;
         }
     }
+
     private void registerCommentView(Review review) {
         if (review != null) {
             mCommentRatingbar.setVisibility(View.VISIBLE);
@@ -239,6 +242,7 @@ public class HostAndGuestActivity extends BaseActivity {
                 mAllComment.setVisibility(View.GONE);
             }
             mReviewTitle.setText(String.format(getString(R.string.receive_comments), mAttendee.getSellerInfo().getCommentCount()));
+
             mCommentCount.setText("(" + mAttendee.getSellerInfo().getCommentCount() + ")");
             mCommentRatingbar.setRating(mAttendee.getSellerInfo().getScore());
             ImageView head = (RoundImageView) mLastestComment.findViewById(R.id.banquet_comment_item_head);
@@ -257,7 +261,6 @@ public class HostAndGuestActivity extends BaseActivity {
             mAllComment.setVisibility(View.GONE);
         }
     }
-
 
     private void registerViewsByTinyuser() {
         if(mTinyUser == null)
@@ -285,15 +288,15 @@ public class HostAndGuestActivity extends BaseActivity {
             String languages = "";
             List<Language> cacheLanguages = Cache.INSTANCE.languages;
             if(cacheLanguages != null )
-            for (String languageCode : mAttendee.getProfile().getLanguages().get()) {
-                for (Language language : cacheLanguages) {
-                    if (languageCode.equals(language.getCode())) {
-                        languages += language.getName();
-                        languages += " ";
-                        break;
+                for (String languageCode : mAttendee.getProfile().getLanguages().get()) {
+                    for (Language language : cacheLanguages) {
+                        if (languageCode.equals(language.getCode())) {
+                            languages += language.getName();
+                            languages += " ";
+                            break;
+                        }
                     }
                 }
-            }
             ((TextView) mAttendeeLanguage.findViewById(R.id.attendee_detail_info_item_content)).setText(languages);
         }
         if (mAttendee.getProfile().getEducationBackground().isPresent() && !mAttendee.getProfile().getEducationBackground().get().equals("")) {
@@ -316,7 +319,7 @@ public class HostAndGuestActivity extends BaseActivity {
             setBanquetStatus(lastAttendBanquet,attendeeBanquet);
             ((TextView) attendeeBanquet.findViewById(R.id.banquet_history_item_title1)).setText(lastAttendBanquet.getTitle());
             ((TextView) attendeeBanquet.findViewById(R.id.banquet_history_item_date1)).setText(formatDate(lastAttendBanquet.getTime()));
-            ((TextView) attendeeBanquet.findViewById(R.id.banquet_history_item_price1)).setText(String.format(getString(R.string.price_per_one), lastAttendBanquet.getPrice()));
+            ((TextView) attendeeBanquet.findViewById(R.id.banquet_history_item_price1)).setText(String.valueOf(lastAttendBanquet.getPrice().intValue()));
             ((TextView) attendeeBanquet.findViewById(R.id.banquet_history_item_situation1)).setText(String.format(getString(R.string.total_attendee), lastAttendBanquet.getAttendees().size()));
         }
         //register last attend banquet end
@@ -413,10 +416,10 @@ public class HostAndGuestActivity extends BaseActivity {
                 banquetImageHoldNull.setVisibility(View.GONE);
                 mHostHold.setText(String.format(getString(R.string.hosted_banquet), sellerInfo.getEventCount(), sellerInfo.getSoldCount()));
                 Picasso.with(mContext).load(lastHoldBanquet.getSurfaceImageUrl()).placeholder(R.drawable.empty_view_greeting).fit().centerCrop().into((ImageView) holdBanquet.findViewById(R.id.banquet_history_item_image1));
-                setBanquetStatus(lastHoldBanquet,holdBanquet);
+                setBanquetStatus(lastHoldBanquet, holdBanquet);
                 ((TextView) holdBanquet.findViewById(R.id.banquet_history_item_title1)).setText(lastHoldBanquet.getTitle());
                 ((TextView) holdBanquet.findViewById(R.id.banquet_history_item_date1)).setText(formatDate(lastHoldBanquet.getTime()));
-                ((TextView) holdBanquet.findViewById(R.id.banquet_history_item_price1)).setText(String.format(getString(R.string.price_per_one), lastHoldBanquet.getPrice()));
+                ((TextView) holdBanquet.findViewById(R.id.banquet_history_item_price1)).setText(String.valueOf(lastHoldBanquet.getPrice().intValue()));
                 ((TextView) holdBanquet.findViewById(R.id.banquet_history_item_situation1)).setText(String.format(getString(R.string.total_attendee), lastHoldBanquet.getAttendees().size()));
             } else {
                 mHoldAllBanquet.setVisibility(View.GONE);
@@ -447,9 +450,9 @@ public class HostAndGuestActivity extends BaseActivity {
         else
             gender = getString(R.string.gender_keep_secret);
         strBuilder.append(gender);
+
         return strBuilder.toString();
     }
-
 
     private ViewPager.OnPageChangeListener mPageListener = new ViewPager.OnPageChangeListener() {
         @Override

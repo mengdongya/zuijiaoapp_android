@@ -116,8 +116,6 @@ public final class MainActivity extends BaseActivity {
     public static final int ORDER_CANCEL = 20011;
     public static final int ORDER_PAY_SUCCESS = 20012;
 
-
-
     private OnItemClickListener mTabsListener = new OnItemClickListener() {
 
         @Override

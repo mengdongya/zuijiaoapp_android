@@ -90,4 +90,7 @@
     <color name="dialog_btn_pressed">#88eeeeee</color>
     <color name="surplus_time">#ff3000</color>
     <color name="light_white">#cccccc</color>
+    <color name="notice_bg">#f9f9f9</color>
+    <color name="host_guest_item_divider">#ededed</color>
+    <color name="host_guest_end_divider">#d2d2d2</color>
 </resources>

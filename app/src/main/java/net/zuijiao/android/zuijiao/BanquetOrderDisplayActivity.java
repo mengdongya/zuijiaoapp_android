@@ -180,9 +180,6 @@ public class BanquetOrderDisplayActivity extends BaseActivity {
             int dateHeight = mBottomPeopleCount.getMeasuredHeight() ;
             int margin = (int) (3* getResources().getDimension(R.dimen.end_z));
             params.height = priceHeight + dateHeight + margin ;
-//            RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) mScrollView.getLayoutParams();
-//            layoutParams.bottomMargin = params.height ;
-            //runnable.run();
             handler.removeCallbacks(runnable);
             handler.post(runnable);
             mOrderCancel.setOnClickListener(new View.OnClickListener() {
@@ -232,7 +229,18 @@ public class BanquetOrderDisplayActivity extends BaseActivity {
                     startActivityForResult(intent, MainActivity.ORDER_REQUEST);
                 }
             });
-        } else {
+        } else if(mOrder.getStatus() == OrderStatus.Uncomment){
+            mOrderBottom.setVisibility(View.VISIBLE);
+            mOrderPay.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent();
+                    intent.setClass(mContext, ReviewActivity.class);
+                    intent.putExtra("orderId", mOrder.getIdentifier());
+                    startActivity(intent);
+                }
+            });
+        }else{
             mOrder_ll_surplus.setVisibility(View.GONE);
             mOrderCancel.setVisibility(View.GONE);
             mOrderBottom.setVisibility(View.GONE);

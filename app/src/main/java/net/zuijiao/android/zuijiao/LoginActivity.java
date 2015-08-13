@@ -34,6 +34,7 @@ import com.zuijiao.android.util.functional.OneParameterExpression;
 import com.zuijiao.android.zuijiao.model.user.TinyUser;
 import com.zuijiao.android.zuijiao.network.Router;
 import com.zuijiao.controller.MessageDef;
+import com.zuijiao.controller.PreferenceManager;
 import com.zuijiao.controller.ThirdPartySDKManager;
 import com.zuijiao.entity.AuthorInfo;
 
@@ -148,7 +149,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 
             mDialog = ProgressDialog.show(LoginActivity.this, null, getResources().getString(R.string.on_loading));
             // login by zuijiao account ;
-            Router.getOAuthModule().loginEmailRoutine(mEmail, mPassword, Optional.<String>empty(), Optional.<String>empty(), new LambdaExpression() {
+            Router.getOAuthModule().loginEmailRoutine(mEmail, mPassword, Optional.of(PreferenceManager.mDeviceToken), Optional.<String>empty(), new LambdaExpression() {
                 @Override
                 public void action() {
                     Toast.makeText(getApplicationContext(), getString(R.string.login_success), Toast.LENGTH_SHORT).show();

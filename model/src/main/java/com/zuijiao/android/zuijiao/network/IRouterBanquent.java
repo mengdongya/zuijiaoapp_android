@@ -3,6 +3,7 @@ package com.zuijiao.android.zuijiao.network;
 import com.squareup.okhttp.Response;
 import com.zuijiao.android.zuijiao.model.Banquent.BanquentForTheme;
 import com.zuijiao.android.zuijiao.model.Banquent.Banquents;
+import com.zuijiao.android.zuijiao.model.Banquent.Order;
 import com.zuijiao.android.zuijiao.model.Banquent.Orders;
 import com.zuijiao.android.zuijiao.model.Banquent.Reviews;
 import com.zuijiao.android.zuijiao.model.OrderAuth;
@@ -54,6 +55,11 @@ public interface IRouterBanquent {
             , Callback<Response> callback
     );
 
+    @GET("/feast/v3/ios/order/{orderID}")
+    void order(@Path("orderID") Integer id
+            , Callback<Orders> callback) ;
+
+
     @GET(RootURL_V3 + "/ios/orders")
     void orders(@Query("status") String status
             , @Query("maxID") Integer sinceId
@@ -74,6 +80,7 @@ public interface IRouterBanquent {
             , @Query("count") Integer count
             , Callback<Banquents> callback
     );
+
     @GET(RootURL_V3 + "/ios/event/{id}")
     void theme(@Path("id") Integer identifier
             , Callback<BanquentForTheme> callback
@@ -107,4 +114,9 @@ public interface IRouterBanquent {
             , @Query("platform") String payPlatform
             , Callback<OrderAuthV3> restaurantsCallback
     );
+
+    @GET("/seller/v3/ios/orders")
+    void sellerOrder(@Query("status") String status
+            , @Query("maxID") Integer maxID
+            , @Query("count") Integer count, Callback<Orders> callback);
 }

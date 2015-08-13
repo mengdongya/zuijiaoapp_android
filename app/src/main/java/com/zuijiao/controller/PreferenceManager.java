@@ -21,7 +21,7 @@ public class PreferenceManager {
     private static Context mContext = null;
     private static AuthorInfo authInfo = null;
     private Configuration configs;
-
+    public static String mDeviceToken = "";
     private PreferenceManager() {
 
     }
@@ -33,6 +33,7 @@ public class PreferenceManager {
         }
         if (mPreferInfo == null) {
             mPreferInfo = initPreferenceInfo();
+            mDeviceToken = getDeviceToken() ;
         }
         return mPreferenceMng;
     }
@@ -81,7 +82,6 @@ public class PreferenceManager {
         editor.putBoolean("notify_followed", config.isNotifyFollowed());
         editor.putBoolean("notify_like", config.isNotifyLike());
         editor.putBoolean("notify_comment", config.isNotifyComment());
-        ;
         editor.commit();
     }
 
@@ -137,7 +137,7 @@ public class PreferenceManager {
         editor.putString("headurl", userInfo.getHeadPath());
         editor.putString("openid", userInfo.getUid());
         editor.putString("platform", userInfo.getPlatform());
-        editor.putString("token", userInfo.getToken());
+//        editor.putString("token", userInfo.getToken());
         editor.putString("email", userInfo.getEmail());
         editor.putString("password", userInfo.getPassword());
         editor.putInt("user_id", userInfo.getUserId());
@@ -152,11 +152,24 @@ public class PreferenceManager {
         editor.putString("headurl", "");
         editor.putString("openid", "");
         editor.putString("platform", "");
-        editor.putString("token", "");
+//        editor.putString("token", "");
         editor.putString("email", "");
         editor.putString("password", "");
         editor.putInt("user_id", -1);
         editor.commit();
+    }
+
+    public static String getDeviceToken(){
+        SharedPreferences sp = mContext.getSharedPreferences(PreferencesDef.FILE_NAME, Activity.MODE_PRIVATE);
+        String deviceToken = sp.getString("token" ,"") ;
+        return deviceToken ;
+    }
+
+
+    public static boolean saveDeviceToken(String deviceToken){
+        mDeviceToken = deviceToken ;
+        SharedPreferences sp = mContext.getSharedPreferences(PreferencesDef.FILE_NAME, Activity.MODE_PRIVATE);
+        return sp.edit().putString("token" , deviceToken).commit() ;
     }
 
     public void saveAvatarPath(String avatarPath) {
@@ -225,11 +238,11 @@ public class PreferenceManager {
     }
 
     public interface PreferencesDef {
-        public static final String FILE_NAME = "settings";
-        public static final String IS_APP_FIRST_LAUNCH = "boolean_first_launch_version2";
-        public static final String B_VERSION2 = "is_version2";
-        public static final String USER_KEY = "str_user_key";
-        public static final String USER_ID = "str_user_id";
+        String FILE_NAME = "settings";
+        String IS_APP_FIRST_LAUNCH = "boolean_first_launch_version2";
+        String B_VERSION2 = "is_version2";
+        String USER_KEY = "str_user_key";
+        String USER_ID = "str_user_id";
     }
 
     /**
@@ -243,6 +256,17 @@ public class PreferenceManager {
         private String userId = "";
         private boolean version2FirstLaunch = true;
 
+        public String getDeviceToken() {
+            return deviceToken;
+        }
+
+        public void setDeviceToken(String deviceToken) {
+            this.deviceToken = deviceToken;
+        }
+
+        private String deviceToken ;
+        
+        
         public String getUserKey() {
             return userKey;
         }

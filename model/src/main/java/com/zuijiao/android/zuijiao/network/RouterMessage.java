@@ -69,7 +69,8 @@ public enum RouterMessage {
             , LambdaExpression successCallback
             , LambdaExpression failureCallback
     ) {
-        service.markBanquetMsgAsRead(ids, CallbackFactory.getInstance().callback(successCallback, failureCallback));
+        String strIDs = Router.convertJsonFromList(ids) ;
+        service.markBanquetMsgAsRead(strIDs, CallbackFactory.getInstance().callback(successCallback, failureCallback));
     }
 
 

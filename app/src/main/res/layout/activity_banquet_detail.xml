@@ -12,6 +12,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginBottom="80dip"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
         android:scrollbars="none">
 
         <LinearLayout
@@ -30,9 +32,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:gravity="center"
-                    android:layout_marginLeft="5dip"
-                    android:layout_marginRight="5dip"
-                    android:layout_marginTop="5dip"
                     android:scaleType="centerCrop"
                     android:src="@drawable/shanghai" />
 
@@ -517,59 +516,15 @@
                     android:textSize="18sp"
                      />
             </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
+            <TextView
+                android:id="@+id/banquet_detail_notice"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="10dip"
-                android:background="@color/notice_bg"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:lineSpacingExtra="7dip"
-                    android:paddingTop="10dip"
-                    android:text="@string/banquet_notice"
-                    android:textSize="16sp" />
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dip"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:layout_width="20dip"
-                        android:layout_height="20dip"
-                        android:src="@drawable/notice_marker"/>
-                    <TextView
-                        android:id="@+id/banquet_detail_notice1"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/banquet_notice1"
-                        android:layout_marginLeft="5dip"
-                        android:textSize="14sp"/>
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dip"
-                    android:orientation="horizontal">
-                    <ImageView
-                        android:layout_width="20dip"
-                        android:layout_height="20dip"
-                        android:src="@drawable/notice_marker"/>
-                    <TextView
-                        android:id="@+id/banquet_detail_notice2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/banquet_notice2"
-                        android:layout_marginLeft="5dip"
-                        android:textSize="14sp"/>
-                </LinearLayout>
-            </LinearLayout>
+                android:layout_margin="10dip"
+                android:lineSpacingExtra="7dip"
+                android:text="@string/banquet_notice"
+                android:textColor="@color/bg_light_gray"
+                android:textSize="14sp" />
         </LinearLayout>
 
     </com.zuijiao.view.BanquetDetailScrollView>

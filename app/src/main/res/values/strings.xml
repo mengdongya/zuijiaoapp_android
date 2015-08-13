@@ -434,8 +434,8 @@
     <string name="next_step">下一步</string>
     <string name="banquet_notice1">本活动在%1$s后截止预订。</string>
     <string name="banquet_notice2">本活动最低成团人数为%1$d人,若您已付款且活动未成团，我们将会把款项退回您的账户。</string>
-    <string name="msg_draw_back_money">您购买的「%d」已经退款成功，预计在3-10个工作日返回您的支付账户。</string>
-    <string name="msg_go_to_comment">「%d」已经完成了赏味，赶紧为料理人写下你的评价吧！（点击去评价）</string>
+    <string name="msg_draw_back_money">您购买的「%s」已经退款成功，预计在3-10个工作日返回您的支付账户。</string>
+    <string name="msg_go_to_comment">「%s」已经完成了赏味，赶紧为料理人写下你的评价吧！（点击去评价）</string>
     <string name="msg_thanks_register">感谢你注册嘴角，完善个人资料可以帮助你找到美味相投的朋友。（点击去完善）</string>
     <string name="msg_apply_host">很高兴通知你，你的申请已通过审核，欢迎你加入嘴角料理人，完善收款信息后就可以发布料理活动了，期待你的美味作品。（点击去完善收款信息）</string>
     <string name="receiving_account_msg">你的收款账户已设置，不可以修改。\n如有疑问请联系：021-58313201。</string>
@@ -453,4 +453,7 @@
     <string name="start_time">开始时间</string>
     <string name="book_banquent">预订料理</string>
     <string name="book_msg">预订信息</string>
+    <string name="bank_account_hint">输入银行帐号</string>
+    <string name="bank_name_hint">输入银行名称</string>
+    <string name="real_name_hint">输入真实姓名</string>
 </resources>

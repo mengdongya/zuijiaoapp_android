@@ -192,63 +192,6 @@ public class GuideActivity extends BaseActivity {
         }, 800);
     }
 
-    private void networkSetup(AuthorInfo auth) {
-        if (ThirdPartySDKManager.getInstance(getApplicationContext()).isThirdParty(auth.getPlatform())) {
-            Router.getOAuthModule().login(auth.getUid(), auth.getPlatform(), Optional.<String>empty(), Optional.of(auth.getToken()), new LambdaExpression() {
-                        @Override
-                        public void action() {
-                            goToMain();
-                        }
-                    },
-                    new OneParameterExpression<Integer>() {
-                        @Override
-                        public void action(Integer errorMessage) {
-                            System.out.println("failure " + errorMessage);
-                            Toast.makeText(GuideActivity.this, getResources().getString(R.string.notify_net2), Toast.LENGTH_LONG).show();
-                            goToMain();
-                        }
-                    });
-        } else if ((auth.getEmail() != null) && (!auth.getEmail().equals(""))) {
-            //2@2.2
-            //c81e728d9d4c2f636f067f89cc14862c
-            RouterOAuth.INSTANCE.loginEmailRoutine(auth.getEmail(),
-                    auth.getPassword(),
-                    Optional.empty(),
-                    Optional.empty(),
-                    new LambdaExpression() {
-                        @Override
-                        public void action() {
-                            goToMain();
-                        }
-                    },
-                    new OneParameterExpression<Integer>() {
-                        @Override
-                        public void action(Integer errorMessage) {
-                            System.out.println("failure " + errorMessage);
-                            Toast.makeText(GuideActivity.this, getResources().getString(R.string.notify_net2), Toast.LENGTH_LONG).show();
-                            goToMain();
-                        }
-                    }
-            );
-
-        } else {
-            Router.getOAuthModule().visitor(new LambdaExpression() {
-                                                @Override
-                                                public void action() {
-                                                    goToMain();
-                                                }
-                                            },
-                    new OneParameterExpression<Integer>() {
-                        @Override
-                        public void action(Integer errorMessage) {
-                            System.out.println("failure " + errorMessage);
-                            Toast.makeText(GuideActivity.this, getResources().getString(R.string.notify_net2), Toast.LENGTH_LONG).show();
-                            goToMain();
-                        }
-                    });
-        }
-        Cache.INSTANCE.setup();
-    }
 
     @Override
     public void onBackPressed() {

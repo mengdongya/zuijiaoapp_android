@@ -1,62 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <android.support.v7.widget.Toolbar
-        android:layout_width="match_parent"
+    <include
         android:id="@+id/message_toolbar"
-        android:elevation="0dip"
-        android:layout_height="@dimen/toolbar_height"
-        colorControlNormal="@color/white"
-        android:background="?attr/colorPrimary"
-        android:minHeight="?attr/actionBarSize" />
+        layout="@layout/toolbar" />
 
-    <LinearLayout
-        android:id="@+id/message_empty_content"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="130dip"
-        android:gravity="center"
-        android:visibility="gone"
-        android:orientation="vertical">
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-        <ImageView
-            android:layout_height="60dip"
-            android:layout_width="60dip"
-            android:layout_marginTop="20dip"
-            android:src="@drawable/message" />
-
-        <TextView
-            android:layout_height="wrap_content"
+        <LinearLayout
+            android:id="@+id/message_empty_content"
             android:layout_width="wrap_content"
-            android:singleLine="false"
-            android:text="@string/no_message"
-            android:lineSpacingExtra="5dip"
-            android:textColor="@color/bg_light_gray"
-            android:gravity="center_horizontal" />
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="130dip"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:visibility="gone">
 
-    </LinearLayout>
+            <ImageView
+                android:layout_width="60dip"
+                android:layout_height="60dip"
+                android:layout_marginTop="20dip"
+                android:src="@drawable/message" />
 
-    <ListView
-        android:id="@+id/message_list_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/transparent"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:lineSpacingExtra="5dip"
+                android:singleLine="false"
+                android:text="@string/no_message"
+                android:textColor="@color/bg_light_gray" />
 
-    <!--<com.zuijiao.view.PagerSlidingTab
-        android:id="@+id/message_tabs"
-        android:layout_height="55dip"
-        android:visibility="gone"
-        android:layout_width="match_parent"
-        android:elevation="8dip" />
+        </LinearLayout>
 
-    <android.support.v4.view.ViewPager
-        android:background="@color/transparent"
-        android:id="@+id/message_view_pager"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />-->
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/message_swipe_refresh"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="5dip"
+            android:orientation="vertical">
+
+            <com.zuijiao.view.RefreshAndInitListView
+                android:id="@+id/message_list_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:divider="@null" />
+        </android.support.v4.widget.SwipeRefreshLayout>
+    </FrameLayout>
 
 </LinearLayout>

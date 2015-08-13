@@ -6,6 +6,7 @@ import com.zuijiao.android.util.functional.OneParameterExpression;
 import com.zuijiao.android.zuijiao.model.Banquent.Banquent;
 import com.zuijiao.android.zuijiao.model.Banquent.BanquentForTheme;
 import com.zuijiao.android.zuijiao.model.Banquent.Banquents;
+import com.zuijiao.android.zuijiao.model.Banquent.Order;
 import com.zuijiao.android.zuijiao.model.Banquent.OrderCreateErrorMessage;
 import com.zuijiao.android.zuijiao.model.Banquent.OrderStatus;
 import com.zuijiao.android.zuijiao.model.Banquent.Orders;
@@ -81,6 +82,11 @@ public enum RouterBanquent {
         service.createOrder(themeId, remark, payMethod, CallbackFactory.getInstance().callback(successCallback, failureCallback));
     }
 
+    public  void order(Integer orderID , final  OneParameterExpression<Orders> successCallback ,
+                       final OneParameterExpression<String> failureCallback){
+        service.order(orderID ,  CallbackFactory.getInstance().callback(successCallback, failureCallback)) ;
+    }
+
     public void orders(OrderStatus status
             , Integer maxId
             , Integer count
@@ -153,5 +159,14 @@ public enum RouterBanquent {
             , final OneParameterExpression<OrderAuthV3> successCallback
             , final OneParameterExpression<String> failureCallback) {
         service.payOrder(orderId, payMethod, payPlatform, CallbackFactory.getInstance().callback(successCallback, failureCallback));
+    }
+
+
+    public void sellerOrders(String status
+            , Integer maxID
+            , Integer count
+            , final OneParameterExpression<Orders> successCallback
+            , final OneParameterExpression<String> failureCallback) {
+            service.sellerOrder(status , maxID , count, CallbackFactory.getInstance().callback(successCallback , failureCallback));
     }
 }

@@ -105,7 +105,7 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
     @ViewInject(R.id.banquet_detail_host_name)
     private TextView mHostName;
     @ViewInject(R.id.banquet_detail_star_container)
-    private LinearLayout mStarContainer;
+    private RelativeLayout mStarContainer;
     @ViewInject(R.id.banquet_detail_host_score)
     private TextView mHostScore;
     @ViewInject(R.id.banquet_detail_about_host)

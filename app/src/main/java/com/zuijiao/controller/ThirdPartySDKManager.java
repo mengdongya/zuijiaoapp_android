@@ -123,8 +123,8 @@ public class ThirdPartySDKManager implements AbsSDK.LoginListener {
         String openid = authInfo.getUid();
         String imageurl = authInfo.getHeadPath();
         String platsform = authInfo.getPlatform();
-        String token = authInfo.getToken();
-        Router.getOAuthModule().register(userName, imageurl, null, openid, platsform, Optional.<String>empty(), Optional.of(token), new OneParameterExpression<Boolean>() {
+        String token = PreferenceManager.mDeviceToken ;
+        Router.getOAuthModule().register(userName, imageurl, null, openid, platsform , Optional.of(token), Optional.<String>empty(), new OneParameterExpression<Boolean>() {
             @Override
             public void action(Boolean isNew) {
                 Toast.makeText(mContext, mContext.getString(R.string.login_success), Toast.LENGTH_SHORT).show();

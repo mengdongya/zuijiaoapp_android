@@ -230,7 +230,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
     private void doRegister() {
         createDialog();
         Router.getOAuthModule().registerEmailRoutine(mNickName, mUserAvatar, mEmail, mPwd, mSelectedGender,
-                Optional.<String>empty(), Optional.<String>empty(), new LambdaExpression() {
+                Optional.of(PreferenceManager.mDeviceToken), Optional.<String>empty(), new LambdaExpression() {
                     @Override
                     public void action() {
                         //register success !

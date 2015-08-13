@@ -22,6 +22,7 @@ import android.widget.Toast;
 
 import com.umeng.analytics.MobclickAgent;
 import com.umeng.message.PushAgent;
+import com.umeng.message.UmengRegistrar;
 import com.zuijiao.android.util.Optional;
 import com.zuijiao.android.util.functional.LambdaExpression;
 import com.zuijiao.android.util.functional.OneParameterExpression;
@@ -54,6 +55,7 @@ public abstract class BaseActivity extends ActionBarActivity {
     protected String updateApkName = "zuijiao-update.apk";
     protected long mUpdateDownloadId = Integer.MIN_VALUE;
     protected boolean mInfoGot = false ;
+    protected String deviceToken ;
     /**
      * listen to the downloading of update package
      */
@@ -86,10 +88,7 @@ public abstract class BaseActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         com.lidroid.xutils.ViewUtils.inject(this);
         mContext = getApplicationContext();
-        mPreferMng = PreferenceManager.getInstance(mContext);
-        mFileMng = FileManager.getInstance(mContext);
-        dbMng = DBOpenHelper.getmInstance(mContext);
-        authMng = ThirdPartySDKManager.getInstance(this);
+        initManagers();
         mTendIntent = getIntent();
         registerViews();
         IntentFilter filter = new IntentFilter();
@@ -99,9 +98,21 @@ public abstract class BaseActivity extends ActionBarActivity {
         ActivityTask.getInstance().addActivity(this);
     }
 
+    private void initManagers(){
+        mPreferMng = PreferenceManager.getInstance(mContext);
+        if(PreferenceManager.mDeviceToken == null || PreferenceManager.mDeviceToken.equals("")){
+            String device_token = UmengRegistrar.getRegistrationId(mContext) ;
+            if(device_token!=null && !device_token.equals(""))
+                PreferenceManager.saveDeviceToken(device_token) ;
+        }
+        mFileMng = FileManager.getInstance(mContext);
+        dbMng = DBOpenHelper.getmInstance(mContext);
+        authMng = ThirdPartySDKManager.getInstance(this);
+    }
+
     public void onResume() {
         super.onResume();
-        if(BuildConfig.OpenUmeng){
+        if (BuildConfig.OpenUmeng){
             MobclickAgent.onResume(this);
         }
     }
@@ -111,11 +122,6 @@ public abstract class BaseActivity extends ActionBarActivity {
         if(BuildConfig.OpenUmeng){
             MobclickAgent.onPause(this);
         }
-    }
-
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
     }
 
     @Override
@@ -210,7 +216,7 @@ public abstract class BaseActivity extends ActionBarActivity {
         if (ThirdPartySDKManager.getInstance(mContext).isThirdParty(auth.getPlatform())) {
             //auth by third party account
             Router.getOAuthModule().login(auth.getUid(), auth.getPlatform(),
-                    Optional.<String>empty(),
+                    Optional.of(PreferenceManager.mDeviceToken),
                     Optional.of(auth.getToken()),
                     new LambdaExpression() {
                         @Override
@@ -231,9 +237,9 @@ public abstract class BaseActivity extends ActionBarActivity {
             //2@2.2
             //c81e728d9d4c2f636f067f89cc14862c
             //auth by zuijiao account
-            RouterOAuth.INSTANCE.loginEmailRoutine(auth.getEmail(),
+            Router.getOAuthModule().loginEmailRoutine(auth.getEmail(),
                     auth.getPassword(),
-                    Optional.empty(),
+                    Optional.of(PreferenceManager.mDeviceToken),
                     Optional.empty(),
                     new LambdaExpression() {
                         @Override

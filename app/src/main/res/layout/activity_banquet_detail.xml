@@ -12,6 +12,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginBottom="80dip"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
         android:scrollbars="none">
 
         <LinearLayout
@@ -30,7 +32,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:gravity="center"
-                    android:layout_marginTop="5dip"
                     android:scaleType="centerCrop"
                     android:src="@drawable/shanghai" />
 
@@ -89,7 +90,7 @@
                     android:layout_height="60dip"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="10dip"
-                    android:src="@drawable/default_user_head" />
+                    android:src="@drawable/shanghai" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -517,17 +518,15 @@
                     android:textSize="18sp"
                      />
             </LinearLayout>
-
             <TextView
                 android:id="@+id/banquet_detail_notice"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dip"
+                android:layout_margin="10dip"
                 android:lineSpacingExtra="7dip"
-                android:paddingTop="10dip"
                 android:text="@string/banquet_notice"
-                android:textSize="16sp" />
-
+                android:textColor="@color/bg_light_gray"
+                android:textSize="14sp" />
         </LinearLayout>
 
     </com.zuijiao.view.BanquetDetailScrollView>

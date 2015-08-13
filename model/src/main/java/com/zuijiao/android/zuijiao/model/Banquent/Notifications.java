@@ -48,7 +48,7 @@ public class Notifications {
         private Integer linkID ;
         @SerializedName("isRead")
         private Boolean isRead ;
-        @SerializedName("createAt")
+        @SerializedName("createdAt")
         private Date createDate ;
 
         public Integer getId() {
@@ -59,8 +59,8 @@ public class Notifications {
             return content;
         }
 
-        public String getType() {
-            return type;
+        public NotificationType getType() {
+            return NotificationType.fromString(type) ;
         }
 
         public Boolean getIsRead() {
@@ -73,6 +73,10 @@ public class Notifications {
 
         public Date getCreateDate() {
             return createDate;
+        }
+
+        public void setIsRead(Boolean isRead) {
+            this.isRead = isRead;
         }
     }
 
@@ -89,7 +93,7 @@ public class Notifications {
             }
         }
 
-        public static StatusType formString(String statusType){
+        public static StatusType fromString(String statusType){
             switch (statusType){
                 case "read" :
                     return read ;
@@ -122,7 +126,7 @@ public class Notifications {
             }
         }
 
-        public static NotificationType formString(String notificationType){
+        public static NotificationType fromString(String notificationType){
             switch (notificationType){
                 case "order" :
                     return order ;

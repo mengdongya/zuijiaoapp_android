@@ -454,13 +454,15 @@
     <string name="start_time">开始时间</string>
     <string name="book_banquent">预订料理</string>
     <string name="book_msg">预订信息</string>
+    <string name="bank_account_hint">输入银行帐号</string>
+    <string name="bank_name_hint">输入银行名称</string>
+    <string name="real_name_hint">输入真实姓名</string>
     <string name="bind_account_card">已绑定</string>
     <string name="publish_banquent">您可以登录嘴角网www.zuijiao.net,发布您的料理活动。\n如有疑问请联系：021-58313201。</string>
     <string name="my_banquent_active">我的料理活动</string>
     <string name="my_banquent_order">我的料理订单</string>
     <string name="no_going_banquent_order">还没有收到相关订单</string>
-    <string name="no_finished_banquent_order"></string>
-    <string name="no_canceled_banquent_order"></string>
+    
     <!-- umeng socializer strings begin-->
     <!--<string name="pull_to_refresh_pull_label" translatable="false">向下拉动可以刷新</string>-->
     <!--<string name="pull_to_refresh_release_label" translatable="false">松开可以刷新</string>-->

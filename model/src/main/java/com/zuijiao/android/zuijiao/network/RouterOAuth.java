@@ -28,6 +28,7 @@ public enum RouterOAuth {
         aMap.put("client_id", "1419219041");
         aMap.put("client_secret", "6676a26412ce3755ffd337d4bc51c7a7");
         aMap.put("grant_type", "client_credentials");
+        aMap.put("origin" ,"android") ;
         OAuthParam = Collections.unmodifiableMap(aMap);
     }
 

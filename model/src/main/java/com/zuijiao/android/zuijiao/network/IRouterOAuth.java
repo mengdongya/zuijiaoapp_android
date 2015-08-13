@@ -14,9 +14,8 @@ import retrofit.http.POST;
  * Created by Chen Hao on 3/16/15.
  * <p>
  */
-public abstract interface IRouterOAuth {
-    final String RootURL = "/oauth";
-
+public interface IRouterOAuth {
+    String RootURL = "/oauth";
     @FormUrlEncoded
     @POST(RootURL + "/v1/login")
     void login(@Field("openId") String openID
@@ -30,8 +29,8 @@ public abstract interface IRouterOAuth {
     @POST(RootURL + "/v1/login")
     OAuthModel login(@Field("openId") String openID
             , @Field("platform") String platform
-            , @Field("openToken") String openToken
-            , @Field("deviceToken") String deviceToken
+            , @Field("deviceToken") String openToken
+            , @Field("openToken") String deviceToken
             , @FieldMap Map<String, String> oauthParam
     );
 
@@ -53,8 +52,8 @@ public abstract interface IRouterOAuth {
             , @Field("imageUrl") String avatarURL
             , @Field("openId") String openID
             , @Field("platform") String platform
-            , @Field("openToken") String openToken
-            , @Field("deviceToken") String deviceToken
+            , @Field("deviceToken") String openToken
+            , @Field("openToken") String deviceToken
             , @FieldMap Map<String, String> oauthParam
     );
 
@@ -70,8 +69,8 @@ public abstract interface IRouterOAuth {
     @POST(RootURL + "/v1/ios/account-login")
     void loginEmailRoutine(@Field("email") String email
             , @Field("password") String password
-            , @Field("openToken") String openToken
-            , @Field("deviceToken") String deviceToken
+            , @Field("deviceToken") String openToken
+            , @Field("openToken") String deviceToken
             , @FieldMap Map<String, String> oauthParam
             , Callback<OAuthModel> callback);
 
@@ -79,8 +78,8 @@ public abstract interface IRouterOAuth {
     @POST(RootURL + "/v1/ios/account-login")
     OAuthModel loginEmailRoutine(@Field("email") String email
             , @Field("password") String password
-            , @Field("openToken") String openToken
-            , @Field("deviceToken") String deviceToken
+            , @Field("deviceToken") String openToken
+            , @Field("openToken") String deviceToken
             , @FieldMap Map<String, String> oauthParam);
 
     @FormUrlEncoded
@@ -91,8 +90,8 @@ public abstract interface IRouterOAuth {
             , @Field("email") String email
             , @Field("password") String password
             , @Field("gender") String gender
-            , @Field("openToken") String openToken
-            , @Field("deviceToken") String deviceToken
+            , @Field("deviceToken") String openToken
+            , @Field("openToken") String deviceToken
             , @FieldMap Map<String, String> oauthParam
             , Callback<OAuthModel> callback
     );
@@ -104,8 +103,8 @@ public abstract interface IRouterOAuth {
             , @Field("imageUrl") String avatarURL
             , @Field("email") String email
             , @Field("password") String password
-            , @Field("openToken") String openToken
-            , @Field("deviceToken") String deviceToken
+            , @Field("deviceToken") String openToken
+            , @Field("openToken") String deviceToken
             , @FieldMap Map<String, String> oauthParam
     );
 }

@@ -38,8 +38,9 @@ public interface IRouterMessage {
     @POST(RootURL + "/notifications/read")
     void markAsRead(Callback<Response> callback);
 
+    @FormUrlEncoded
     @POST(RootURL_V4 + "/web/notifications/read")
-    void markBanquetMsgAsRead(@Field("IDs") List<Integer> ids, Callback<Response> callback);
+    void markBanquetMsgAsRead(@Field("IDs") String ids, Callback<Response> callback);
 
 
     @GET("/messages/v4/web/notifications")

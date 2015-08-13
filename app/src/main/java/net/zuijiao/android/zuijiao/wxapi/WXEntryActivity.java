@@ -156,39 +156,43 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
                                 jsonObject1 = getJSON(strResult1);
                                 String nickname = new String(jsonObject1.getString("nickname").getBytes(), "utf-8");
                                 String headimgurl = jsonObject1.getString("headimgurl");
-                                Router.getOAuthModule().register(nickname, headimgurl, null, unionId, "wechat", Optional.<String>empty(), Optional.of(mRereshToken), new OneParameterExpression<Boolean>() {
-                                    @Override
-                                    public void action(Boolean isNew) {
-                                        Toast.makeText(getApplicationContext(), getString(R.string.login_success), Toast.LENGTH_SHORT).show();
-                                        AuthorInfo userInfo = new AuthorInfo();
-                                        userInfo.setUid(unionId);
-                                        userInfo.setToken(mRereshToken);
-                                        userInfo.setPlatform("wechat");
-                                        userInfo.setHeadPath(headimgurl);
-                                        if (!isNew) {
-                                            String avataUrl = null;
-                                            if (Router.getInstance().getCurrentUser().get().getAvatarURLSmall().isPresent()) {
-                                                avataUrl = Router.getInstance().getCurrentUser().get().getAvatarURLSmall().get();
-                                                userInfo.setHeadPath(avataUrl);
+                                Router.getOAuthModule().register(nickname, headimgurl, null
+                                        , unionId, "wechat"
+                                        , Optional.of(PreferenceManager.mDeviceToken)
+                                        , Optional.of(mRereshToken)
+                                        , new OneParameterExpression<Boolean>() {
+                                            @Override
+                                            public void action(Boolean isNew) {
+                                                Toast.makeText(getApplicationContext(), getString(R.string.login_success), Toast.LENGTH_SHORT).show();
+                                                AuthorInfo userInfo = new AuthorInfo();
+                                                userInfo.setUid(unionId);
+                                                userInfo.setToken(mRereshToken);
+                                                userInfo.setPlatform("wechat");
+                                                userInfo.setHeadPath(headimgurl);
+                                                if (!isNew) {
+                                                    String avataUrl = null;
+                                                    if (Router.getInstance().getCurrentUser().get().getAvatarURLSmall().isPresent()) {
+                                                        avataUrl = Router.getInstance().getCurrentUser().get().getAvatarURLSmall().get();
+                                                        userInfo.setHeadPath(avataUrl);
+                                                    }
+                                                }
+                                                userInfo.setUserId(Router.getInstance().getCurrentUser().get().getIdentifier());
+                                                userInfo.setUserName(Router.getInstance().getCurrentUser().get().getNickName());
+                                                PreferenceManager.getInstance(getApplicationContext()).saveThirdPartyLoginMsg(userInfo);
+                                                Intent intent = new Intent(
+                                                        MessageDef.ACTION_GET_THIRD_PARTY_USER);
+                                                Bundle bundle = new Bundle();
+                                                bundle.putString("name", nickname);
+                                                bundle.putString("head_url", userInfo.getHeadPath());
+                                                intent.putExtra("userinfo", bundle);
+                                                WXEntryActivity.this.sendBroadcast(intent);
                                             }
-                                        }
-                                        userInfo.setUserId(Router.getInstance().getCurrentUser().get().getIdentifier());
-                                        userInfo.setUserName(Router.getInstance().getCurrentUser().get().getNickName());
-                                        PreferenceManager.getInstance(getApplicationContext()).saveThirdPartyLoginMsg(userInfo);
-                                        Intent intent = new Intent(
-                                                MessageDef.ACTION_GET_THIRD_PARTY_USER);
-                                        Bundle bundle = new Bundle();
-                                        bundle.putString("name", nickname);
-                                        bundle.putString("head_url", userInfo.getHeadPath());
-                                        intent.putExtra("userinfo", bundle);
-                                        WXEntryActivity.this.sendBroadcast(intent);
-                                    }
-                                }, new OneParameterExpression<Integer>() {
-                                    @Override
-                                    public void action(Integer integer) {
-                                        Toast.makeText(getApplicationContext(), getResources().getString(R.string.notify_net2), Toast.LENGTH_SHORT).show();
-                                    }
-                                });
+                                        }, new OneParameterExpression<Integer>() {
+                                            @Override
+                                            public void action(Integer integer) {
+                                                Toast.makeText(getApplicationContext(), getResources().getString(R.string.notify_net2), Toast.LENGTH_SHORT).show();
+                                            }
+                                        });
 
                             } catch (ClientProtocolException e1) {
                                 e1.printStackTrace();

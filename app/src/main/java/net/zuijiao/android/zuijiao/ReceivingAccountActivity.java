@@ -25,8 +25,6 @@ public class ReceivingAccountActivity extends BaseActivity{
     private TextView mAccountBank;
     @ViewInject(R.id.receiving_account_cardnumber)
     private TextView mAccountCardNumber;
-    @ViewInject(R.id.banquent_order_activity_ll)
-    private LinearLayout ajkdhsk;
     @ViewInject(R.id.receiving_account_notice)
     private TextView receivingAccountNotice;
 
@@ -37,14 +35,7 @@ public class ReceivingAccountActivity extends BaseActivity{
         getSupportActionBar().setTitle(getString(R.string.receiving_account));
         receivingAccountNotice.setAutoLinkMask(Linkify.PHONE_NUMBERS);
         receivingAccountNotice.setMovementMethod(LinkMovementMethod.getInstance());
-//        Router.getAccountModule().masterInfo();
-        ajkdhsk.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent();
-                intent.setClass(mContext,BanquetOrderDetailActivity.class);
-                startActivity(intent);
-            }
-        });
+
+
     }
 }

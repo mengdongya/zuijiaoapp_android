@@ -298,6 +298,10 @@
             android:name="net.zuijiao.android.zuijiao.BanquetOrderDetailActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
+        <activity
+            android:name=".MyBanquentActiveFragment"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
         
         <activity
             android:name="com.tencent.tauth.AuthActivity"

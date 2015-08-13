@@ -11,7 +11,7 @@
         android:layout_height="30dip"
         android:layout_marginLeft="10dip"
         android:layout_marginRight="10dip"
-        android:src="@drawable/message" />
+        android:src="@drawable/msg_improve_personal" />
 
     <LinearLayout
         android:id="@+id/msg_content_container"

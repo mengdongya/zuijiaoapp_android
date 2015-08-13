@@ -48,7 +48,7 @@ public class Order implements Serializable {
     private Date deadline;
     @SerializedName("event")
     private Event event;
-    @SerializedName("seller")
+    @SerializedName("user")
     private TinyUser user;
 
     public Integer getQuantity() {

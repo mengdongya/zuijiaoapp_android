@@ -9,26 +9,27 @@
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="130dip"
+        android:layout_marginTop="100dip"
         android:gravity="center"
         android:visibility="gone"
         android:orientation="vertical">
+
+        <ImageView
+            android:layout_height="55dip"
+            android:layout_width="62dip"
+            android:src="@drawable/order_list_place_holder" />
 
         <TextView
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
             android:singleLine="false"
+            android:layout_marginTop="20dip"
             android:id="@+id/order_list_blank_text"
             android:text="@string/no_favor"
             android:lineSpacingExtra="5dip"
-            android:textColor="@color/bg_light_gray"
+            android:textColor="@color/gray"
             android:gravity="center_horizontal" />
 
-        <ImageView
-            android:layout_height="60dip"
-            android:layout_width="60dip"
-            android:layout_marginTop="20dip"
-            android:src="@drawable/order_list_place_holder" />
     </LinearLayout>
 
     <android.support.v4.widget.SwipeRefreshLayout

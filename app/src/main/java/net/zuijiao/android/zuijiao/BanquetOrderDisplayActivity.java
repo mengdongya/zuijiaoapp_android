@@ -155,9 +155,6 @@ public class BanquetOrderDisplayActivity extends BaseActivity {
             case Finished:
                 statusStr = getString(R.string.finished_banquet);
                 break;
-            case Uncomment:
-                statusStr = getString(R.string.waiting_comment);
-                break;
             case Unpaid:
                 statusStr = getString(R.string.waiting_pay);
                 break;

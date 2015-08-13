@@ -103,6 +103,8 @@ public final class MainActivity extends BaseActivity {
 //    private GourmetDisplayFragment mFavorFragment = null;
     //drop gourmet end
     private MyOrderFragment mMyOrderFragment = null;
+    private MyBanquentActiveFragment mMyBanquentActiveFragment;
+    private HostBanquentFragment mHostBanquentFragment = null;
 //    private
     private Fragment mCurrentFragment = null;
     private FragmentManager mFragmentMng = null;
@@ -165,8 +167,8 @@ public final class MainActivity extends BaseActivity {
     };
 //    private int[] mTabImages = {R.drawable.setting_home, R.drawable.setting_recommend, R.drawable.setting_favor, R.drawable.setting_orders};
 //    private int[] mTabTitles = {R.string.main_page, R.string.recommend_page, R.string.favor_page, R.string.my_order};
-    private int[] mTabImages = {R.drawable.setting_home, R.drawable.setting_orders , R.drawable.icon};
-    private int[] mTabTitles = {R.string.main_page, R.string.my_order,R.string.apply_to_be_host};
+    private int[] mTabImages = {R.drawable.setting_home, R.drawable.setting_orders ,R.drawable.setting_banquent_active,R.drawable.order_list_place_holder, R.drawable.apply_host};
+    private int[] mTabTitles = {R.string.main_page, R.string.my_order,R.string.my_banquent_active,R.string.my_banquent_order,R.string.apply_to_be_host};
 
     private View mLocationView = null;
     private BadgeView mBadgeView = null;
@@ -379,9 +381,10 @@ public final class MainActivity extends BaseActivity {
 //        });
         mSettingList.setOnItemClickListener(mSettingListener);
         titles = getResources().getStringArray(R.array.fragment_title);
-        mToolBar.setTitle(titles[0]);
+//        mToolBar.setTitle(titles[0]);
         mBadgeView = initBadgeView();
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle(getString(R.string.app_name));
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,
                 mToolBar, R.string.drawer_open, R.string.drawer_close);
         mDrawerToggle.syncState();
@@ -403,6 +406,13 @@ public final class MainActivity extends BaseActivity {
 //        mFragmentList.add(mFavorFragment);
         mMyOrderFragment = MyOrderFragment.getInstance();
         mFragmentList.add(mMyOrderFragment);
+
+        mMyBanquentActiveFragment = MyBanquentActiveFragment.newInstance();
+        mFragmentList.add(mMyBanquentActiveFragment);
+
+        mHostBanquentFragment = HostBanquentFragment.getInstance();
+        mFragmentList.add(mHostBanquentFragment);
+
         mMainTabsTitle.setAdapter(mTabTitleAdapter);
         mMainTabsTitle.setOnItemClickListener(mTabsListener);
         mFragmentMng = getSupportFragmentManager();
@@ -411,7 +421,7 @@ public final class MainActivity extends BaseActivity {
                 mFragmentList.get(0));
         mCurrentFragment = mFragmentList.get(0);
         mFragmentTransaction.commit();
-        mToolBar.setTitle(titles[0]);
+//        mToolBar.setTitle(titles[0]);
         checkVersion();
         Router.getMessageModule().notifications(newsList -> {
             mNewsList = newsList;
@@ -684,6 +694,7 @@ public final class MainActivity extends BaseActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == COMMENT_REQUEST || requestCode == ORDER_REQUEST) {
             mMyOrderFragment.onActivityResult(requestCode, resultCode, data);
+            mHostBanquentFragment.onActivityResult(requestCode, resultCode, data);
         }
         if (requestCode == SETTING_REQ && resultCode == LOGOUT_RESULT) {
             //drop gourmet begin

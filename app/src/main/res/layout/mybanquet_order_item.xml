@@ -16,7 +16,7 @@
         android:gravity="center"
         android:orientation="vertical">
         <com.zuijiao.view.RoundImageView
-            android:id="@+id/mybanquet_order_item_head"
+            android:id="@+id/my_banquet_order_item_head"
             myattr:border_thickness="1dip"
             myattr:border_outside_color="#eeeeee"
             myattr:border_inside_color="#eeeeee"
@@ -30,10 +30,11 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:layout_marginTop="8dip"
+            android:singleLine="true"
             android:textSize="16sp"
             android:textColor="@color/tv_deep_gray"
             android:text="昵称"
-            android:id="@+id/mybanquet_order_item_nickname"/>
+            android:id="@+id/my_banquet_order_item_nickname"/>
     </LinearLayout>
 
     <LinearLayout
@@ -44,12 +45,14 @@
         android:orientation="vertical"
         android:gravity="center">
         <TextView
+            android:id="@+id/my_banquent_order_item_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dip"
             android:text="Sonian的台味厨房"
             android:layout_marginLeft="8dip"
             android:layout_marginBottom="10dip"
+            android:singleLine="true"
             android:textSize="18sp"
             android:textColor="@color/black"/>
 
@@ -67,6 +70,7 @@
                 android:src="@drawable/teast_date_time"/>
 
             <TextView
+                android:id="@+id/my_banquent_order_item_datetime"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dip"
@@ -75,7 +79,7 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/mybanquet_order_item_person_count"
+
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
@@ -88,6 +92,7 @@
                 android:src="@drawable/teast_person_number"/>
 
             <TextView
+                android:id="@+id/my_banquet_order_item_person_count"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dip"
@@ -110,6 +115,7 @@
                 android:src="@drawable/teast_remark"/>
 
             <TextView
+                android:id="@+id/my_banquet_order_item_remark"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dip"

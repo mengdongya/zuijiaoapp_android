@@ -170,4 +170,7 @@ public class Router {
         return RouterBanquent.INSTANCE;
     }
 
+    public static RouterNotification getNotificationModule(){
+        return RouterNotification.INSTANCE;
+    }
 }

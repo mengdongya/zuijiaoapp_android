@@ -68,8 +68,7 @@ public class MessageActivity extends BaseActivity implements RefreshAndInitListV
 //        mPagerAdapter = new MessagePagerAdapter(getSupportFragmentManager());
 //        mViewPager.setAdapter(mPagerAdapter);
 //        mTabs.setViewPager(mViewPager);
-/*
-        mMsgListView.setOnItemClickListener(onItemClickListener);
+       /* mMsgListView.setOnItemClickListener(onItemClickListener);
         mMsgListView.setPullLoadEnable(false);
         mMsgListView.setPullRefreshEnable(false);
         mMsgListView.setListViewListener(this);

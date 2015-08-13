@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center">
+
+        <ImageView
+            android:layout_width="175dip"
+            android:layout_height="175dip"
+            android:src="@drawable/on_developing" />
+
+        <TextView
+            android:id="@+id/on_developing"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dip"
+            android:text="正在开发中，即将呈现..."
+            android:textSize="16sp"
+            android:gravity="center"
+            android:textColor="@color/black" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/publish_banquent"
+            android:layout_below="@+id/on_developing"
+            android:id="@+id/my_banquent_active_notice"
+            android:gravity="center"
+            android:textSize="16sp"
+            android:textColor="@color/bg_light_gray"
+            android:layout_marginTop="110dip"/>
+    </LinearLayout>
+</FrameLayout>

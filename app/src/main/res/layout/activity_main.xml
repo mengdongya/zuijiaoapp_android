@@ -66,12 +66,12 @@
 
                 <com.zuijiao.view.RoundImageView
                     android:id="@+id/iv_user_head"
-                    android:layout_width="66dip"
+                    android:layout_width="70dip"
                     myattr:border_thickness="1dip"
                     myattr:border_outside_color="#eeeeee"
                     myattr:border_inside_color="#eeeeee"
                     android:padding="2dip"
-                    android:layout_height="66dip"
+                    android:layout_height="70dip"
                     android:layout_gravity="left"
                     android:src="@drawable/default_user_head" />
 

@@ -5,7 +5,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.Fragment;
@@ -41,7 +40,6 @@ import com.lidroid.xutils.view.annotation.ViewInject;
 import com.readystatesoftware.viewbadger.BadgeView;
 import com.squareup.picasso.Picasso;
 import com.umeng.fb.FeedbackAgent;
-import com.umeng.message.UmengRegistrar;
 import com.umeng.update.UmengUpdateAgent;
 import com.umeng.update.UmengUpdateListener;
 import com.umeng.update.UpdateResponse;
@@ -49,7 +47,6 @@ import com.zuijiao.android.util.Optional;
 import com.zuijiao.android.util.functional.LambdaExpression;
 import com.zuijiao.android.util.functional.OneParameterExpression;
 import com.zuijiao.android.zuijiao.model.Banquent.Banquent;
-import com.zuijiao.android.zuijiao.model.Banquent.Notifications;
 import com.zuijiao.android.zuijiao.model.Banquent.SellerStatus;
 import com.zuijiao.android.zuijiao.model.message.News;
 import com.zuijiao.android.zuijiao.model.message.NewsList;
@@ -59,6 +56,7 @@ import com.zuijiao.controller.ActivityTask;
 import com.zuijiao.controller.MessageDef;
 import com.zuijiao.controller.PreferenceManager;
 import com.zuijiao.entity.AuthorInfo;
+import com.zuijiao.utils.AdapterViewHeightCalculator;
 import com.zuijiao.utils.StrUtil;
 
 import java.io.File;
@@ -94,18 +92,10 @@ public final class MainActivity extends BaseActivity {
     @ViewInject(R.id.lv_drawe_items2)
     private ListView mSettingList = null;
     private ArrayList<Fragment> mFragmentList = null;
-    //private GourmetDisplayFragment mMainFragment = null;
-    //drop gourmet
-//    private MainFragment mMainFragment = null;
-    private BanquetDisplayFragment mMainFragment= null ;
-    //drop gourmet begin
-//    private GourmetDisplayFragment mRecommendFragment = null;
-//    private GourmetDisplayFragment mFavorFragment = null;
-    //drop gourmet end
+    private BanquetDisplayFragment mMainFragment = null;
     private MyOrderFragment mMyOrderFragment = null;
     private MyBanquentActiveFragment mMyBanquentActiveFragment;
     private HostBanquentFragment mHostBanquentFragment = null;
-//    private
     private Fragment mCurrentFragment = null;
     private FragmentManager mFragmentMng = null;
     private FragmentTransaction mFragmentTransaction = null;
@@ -117,58 +107,67 @@ public final class MainActivity extends BaseActivity {
     public static final int ORDER_REQUEST = 20010;
     public static final int ORDER_CANCEL = 20011;
     public static final int ORDER_PAY_SUCCESS = 20012;
+    private SellerStatus mSellerStatus;
+
+    private enum TabTag {
+        publicBanquet, myOrder, sellerBanquet, sellerOrder, sellerApplication
+    }
 
     private OnItemClickListener mTabsListener = new OnItemClickListener() {
 
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position,
                                 long id) {
-            if(position == mFragmentList.size()){
-                Intent intent = new Intent();
-//                intent.putExtra("content_url", "http://db.zuijiaodev.com:3000/");
-                intent.setClass(mContext, ApplyForHostStep1Activity.class);
-                startActivity(intent);
-            }else{
+            if (view == null) {
                 mFragmentTransaction = mFragmentMng.beginTransaction();
-                if (!mFragmentList.get(position).isAdded()) {
-                    mFragmentTransaction.hide(mCurrentFragment).add(R.id.main_content_container, mFragmentList.get(position)).commit();
-                } else {
-//                if(mFragmentList.indexOf(mCurrentFragment) == 0){
-//                    mFragmentTransaction.hide(mCurrentFragment).addToBackStack("main_fragment").show(mFragmentList.get(position)).commit();
-//                }else{
-                    mFragmentTransaction.hide(mCurrentFragment).show(mFragmentList.get(position)).commit();
-//                }
-                }
-                mCurrentFragment = mFragmentList.get(position);
-                mToolBar.setTitle(titles[position]);
-                if (position != 0) {
-                    mLocationView.setVisibility(View.INVISIBLE);
+                mFragmentTransaction.hide(mCurrentFragment).show(mFragmentList.get(0)).commit();
+                mCurrentFragment = mFragmentList.get(0);
+            } else {
+                TabTag tag = (TabTag) view.getTag();
+                switch (tag) {
+                    case publicBanquet:
+
+                    case myOrder:
+
+                    case sellerBanquet:
+                    case sellerOrder:
+                        mFragmentTransaction = mFragmentMng.beginTransaction();
+                        mFragmentTransaction.hide(mCurrentFragment).show(mFragmentList.get(position)).commit();
+                        mCurrentFragment = mFragmentList.get(position);
+                        break ;
+                    case sellerApplication:
+
+                    default:
+                        onItemClick(parent, null, position, id);
                 }
             }
-//            if (position == 3) {
-//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-//                    mToolBar.setElevation(0);
-//                }
+
+//            if (position == mFragmentList.size()) {
+//                Intent intent = new Intent();
+//                intent.setClass(mContext, ApplyForHostStep1Activity.class);
+//                startActivity(intent);
 //            } else {
-//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-//                    mToolBar.setElevation(30);
+//                mFragmentTransaction = mFragmentMng.beginTransaction();
+//                if (!mFragmentList.get(position).isAdded()) {
+//                    mFragmentTransaction.hide(mCurrentFragment).add(R.id.main_content_container, mFragmentList.get(position)).commit();
+//                } else {
+//                    mFragmentTransaction.hide(mCurrentFragment).show(mFragmentList.get(position)).commit();
 //                }
-//            }
-//            if (position != 0) {
-//                mLocationView.setVisibility(View.INVISIBLE);
-//            } else {
-//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-//                    mToolBar.setElevation(0);
+//                mCurrentFragment = mFragmentList.get(position);
+//                mToolBar.setTitle(titles[position]);
+//                if (position != 0) {
+//                    mLocationView.setVisibility(View.INVISIBLE);
 //                }
-//                mLocationView.setVisibility(View.VISIBLE);
 //            }
             mDrawerLayout.closeDrawer(Gravity.LEFT);
         }
     };
-//    private int[] mTabImages = {R.drawable.setting_home, R.drawable.setting_recommend, R.drawable.setting_favor, R.drawable.setting_orders};
-//    private int[] mTabTitles = {R.string.main_page, R.string.recommend_page, R.string.favor_page, R.string.my_order};
-    private int[] mTabImages = {R.drawable.setting_home, R.drawable.setting_orders ,R.drawable.setting_banquent_active,R.drawable.order_list_place_holder, R.drawable.apply_host};
-    private int[] mTabTitles = {R.string.main_page, R.string.my_order,R.string.my_banquent_active,R.string.my_banquent_order,R.string.apply_to_be_host};
+    private int[] mTabImages = {R.drawable.setting_home,
+            R.drawable.setting_orders,
+            R.drawable.setting_banquent_active,
+            R.drawable.order_list_place_holder,
+            R.drawable.apply_host};
+    private int[] mTabTitles = {R.string.main_page, R.string.my_order, R.string.my_banquent_active, R.string.my_banquent_order, R.string.apply_to_be_host};
 
     private View mLocationView = null;
     private BadgeView mBadgeView = null;
@@ -227,11 +226,64 @@ public final class MainActivity extends BaseActivity {
                     .findViewById(R.id.drawer_setting_item_image);
             TextView textView = (TextView) contentView
                     .findViewById(R.id.drawer_setting_item_text);
-            TextView textMsg = (TextView) contentView
+            TextView sellerStatusText = (TextView) contentView
                     .findViewById(R.id.drawer_setting_item_text2);
-            image.setImageResource(mTabImages[position]);
-            textView.setText(getString(mTabTitles[position]));
-            textMsg.setVisibility(View.GONE);
+            switch (position) {
+                case 0:
+                    textView.setText(R.string.main_page);
+                    image.setImageResource(R.drawable.setting_home);
+                    sellerStatusText.setVisibility(View.GONE);
+                    contentView.setTag(TabTag.publicBanquet);
+                    break;
+                case 1:
+                    textView.setText(R.string.my_order);
+                    image.setImageResource(R.drawable.setting_orders);
+                    sellerStatusText.setVisibility(View.GONE);
+                    contentView.setTag(TabTag.myOrder);
+                    break;
+                default:
+                    if (mSellerStatus == null) {
+                        textView.setText(R.string.apply_host);
+                        image.setImageResource(R.drawable.setting_banquent_active);
+                        sellerStatusText.setVisibility(View.GONE);
+                    } else if (mSellerStatus.getApplyStatus() != SellerStatus.ApplyStatus.passed
+                            || mSellerStatus.getBankStatus() != SellerStatus.BankStatus.finished) {
+                        int statusResStr = -1;
+                        switch (mSellerStatus.getApplyStatus()) {
+                            case editing:
+                                break;
+                            case waiting:
+                            case reviewing:
+                                statusResStr = R.string.seller_status_reviewing;
+                                break;
+                            case fail:
+                                statusResStr = R.string.seller_status_failed;
+                                break;
+                            case passed:
+                                statusResStr = R.string.seller_status_success;
+
+                        }
+                        textView.setText(R.string.apply_host);
+                        image.setImageResource(R.drawable.setting_banquent_active);
+                        if (statusResStr != -1) {
+                            sellerStatusText.setText(statusResStr);
+                        } else
+                            sellerStatusText.setVisibility(View.GONE);
+                        contentView.setTag(TabTag.sellerApplication);
+                    } else {
+                        if (position == 3) {
+                            textView.setText(R.string.my_banquent_active);
+                            image.setImageResource(R.drawable.setting_banquent_active);
+                            sellerStatusText.setVisibility(View.GONE);
+                            contentView.setTag(TabTag.sellerBanquet);
+                        } else if (position == 4) {
+                            textView.setText(R.string.my_banquent_order);
+                            image.setImageResource(R.drawable.order_list_place_holder);
+                            sellerStatusText.setVisibility(View.GONE);
+                            contentView.setTag(TabTag.sellerOrder);
+                        }
+                    }
+            }
             return contentView;
         }
 
@@ -247,7 +299,13 @@ public final class MainActivity extends BaseActivity {
 
         @Override
         public int getCount() {
-            return mFragmentList.size() +1;
+            if (mSellerStatus != null
+                    && mSellerStatus.getApplyStatus() == SellerStatus.ApplyStatus.passed
+                    && mSellerStatus.getBankStatus() == SellerStatus.BankStatus.finished) {
+                return 4;
+            } else {
+                return 3;
+            }
         }
     };
     private String[] mSettingArray = null;
@@ -322,29 +380,19 @@ public final class MainActivity extends BaseActivity {
         agent.sync();
     }
 
-    @Override
-    protected void findViews() {
-
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
-        getString(R.string.guest);
         return true;
     }
 
 
     @Override
     protected void registerViews() {
-        String device_token = UmengRegistrar.getRegistrationId(mContext);
-        Log.i("deviceToken", device_token);
         setSupportActionBar(mToolBar);
-//        mToolBar.setOnMenuItemClickListener(onMenuItemClick);
         mLocationView = LayoutInflater.from(this).inflate(
                 R.layout.location_layout, null);
-        Typeface tf = Typeface.createFromAsset(getAssets(), "fonts/RobotoCondensed-Light.ttf");
-        ((TextView) mLocationView.findViewById(R.id.toolbar_location_text)).setTypeface(tf);
         mLocationView.setOnClickListener(mLocationListener);
         mToolBar.addView(mLocationView);
         // Optional<TinyUser> user = Router.getInstance().getCurrentUser();
@@ -370,18 +418,17 @@ public final class MainActivity extends BaseActivity {
                     .getStringArray(
                             R.array.settings1);
             mSettingList.setAdapter(mSettingAdapter);
+            AdapterViewHeightCalculator.setListViewHeightBasedOnChildren(mSettingList);
         } else {
             mSettingArray = getResources().getStringArray(R.array.settings2);
             mSettingList.setAdapter(mSettingAdapter);
+            AdapterViewHeightCalculator.setListViewHeightBasedOnChildren(mSettingList);
             mBtnLogin.setVisibility(View.VISIBLE);
             mThirdPartyUserName.setVisibility(View.GONE);
             mThirdPartyUserHead.setVisibility(View.GONE);
         }
-//        mUserInfoArea.setOnClickListener((View v) -> {
-//        });
         mSettingList.setOnItemClickListener(mSettingListener);
         titles = getResources().getStringArray(R.array.fragment_title);
-//        mToolBar.setTitle(titles[0]);
         mBadgeView = initBadgeView();
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(getString(R.string.app_name));
@@ -393,27 +440,18 @@ public final class MainActivity extends BaseActivity {
 
         mThirdPartyUserHead.setOnClickListener(mUserInfoDetail);
         mFragmentList = new ArrayList<Fragment>();
-        //drop gourmet begin ;
-//        mMainFragment =   MainFragment.getInstance();
-//        mFragmentList.add(mMainFragment);
-        //drop gourmet end
         mMainFragment = BanquetDisplayFragment.newInstance();
         mFragmentList.add(mMainFragment);
-//        mFragmentList.add(mMainFragment) ;
-//        mRecommendFragment = GourmetDisplayFragment.newInstance(GourmetDisplayFragment.RECOMMEND_PAGE);
-//        mFragmentList.add(mRecommendFragment);
-//        mFavorFragment = GourmetDisplayFragment.newInstance(GourmetDisplayFragment.FAVOR_PAGE);
-//        mFragmentList.add(mFavorFragment);
         mMyOrderFragment = MyOrderFragment.getInstance();
         mFragmentList.add(mMyOrderFragment);
 
-        mMyBanquentActiveFragment = MyBanquentActiveFragment.newInstance();
-        mFragmentList.add(mMyBanquentActiveFragment);
-
-        mHostBanquentFragment = HostBanquentFragment.getInstance();
-        mFragmentList.add(mHostBanquentFragment);
-
+//        mMyBanquentActiveFragment = MyBanquentActiveFragment.newInstance();
+//        mFragmentList.add(mMyBanquentActiveFragment);
+//
+//        mHostBanquentFragment = HostBanquentFragment.getInstance();
+//        mFragmentList.add(mHostBanquentFragment);
         mMainTabsTitle.setAdapter(mTabTitleAdapter);
+        AdapterViewHeightCalculator.setListViewHeightBasedOnChildren(mMainTabsTitle);
         mMainTabsTitle.setOnItemClickListener(mTabsListener);
         mFragmentMng = getSupportFragmentManager();
         mFragmentTransaction = mFragmentMng.beginTransaction();
@@ -421,36 +459,27 @@ public final class MainActivity extends BaseActivity {
                 mFragmentList.get(0));
         mCurrentFragment = mFragmentList.get(0);
         mFragmentTransaction.commit();
-//        mToolBar.setTitle(titles[0]);
         checkVersion();
-        Router.getMessageModule().notifications(newsList -> {
-            mNewsList = newsList;
-            if (newsList != null && newsList.getNews() != null && newsList.getNews().size() != 0) {
-                for (News news : newsList.getNews()) {
-                    unReadNewsCount += news.getUnreadCount();
-                }
-                if (unReadNewsCount > 0) {
-                    showBadgeView();
-//                    mTabTitleAdapter.notifyDataSetChanged();
-                } else {
-                    removeBadgeView();
-                }
-            }
-        }, errorMsg -> {
-            //do nothing
-        });
-        if (mTendIntent != null)
-            startNewActivity(mTendIntent);
+        checkSellerStatus();
+//        if (mTendIntent != null)
+//            startNewActivity(mTendIntent);
+
+    }
+
+    private void checkSellerStatus() {
         Router.getAccountModule().sellerStatus(new OneParameterExpression<SellerStatus>() {
             @Override
             public void action(SellerStatus sellerStatus) {
-                Log.e("sellerstatus" , sellerStatus.toString()) ;
-                //TODO different left side bar with status ;
+                mSellerStatus  =SellerStatus.INSTANCE_SELLER ;
+                Router.getInstance().setSellerStatus(Optional.of(sellerStatus));
+//                mSellerStatus = sellerStatus;
+                mTabTitleAdapter.notifyDataSetChanged();
+                AdapterViewHeightCalculator.setListViewHeightBasedOnChildren(mMainTabsTitle);
             }
         }, new OneParameterExpression<String>() {
             @Override
             public void action(String s) {
-                Log.e("sellerstatus" , s) ;
+                Log.e("sellerstatus", s);
             }
         });
     }
@@ -670,6 +699,7 @@ public final class MainActivity extends BaseActivity {
                 .getStringArray(
                         R.array.settings1);
         mSettingList.setAdapter(mSettingAdapter);
+        AdapterViewHeightCalculator.setListViewHeightBasedOnChildren(mSettingList);
     }
 
 
@@ -710,8 +740,10 @@ public final class MainActivity extends BaseActivity {
             mThirdPartyUserHead.setVisibility(View.GONE);
             mSettingArray = getResources().getStringArray(R.array.settings2);
             mSettingList.setAdapter(mSettingAdapter);
+            AdapterViewHeightCalculator.setListViewHeightBasedOnChildren(mSettingList);
         }
     }
+
     //drop gourmet begin
 //    protected void onRecommendationChanged() {
 //
@@ -739,7 +771,7 @@ public final class MainActivity extends BaseActivity {
 
     @Override
     protected void fetchContent() {
-        if(mFragmentList.indexOf(mCurrentFragment) == 0){
+        if (mFragmentList.indexOf(mCurrentFragment) == 0) {
             mMainFragment.onRefresh();
         }
     }

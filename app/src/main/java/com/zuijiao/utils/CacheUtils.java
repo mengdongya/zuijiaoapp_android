@@ -39,8 +39,12 @@ public class CacheUtils {
                 attendDb = getAttendeeDB(context) ;
             ContentValues values = new ContentValues() ;
             values.put(DBConstans.COLUMN_ATTENDEE_ID , attendeeId);
-            values.put(DBConstans.COLUMN_ATTENDEE_INFO , info);
-            attendDb.insert(DBConstans.TABLE_ATTENDEE,null ,values) ;
+            values.put(DBConstans.COLUMN_ATTENDEE_INFO, info);
+            Cursor cursor = attendDb.query(DBConstans.TABLE_ATTENDEE , null , DBConstans.COLUMN_ATTENDEE_ID + " = ?" , new String[]{attendeeId + ""} ,null ,null , null);
+            if(cursor != null &&cursor.getCount()!= 0)
+                attendDb.update(DBConstans.TABLE_ATTENDEE , values ,  DBConstans.COLUMN_ATTENDEE_ID + " = ?" , new String[]{attendeeId + ""}) ;
+            else
+                attendDb.insert(DBConstans.TABLE_ATTENDEE,null ,values) ;
         }catch(Throwable t){
             Log.e("cacheUtil" , "saveAttendee crashed") ;
             t.printStackTrace();

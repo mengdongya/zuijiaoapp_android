@@ -6,6 +6,7 @@ import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.RequestBody;
 import com.zuijiao.android.util.Optional;
+import com.zuijiao.android.zuijiao.model.Banquent.SellerStatus;
 import com.zuijiao.android.zuijiao.model.user.TinyUser;
 
 import java.io.File;
@@ -35,6 +36,15 @@ public class Router {
     Optional<TinyUser> currentUser = Optional.empty();
 
 
+    public Optional<SellerStatus> getSellerStatus() {
+        return sellerStatus;
+    }
+
+    public void setSellerStatus(Optional<SellerStatus> sellerStatus) {
+        this.sellerStatus = sellerStatus;
+    }
+
+    Optional<SellerStatus> sellerStatus = Optional.empty() ;
     private String key;
 
 

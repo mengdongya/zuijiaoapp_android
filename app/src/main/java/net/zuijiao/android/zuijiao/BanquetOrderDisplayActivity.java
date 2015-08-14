@@ -226,7 +226,7 @@ public class BanquetOrderDisplayActivity extends BaseActivity {
                     startActivityForResult(intent, MainActivity.ORDER_REQUEST);
                 }
             });
-        } else if(mOrder.getStatus() == OrderStatus.Uncomment){
+        } else if(mOrder.getStatus() == OrderStatus.Finished){
             mOrderBottom.setVisibility(View.VISIBLE);
             mOrderPay.setOnClickListener(new View.OnClickListener() {
                 @Override

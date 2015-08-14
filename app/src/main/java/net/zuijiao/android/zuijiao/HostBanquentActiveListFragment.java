@@ -160,7 +160,7 @@ public class HostBanquentActiveListFragment extends Fragment implements
                 status = OrderStatus.Unpaid;
         }
         mRefreshLayout.setRefreshing(true);
-        Router.getBanquentModule().orders(status, lastedId, 20, new OneParameterExpression<Orders>() {
+        Router.getBanquentModule().sellerOrders(status.toString(), lastedId, 20, new OneParameterExpression<Orders>() {
             @Override
             public void action(Orders orders) {
                 mOrders = orders;

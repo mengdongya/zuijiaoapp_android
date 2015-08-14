@@ -460,4 +460,10 @@
     <string name="publish_banquent">您可以登录嘴角网www.zuijiao.net,发布您的料理活动。\n如有疑问请联系：021-58313201。</string>
     <string name="my_banquent_active">我的料理活动</string>
     <string name="my_banquent_order">我的料理订单</string>
+    <string name="seller_status_editing">未提交</string>
+    <string name="seller_status_waiting">等待审核中</string>
+    <string name="seller_status_reviewing">审核中</string>
+    <string name="seller_status_failed">审核未通过</string>
+    <string name="seller_status_success">完善收款账户</string>
+    <string name="apply_host">申请成为料理人</string>
 </resources>

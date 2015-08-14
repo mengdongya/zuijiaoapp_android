@@ -20,10 +20,63 @@ public class SellerStatus implements Serializable {
     @SerializedName("application")
     private SellerApplication application;
 
+    private SellerStatus(String applyStatus, String bankStatus, String profileStatus, String faiReason, SellerApplication application) {
+        this.applyStatus = applyStatus;
+        this.bankStatus = bankStatus;
+        this.profileStatus = profileStatus;
+        this.faiReason = faiReason;
+        this.application = application;
+    }
+
+    public static SellerStatus INSTANCE_EDITING_PROFILE = new SellerStatus("editing" , "unfinished" , "finished" ,"" ,null) ;
+    public static SellerStatus INSTANCE_EDITING_NONE_PROFILE = new SellerStatus("editing" , "unfinished" , "unfinished" ,"" ,null) ;
+    public static SellerStatus INSTANCE_REVIEWING = new SellerStatus("reviewing" , "unfinished" , "finished" ,"" ,null) ;
+    public static SellerStatus INSTANCE_FAILED = new SellerStatus("fail" , "unfinished" , "finished" ,"ugly" ,null) ;
+    public static SellerStatus INSTANCE_SUCCESS_NONE_BANK= new SellerStatus("passed" , "finished" , "finished" ,"" ,null) ;
+    public static SellerStatus INSTANCE_SELLER = new SellerStatus("passed" , "finished" , "finished" ,"" ,null) ;
+
     public ApplyStatus getApplyStatus() {
         return ApplyStatus.fromString(applyStatus);
     }
 
+    public enum ApplyStatus {
+        editing, waiting, reviewing, fail, passed, unknown;
+
+        public static ApplyStatus fromString(String status) {
+            switch (status) {
+                case "editing":
+                    return editing;
+                case "waiting":
+                    return waiting;
+                case "reviewing":
+                    return reviewing;
+                case "fail":
+                    return fail;
+                case "passed":
+                    return passed;
+                default:
+                    return unknown;
+            }
+        }
+
+
+        public String toString(ApplyStatus status) {
+            switch (this) {
+                case editing:
+                    return "editing";
+                case waiting:
+                    return "waiting";
+                case reviewing:
+                    return "reviewing";
+                case fail:
+                    return "fail";
+                case passed:
+                    return "passed";
+                default:
+                    return "unknown";
+            }
+        }
+    }
     public BankStatus getBankStatus() {
         return BankStatus.fromString(bankStatus);
     }
@@ -96,44 +149,7 @@ public class SellerStatus implements Serializable {
     }
 
 
-    public enum ApplyStatus {
-        editing, waiting, reviewing, fail, passed, unknown;
 
-        public static ApplyStatus fromString(String status) {
-            switch (status) {
-                case "editing":
-                    return editing;
-                case "waiting":
-                    return waiting;
-                case "reviewing":
-                    return reviewing;
-                case "fail":
-                    return fail;
-                case "passed":
-                    return passed;
-                default:
-                    return unknown;
-            }
-        }
-
-
-        public String toString(ApplyStatus status) {
-            switch (this) {
-                case editing:
-                    return "editing";
-                case waiting:
-                    return "waiting";
-                case reviewing:
-                    return "reviewing";
-                case fail:
-                    return "fail";
-                case passed:
-                    return "passed";
-                default:
-                    return "unknown";
-            }
-        }
-    }
 
     public class SellerApplication {
         @SerializedName("ID")

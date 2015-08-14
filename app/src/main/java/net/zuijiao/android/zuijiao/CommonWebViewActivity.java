@@ -61,7 +61,7 @@ public class CommonWebViewActivity extends BaseActivity {
         }
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        contentUrl = "http://www.baidu.com" ;
+//        contentUrl = "http://www.baidu.com" ;
 //        getSupportActionBar().setTitle(title);
         mWebView.getSettings().setJavaScriptEnabled(true);
         mWebView.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);

@@ -462,7 +462,12 @@
     <string name="my_banquent_active">我的料理活动</string>
     <string name="my_banquent_order">我的料理订单</string>
     <string name="no_going_banquent_order">还没有收到相关订单</string>
-    
+    <string name="seller_status_editing">未提交</string>
+    <string name="seller_status_waiting">等待审核中</string>
+    <string name="seller_status_reviewing">审核中</string>
+    <string name="seller_status_failed">审核未通过</string>
+    <string name="seller_status_success">完善收款账户</string>
+    <string name="apply_host">申请成为料理人</string>
     <!-- umeng socializer strings begin-->
     <!--<string name="pull_to_refresh_pull_label" translatable="false">向下拉动可以刷新</string>-->
     <!--<string name="pull_to_refresh_release_label" translatable="false">松开可以刷新</string>-->

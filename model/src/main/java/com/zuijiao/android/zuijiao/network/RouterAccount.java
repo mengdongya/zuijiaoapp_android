@@ -158,5 +158,6 @@ public enum RouterAccount {
     public void sellerStatus(OneParameterExpression<SellerStatus> successCallback
             , OneParameterExpression<String> failureCallback){
         service.sellerStatus(CallbackFactory.getInstance().callback(successCallback, failureCallback));
+
     }
 }

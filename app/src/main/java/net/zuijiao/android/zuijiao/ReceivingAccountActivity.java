@@ -4,8 +4,15 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Handler;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.InputFilter;
+import android.text.TextWatcher;
+import android.text.method.LinkMovementMethod;
+import android.text.util.Linkify;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
@@ -35,6 +42,8 @@ public class ReceivingAccountActivity extends BaseActivity{
     private LinearLayout mBankNameContainer;
     @ViewInject(R.id.account_real_name_container)
     private LinearLayout mRealNameContainer ;
+    @ViewInject(R.id.receiving_account_notice)
+    private TextView mReceivingAccountNotice;
     private String mCurrentEdit = null ;
     private static final int CARD_NUMBER_LENGTH = 19 ;
     @Override
@@ -42,7 +51,9 @@ public class ReceivingAccountActivity extends BaseActivity{
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(getString(R.string.receiving_account));
-//        Router.getAccountModule().masterInfo();
+        mReceivingAccountNotice.setAutoLinkMask(Linkify.PHONE_NUMBERS);
+        mReceivingAccountNotice.setMovementMethod(LinkMovementMethod.getInstance());
+
         mBankAccountContainer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

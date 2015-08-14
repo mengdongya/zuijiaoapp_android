@@ -11,6 +11,32 @@ public class AuthorInfo {
     private String mHeadPath = null;
     private String mEmail = null;
     private String mPassword = null;
+    private String mAccountName = null;
+    private String mAccountBankName = null;
+    private String mAccountCardNumber = null;
+
+
+    private String getAccountName(){
+        return mAccountName;
+    }
+    private void setAccountName(String mAccountName){
+        this.mAccountName = mAccountName;
+    }
+
+    private String getAccountBankName(){
+        return mAccountBankName;
+    }
+
+    private void setAccountBankName(String mAccountBankName){
+        this.mAccountBankName = mAccountBankName;
+    }
+    private String getAccountCardNumber(){
+        return mAccountCardNumber;
+    }
+
+    private void setAccountCardNumber(String mAccountCardNumber){
+        this.mAccountCardNumber = mAccountCardNumber;
+    }
 
     public int getUserId() {
         return mUserId;

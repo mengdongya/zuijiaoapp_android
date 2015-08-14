@@ -195,6 +195,9 @@ public abstract class BaseActivity extends ActionBarActivity {
         authFromUser.setUid(auth.getUid());
         authFromUser.setToken(auth.getToken());
         authFromUser.setEmail(auth.getEmail());
+//        authFromUser.setAccountName(auth.getAccountName());
+//        authFromUser.setAccountBankName(auth.getAccountBankName());
+//        authFromUser.setAccountCardNumber(auth.getAccountCardNumber());
         authFromUser.setPlatform(auth.getPlatform());
         PreferenceManager.getInstance(mContext).saveThirdPartyLoginMsg(authFromUser);
     }

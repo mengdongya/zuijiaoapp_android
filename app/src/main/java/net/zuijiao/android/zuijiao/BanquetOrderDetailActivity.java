@@ -17,6 +17,7 @@ import com.zuijiao.android.zuijiao.model.Banquent.Attendee;
 import com.zuijiao.android.zuijiao.model.Banquent.Banquent;
 import com.zuijiao.android.zuijiao.model.Banquent.Order;
 import com.zuijiao.android.zuijiao.network.Router;
+import com.zuijiao.listener.AttendeeAvatarListener;
 
 import java.text.DecimalFormat;
 import java.util.Date;
@@ -51,73 +52,41 @@ public class BanquetOrderDetailActivity extends BaseActivity{
     @ViewInject(R.id.banquet_order_detail_remark)
     private TextView banquetRemark;
     private Order mOrder;
-    private Banquent mBanquent;
-    private long mSurplusTime = -1;// sec
     private String[] weekDays;
     @Override
     protected void registerViews() {
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle(getString(R.string.msg_page));
-        mUserInfo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                createDialog();
-                Router.getAccountModule().banquetUserInfo(mBanquent.getMaster().getUserId(), new OneParameterExpression<Attendee>() {
-                    @Override
-                    public void action(Attendee attendee) {
-                        finalizeDialog();
-                        Intent intent = new Intent(mContext, HostAndGuestActivity.class);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        intent.putExtra("attendee_info", attendee);
-                        mContext.startActivity(intent);
-                    }
-                }, new OneParameterExpression<String>() {
-                    @Override
-                    public void action(String s) {
-                        Toast.makeText(mContext, R.string.notify_net2, Toast.LENGTH_SHORT).show();
-                        finalizeDialog();
-                    }
-                });
-            }
-        });
-
-       weekDays = mContext.getResources().getStringArray(R.array.week_days);
-       /* if (mTendIntent != null) {
-            mBanquent = (Banquent)mTendIntent.getSerializableExtra("banquent");
+        if (mTendIntent != null) {
             mOrder = (Order) mTendIntent.getSerializableExtra("order");
-            if (mSurplusTime == -1) {
-                mSurplusTime = mTendIntent.getLongExtra("surplusTime", -1);
-            }
         }
         if (mOrder == null) {
             finish();
             return;
         }
-        if (mBanquent == null){
-            finish();
-            return;
-        }*/
-//        netWork();
+        weekDays = mContext.getResources().getStringArray(R.array.week_days);
+        netWorkStep();
+        getSupportActionBar().setTitle(getString(R.string.msg_page));
+        mUserInfo.setTag(mOrder.getUser());
+        mUserInfo.setOnClickListener(new AttendeeAvatarListener(mContext));
     }
 
-    /*private void netWork(){
-        if (mBanquent.getMaster().getAvatarURLSmall().isPresent()) {
+    private void netWorkStep(){
+        if (mOrder.getUser().getAvatarURLSmall().isPresent()) {
             Picasso.with(mContext)
-                    .load(mBanquent.getMaster().getAvatarURLSmall().get())
+                    .load(mOrder.getUser().getAvatarURLSmall().get())
                     .placeholder(R.drawable.default_user_head)
                     .fit()
                     .centerCrop()
                     .into(mUserImage);
         }
-        mUserNickname.setText(mBanquent.getMaster().getNickName());
+        mUserNickname.setText(mOrder.getUser().getNickName());
         mBanquetName.setText(mOrder.getEvent().getTitle());
-        banquetStartTime.setText(formatDate(mBanquent.getTime()));
         orderNumber.setText(mOrder.getSerialNumber());
         orderTime.setText(formatDate(mOrder.getCreateTime()));
         mBanquetName.setText(mOrder.getEvent().getTitle());
         banquetStartTime.setText(formatDate(mOrder.getEvent().getTime()));
-        orderPersonNum.setText(mOrder.getQuantity()+getString(R.string.people));
+        orderPersonNum.setText(mOrder.getQuantity() + getString(R.string.people));
         orderTelephone.setText(mOrder.getPhoneNumber());
         if (mOrder.getRemark()==null){
             banquetRemark.setText(getString(R.string.none));
@@ -142,7 +111,7 @@ public class BanquetOrderDetailActivity extends BaseActivity{
                 break;
         }
         orderStatus.setText(statusStr);
-    }*/
+    }
 
     private String formatDate(Date date) {
         StringBuilder strBuilder = new StringBuilder();

@@ -140,6 +140,9 @@ public class PreferenceManager {
 //        editor.putString("token", userInfo.getToken());
         editor.putString("email", userInfo.getEmail());
         editor.putString("password", userInfo.getPassword());
+//        editor.putString("name",userInfo.getAccountName());
+//        editor.putString("bank",userInfo.getAccountBankName());
+//        editor.putString("card",userInfo.getAccountCardNumber());
         editor.putInt("user_id", userInfo.getUserId());
         editor.commit();
     }
@@ -154,6 +157,9 @@ public class PreferenceManager {
         editor.putString("platform", "");
 //        editor.putString("token", "");
         editor.putString("email", "");
+        editor.putString("name", "");
+        editor.putString("bank", "");
+        editor.putString("card", "");
         editor.putString("password", "");
         editor.putInt("user_id", -1);
         editor.commit();
@@ -194,12 +200,30 @@ public class PreferenceManager {
         authInfo.setEmail(sp.getString("email", ""));
         authInfo.setPassword(sp.getString("password", ""));
         authInfo.setUserId(sp.getInt("user_id", -1));
+//        authInfo.setAccountName(sp.getString("name",""));
+//        authInfo.setAccountBankName(sp.getString("bank",""));
+//        authInfo.setAccountCardNumber(sp.getString("card",""));
         return authInfo;
     }
 
     public int getStoredUserId() {
         SharedPreferences sp = mContext.getSharedPreferences(PreferencesDef.FILE_NAME, Activity.MODE_PRIVATE);
         return sp.getInt("user_id", -1);
+    }
+
+    public String getStoredBindBank() {
+        SharedPreferences sp = mContext.getSharedPreferences(PreferencesDef.FILE_NAME, Activity.MODE_PRIVATE);
+        return sp.getString("bank", "");
+    }
+
+    public String getStoredBindCard() {
+        SharedPreferences sp = mContext.getSharedPreferences(PreferencesDef.FILE_NAME, Activity.MODE_PRIVATE);
+        return sp.getString("card", "");
+    }
+
+    public String getStoredBindName() {
+        SharedPreferences sp = mContext.getSharedPreferences(PreferencesDef.FILE_NAME, Activity.MODE_PRIVATE);
+        return sp.getString("name", "");
     }
 
     public String getStoredBindEmail() {

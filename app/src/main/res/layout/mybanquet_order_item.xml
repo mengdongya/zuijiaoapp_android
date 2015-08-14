@@ -3,17 +3,26 @@
     xmlns:myattr="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="8dip"
-    android:layout_marginBottom="8dip"
-    android:orientation="horizontal">
+    android:background="@drawable/bg_radius"
+    android:orientation="vertical">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="8dip"
+        android:layout_marginBottom="8dip"
+        android:layout_marginRight="8dip"
+        android:layout_marginTop="8dip"
+        android:background="@drawable/bg_white_round_corner"
+        android:elevation="3dip"
+        android:orientation="horizontal">
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:background="@color/notice_bg"
         android:paddingLeft="15dip"
         android:paddingRight="15dip"
-        android:gravity="center"
+        android:layout_marginTop="10dip"
+        android:gravity="center_horizontal"
         android:orientation="vertical">
         <com.zuijiao.view.RoundImageView
             android:id="@+id/my_banquet_order_item_head"
@@ -23,12 +32,11 @@
             android:padding="2dip"
             android:layout_width="60dip"
             android:layout_height="60dip"
-            android:layout_gravity="center"
             android:src="@drawable/default_user_head" />
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
+            android:gravity="center_horizontal"
             android:layout_marginTop="8dip"
             android:singleLine="true"
             android:textSize="16sp"
@@ -40,7 +48,7 @@
     <LinearLayout
         android:layout_width="0dip"
         android:layout_weight="4"
-        android:background="@color/notice_bg"
+        android:layout_marginTop="10dip"
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:gravity="center">
@@ -48,10 +56,10 @@
             android:id="@+id/my_banquent_order_item_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dip"
+            android:layout_marginLeft="10dip"
+            android:layout_marginBottom="6dip"
+            android:layout_marginRight="10dip"
             android:text="Sonian的台味厨房"
-            android:layout_marginLeft="8dip"
-            android:layout_marginBottom="10dip"
             android:singleLine="true"
             android:textSize="18sp"
             android:textColor="@color/black"/>
@@ -61,7 +69,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_margin="10dip">
+            android:gravity="center_vertical"
+            android:layout_marginLeft="10dip"
+            android:layout_marginRight="10dip"
+            android:layout_marginTop="6dip"
+            android:layout_marginBottom="6dip">
 
             <ImageView
                 android:layout_width="15dip"
@@ -83,7 +95,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_margin="10dip">
+            android:gravity="center_vertical"
+            android:layout_marginLeft="10dip"
+            android:layout_marginRight="10dip"
+            android:layout_marginTop="6dip"
+            android:layout_marginBottom="6dip">
 
             <ImageView
                 android:layout_width="15dip"
@@ -106,7 +122,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_margin="10dip">
+            android:gravity="center_vertical"
+            android:layout_marginLeft="10dip"
+            android:layout_marginRight="10dip"
+            android:layout_marginTop="6dip"
+            android:layout_marginBottom="6dip">
 
             <ImageView
                 android:layout_width="15dip"
@@ -124,5 +144,5 @@
                 android:singleLine="true"/>
         </LinearLayout>
     </LinearLayout>
-
+    </LinearLayout>
 </LinearLayout>

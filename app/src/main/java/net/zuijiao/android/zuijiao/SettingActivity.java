@@ -67,8 +67,8 @@ public class SettingActivity extends BaseActivity {
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         mEmail = mPreferMng.getStoredBindEmail();
-//        mAccountCardStatus = mPreferMng
         mCurrentAccount.setText(mEmail.equals("") ? getString(R.string.un_setting) : mEmail);
+        mAccountCardStatus.setText(mPreferMng.getStoredBindCard().isEmpty()?getString(R.string.un_setting):getString(R.string.bind_account_card));
         Router.getCommonModule().currentConfiguration(new OneParameterExpression<Configuration>() {
             @Override
             public void action(Configuration configuration) {
@@ -129,22 +129,28 @@ public class SettingActivity extends BaseActivity {
             mConfiguration = config ;
         else
             mConfiguration = mPreferMng.getConfigs() ;
-        mSb1.setChecked(mConfiguration.isNotifyFollowed());
-        mSb2.setChecked(mConfiguration.isNotifyLike());
-        mSb3.setChecked(mConfiguration.isNotifyComment());
-        if (config == null) {
+        mSb1.setChecked(true);
+        mSb2.setChecked(true);
+        mSb3.setChecked(true);
+//        mSb1.setChecked(mConfiguration.isNotifyFollowed());
+//        mSb2.setChecked(mConfiguration.isNotifyLike());
+//        mSb3.setChecked(mConfiguration.isNotifyComment());
+        mSb1.setEnabled(false);
+        mSb2.setEnabled(false);
+        mSb3.setEnabled(false);
+      /*  if (config == null) {
             mSb1.setEnabled(false);
             mSb2.setEnabled(false);
             mSb3.setEnabled(false);
         } else {
-            mSb1.setEnabled(true);
+            *//*mSb1.setEnabled(true);
             mSb2.setEnabled(true);
-            mSb3.setEnabled(true);
+            mSb3.setEnabled(true);*//*
             mSbListener1.setFromUser(true) ;
             mSbListener2.setFromUser(true);
             mSbListener3.setFromUser(true);
             mPreferMng.saveConfig(mConfiguration);
-        }
+        }*/
 
     }
 

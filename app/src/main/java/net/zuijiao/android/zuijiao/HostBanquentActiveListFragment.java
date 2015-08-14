@@ -241,17 +241,20 @@ public class HostBanquentActiveListFragment extends Fragment implements
                 holder = (ViewHolder) convertView.getTag();
             Order order = orderList.get(position);
             if (order.getUser().getAvatarUrl().isPresent()){
-                Picasso.with(getActivity().getApplicationContext()).load(order.getUser().getAvatarUrl().get()).placeholder(R.drawable.default_user_head).fit().centerCrop().into(holder.image);
+                Picasso.with(getActivity().getApplicationContext()).load(order.getUser().getAvatarURLSmall().get()).placeholder(R.drawable.default_user_head).fit().centerCrop().into(holder.image);
             }else {
                 holder.image.setImageResource(R.drawable.default_user_head);
             }
-
             holder.title.setText(order.getEvent().getTitle());
             holder.date.setText(formatDate(order.getEvent().getTime()));
             holder.personNumber.setText(order.getQuantity() + getString(R.string.people));
             holder.nickname.setText(order.getUser().getNickName());
-            holder.remark.setText(order.getRemark());
 
+            if (order.getRemark().length() == 0|| " ".equals(order.getRemark())){
+                holder.remark.setText(getString(R.string.none));
+            }else {
+                holder.remark.setText(order.getRemark());
+            }
             return convertView;
         }
     };
@@ -269,12 +272,9 @@ public class HostBanquentActiveListFragment extends Fragment implements
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         position -= 1;
-        Intent intent = new Intent(getActivity(), BanquetOrderDisplayActivity.class);
+        Intent intent = new Intent(getActivity().getApplicationContext(), BanquetOrderDetailActivity.class);
         intent.putExtra("order", orderList.get(position));
-        long surplusTime = (orderList.get(position).getDeadline().getTime() / 1000) - mOrders.getCurrentServerTime();
-        intent.putExtra("surplusTime", surplusTime);
-        //startActivity(intent);
-        getActivity().startActivityForResult(intent, MainActivity.ORDER_REQUEST);
+        startActivity(intent);
     }
 
     class ViewHolder {

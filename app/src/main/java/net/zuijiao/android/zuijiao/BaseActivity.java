@@ -204,6 +204,35 @@ public abstract class BaseActivity extends ActionBarActivity {
 
 
     /**
+     * create dialog and notify visitor to login
+     *
+     * @param loginCallBack LambdaExpression @Nullable
+     */
+    protected void notifyLogin(LambdaExpression loginCallBack) {
+        if (isFinishing())
+            return;
+        if (mNotifyLoginDialog == null || !mNotifyLoginDialog.isShowing()) {
+            this.mLoginCallBack = loginCallBack;
+            View contentView = LayoutInflater.from(mContext).inflate(R.layout.alert_login_dialog, null);
+            TextView tv = (TextView) contentView.findViewById(R.id.fire_login);
+            mNotifyLoginDialog = new AlertDialog.Builder(this).setView(contentView).create();
+            Window window = mNotifyLoginDialog.getWindow();
+            window.setWindowAnimations(R.style.dialogWindowAnim);
+            tv.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                    startActivityForResult(intent, LOGIN_REQ);
+                    mNotifyLoginDialog.dismiss();
+                    finalizeDialog();
+                }
+            });
+            mNotifyLoginDialog.show();
+        }
+    }
+
+
+    /**
      * do authentication before network operation ,
      * at which case when logged in last time app
      * launched but cannot authentic this time
@@ -283,35 +312,6 @@ public abstract class BaseActivity extends ActionBarActivity {
         }
         //download cache
         Cache.INSTANCE.setup();
-    }
-
-
-    /**
-     * create dialog and notify visitor to login
-     *
-     * @param loginCallBack LambdaExpression @Nullable
-     */
-    protected void notifyLogin(LambdaExpression loginCallBack) {
-        if (isFinishing())
-            return;
-        if (mNotifyLoginDialog == null || !mNotifyLoginDialog.isShowing()) {
-            this.mLoginCallBack = loginCallBack;
-            View contentView = LayoutInflater.from(mContext).inflate(R.layout.alert_login_dialog, null);
-            TextView tv = (TextView) contentView.findViewById(R.id.fire_login);
-            mNotifyLoginDialog = new AlertDialog.Builder(this).setView(contentView).create();
-            Window window = mNotifyLoginDialog.getWindow();
-            window.setWindowAnimations(R.style.dialogWindowAnim);
-            tv.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-                    startActivityForResult(intent, LOGIN_REQ);
-                    mNotifyLoginDialog.dismiss();
-                    finalizeDialog();
-                }
-            });
-            mNotifyLoginDialog.show();
-        }
     }
 
 

@@ -6,9 +6,11 @@ import android.annotation.TargetApi;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.webkit.JavascriptInterface;
 import android.webkit.JsResult;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
@@ -18,6 +20,7 @@ import android.widget.Toast;
 
 import com.lidroid.xutils.view.annotation.ContentView;
 import com.lidroid.xutils.view.annotation.ViewInject;
+import com.zuijiao.controller.MessageDef;
 import com.zuijiao.utils.OSUtil;
 import com.zuijiao.android.util.functional.LambdaExpression;
 import com.zuijiao.android.util.functional.OneParameterExpression;
@@ -34,7 +37,7 @@ import java.util.Map;
 @ContentView(R.layout.activity_feedback)
 public class CommonWebViewActivity extends BaseActivity {
     @ViewInject(R.id.wv_feedback_content)
-    private WebView mWebView = null;
+    public static WebView mWebView = null;
     @ViewInject(R.id.feedback_toolbar)
     private Toolbar mToolbar = null;
     private String title = null;
@@ -42,9 +45,14 @@ public class CommonWebViewActivity extends BaseActivity {
     private WebViewClient mWvClient = null;
     private boolean bApplyHost = false ;
 
+    private MenuItem mMenuItem ;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mWebView.addJavascriptInterface(new WebViewInterface(), "android") ;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            WebView.setWebContentsDebuggingEnabled(true);
+        }
     }
 
     @Override
@@ -68,10 +76,14 @@ public class CommonWebViewActivity extends BaseActivity {
         mWvClient = new WebViewClient() {
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
 
-                if (url.contains("content_url")) {
-                    if (url.contains("banquetDetail")) {
-                        Map params = StrUtil.parseHttpString(url);
-                        Router.getBanquentModule().theme(Integer.valueOf((String) params.get("id")), new OneParameterExpression<Banquent>() {
+                if (url.startsWith("http://request-host")) {
+                    Intent intent = new Intent(mContext , ApplyForHostStep1Activity.class) ;
+//                    intent.putExtra("seller_status" , Router.getInstance().getSellerStatus().get()) ;
+                    startActivity(intent);
+                }else  if (url.startsWith("http://banquet")) {
+                    Integer id= Integer.valueOf(url.substring(url.lastIndexOf("/") , url.length())) ;
+//                        Map params = StrUtil.parseHttpString(url);
+                        Router.getBanquentModule().theme(id, new OneParameterExpression<Banquent>() {
                             @Override
                             public void action(Banquent banquent) {
                                 Intent intent = new Intent(mContext, BanquetDetailActivity.class);
@@ -86,7 +98,6 @@ public class CommonWebViewActivity extends BaseActivity {
                                 finalizeDialog();
                             }
                         });
-                    }
                 } else
                     view.loadUrl(url);
                 return true;
@@ -134,9 +145,13 @@ public class CommonWebViewActivity extends BaseActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         if(bApplyHost ){
             getMenuInflater().inflate(R.menu.web_view , menu);
+            mMenuItem = menu.findItem(R.menu.web_view) ;
         }
         return super.onCreateOptionsMenu(menu);
     }
+
+
+
 
     @TargetApi(Build.VERSION_CODES.KITKAT)
     @Override
@@ -144,26 +159,16 @@ public class CommonWebViewActivity extends BaseActivity {
         switch (item.getItemId()) {
             case android.R.id.home:
                 if(OSUtil.getAPILevel() >= android.os.Build.VERSION_CODES.KITKAT)
-                    mWebView.evaluateJavascript("window.d_router.previousPage()", new ValueCallback<String>() {
-                        @Override
-                        public void onReceiveValue(String value) {
-                            Toast.makeText(mContext, value , Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                    mWebView.evaluateJavascript("window.d_router.previousPage()",null);
                 else{
                     mWebView.loadUrl("javascript:window.d_router.previousPage()");
                 }
                 return true ;
             case R.id.menu_web_view:
-                 if(OSUtil.getAPILevel() >= android.os.Build.VERSION_CODES.KITKAT)
-                mWebView.evaluateJavascript("window.d_router.nextPage()", new ValueCallback<String>() {
-                    @Override
-                    public void onReceiveValue(String value) {
-                        Toast.makeText(mContext, value , Toast.LENGTH_SHORT).show();
-                    }
-                });
+                if(OSUtil.getAPILevel() >= android.os.Build.VERSION_CODES.KITKAT)
+                    mWebView.evaluateJavascript("window.d_router.nextPage()", null);
                 else{
-                mWebView.loadUrl("javascript:window.d_router.nextPage()");
+                    mWebView.loadUrl("javascript:window.d_router.nextPage()");
             }
             default:
                 break;
@@ -175,12 +180,44 @@ public class CommonWebViewActivity extends BaseActivity {
     public void onBackPressed() {
         super.onBackPressed();
 
+
     }
 
     @Override
     protected void onDestroy() {
 
         super.onDestroy();
+    }
+
+
+
+    private class WebViewInterface{
+        @JavascriptInterface
+        public void editImage(int count) {
+            Intent intent = new Intent(mContext,MultiImageChooseActivity.class) ;
+            intent.putExtra("from_web" ,true) ;
+            intent.putExtra("max_images_size" , count ) ;
+            startActivity(intent);
+//            Toast.makeText(mContext ,R.string.notify_net2 , Toast.LENGTH_SHORT).show();
+//            Log.i("commonWebView" , "account == " +amount + "success ==" + success) ;
+
+            // do whatever you want in the parent activity.
+        }
+
+        @JavascriptInterface
+        public void finishWebView(){
+            Intent intent = new Intent(MessageDef.ACTION_REQUEST_HOST) ;
+            sendBroadcast(intent);
+            Toast.makeText(mContext,R.string.request_host_success , Toast.LENGTH_SHORT).show();
+            finish();
+        }
+
+
+        @JavascriptInterface
+        public void changeButtonTitle(String title){
+            if(mMenuItem != null)
+                mMenuItem.setTitle(title) ;
+        }
     }
 
 }

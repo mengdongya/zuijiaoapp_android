@@ -14,6 +14,7 @@ import net.zuijiao.android.zuijiao.BuildConfig;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -105,5 +106,22 @@ public final class UpyunUploadTask extends AsyncTask<Void, Void, String> {
         }
         return result;
     }
+
+
+    public static List<String> banquetImageUrls(Integer count){
+        if(count <= 0)
+            return null ;
+        ArrayList<String> urls = new ArrayList<>() ;
+        for(int i =0 ;i < count ;i++){
+            Random randomGenerator = new Random();
+            Integer randomNumber = randomGenerator.nextInt(10000);
+            long currentDate = new Date().getTime() ;
+//            urls.add(String.format("%s/%d_%d.%s" ,BuildConfig.Base_Url , randomNumber ,currentDate* 10000 , "jpg")) ;
+            urls.add(String.format("/request_host/%x" , randomNumber + currentDate * 10000)) ;
+        }
+        return urls ;
+    }
+
+
 
 }

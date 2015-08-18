@@ -323,9 +323,11 @@
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
         <activity
-            android:name=".ApplyForHostStep1Activity"/>
+            android:name=".ApplyForHostStep1Activity"
+            android:screenOrientation="portrait"/>
         <activity
-            android:name=".ApplyForHostStep2Activity"/>
+            android:name=".ApplyForHostStep2Activity"
+            android:screenOrientation="portrait"/>
         <meta-data
             android:name="UMENG_APPKEY"
             android:value="552354ddfd98c5ad6a000b73" />

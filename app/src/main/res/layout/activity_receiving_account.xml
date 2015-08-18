@@ -55,7 +55,7 @@
                 android:layout_marginLeft="30dip"
                 android:layout_weight="1"
                 android:gravity="right"
-                android:text="如花"
+                android:text="@string/un_setting"
                 android:textColor="@color/tv_light_gray"
                 android:textSize="15sp" />
 
@@ -93,7 +93,7 @@
                 android:layout_marginLeft="30dip"
                 android:layout_weight="1"
                 android:gravity="right"
-                android:text="ICBC"
+                android:text="@string/un_setting"
                 android:textColor="@color/tv_light_gray"
                 android:textSize="15sp" />
 
@@ -131,7 +131,7 @@
                 android:layout_marginLeft="30dip"
                 android:layout_weight="1"
                 android:gravity="right"
-                android:text="6222021561616434535"
+                android:text="@string/un_setting"
                 android:textColor="@color/tv_light_gray"
                 android:textSize="15sp" />
 

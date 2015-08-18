@@ -6,6 +6,7 @@ import com.zuijiao.android.zuijiao.model.Banquent.Banquents;
 import com.zuijiao.android.zuijiao.model.Banquent.Order;
 import com.zuijiao.android.zuijiao.model.Banquent.Orders;
 import com.zuijiao.android.zuijiao.model.Banquent.Reviews;
+import com.zuijiao.android.zuijiao.model.Banquent.SellerAccount;
 import com.zuijiao.android.zuijiao.model.OrderAuth;
 import com.zuijiao.android.zuijiao.model.OrderAuthV3;
 
@@ -119,4 +120,16 @@ public interface IRouterBanquent {
     void sellerOrder(@Query("status") String status
             , @Query("maxID") Integer maxID
             , @Query("count") Integer count, Callback<Orders> callback);
+
+    @FormUrlEncoded
+    @POST("/seller/v4/web/bank/edit")
+    void bindBankAccount(@Field("bank") String bank , @Field("name") String name , @Field("card") String cardNum
+                        , Callback<Response> callback) ;
+
+    @GET("/seller/v4/web/bank")
+    void sellerAccount(Callback<SellerAccount> callback) ;
+
+    @GET("/seller/v3/ios/order/{orderID}")
+    void sellerOrderByID(@Path("orderID") Integer orderID ,
+                     Callback<Order> callback) ;
 }

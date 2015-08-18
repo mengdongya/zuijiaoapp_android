@@ -23,16 +23,16 @@
             android:layout_gravity="bottom|center_horizontal"
             android:gravity="center"
             android:paddingBottom="15dip"
-            android:orientation="horizontal">
+            android:orientation="horizontal"/>
 
-            <View
-                style="@style/dot_style"
-                android:background="@drawable/dot_focused" />
+            <!--<View-->
+                <!--style="@style/dot_style"-->
+                <!--android:background="@drawable/dot_focused" />-->
 
-            <View style="@style/dot_style" />
+            <!--<View style="@style/dot_style" />-->
 
-            <View style="@style/dot_style" />
-        </LinearLayout>
+            <!--<View style="@style/dot_style" />-->
+        <!--</LinearLayout>-->
 
     </FrameLayout>
 

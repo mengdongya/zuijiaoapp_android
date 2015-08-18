@@ -8,6 +8,11 @@ import android.test.ApplicationTestCase;
  */
 public class ApplicationTest extends ApplicationTestCase<Application> {
     public ApplicationTest() {
+
         super(Application.class);
+        String url= "222.baidu.com/2222" ;
+        Integer in = Integer.valueOf(url.substring(url.lastIndexOf("/"), url.length())) ;
+        System.out.println("in==" + in);
+
     }
 }

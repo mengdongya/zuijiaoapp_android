@@ -169,6 +169,7 @@ public class BanquetOrderDisplayActivity extends BaseActivity {
             mOrderDetailTotalPrice.setText(String.format(getString(R.string.order_total_price), mOrder.getTotalPrice()));
             mBottomText1.setVisibility(View.VISIBLE);
             mBottomText2.setText(R.string.yuan);
+            mOrderPay.setText(getString(R.string.pay_right_now));
             mBottomPeopleCount.setText(String.format(getString(R.string.total_person_count),mOrder.getQuantity()));
             RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mOrderBottom.getLayoutParams();
             mOrderDetailTotalPrice.measure(0 , 0 );
@@ -226,8 +227,17 @@ public class BanquetOrderDisplayActivity extends BaseActivity {
                     startActivityForResult(intent, MainActivity.ORDER_REQUEST);
                 }
             });
-        } else if(mOrder.getStatus() == OrderStatus.Finished){
+        } else if(mOrder.getStatus() == OrderStatus.Finished
+                && !mOrder.getIsCommented()){
             mOrderBottom.setVisibility(View.VISIBLE);
+            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mOrderBottom.getLayoutParams();
+            mOrderDetailTotalPrice.measure(0 , 0 );
+            int priceHeight = mOrderDetailTotalPrice.getMeasuredHeight();
+            mBottomPeopleCount.measure(0 , 0);
+            int dateHeight = mBottomPeopleCount.getMeasuredHeight() ;
+            int margin = (int) (3* getResources().getDimension(R.dimen.end_z));
+            params.height = priceHeight + dateHeight + margin ;
+            mOrderPay.setText(R.string.comment);
             mOrderPay.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -252,10 +262,8 @@ public class BanquetOrderDisplayActivity extends BaseActivity {
         fillGenInfo(mOrderRemark, getString(R.string.remark), mOrder.getRemark().trim());
 //        fillGenInfo(mOrderDate, getString(R.string.order_time), mOrder.getCreateTime().toLocaleString());
         fillGenInfo(mOrderDate , getString(R.string.order_time) ,formatDate(mOrder.getCreateTime()));
-        mOrderPay.setText(getString(R.string.pay_right_now));
         mNoticeText.setAutoLinkMask(Linkify.PHONE_NUMBERS);
         mNoticeText.setMovementMethod(LinkMovementMethod.getInstance());
-        System.out.println("mOrder.getBanquentIdentifier():" + mOrder.getEvent().getIdentifier());
         clickableView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

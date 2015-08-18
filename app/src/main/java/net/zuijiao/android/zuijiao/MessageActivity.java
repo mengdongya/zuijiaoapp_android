@@ -3,6 +3,7 @@ package net.zuijiao.android.zuijiao;
 import android.content.Intent;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,12 +24,14 @@ import com.zuijiao.android.util.functional.OneParameterExpression;
 import com.zuijiao.android.zuijiao.model.Banquent.Notifications;
 import com.zuijiao.android.zuijiao.model.Banquent.Order;
 import com.zuijiao.android.zuijiao.model.Banquent.Orders;
+import com.zuijiao.android.zuijiao.model.Banquent.SellerStatus;
 import com.zuijiao.android.zuijiao.model.Gourmet;
 import com.zuijiao.android.zuijiao.model.message.Message;
 import com.zuijiao.android.zuijiao.model.user.TinyUser;
 import com.zuijiao.android.zuijiao.network.Router;
 import com.zuijiao.controller.PreferenceManager;
 import com.zuijiao.entity.AuthorInfo;
+import com.zuijiao.utils.AdapterViewHeightCalculator;
 import com.zuijiao.utils.CacheUtils;
 import com.zuijiao.utils.StrUtil;
 import com.zuijiao.view.RefreshAndInitListView;
@@ -67,6 +70,23 @@ public class MessageActivity extends BaseActivity  {
         mListView.setPullRefreshEnable(false);
         mListView.setPullLoadEnable(false);
         mListView.setOnItemClickListener(onItemClickListener);
+        mRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                networkStep(true);
+            }
+        });
+        mListView.setListViewListener(new RefreshAndInitListView.MyListViewListener() {
+            @Override
+            public void onRefresh() {
+                networkStep(true);
+            }
+
+            @Override
+            public void onLoadMore() {
+                networkStep(false);
+            }
+        });
         networkStep(true);
     }
 
@@ -82,17 +102,17 @@ public class MessageActivity extends BaseActivity  {
             Router.getMessageModule().markBanquetMsgAsRead(ids, new LambdaExpression() {
                 @Override
                 public void action() {
-                    notification.setIsRead(true);
-                    mAdapter.notifyDataSetChanged();
+                    try {
+                        notification.setIsRead(true);
+                        mAdapter.notifyDataSetChanged();
+                    } catch (Throwable t) {
+                        t.printStackTrace();
+                    }
                 }
             }, null);
             Intent intent = new Intent();
             switch (notification.getType()){
                 case comment :
-//                    intent.setClass(mContext, ReviewActivity.class);
-//                    intent.putExtra("orderId", orderID);
-//                    startActivity(intent);
-//                    break ;
                 case order:
                     Router.getBanquentModule().order(orderID, new OneParameterExpression<Orders>() {
                         @Override
@@ -110,6 +130,19 @@ public class MessageActivity extends BaseActivity  {
                     });
                     break ;
                 case sellerOrder:
+                    Router.getBanquentModule().sellerOrderByID(orderID, new OneParameterExpression<Order>() {
+                        @Override
+                        public void action(Order order) {
+                            Intent intent = new Intent(mContext, BanquetOrderDisplayActivity.class);
+                            intent.putExtra("order", order);
+                            startActivityForResult(intent, MainActivity.ORDER_REQUEST);
+                        }
+                    }, new OneParameterExpression<String>() {
+                        @Override
+                        public void action(String s) {
+                            Toast.makeText(mContext,  R.string.notify_net2 , Toast.LENGTH_SHORT) .show();
+                        }
+                    });
                    break ;
                 case profile:
                     intent.setClass(mContext , EditUserInfoActivity.class) ;
@@ -125,6 +158,7 @@ public class MessageActivity extends BaseActivity  {
                     startActivity(intent);
                   break ;
                 case application:
+                    checkSellerStatus() ;
                     break ;
                 default:
                    break ;
@@ -137,34 +171,59 @@ public class MessageActivity extends BaseActivity  {
         networkStep(true);
     }
 
+    private void checkSellerStatus() {
+        Router.getAccountModule().sellerStatus(new OneParameterExpression<SellerStatus>() {
+            @Override
+            public void action(SellerStatus sellerStatus) {
+                Router.getInstance().setSellerStatus(Optional.of(sellerStatus));
+                Intent intent  = new Intent(mContext , ApplyForHostStep1Activity.class) ;
+                intent.putExtra("seller_status" ,sellerStatus) ;
+                startActivity(intent);
+            }
+        }, new OneParameterExpression<String>() {
+            @Override
+            public void action(String s) {
+                Toast.makeText(mContext , R.string.notify_net2 , Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+
     public void networkStep(boolean bRefresh){
+        if(bRefresh)
+            nextCursor = null ;
         Router.getMessageModule().banquetNotifications(null, nextCursor, 20, new OneParameterExpression<Notifications>() {
             @Override
             public void action(Notifications notifications) {
                 if (bRefresh) {
                     mRefreshLayout.setRefreshing(false);
-                    mNotifications = notifications.getItems() ;
+                    mNotifications = notifications.getItems();
                 } else {
-                    if(mNotifications == null)
-                        mNotifications = new ArrayList<Notifications.Notification>() ;
-                    mNotifications.addAll(notifications.getItems()) ;
+                    if (notifications == null || notifications.getItemCount() == 0) {
+                        Toast.makeText(mContext, R.string.no_more, Toast.LENGTH_SHORT).show();
+                    } else {
+                        if (mNotifications == null) {
+                            mNotifications = new ArrayList<Notifications.Notification>();
+                        }
+                        mNotifications.addAll(notifications.getItems());
+                    }
                 }
                 if (notifications.getItemCount() < 20 && !bRefresh)
                     mListView.setPullLoadEnable(false);
                 else
                     mListView.setPullLoadEnable(true);
-                if(mAdapter.getCount() == 0){
+                if (mAdapter.getCount() == 0) {
                     mEmptyContentView.setVisibility(View.VISIBLE);
-                }else{
+                } else {
                     mEmptyContentView.setVisibility(View.GONE);
                 }
-                nextCursor = notifications.getNextCursor() ;
+                nextCursor = notifications.getNextCursor();
                 mAdapter.notifyDataSetChanged();
             }
         }, new OneParameterExpression<String>() {
             @Override
             public void action(String s) {
-                Toast.makeText(mContext, R.string.notify_net2 , Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, R.string.notify_net2, Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -217,19 +276,19 @@ public class MessageActivity extends BaseActivity  {
             holder.dateTime.setText(formatDate(notification.getCreateDate()));
             switch (msgType){
                 case order:
-                   holder.msgPic.setImageResource(R.drawable.msg_goto_comment);
+                    holder.msgPic.setImageResource(R.drawable.banquet_notification_order);
                     break;
                 case sellerOrder:
-                    holder.msgPic.setImageResource(R.drawable.msg_banquent_list);
+                    holder.msgPic.setImageResource(R.drawable.banquet_notification_order);
                     break;
                 case comment:
-                   holder.msgPic.setImageResource(R.drawable.msg_goto_comment);
+                    holder.msgPic.setImageResource(R.drawable.banquet_notification_comment);
                     break;
                 case profile:
-                    holder.msgPic.setImageResource(R.drawable.msg_improve_personal);
+                    holder.msgPic.setImageResource(R.drawable.banquet_notification_profile);
                     break;
                 case application :
-                    holder.msgPic.setImageResource(R.drawable.msg_apply_host);
+                    holder.msgPic.setImageResource(R.drawable.banquet_notification_apply);
                     break ;
                 default :
                     break ;

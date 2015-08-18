@@ -90,6 +90,17 @@ public class AlertDialogUtil {
         }
     }
 
+    public void setContentTextSize(int textSize){
+        if(textSize <= 0){
+            return;
+        }
+        if(view == null)
+            return ;
+        View contentText = view.findViewById(R.id.general_dialog_content) ;
+        if(contentText != null && contentText instanceof TextView)
+            ((TextView)contentText).setTextSize(textSize);
+    }
+
     public void setOnClickListener(OnClickListener onClickListener) {
         this.onClickListener = onClickListener;
     }

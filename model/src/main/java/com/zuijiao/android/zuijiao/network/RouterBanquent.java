@@ -11,6 +11,7 @@ import com.zuijiao.android.zuijiao.model.Banquent.OrderCreateErrorMessage;
 import com.zuijiao.android.zuijiao.model.Banquent.OrderStatus;
 import com.zuijiao.android.zuijiao.model.Banquent.Orders;
 import com.zuijiao.android.zuijiao.model.Banquent.Reviews;
+import com.zuijiao.android.zuijiao.model.Banquent.SellerAccount;
 import com.zuijiao.android.zuijiao.model.OrderAuth;
 import com.zuijiao.android.zuijiao.model.OrderAuthV3;
 
@@ -84,7 +85,7 @@ public enum RouterBanquent {
 
     public  void order(Integer orderID , final  OneParameterExpression<Orders> successCallback ,
                        final OneParameterExpression<String> failureCallback){
-        service.order(orderID ,  CallbackFactory.getInstance().callback(successCallback, failureCallback)) ;
+        service.order(orderID, CallbackFactory.getInstance().callback(successCallback, failureCallback)) ;
     }
 
     public void orders(OrderStatus status
@@ -167,6 +168,27 @@ public enum RouterBanquent {
             , Integer count
             , final OneParameterExpression<Orders> successCallback
             , final OneParameterExpression<String> failureCallback) {
-            service.sellerOrder(status , maxID , count, CallbackFactory.getInstance().callback(successCallback , failureCallback));
+            service.sellerOrder(status, maxID, count, CallbackFactory.getInstance().callback(successCallback, failureCallback));
+    }
+
+
+
+    public void updateBankInfo(String bank , String name , String cardNum
+            , final LambdaExpression successCallback
+            , final OneParameterExpression<String> failureCallback){
+        service.bindBankAccount(bank, name, cardNum, CallbackFactory.getInstance().callback(successCallback, failureCallback));
+    }
+
+
+    public void sellerAccount(final OneParameterExpression<SellerAccount> successCallback
+            , final OneParameterExpression<String> failureCallback){
+        service.sellerAccount(CallbackFactory.getInstance().callback(successCallback, failureCallback));
+    }
+
+
+    public void sellerOrderByID(Integer orderID
+            ,final OneParameterExpression<Order> successCallback
+            , final OneParameterExpression<String> failureCallback){
+        service.sellerOrderByID(orderID, CallbackFactory.getInstance().callback(successCallback, failureCallback));
     }
 }

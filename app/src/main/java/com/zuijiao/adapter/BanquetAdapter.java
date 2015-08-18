@@ -35,6 +35,7 @@ import net.zuijiao.android.zuijiao.BaseActivity;
 import net.zuijiao.android.zuijiao.CommonWebViewActivity;
 import net.zuijiao.android.zuijiao.HostAndGuestActivity;
 import net.zuijiao.android.zuijiao.MainActivity;
+import net.zuijiao.android.zuijiao.MultiImageChooseActivity;
 import net.zuijiao.android.zuijiao.R;
 
 import java.util.ArrayList;
@@ -63,6 +64,9 @@ public class BanquetAdapter extends BaseAdapter implements AdapterView.OnItemCli
     private MyViewPager bannerViewPager;
     private LinearLayout dotContainer;
     private ScheduledExecutorService scheduledExecutorService;
+    private BannerPagerAdapter mBannerAdapter ;
+
+    private ArrayList<Banquents.Banner> mBanners ;
     private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -134,17 +138,23 @@ public class BanquetAdapter extends BaseAdapter implements AdapterView.OnItemCli
                 //ImageView bannerView = (ImageView) mBannerContainer.findViewById(R.id.banquet_banner);
                 bannerViewPager = (MyViewPager) mBannerContainer.findViewById(R.id.banquet_banner_viewpager);
                 dotContainer = (LinearLayout) mBannerContainer.findViewById(R.id.banquet_dot_container);
-                bannerViewPager.setAdapter(new BannerPagerAdapter());
-//                bannerViewPager.setOnTouchListener(new View.OnTouchListener() {
-//                    @Override
-//                    public boolean onTouch(View view, MotionEvent motionEvent) {
-//                        view.getParent().requestDisallowInterceptTouchEvent(true);
-//                        return false;
-//                    }
-//                });
+                dotContainer.removeAllViews();
+                int dimen = (int) mContext.getResources().getDimension(R.dimen.food_detail_image_index_height);
+                LinearLayout.LayoutParams Lp = new LinearLayout.LayoutParams(dimen, dimen);
+                Lp.rightMargin = 20;
+                Lp.leftMargin = 20;
+                for (int j = 0; j < mBanners.size(); j++) {
+                    View dot = new View(mContext);
+                    dot.setPadding(5, 5, 5, 5);
+                    dot.setBackgroundResource(R.drawable.dot_normal);
+                    dotContainer.addView(dot, Lp);
+                }
+                dotContainer.getChildAt(0).setBackgroundResource(R.drawable.dot_focused);
+                if(mBannerAdapter == null )
+                    mBannerAdapter = new BannerPagerAdapter() ;
+                bannerViewPager.setAdapter(mBannerAdapter);
                 bannerViewPager.setOnPageChangeListener(new BannerPagerChangeListener());
                 startBanner();
-                // Picasso.with(mContext).load(mBanquents.getBannerImageUrl()).placeholder(R.drawable.empty_view_greeting).fit().centerCrop().into(bannerView);
             }
             return mBannerContainer;
         } else {
@@ -212,11 +222,26 @@ public class BanquetAdapter extends BaseAdapter implements AdapterView.OnItemCli
     }
 
     private boolean showBanner() {
-        return mBanquents != null
-                && mBanquents.getBannerLinkUrl() != null
-                && !mBanquents.getBannerLinkUrl().equals("");
+//        return mBanquents != null
+//                && mBanquents.getBannerLinkUrl() != null
+//                && !mBanquents.getBannerLinkUrl().equals("");
+        return mBanners != null &&
+                mBanners.size() != 0 ;
     }
-
+//    private void initDots(int count) {
+//        if (count <= 1) {
+//            return;
+//        }
+//        int dimen = (int) mContext.getResources().getDimension(R.dimen.food_detail_image_index_height);
+//        LinearLayout.LayoutParams Lp = new LinearLayout.LayoutParams(dimen, dimen);
+//        Lp.rightMargin = 5;
+//        Lp.leftMargin = 5;
+//        Lp.bottomMargin = 20;
+//        for (int j = 0; j < count; j++) {
+//            mImageIndex.addView(initDot(), Lp);
+//        }
+//        mImageIndex.getChildAt(0).setBackgroundResource(R.drawable.food_detail_index_selected);
+//    }
     /**
      * refresh called
      *
@@ -225,6 +250,7 @@ public class BanquetAdapter extends BaseAdapter implements AdapterView.OnItemCli
     public void setData(Banquents banquents) {
         this.mBanquents = banquents;
         this.mBanquentList = mBanquents.getBanquentList();
+        mBanners = banquents.getBanners() ;
         notifyDataSetChanged();
     }
 
@@ -237,6 +263,7 @@ public class BanquetAdapter extends BaseAdapter implements AdapterView.OnItemCli
         if (mBanquentList == null)
             mBanquentList = new ArrayList<>();
         this.mBanquentList.addAll(banquents.getBanquentList());
+        mBanners = banquents.getBanners() ;
         notifyDataSetChanged();
     }
 
@@ -267,13 +294,16 @@ public class BanquetAdapter extends BaseAdapter implements AdapterView.OnItemCli
 
         @Override
         public int getCount() {
-            return 3;
+            if(mBanners == null || mBanners.size() == 0 ){
+                return 0 ;
+            }
+            return mBanners.size();
         }
 
         @Override
         public Object instantiateItem(ViewGroup container, int position) {
             ImageView imageView = new ImageView(mContext);
-            Picasso.with(mContext).load(mBanquents.getBannerImageUrl()).placeholder(R.drawable.empty_view_greeting).fit().centerCrop().into(imageView);
+            Picasso.with(mContext).load(mBanners.get(position).getImageUrl()).placeholder(R.drawable.empty_view_greeting).fit().centerCrop().into(imageView);
             imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
             container.addView(imageView);
             imageView.setOnClickListener(new View.OnClickListener() {
@@ -282,7 +312,7 @@ public class BanquetAdapter extends BaseAdapter implements AdapterView.OnItemCli
                     if (showBanner()) {
                         Intent intent = new Intent(mContext, CommonWebViewActivity.class);
                         intent.putExtra("title", "activity");
-                        intent.putExtra("content_url", mBanquents.getBannerLinkUrl());
+                        intent.putExtra("content_url", mBanners.get(position).getLinkUrl());
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         mContext.startActivity(intent);
                     }

@@ -48,6 +48,7 @@ import com.zuijiao.android.util.functional.LambdaExpression;
 import com.zuijiao.android.util.functional.OneParameterExpression;
 import com.zuijiao.android.zuijiao.model.Banquent.Banquent;
 import com.zuijiao.android.zuijiao.model.Banquent.SellerStatus;
+import com.zuijiao.android.zuijiao.model.message.Message;
 import com.zuijiao.android.zuijiao.model.message.News;
 import com.zuijiao.android.zuijiao.model.message.NewsList;
 import com.zuijiao.android.zuijiao.model.user.TinyUser;
@@ -132,33 +133,55 @@ public final class MainActivity extends BaseActivity {
                     case sellerBanquet:
                     case sellerOrder:
                         mFragmentTransaction = mFragmentMng.beginTransaction();
-                        mFragmentTransaction.hide(mCurrentFragment).show(mFragmentList.get(position)).commit();
+                        if (!mFragmentList.get(position).isAdded()) {
+                            mFragmentTransaction.hide(mCurrentFragment).add(R.id.main_content_container, mFragmentList.get(position)).commit();
+                        } else {
+                            mFragmentTransaction.hide(mCurrentFragment).show(mFragmentList.get(position)).commit();
+                        }
                         mCurrentFragment = mFragmentList.get(position);
                         break ;
                     case sellerApplication:
 
+                        if(mSellerStatus == null){
+                            if(Router.getInstance().getCurrentUser().isPresent()){
+                                checkSellerStatus();
+                            }else{
+                                tryLoginFirst(new LambdaExpression() {
+                                    @Override
+                                    public void action() {
+                                        if(!Router.getInstance().getCurrentUser().isPresent()){
+                                            notifyLogin(null);
+                                        }
+                                    }
+                                }, null);
+                            }
+                            return ;
+                        }
+                        if(mSellerStatus.getApplyStatus() == SellerStatus.ApplyStatus.passed
+                                && mSellerStatus.getBankStatus() == SellerStatus.BankStatus.unfinished){
+                            Intent intent = new Intent(mContext , ReceivingAccountActivity.class) ;
+                            intent.putExtra("b_edit" , true) ;
+                            startActivity(intent);
+                        }else{
+//                        if(mSellerStatus.getApplyStatus() == SellerStatus.ApplyStatus.editing){
+//                            Intent intent = new Intent(mContext , ApplyForHostStep1Activity.class) ;
+//                            intent.putExtra("seller_status" , mSellerStatus) ;
+//                            startActivity(intent);
+//                        }else if(mSellerStatus.getApplyStatus() == SellerStatus.ApplyStatus.fail){
+//                            Intent intent = new Intent(mContext , ApplyForHostStep1Activity.class) ;
+//                            intent.putExtra("seller_status" , mSellerStatus) ;
+//                            startActivity(intent);
+//                        }else if(mSellerStatus.getApplyStatus() == SellerStatus.ApplyStatus.reviewing){
+//                            Toast.makeText(mContext , R.string.seller_status_reviewing , Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(mContext , ApplyForHostStep1Activity.class) ;
+                            intent.putExtra("seller_status" , mSellerStatus) ;
+                            startActivity(intent);
+                        }
+                        break ;
                     default:
                         onItemClick(parent, null, position, id);
                 }
             }
-
-//            if (position == mFragmentList.size()) {
-//                Intent intent = new Intent();
-//                intent.setClass(mContext, ApplyForHostStep1Activity.class);
-//                startActivity(intent);
-//            } else {
-//                mFragmentTransaction = mFragmentMng.beginTransaction();
-//                if (!mFragmentList.get(position).isAdded()) {
-//                    mFragmentTransaction.hide(mCurrentFragment).add(R.id.main_content_container, mFragmentList.get(position)).commit();
-//                } else {
-//                    mFragmentTransaction.hide(mCurrentFragment).show(mFragmentList.get(position)).commit();
-//                }
-//                mCurrentFragment = mFragmentList.get(position);
-//                mToolBar.setTitle(titles[position]);
-//                if (position != 0) {
-//                    mLocationView.setVisibility(View.INVISIBLE);
-//                }
-//            }
             mDrawerLayout.closeDrawer(Gravity.LEFT);
         }
     };
@@ -231,21 +254,22 @@ public final class MainActivity extends BaseActivity {
             switch (position) {
                 case 0:
                     textView.setText(R.string.main_page);
-                    image.setImageResource(R.drawable.setting_home);
+                    image.setImageResource(R.drawable.side_menu_main_page);
                     sellerStatusText.setVisibility(View.GONE);
                     contentView.setTag(TabTag.publicBanquet);
                     break;
                 case 1:
                     textView.setText(R.string.my_order);
-                    image.setImageResource(R.drawable.setting_orders);
+                    image.setImageResource(R.drawable.side_menu_consumer);
                     sellerStatusText.setVisibility(View.GONE);
                     contentView.setTag(TabTag.myOrder);
                     break;
                 default:
                     if (mSellerStatus == null) {
                         textView.setText(R.string.apply_host);
-                        image.setImageResource(R.drawable.setting_banquent_active);
+                        image.setImageResource(R.drawable.side_menu_apply);
                         sellerStatusText.setVisibility(View.GONE);
+                        contentView.setTag(TabTag.sellerApplication);
                     } else if (mSellerStatus.getApplyStatus() != SellerStatus.ApplyStatus.passed
                             || mSellerStatus.getBankStatus() != SellerStatus.BankStatus.finished) {
                         int statusResStr = -1;
@@ -264,21 +288,21 @@ public final class MainActivity extends BaseActivity {
 
                         }
                         textView.setText(R.string.apply_host);
-                        image.setImageResource(R.drawable.setting_banquent_active);
+                        image.setImageResource(R.drawable.side_menu_apply);
                         if (statusResStr != -1) {
                             sellerStatusText.setText(statusResStr);
                         } else
                             sellerStatusText.setVisibility(View.GONE);
                         contentView.setTag(TabTag.sellerApplication);
                     } else {
-                        if (position == 3) {
+                        if (position == 2) {
                             textView.setText(R.string.my_banquent_active);
-                            image.setImageResource(R.drawable.setting_banquent_active);
+                            image.setImageResource(R.drawable.side_menu_seller_activities);
                             sellerStatusText.setVisibility(View.GONE);
                             contentView.setTag(TabTag.sellerBanquet);
-                        } else if (position == 4) {
+                        } else if (position == 3) {
                             textView.setText(R.string.my_banquent_order);
-                            image.setImageResource(R.drawable.order_list_place_holder);
+                            image.setImageResource(R.drawable.side_menu_seller);
                             sellerStatusText.setVisibility(View.GONE);
                             contentView.setTag(TabTag.sellerOrder);
                         }
@@ -363,6 +387,8 @@ public final class MainActivity extends BaseActivity {
                 onPushReceived();
             } else if (intent.getAction().equals(MessageDef.ACTION_ORDER_CREATED)) {
                 onOrderCreated();
+            }else if(intent.getAction().equals(MessageDef.ACTION_REQUEST_HOST)){
+                checkSellerStatus();
             }
         }
     };
@@ -375,6 +401,7 @@ public final class MainActivity extends BaseActivity {
         filter.addAction(MessageDef.ACTION_REFRESH_RECOMMENDATION);
         filter.addAction(MessageDef.ACTION_PUSH_RECEIVED);
         filter.addAction(MessageDef.ACTION_ORDER_CREATED);
+        filter.addAction(MessageDef.ACTION_REQUEST_HOST);
         registerReceiver(mReceiver, filter);
         FeedbackAgent agent = new FeedbackAgent(this);
         agent.sync();
@@ -459,6 +486,17 @@ public final class MainActivity extends BaseActivity {
                 mFragmentList.get(0));
         mCurrentFragment = mFragmentList.get(0);
         mFragmentTransaction.commit();
+        mDrawerLayout.setDrawerListener(new DrawerLayout.SimpleDrawerListener() {
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                if(mSellerStatus == null
+                    || mSellerStatus.getApplyStatus() == SellerStatus.ApplyStatus.reviewing){
+                    if(Router.getInstance().getCurrentUser().isPresent())
+                        checkSellerStatus();
+                }
+            }
+        });
         checkVersion();
         checkSellerStatus();
 //        if (mTendIntent != null)
@@ -470,16 +508,26 @@ public final class MainActivity extends BaseActivity {
         Router.getAccountModule().sellerStatus(new OneParameterExpression<SellerStatus>() {
             @Override
             public void action(SellerStatus sellerStatus) {
-                mSellerStatus  =SellerStatus.INSTANCE_SELLER ;
+                //test
+//                mSellerStatus  =SellerStatus.INSTANCE_SELLER ;
+                //mSellerStatus = sellerStatus ;
+                //test
+                mSellerStatus = sellerStatus ;
                 Router.getInstance().setSellerStatus(Optional.of(sellerStatus));
-//                mSellerStatus = sellerStatus;
+                if(mSellerStatus.getApplyStatus() == SellerStatus.ApplyStatus.passed
+                        && mSellerStatus.getBankStatus() == SellerStatus.BankStatus.finished){
+                    mMyBanquentActiveFragment = MyBanquentActiveFragment.newInstance();
+                    mFragmentList.add(mMyBanquentActiveFragment);
+                    mHostBanquentFragment = HostBanquentFragment.getInstance();
+                    mFragmentList.add(mHostBanquentFragment);
+                }
                 mTabTitleAdapter.notifyDataSetChanged();
                 AdapterViewHeightCalculator.setListViewHeightBasedOnChildren(mMainTabsTitle);
             }
         }, new OneParameterExpression<String>() {
             @Override
             public void action(String s) {
-                Log.e("sellerstatus", s);
+                Log.e("seller_status", s);
             }
         });
     }
@@ -700,6 +748,7 @@ public final class MainActivity extends BaseActivity {
                         R.array.settings1);
         mSettingList.setAdapter(mSettingAdapter);
         AdapterViewHeightCalculator.setListViewHeightBasedOnChildren(mSettingList);
+        checkSellerStatus();
     }
 
 
@@ -727,13 +776,13 @@ public final class MainActivity extends BaseActivity {
             mHostBanquentFragment.onActivityResult(requestCode, resultCode, data);
         }
         if (requestCode == SETTING_REQ && resultCode == LOGOUT_RESULT) {
-            //drop gourmet begin
-//            mFavorFragment.clearPersonalData();
-//            mRecommendFragment.clearPersonalData();
-////            mMyOrderFragment.clearMessage();
-//            mFavorFragment.mDisplayUser = null;
-//            mRecommendFragment.mDisplayUser = null;
-            //drop gourmet end
+            mSellerStatus = null ;
+            if(mMyBanquentActiveFragment != null)
+                mFragmentList.remove(mMyBanquentActiveFragment) ;
+            if(mHostBanquentFragment != null)
+                mFragmentList.remove(mHostBanquentFragment) ;
+            mTabTitleAdapter.notifyDataSetChanged();
+            AdapterViewHeightCalculator.setListViewHeightBasedOnChildren(mMainTabsTitle);
             Toast.makeText(mContext, getString(R.string.logout_msg), Toast.LENGTH_SHORT).show();
             mBtnLogin.setVisibility(View.VISIBLE);
             mThirdPartyUserName.setVisibility(View.GONE);

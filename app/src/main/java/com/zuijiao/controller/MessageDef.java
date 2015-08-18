@@ -5,15 +5,16 @@ package com.zuijiao.controller;
  */
 public interface MessageDef {
 
-    public static final String ACTION_LOGIN_FINISH = "net.zuijiao.android.login.finish";
+    String ACTION_LOGIN_FINISH = "net.zuijiao.android.login.finish";
 
-    public static final String ACTION_GET_THIRD_PARTY_USER = "net.zuijiao.android.thirdparty.userinfo";
+    String ACTION_GET_THIRD_PARTY_USER = "net.zuijiao.android.thirdparty.userinfo";
 
-    public static final String ACTION_REFRESH_RECOMMENDATION = "net.zuijiao.android.refresh_recommendation";
-    public static final String ACTION_PUSH_RECEIVED = "net.zuijiao.android.push_received";
+    String ACTION_REFRESH_RECOMMENDATION = "net.zuijiao.android.refresh_recommendation";
+    String ACTION_PUSH_RECEIVED = "net.zuijiao.android.push_received";
 
-    public static final String ACTION_ORDER_CREATED = "net.zuijiao.android.banquet.order.created";
+    String ACTION_ORDER_CREATED = "net.zuijiao.android.banquet.order.created";
+    String ACTION_REQUEST_HOST = "net.zuijiao.android.banquet.request.host";
 
-    public static final String ACTION_ORDER_UPDATE = "android.intent.action.ACTION_ORDER_UPDATE";
-    public static final String ACTION_ORDER_SURPLUS_TIME = "android.intent.action.ACTION_ORDER_SURPLUS_TIME";
+    String ACTION_ORDER_UPDATE = "android.intent.action.ACTION_ORDER_UPDATE";
+    String ACTION_ORDER_SURPLUS_TIME = "android.intent.action.ACTION_ORDER_SURPLUS_TIME";
 }

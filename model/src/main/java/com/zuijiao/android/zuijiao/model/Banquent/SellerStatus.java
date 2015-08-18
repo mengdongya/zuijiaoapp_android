@@ -17,22 +17,22 @@ public class SellerStatus implements Serializable {
     private String profileStatus;
     @SerializedName("failReason")
     private String faiReason;
-    @SerializedName("application")
-    private SellerApplication application;
+//    @SerializedName("application")
+//    private SellerApplication application;
 
     private SellerStatus(String applyStatus, String bankStatus, String profileStatus, String faiReason, SellerApplication application) {
         this.applyStatus = applyStatus;
         this.bankStatus = bankStatus;
         this.profileStatus = profileStatus;
         this.faiReason = faiReason;
-        this.application = application;
+//        this.application = application;
     }
 
     public static SellerStatus INSTANCE_EDITING_PROFILE = new SellerStatus("editing" , "unfinished" , "finished" ,"" ,null) ;
     public static SellerStatus INSTANCE_EDITING_NONE_PROFILE = new SellerStatus("editing" , "unfinished" , "unfinished" ,"" ,null) ;
     public static SellerStatus INSTANCE_REVIEWING = new SellerStatus("reviewing" , "unfinished" , "finished" ,"" ,null) ;
     public static SellerStatus INSTANCE_FAILED = new SellerStatus("fail" , "unfinished" , "finished" ,"ugly" ,null) ;
-    public static SellerStatus INSTANCE_SUCCESS_NONE_BANK= new SellerStatus("passed" , "finished" , "finished" ,"" ,null) ;
+    public static SellerStatus INSTANCE_SUCCESS_NONE_BANK= new SellerStatus("passed" , "unfinished" , "finished" ,"" ,null) ;
     public static SellerStatus INSTANCE_SELLER = new SellerStatus("passed" , "finished" , "finished" ,"" ,null) ;
 
     public ApplyStatus getApplyStatus() {
@@ -89,9 +89,9 @@ public class SellerStatus implements Serializable {
         return faiReason;
     }
 
-    public SellerApplication getApplication() {
-        return application;
-    }
+//    public SellerApplication getApplication() {
+////        return application;
+//    }
 
     public enum ProfileStatus {
         unfinished, finished;
@@ -151,7 +151,7 @@ public class SellerStatus implements Serializable {
 
 
 
-    public class SellerApplication {
+    public class SellerApplication implements Serializable {
         @SerializedName("ID")
         private Integer id;
         @SerializedName("cookLevel")

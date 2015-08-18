@@ -171,13 +171,13 @@ public class OrderListFragment extends Fragment implements
         OrderStatus status;
         switch (tabIndex) {
             case 0:
-                status = OrderStatus.Waiting;
-                //status = OrderStatus.Unclosed;
-//                status = OrderStatus.Unfinished;
+//                status = OrderStatus.Waiting;
+//                //status = OrderStatus.Unclosed;
+                status = OrderStatus.unFinished;
                 break;
             case 1:
-                status = OrderStatus.Finished;
-//                status = OrderStatus.Uncomment;
+//                status = OrderStatus.Finished;
+                status = OrderStatus.unComment;
                 break;
             case 2:
                 status = OrderStatus.All;

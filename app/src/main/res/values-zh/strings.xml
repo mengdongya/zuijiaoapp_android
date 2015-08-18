@@ -430,8 +430,10 @@
     <string name="fetch_comment_failed">获取评论信息失败，请检查您的网络</string>
     <string name="apply_now">立刻申请</string>
     <string name="form_host_information_title">在申请之前，请完善你的信息，方便嘴能够在第一时间联系到您</string>
-    <string name="apply_introduction">为了给更多的吃货谋福利，也给身怀绝技的料理人一个大显身手的机会，嘴角决定开启全城料理人大搜寻，无论你本人就是那个手艺了得的料理人，还是你身边有这样的朋友，都可以自荐或推荐，一大波福利等着你哦。</string>
-
+    <string name="apply_introduction">每一个爱做饭的人都有一颗温暖柔软的心，有没有想过有这样一个机会，与有缘人共享一桌美味呢？\n成为料理人，你将获得：
+        √ 每位食客支付的费用全额支付给料理人
+        √ 第一次举办活动将获得300元启动资金
+        √ 一大波有趣有聊的新朋好友</string>
     <string name="avatar">头像</string>
     <string name="go_on">继续</string>
     <string name="next_step">下一步</string>
@@ -458,7 +460,7 @@
     <string name="bank_name_hint">输入银行名称</string>
     <string name="real_name_hint">输入真实姓名</string>
     <string name="bind_account_card">已绑定</string>
-    <string name="publish_banquent">您可以登录嘴角网www.zuijiao.net,发布您的料理活动。\n如有疑问请联系：021-58313201。</string>
+    <string name="publish_banquent">您可以登录嘴角网： www.zuijiao.net 发布您的料理活动。如有疑问请联系：021-58313201。</string>
     <string name="my_banquent_active">我的料理活动</string>
     <string name="my_banquent_order">我的料理订单</string>
     <string name="no_going_banquent_order">还没有收到相关订单</string>
@@ -468,6 +470,23 @@
     <string name="seller_status_failed">审核未通过</string>
     <string name="seller_status_success">完善收款账户</string>
     <string name="apply_host">申请成为料理人</string>
+    <string name="apply_host_notice1">每一个爱做饭的人都有一颗温暖柔软的心，有没有想过有这样一个机会，与有缘人共享一桌美味呢？</string>
+    <string name="apply_host_notice2">成为料理人，你将获得：</string>
+    <string name="apply_host_notice3">√ 每位食客支付的费用全额支付给料理人\n√ 第一次举办活动将获得300元启动资金\n√ 一大波有趣有聊的新朋好友</string>
+    <string name="bank_information_uncompleted">请完善输入信息</string>
+    <string name="confirm_bank_information">请确认输入信息</string>
+    <string name="format_bank_information">姓名&#160;&#160;%1$s \n银行&#160;&#160;%2$s\n账号&#160;&#160;%3$s\n</string>
+    <string name="request_host_success">提交成功, 等待审核中…</string>
+    <string name="application_failed_notice">非常抱歉，您的申请审核未通过</string>
+    <string name="application_progressing_notice">............</string>
+    <string name="format_apply_fail_reason">未通过原因：%s</string>
+    <string name="our_qq_group">如果有任何疑问，可进入QQ群：\n297572847与我们取得联系。</string>
+    <string name="application_progressing_notice2">感谢您申请嘴角料理人，我们会在5个工作日内主动联系您。</string>
+    <string name="modify_apply_information">修改申请条件</string>
+    <string name="application_success_notice1">恭喜，您的申请通过审核</string>
+    <string name="complete_bind_bank_account">绑定银行帐号</string>
+    <string name="complete_profile_first">请完善资料</string>
+    <string name="already_bind">已经绑定</string>
     <!-- umeng socializer strings begin-->
     <!--<string name="pull_to_refresh_pull_label" translatable="false">向下拉动可以刷新</string>-->
     <!--<string name="pull_to_refresh_release_label" translatable="false">松开可以刷新</string>-->

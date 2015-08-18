@@ -22,8 +22,14 @@ public class Banquents implements Serializable{
     private Integer previousCursor ;
     @SerializedName("nextCursor")
     private Integer nextCursor ;
-//    private Integer lastIdentifer ;
 
+    public ArrayList<Banner> getBanners() {
+        return banners;
+    }
+
+    //    private Integer lastIdentifer ;
+    @SerializedName("banners")
+    private ArrayList<Banner> banners ;
     public String getBannerLinkUrl() {
         return banner.linkUrl;
     }
@@ -52,11 +58,18 @@ public class Banquents implements Serializable{
         return nextCursor;
     }
 
-    class Banner implements  Serializable{
+    public class Banner implements  Serializable{
         @SerializedName("url")
         private String linkUrl;
         @SerializedName("imageUrl")
         private String imageUrl;
 
+        public String getLinkUrl() {
+            return linkUrl;
+        }
+
+        public String getImageUrl() {
+            return imageUrl;
+        }
     }
 }

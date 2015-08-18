@@ -22,6 +22,7 @@ import com.lidroid.xutils.view.annotation.ViewInject;
 import com.zuijiao.android.util.Optional;
 import com.zuijiao.android.util.functional.LambdaExpression;
 import com.zuijiao.android.util.functional.OneParameterExpression;
+import com.zuijiao.android.zuijiao.model.Banquent.SellerStatus;
 import com.zuijiao.android.zuijiao.model.common.Configuration;
 import com.zuijiao.android.zuijiao.model.common.ConfigurationType;
 import com.zuijiao.android.zuijiao.network.Router;
@@ -36,6 +37,9 @@ import com.zuijiao.utils.AlertDialogUtil;
  */
 @ContentView(R.layout.activity_setting)
 public class SettingActivity extends BaseActivity {
+
+
+    public static final int BIND_BANK_REQ = 20001 ;
     @ViewInject(R.id.setting_toolbar)
     private Toolbar mToolbar = null;
     @ViewInject(R.id.setting_sb_follow_me)
@@ -54,7 +58,10 @@ public class SettingActivity extends BaseActivity {
     private TextView mAccountCardStatus;
     @ViewInject(R.id.setting_account_card_layout)
     private LinearLayout mAccountCardLayout;
-
+    @ViewInject(R.id.setting_account_title)
+    private TextView mAccountTitle ;
+    @ViewInject(R.id.setting_account_deviver)
+    private View mAccountDiviver ;
     private Configuration mConfiguration = null;
     private LambdaExpression successCallback = null;
     private String mEmail = null;
@@ -62,13 +69,14 @@ public class SettingActivity extends BaseActivity {
     private SBCheckedChangeListener mSbListener2 = null;
     private SBCheckedChangeListener mSbListener3 = null;
 
+
     @Override
     protected void registerViews() {
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         mEmail = mPreferMng.getStoredBindEmail();
         mCurrentAccount.setText(mEmail.equals("") ? getString(R.string.un_setting) : mEmail);
-        mAccountCardStatus.setText(mPreferMng.getStoredBindCard().isEmpty()?getString(R.string.un_setting):getString(R.string.bind_account_card));
+        mAccountCardStatus.setText(mPreferMng.getStoredBindCard().isEmpty() ? getString(R.string.un_setting) : getString(R.string.bind_account_card));
         Router.getCommonModule().currentConfiguration(new OneParameterExpression<Configuration>() {
             @Override
             public void action(Configuration configuration) {
@@ -100,10 +108,21 @@ public class SettingActivity extends BaseActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent();
-                intent.setClass(mContext,ReceivingAccountActivity.class);
-                startActivity(intent);
+                intent.setClass(mContext, ReceivingAccountActivity.class);
+                startActivityForResult(intent, BIND_BANK_REQ);
             }
         });
+        if(Router.getInstance().getCurrentUser().isPresent()
+                && Router.getInstance().getSellerStatus().isPresent()
+                && Router.getInstance().getSellerStatus().get().getApplyStatus() == SellerStatus.ApplyStatus.passed){
+            if(Router.getInstance().getSellerStatus().get().getBankStatus() == SellerStatus.BankStatus.finished){
+                mAccountCardStatus.setText(R.string.already_bind);
+            }
+        }else{
+            mAccountCardLayout.setVisibility(View.INVISIBLE);
+            mAccountDiviver.setVisibility(View.INVISIBLE);
+            mAccountTitle.setVisibility(View.INVISIBLE);
+        }
     }
 
     /**
@@ -116,6 +135,14 @@ public class SettingActivity extends BaseActivity {
             startActivity(intent);
         } else {
             Toast.makeText(mContext, getString(R.string.email_bound), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == BIND_BANK_REQ && resultCode == RESULT_OK){
+            mAccountCardStatus.setText(R.string.already_bind);
         }
     }
 

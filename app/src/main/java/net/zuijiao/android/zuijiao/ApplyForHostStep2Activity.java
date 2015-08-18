@@ -10,6 +10,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -30,12 +31,15 @@ import com.lidroid.xutils.view.annotation.ContentView;
 import com.lidroid.xutils.view.annotation.ViewInject;
 import com.squareup.picasso.Picasso;
 import com.upyun.block.api.listener.CompleteListener;
+import com.zuijiao.android.util.Optional;
 import com.zuijiao.android.util.functional.LambdaExpression;
 import com.zuijiao.android.util.functional.OneParameterExpression;
+import com.zuijiao.android.zuijiao.model.Banquent.SellerStatus;
 import com.zuijiao.android.zuijiao.model.user.ContactInfo;
 import com.zuijiao.android.zuijiao.model.user.User;
 import com.zuijiao.android.zuijiao.network.Router;
 import com.zuijiao.controller.MessageDef;
+import com.zuijiao.utils.AdapterViewHeightCalculator;
 import com.zuijiao.utils.UpyunUploadTask;
 
 import java.io.File;
@@ -117,19 +121,44 @@ public class ApplyForHostStep2Activity extends BaseActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.apply_host ,menu);
+        getMenuInflater().inflate(R.menu.apply_host, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.menu_apply_host) {
-            Intent intent = new Intent(mContext , CommonWebViewActivity.class) ;
-            intent.putExtra("content_url", "http://db.zuijiaodev.com:3000/");
-            intent.putExtra("apply_host" , true );
-            startActivity(intent);
+            checkUserProfileState() ;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+
+
+    private void checkUserProfileState(){
+        createDialog();
+        Router.getAccountModule().sellerStatus(new OneParameterExpression<SellerStatus>() {
+            @Override
+            public void action(SellerStatus sellerStatus) {
+                finalizeDialog();
+                Router.getInstance().setSellerStatus(Optional.of(sellerStatus));
+                if(sellerStatus.getProfileStatus() == SellerStatus.ProfileStatus.finished){
+                    Intent intent = new Intent(mContext , CommonWebViewActivity.class) ;
+                    String formatUrl = "http://bugzilla.zuijiaodev.com/?token=" + Router.getInstance().getAccessToken().get() + "&d" ;
+                    intent.putExtra("content_url", formatUrl);
+                    intent.putExtra("apply_host" , true );
+                    startActivity(intent);
+                }else{
+                    Toast.makeText(mContext , R.string.complete_profile_first , Toast.LENGTH_SHORT).show();
+                }
+            }
+        }, new OneParameterExpression<String>() {
+            @Override
+            public void action(String s) {
+                finalizeDialog();
+                Toast.makeText(mContext , R.string.notify_net2 , Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private AdapterView.OnItemClickListener mItemListener = new AdapterView.OnItemClickListener() {

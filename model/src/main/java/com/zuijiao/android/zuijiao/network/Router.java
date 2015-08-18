@@ -116,7 +116,7 @@ public class Router {
         this.currentUser = currentUser;
     }
 
-    static String convertJsonFromList(List l) {
+    public static String convertJsonFromList(List l) {
         if (l == null) return "[]";
 
         StringBuilder stringBuilder = new StringBuilder("[");

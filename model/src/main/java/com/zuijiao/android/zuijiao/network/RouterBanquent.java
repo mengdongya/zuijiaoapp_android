@@ -187,7 +187,7 @@ public enum RouterBanquent {
 
 
     public void sellerOrderByID(Integer orderID
-            ,final OneParameterExpression<Order> successCallback
+            ,final OneParameterExpression<Orders> successCallback
             , final OneParameterExpression<String> failureCallback){
         service.sellerOrderByID(orderID, CallbackFactory.getInstance().callback(successCallback, failureCallback));
     }

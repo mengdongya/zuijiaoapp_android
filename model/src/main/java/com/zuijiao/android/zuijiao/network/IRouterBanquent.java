@@ -131,5 +131,5 @@ public interface IRouterBanquent {
 
     @GET("/seller/v3/ios/order/{orderID}")
     void sellerOrderByID(@Path("orderID") Integer orderID ,
-                     Callback<Order> callback) ;
+                     Callback<Orders> callback) ;
 }

@@ -237,7 +237,7 @@ public class BanquetOrderDisplayActivity extends BaseActivity {
             int dateHeight = mBottomPeopleCount.getMeasuredHeight() ;
             int margin = (int) (3* getResources().getDimension(R.dimen.end_z));
             params.height = priceHeight + dateHeight + margin ;
-            mOrderPay.setText(R.string.comment);
+            mOrderPay.setText(R.string.to_evaluate);
             mOrderPay.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

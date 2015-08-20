@@ -47,6 +47,7 @@ import com.zuijiao.android.util.Optional;
 import com.zuijiao.android.util.functional.LambdaExpression;
 import com.zuijiao.android.util.functional.OneParameterExpression;
 import com.zuijiao.android.zuijiao.model.Banquent.Banquent;
+import com.zuijiao.android.zuijiao.model.Banquent.Notifications;
 import com.zuijiao.android.zuijiao.model.Banquent.SellerStatus;
 import com.zuijiao.android.zuijiao.model.message.Message;
 import com.zuijiao.android.zuijiao.model.message.News;
@@ -124,12 +125,18 @@ public final class MainActivity extends BaseActivity {
                 mFragmentTransaction.hide(mCurrentFragment).show(mFragmentList.get(0)).commit();
                 mCurrentFragment = mFragmentList.get(0);
             } else {
-                TabTag tag = (TabTag) view.getTag();
+                TabTag tag = null ;
+                try{
+                    tag = (TabTag) view.getTag();
+                }catch (Throwable t){
+                    t.printStackTrace();
+                    tag = null ;
+                }
+                if(tag == null)
+                    return;
                 switch (tag) {
                     case publicBanquet:
-
                     case myOrder:
-
                     case sellerBanquet:
                     case sellerOrder:
                         mFragmentTransaction = mFragmentMng.beginTransaction();
@@ -139,6 +146,11 @@ public final class MainActivity extends BaseActivity {
                             mFragmentTransaction.hide(mCurrentFragment).show(mFragmentList.get(position)).commit();
                         }
                         mCurrentFragment = mFragmentList.get(position);
+                        mToolBar.setTitle(mTabTitles[position]);
+                        if(position == 0)
+                            mLocationView.setVisibility(View.VISIBLE);
+                        else
+                            mLocationView.setVisibility(View.GONE);
                         break ;
                     case sellerApplication:
 
@@ -163,16 +175,6 @@ public final class MainActivity extends BaseActivity {
                             intent.putExtra("b_edit" , true) ;
                             startActivity(intent);
                         }else{
-//                        if(mSellerStatus.getApplyStatus() == SellerStatus.ApplyStatus.editing){
-//                            Intent intent = new Intent(mContext , ApplyForHostStep1Activity.class) ;
-//                            intent.putExtra("seller_status" , mSellerStatus) ;
-//                            startActivity(intent);
-//                        }else if(mSellerStatus.getApplyStatus() == SellerStatus.ApplyStatus.fail){
-//                            Intent intent = new Intent(mContext , ApplyForHostStep1Activity.class) ;
-//                            intent.putExtra("seller_status" , mSellerStatus) ;
-//                            startActivity(intent);
-//                        }else if(mSellerStatus.getApplyStatus() == SellerStatus.ApplyStatus.reviewing){
-//                            Toast.makeText(mContext , R.string.seller_status_reviewing , Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(mContext , ApplyForHostStep1Activity.class) ;
                             intent.putExtra("seller_status" , mSellerStatus) ;
                             startActivity(intent);
@@ -471,12 +473,6 @@ public final class MainActivity extends BaseActivity {
         mFragmentList.add(mMainFragment);
         mMyOrderFragment = MyOrderFragment.getInstance();
         mFragmentList.add(mMyOrderFragment);
-
-//        mMyBanquentActiveFragment = MyBanquentActiveFragment.newInstance();
-//        mFragmentList.add(mMyBanquentActiveFragment);
-//
-//        mHostBanquentFragment = HostBanquentFragment.getInstance();
-//        mFragmentList.add(mHostBanquentFragment);
         mMainTabsTitle.setAdapter(mTabTitleAdapter);
         AdapterViewHeightCalculator.setListViewHeightBasedOnChildren(mMainTabsTitle);
         mMainTabsTitle.setOnItemClickListener(mTabsListener);
@@ -490,18 +486,40 @@ public final class MainActivity extends BaseActivity {
             @Override
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
-                if(mSellerStatus == null
-                    || mSellerStatus.getApplyStatus() == SellerStatus.ApplyStatus.reviewing){
-                    if(Router.getInstance().getCurrentUser().isPresent())
+                if (mSellerStatus == null
+                        || mSellerStatus.getApplyStatus() == SellerStatus.ApplyStatus.reviewing) {
+                    if (Router.getInstance().getCurrentUser().isPresent())
                         checkSellerStatus();
                 }
             }
         });
         checkVersion();
         checkSellerStatus();
-//        if (mTendIntent != null)
-//            startNewActivity(mTendIntent);
+        checkNewMessage() ;
+    }
 
+    private void checkNewMessage() {
+        Router.getMessageModule().banquetNotifications(null, null, 20, new OneParameterExpression<Notifications>() {
+            @Override
+            public void action(Notifications notifications) {
+                if(notifications != null ){
+                    ArrayList<Notifications.Notification> notificationList = notifications.getItems() ;
+                    if(notificationList != null && notificationList.size() != 0){
+                        for(Notifications.Notification notification : notificationList){
+                            if(!notification.getIsRead()){
+                                showBadgeView();
+                                break ;
+                            }
+                        }
+                    }
+                }
+            }
+        }, new OneParameterExpression<String>() {
+            @Override
+            public void action(String s) {
+                Log.e("MainActivity" ,s) ;
+            }
+        });
     }
 
     private void checkSellerStatus() {
@@ -646,21 +664,22 @@ public final class MainActivity extends BaseActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.menu_main) {
+            removeBadgeView();
             Intent intent = new Intent();
             intent.setClass(mContext, MessageActivity.class);
             startActivity(intent);
-            Router.getMessageModule().markAsRead(News.NotificationType.Notice, () -> {
-                if (unReadNewsCount > 0) {
-                    removeBadgeView();
-                }
-            }, () -> {
-            });
-            Router.getMessageModule().markAsRead(News.NotificationType.Comment, () -> {
-                if (unReadNewsCount == 0) {
-                    removeBadgeView();
-                }
-            }, () -> {
-            });
+//            Router.getMessageModule().markAsRead(News.NotificationType.Notice, () -> {
+//                if (unReadNewsCount > 0) {
+//                    removeBadgeView();
+//                }
+//            }, () -> {
+//            });
+//            Router.getMessageModule().markAsRead(News.NotificationType.Comment, () -> {
+//                if (unReadNewsCount == 0) {
+//                    removeBadgeView();
+//                }
+//            }, () -> {
+//            });
         }
         return super.onOptionsItemSelected(item);
     }
@@ -749,6 +768,7 @@ public final class MainActivity extends BaseActivity {
         mSettingList.setAdapter(mSettingAdapter);
         AdapterViewHeightCalculator.setListViewHeightBasedOnChildren(mSettingList);
         checkSellerStatus();
+        checkNewMessage();
     }
 
 
@@ -772,8 +792,8 @@ public final class MainActivity extends BaseActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == COMMENT_REQUEST || requestCode == ORDER_REQUEST) {
-            mMyOrderFragment.onActivityResult(requestCode, resultCode, data);
-            mHostBanquentFragment.onActivityResult(requestCode, resultCode, data);
+            if(mMyOrderFragment != null)
+                mMyOrderFragment.onActivityResult(requestCode, resultCode, data);
         }
         if (requestCode == SETTING_REQ && resultCode == LOGOUT_RESULT) {
             mSellerStatus = null ;

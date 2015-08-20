@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.annotation.TargetApi;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -145,7 +147,7 @@ public class CommonWebViewActivity extends BaseActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         if(bApplyHost ){
             getMenuInflater().inflate(R.menu.web_view , menu);
-            mMenuItem = menu.findItem(R.menu.web_view) ;
+            mMenuItem = menu.findItem(R.id.menu_web_view) ;
         }
         return super.onCreateOptionsMenu(menu);
     }
@@ -158,10 +160,16 @@ public class CommonWebViewActivity extends BaseActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                if(OSUtil.getAPILevel() >= android.os.Build.VERSION_CODES.KITKAT)
-                    mWebView.evaluateJavascript("window.d_router.previousPage()",null);
-                else{
-                    mWebView.loadUrl("javascript:window.d_router.previousPage()");
+                if(bApplyHost){
+
+                    if(OSUtil.getAPILevel() >= android.os.Build.VERSION_CODES.KITKAT) {
+                        mWebView.evaluateJavascript("window.d_router.previousPage()",null);
+                    }
+                    else{
+                        mWebView.loadUrl("javascript:window.d_router.previousPage()");
+                    }
+                }else{
+                    onBackPressed();
                 }
                 return true ;
             case R.id.menu_web_view:
@@ -200,7 +208,6 @@ public class CommonWebViewActivity extends BaseActivity {
             startActivity(intent);
 //            Toast.makeText(mContext ,R.string.notify_net2 , Toast.LENGTH_SHORT).show();
 //            Log.i("commonWebView" , "account == " +amount + "success ==" + success) ;
-
             // do whatever you want in the parent activity.
         }
 
@@ -212,12 +219,27 @@ public class CommonWebViewActivity extends BaseActivity {
             finish();
         }
 
-
+        @SuppressWarnings("none UI Thread called")
         @JavascriptInterface
         public void changeButtonTitle(String title){
-            if(mMenuItem != null)
-                mMenuItem.setTitle(title) ;
+            Message msg = Message.obtain() ;
+            msg.what = 0x1001 ;
+            msg.obj = title ;
+            mHandler.sendMessage(msg) ;
+//            Toast.makeText(mContext , title , Toast.LENGTH_LONG).show();
         }
     }
 
+    private Handler mHandler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            if(msg.what == 0x1001){
+                if(mMenuItem != null){
+                    String title = (String) msg.obj;
+                    mMenuItem.setTitle(title) ;
+                }
+            }
+        }
+    } ;
 }

@@ -185,7 +185,8 @@ public class OrderListFragment extends Fragment implements
             default:
                 status = OrderStatus.All;
         }
-        mRefreshLayout.setRefreshing(true);
+        if(bRefresh)
+            mRefreshLayout.setRefreshing(true);
         Router.getBanquentModule().orders(status, lastedId, 20, new OneParameterExpression<Orders>() {
             @Override
             public void action(Orders orders) {

@@ -37,6 +37,7 @@ import com.zuijiao.android.util.functional.OneParameterExpression;
 import com.zuijiao.android.zuijiao.model.Banquent.SellerAccount;
 import com.zuijiao.android.zuijiao.model.Banquent.SellerStatus;
 import com.zuijiao.android.zuijiao.network.Router;
+import com.zuijiao.controller.MessageDef;
 import com.zuijiao.utils.AlertDialogUtil;
 
 /**
@@ -85,10 +86,12 @@ public class ReceivingAccountActivity extends BaseActivity {
             return;
         SellerStatus.BankStatus bankStatus = mSellerStatus.getBankStatus();
         if (bankStatus == null || bankStatus.equals(SellerStatus.BankStatus.unfinished)) {
-            mReceivingAccountNotice.setVisibility(View.INVISIBLE);
+//            mReceivingAccountNotice.setVisibility(View.INVISIBLE);
             mBankAccountContainer.setOnClickListener(mListener);
             mBankNameContainer.setOnClickListener(mListener);
             mRealNameContainer.setOnClickListener(mListener);
+            mReceivingAccountNotice.setVisibility(View.VISIBLE);
+            mReceivingAccountNotice.setText(R.string.notice_bank_profile_unmodifiable);
         }else{
             mBankAccountContainer.setOnClickListener(null);
             mBankNameContainer.setOnClickListener(null);
@@ -141,15 +144,20 @@ public class ReceivingAccountActivity extends BaseActivity {
                     @Override
                     public void ConfirmOnClick() {
                         alertDialogUtil.dismissDialog();
+                        createDialog();
                        Router.getBanquentModule().updateBankInfo(mEditBank, mEditName, mEditAccount, new LambdaExpression() {
                                    @Override
                                    public void action() {
-                                       checkSellerStatus() ;
+                                       finalizeDialog();
+                                      Intent intent = new Intent(MessageDef.ACTION_REQUEST_HOST) ;
+                                       sendBroadcast(intent);
+                                       finish();
                                    }
                                },
                                new OneParameterExpression<String>() {
                                    @Override
                                    public void action(String error) {
+                                       finalizeDialog();
                                        Toast.makeText(mContext, error, Toast.LENGTH_SHORT).show();
                                    }
                                });

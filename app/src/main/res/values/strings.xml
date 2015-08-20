@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">嘴角</string>
-    <string name="current_version_code">2.2</string>
+    <string name="current_version_code">2.3</string>
     <string name="welcome_word">发现最美的味道</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
@@ -427,7 +427,7 @@
     <string name="default_self_introduction">还没有留下自我介绍</string>
     <string name="fetch_comment_failed">获取评论信息失败，请检查您的网络</string>
     <string name="apply_now">立刻申请</string>
-    <string name="form_host_information_title">在申请之前，请完善你的信息，方便嘴能够在第一时间联系到您</string>
+    <string name="form_host_information_title">在申请之前，请完善你的信息，方便嘴角能够在第一时间联系到您</string>
     <string name="apply_introduction">每一个爱做饭的人都有一颗温暖柔软的心，有没有想过有这样一个机会，与有缘人共享一桌美味呢？\n成为料理人，你将获得：
         √ 每位食客支付的费用全额支付给料理人
         √ 第一次举办活动将获得300元启动资金
@@ -472,7 +472,7 @@
     <string name="apply_host_notice2">成为料理人，你将获得：</string>
     <string name="apply_host_notice3">√ 每位食客支付的费用全额支付给料理人\n√ 第一次举办活动将获得300元启动资金\n√ 一大波有趣有聊的新朋好友</string>
     <string name="bank_information_uncompleted">请完善输入信息</string>
-    <string name="confirm_bank_information">请确认输入信息</string>
+    <string name="confirm_bank_information">请再次确认收款信息</string>
     <string name="format_bank_information">姓名&#160;&#160;%1$s \n银行&#160;&#160;%2$s\n账号&#160;&#160;%3$s\n</string>
     <string name="request_host_success">提交成功, 等待审核中…</string>
     <string name="application_failed_notice">非常抱歉，您的申请审核未通过</string>
@@ -480,9 +480,13 @@
     <string name="application_progressing_notice2">感谢您申请嘴角料理人，我们会在5个工作日内主动联系您。</string>
     <string name="format_apply_fail_reason">未通过原因：%s</string>
     <string name="our_qq_group">如果有任何疑问，可进入QQ群：\n297572847与我们取得联系。</string>
-    <string name="modify_apply_information">修改申请条件</string>
-    <string name="application_success_notice1">恭喜，您的申请通过审核</string>
+    <string name="modify_apply_information">修改申请资料</string>
+    <string name="application_success_notice1">恭喜，您的申请已通过审核</string>
     <string name="complete_bind_bank_account">绑定银行帐号</string>
     <string name="already_bind">已经绑定</string>
+    <string name="order_detail">订单详细</string>
     <string name="complete_profile_first">请完善资料</string>
+    <string name="notice_bank_profile_unmodifiable">请务必如实填写，保存后将无法自行修改</string>
+    <string name="no_banquet_found">没有找到相关的数据</string>
+
 </resources>

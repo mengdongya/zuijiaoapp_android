@@ -37,7 +37,7 @@ public class Notifications {
     }
 
 
-    public  class Notification{
+    public class Notification{
         @SerializedName("ID")
         private Integer id ;
         @SerializedName("content")

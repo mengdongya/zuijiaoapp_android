@@ -295,6 +295,7 @@
                 android:background="@color/host_guest_end_divider"/>
 
             <LinearLayout
+                android:layout_marginTop="10dip"
                 android:id="@+id/ll_host_hold_banquet"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

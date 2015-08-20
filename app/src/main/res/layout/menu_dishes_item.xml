@@ -14,20 +14,23 @@
         android:text="热菜"
         android:layout_marginTop="10dip"
         android:gravity="center"
+        android:layout_marginBottom="5dip"
         android:textSize="16sp"
         android:textColor="@color/black"
         android:textStyle="bold" />
 
-    <TextView
-        android:id="@+id/menu_dishes_item_dishes"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:lineSpacingExtra="5dip"
-        android:layout_marginTop="5dip"
-        android:paddingBottom="10dip"
-        android:text="山楂梅子洋柿子\n山楂梅子洋柿子"
-        android:textSize="16sp"
-        android:textColor="@color/_555555"
-        />
+    <!--<com.zuijiao.view.MeasuredTextView-->
+        <!--android:id="@+id/menu_dishes_item_dishes"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:gravity="center"-->
+        <!--android:layout_marginLeft="10dip"-->
+        <!--android:layout_marginRight="10dip"-->
+        <!--android:lineSpacingExtra="5dip"-->
+        <!--android:singleLine="false"-->
+        <!--android:layout_marginTop="5dip"-->
+        <!--android:paddingBottom="10dip"-->
+        <!--android:textSize="16sp"-->
+        <!--android:textColor="@color/_555555"-->
+        <!--/>-->
 </LinearLayout>

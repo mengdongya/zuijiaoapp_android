@@ -45,10 +45,12 @@ public class ApplyForHostStep1Activity extends BaseActivity {
         if(mTendIntent != null)
             mSellerStatus= (SellerStatus) mTendIntent.getSerializableExtra("seller_status");
         if(mSellerStatus == null){
-            mSellerStatus = Router.getInstance(). getSellerStatus().get() ;
-            if(mSellerStatus == null)
+            if( Router.getInstance(). getSellerStatus().isPresent())
+                mSellerStatus = Router.getInstance(). getSellerStatus().get() ;
+            if(mSellerStatus == null){
                 finish();
-            return;
+                return;
+            }
         }
         mImageView.setOnClickListener(viewsListener);
         mTextView.setOnClickListener(viewsListener);
@@ -62,8 +64,9 @@ public class ApplyForHostStep1Activity extends BaseActivity {
                 mImageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
                 mImageView.setImageResource(R.drawable.host_apply_progressing);
                 mTextView.setText(R.string.application_progressing_notice);
-                mTextView1.setText(R.string.application_progressing_notice2);
-                mTextView2.setText(R.string.our_qq_group);
+                mTextView1.setVisibility(View.GONE);
+//                mTextView1.setText(R.string.application_progressing_notice2);
+                mTextView2.setText(getString(R.string.application_progressing_notice2) + getString(R.string.our_qq_group));
                 mTextView2.setAutoLinkMask(Linkify.ALL);
                 mTextView2.setMovementMethod(LinkMovementMethod.getInstance());
                 mButton.setText(R.string.confirm);
@@ -74,7 +77,13 @@ public class ApplyForHostStep1Activity extends BaseActivity {
                 mTextView.setText(R.string.application_success_notice1);
                 mTextView1.setVisibility(View.INVISIBLE);
                 mTextView2.setText(R.string.our_qq_group);
-                mButton.setText(R.string.complete_bind_bank_account);
+                mTextView2.setAutoLinkMask(Linkify.ALL);
+                mTextView2.setMovementMethod(LinkMovementMethod.getInstance());
+                if(mSellerStatus.getBankStatus() == SellerStatus.BankStatus.finished){
+                    mButton.setText(R.string.confirm);
+                }else{
+                    mButton.setText(R.string.complete_bind_bank_account);
+                }
                 break ;
             case fail:
                 mImageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
@@ -102,57 +111,51 @@ public class ApplyForHostStep1Activity extends BaseActivity {
                 case R.id.apply1_text_view:
                     break ;
                 case R.id.apply1_button:
-//                    if(!Router.getInstance().getCurrentUser().isPresent())
-//                        tryLoginFirst(new LambdaExpression() {
-//                            @Override
-//                            public void action() {
-//                                if(!Router.getInstance().getCurrentUser().isPresent())
-//                                    notifyLogin(null);
-//                            }
-//                        }, new OneParameterExpression<Integer>() {
-//                            @Override
-//                            public void action(Integer integer) {
-//                                Toast.makeText(mContext, R.string.notify_net2 , Toast.LENGTH_SHORT).show();
-//                            }
-//                        });
-//                    else{
                     if(mSellerStatus == null || !Router.getInstance().getCurrentUser().isPresent()){
                         return ;
                     }
-                        Intent intent = new Intent( ) ;
-                        switch (mSellerStatus.getApplyStatus()){
-                            case editing:
-                                if(mSellerStatus.getProfileStatus() == SellerStatus.ProfileStatus.finished){
-
-                                    intent.setClass(mContext, CommonWebViewActivity.class) ;
-                                    String formatUrl = "http://bugzilla.zuijiaodev.com/?token=" + Router.getInstance().getAccessToken().get() + "&d" ;
-                                    intent.putExtra("content_url", formatUrl) ;
-                                    intent.putExtra("apply_host", true) ;
-                                }else{
-                                    intent.setClass(mContext, ApplyForHostStep2Activity.class) ;
-                                }
-                            case fail:
-                                intent.setClass(mContext , CommonWebViewActivity.class) ;
-                                String formatUrl = "http://bugzilla.zuijiaodev.com/?token=" + Router.getInstance().getAccessToken().get() + "&d" ;
-                                intent.putExtra("content_url" ,formatUrl) ;
+                    Intent intent = new Intent( ) ;
+                    switch (mSellerStatus.getApplyStatus()){
+                        case editing:
+                            if(mSellerStatus.getProfileStatus() == SellerStatus.ProfileStatus.finished){
+                                intent.setClass(mContext, CommonWebViewActivity.class) ;
+                                String formatUrl = null ;
+                                if(BuildConfig.DEBUG)
+                                     formatUrl = "http://bugzilla.zuijiaodev.com/?token=" + Router.getInstance().getAccessToken().get() + "&d" ;
+                                else
+                                    formatUrl = "http://bugzilla.zuijiaodev.com/?token=" + Router.getInstance().getAccessToken().get() + "&r" ;
+                                intent.putExtra("content_url", formatUrl) ;
                                 intent.putExtra("apply_host", true) ;
-//                                intent.putExtra("application_information" , mSellerStatus.getApplication()) ;
-                                break ;
-                            case passed:
+                            }else{
+                                intent.setClass(mContext, ApplyForHostStep2Activity.class) ;
+
+                            }
+                            startActivity(intent);
+                            break ;
+                        case fail:
+                            intent.setClass(mContext , CommonWebViewActivity.class) ;
+                            String formatUrl = null ;
+                            if(BuildConfig.DEBUG)
+                                formatUrl = "http://bugzilla.zuijiaodev.com/?token=" + Router.getInstance().getAccessToken().get() + "&d" ;
+                            else
+                                formatUrl = "http://bugzilla.zuijiaodev.com/?token=" + Router.getInstance().getAccessToken().get() + "&r" ;
+                            intent.putExtra("content_url" ,formatUrl) ;
+                            intent.putExtra("apply_host", true) ;
+                            startActivity(intent);
+                            break ;
+                        case passed:
+                            if(mSellerStatus.getBankStatus() == SellerStatus.BankStatus.finished){
+                                finish();
+                            }else {
                                 intent.setClass(mContext, ReceivingAccountActivity.class) ;
                                 intent.putExtra("b_edit", true) ;
-                                break ;
-//                            case waiting:
-//                            case reviewing:
-//                                intent.setClass(mContext, MainActivity.class) ;
-//                                break ;
-                            default:
-                                intent.setClass(mContext ,MainActivity.class) ;
-                                break ;
+                                startActivity(intent);
+                            }
+                            break ;
+                        default:
+                            finish();
+                            break ;
                         }
-                        startActivity(intent);
-                        finish();
-//                    }
                     break ;
             }
         }

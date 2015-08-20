@@ -155,16 +155,16 @@ public class HostBanquentFragment extends Fragment {
         }
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == MainActivity.COMMENT_SUCCESS) {
-            ((HostBanquentActiveListFragment) mPagerAdapter.getItem(mViewPager.getCurrentItem())).onRefresh();
-            needRefreshIndex = 3 - mViewPager.getCurrentItem();
-        }
-        if (resultCode == MainActivity.ORDER_CANCEL) {
-            ((HostBanquentActiveListFragment) mPagerAdapter.getItem(mViewPager.getCurrentItem())).onRefresh();
-            needRefreshIndex = 3 - (mViewPager.getCurrentItem() + 1);
-        }
-    }
+//    @Override
+//    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+//        if (resultCode == MainActivity.COMMENT_SUCCESS) {
+//            ((HostBanquentActiveListFragment) mPagerAdapter.getItem(mViewPager.getCurrentItem())).onRefresh();
+//            needRefreshIndex = 3 - mViewPager.getCurrentItem();
+//        }
+//        if (resultCode == MainActivity.ORDER_CANCEL) {
+//            ((HostBanquentActiveListFragment) mPagerAdapter.getItem(mViewPager.getCurrentItem())).onRefresh();
+//            needRefreshIndex = 3 - (mViewPager.getCurrentItem() + 1);
+//        }
+//    }
 }

@@ -37,7 +37,8 @@
                 android:gravity="center_horizontal"
                 android:lineSpacingExtra="4dip"
                 android:textColor="@color/tv_deep_gray"
-                android:textSize="15sp" />
+                android:textSize="15sp"
+                android:layout_marginBottom="20dip"/>
 
             <TextView
                 android:id="@+id/apply1_text_view1"

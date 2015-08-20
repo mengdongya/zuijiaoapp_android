@@ -63,7 +63,7 @@ public class ApplyForHostStep2Activity extends BaseActivity {
     @ViewInject(R.id.apply2_list_view)
     private ListView mListView;
     private int[] titles = {R.string.avatar, R.string.nick_name, R.string
-            .gender, R.string.current_location, R.string.email, R.string.mobile_phone};
+            .gender , R.string.email, R.string.mobile_phone};
 //    private ArrayList<String> values = new ArrayList<>(5);
     private String values[]= { "", "" , "" ,"" ,"" ,""};
     private String mAvatar = null;
@@ -144,7 +144,11 @@ public class ApplyForHostStep2Activity extends BaseActivity {
                 Router.getInstance().setSellerStatus(Optional.of(sellerStatus));
                 if(sellerStatus.getProfileStatus() == SellerStatus.ProfileStatus.finished){
                     Intent intent = new Intent(mContext , CommonWebViewActivity.class) ;
-                    String formatUrl = "http://bugzilla.zuijiaodev.com/?token=" + Router.getInstance().getAccessToken().get() + "&d" ;
+                    String formatUrl = null ;
+                    if(BuildConfig.DEBUG)
+                        formatUrl = "http://bugzilla.zuijiaodev.com/?token=" + Router.getInstance().getAccessToken().get() + "&d" ;
+                    else
+                        formatUrl = "http://bugzilla.zuijiaodev.com/?token=" + Router.getInstance().getAccessToken().get() + "&r" ;
                     intent.putExtra("content_url", formatUrl);
                     intent.putExtra("apply_host" , true );
                     startActivity(intent);
@@ -195,12 +199,12 @@ public class ApplyForHostStep2Activity extends BaseActivity {
                 case 2:
                     createGenderDialog();
                     break;
+//                case 3:
+//                    Intent locationIntent = new Intent();
+//                    locationIntent.setClass(ApplyForHostStep2Activity.this, LocationActivity.class);
+//                    startActivityForResult(locationIntent, CHOOSE_LOCATION_REQ);
+//                    break;
                 case 3:
-                    Intent locationIntent = new Intent();
-                    locationIntent.setClass(ApplyForHostStep2Activity.this, LocationActivity.class);
-                    startActivityForResult(locationIntent, CHOOSE_LOCATION_REQ);
-                    break;
-                case 4:
                     String email = null;
                     if (mFullUser.getContactInfo().isPresent())
                         email = mFullUser.getContactInfo().get().getEmail();
@@ -228,7 +232,7 @@ public class ApplyForHostStep2Activity extends BaseActivity {
                     });
 
                     break;
-                case 5:
+                case 4:
                     Intent verifyIntent = new Intent();
                     verifyIntent.setClass(mContext, VerifyPhoneNumActivity.class);
                     startActivityForResult(verifyIntent, VERIFY_PHONE_REQ);
@@ -405,17 +409,17 @@ public class ApplyForHostStep2Activity extends BaseActivity {
                                 }
                             }
                             break ;
+//                        case 3 :
+//                            if(mFullUser.getProfile()!= null)
+//                                contentText.setText(dbMng.getLocationByIds(mFullUser.getProfile().getProvinceId() , mFullUser.getProfile().getCityId()));
+//                            break ;
                         case 3 :
-                            if(mFullUser.getProfile()!= null)
-                                contentText.setText(dbMng.getLocationByIds(mFullUser.getProfile().getProvinceId() , mFullUser.getProfile().getCityId()));
-                            break ;
-                        case 4 :
                             if(mFullUser .getContactInfo().isPresent()
                                 && mFullUser.getContactInfo().get().getEmail()!=null
                                 && !mFullUser.getContactInfo().get().getEmail().equals(""))
                                 contentText.setText(mFullUser.getContactInfo().get().getEmail());
                             break ;
-                        case 5 :
+                        case 4 :
                             if(mFullUser.getContactInfo().isPresent()
                                 &&mFullUser.getContactInfo().get().getPhoneNumber()!=null
                                 &&!mFullUser.getContactInfo().get().getPhoneNumber().equals(""))

@@ -249,8 +249,9 @@ public class HostBanquentActiveListFragment extends Fragment implements
             holder.date.setText(formatDate(order.getEvent().getTime()));
             holder.personNumber.setText(order.getQuantity() + getString(R.string.people));
             holder.nickname.setText(order.getUser().getNickName());
-
-            if (order.getRemark().length() == 0|| " ".equals(order.getRemark())){
+            String remark = order.getRemark() ;
+            if(remark == null || remark.trim().equals("")){
+//            if (order.getRemark().length() == 0|| "".equals(order.getRemark())){
                 holder.remark.setText(getString(R.string.none));
             }else {
                 holder.remark.setText(order.getRemark());

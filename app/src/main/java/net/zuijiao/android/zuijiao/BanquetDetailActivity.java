@@ -71,6 +71,7 @@ import com.zuijiao.thirdopensdk.WeixinApi;
 import com.zuijiao.utils.AdapterViewHeightCalculator;
 import com.zuijiao.utils.CacheUtils;
 import com.zuijiao.view.BanquetDetailScrollView;
+import com.zuijiao.view.MeasuredTextView;
 import com.zuijiao.view.ReviewRatingBar;
 import com.zuijiao.view.RoundImageView;
 
@@ -354,6 +355,7 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
                 UMWXHandler wxHandler = new UMWXHandler(mContext, WeixinApi.WEIXIN_ID, WeixinApi.WEIXIN_PWD);
                 wxHandler.setTargetUrl(BuildConfig.Banquet_Web_Url + mShareUrl + mBanquent.getIdentifier());
                 wxHandler.addToSocialSDK();
+                wxHandler.setTitle(mBanquent.getTitle());
                 performShare(SHARE_MEDIA.WEIXIN);
                 break;
             case SHARE_TO_FRIEND_CIRCLE:
@@ -599,7 +601,7 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
                 view = LayoutInflater.from(mContext).inflate(R.layout.menu_dishes_item, null);
                 holder = new ViewHolder();
                 holder.menu = (TextView)(view .findViewById(R.id.menu_dishes_item_menu));
-                holder.dishes = (TextView)(view .findViewById(R.id.menu_dishes_item_dishes));
+//                holder.dishes = (MeasuredTextView)(view .findViewById(R.id.menu_dishes_item_dishes));
                 view.setTag(holder);
             }else{
                 holder = (ViewHolder) view.getTag();
@@ -610,6 +612,15 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
                 holder.menu.setVisibility(View.GONE);
             else
                 holder.menu.setText(categoryName);
+            TextView commentContent = new MeasuredTextView(BanquetDetailActivity.this);
+            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ActionBar.LayoutParams.WRAP_CONTENT, ActionBar.LayoutParams.WRAP_CONTENT);
+//            lp.addRule(RelativeLayout.BELOW, R.id.comment_user_name);
+            commentContent.setLayoutParams(lp);
+            commentContent.setTextColor(getResources().getColor(R.color._555555));
+            commentContent.setTextSize(17);
+            commentContent.setLineSpacing(10, 1);
+            commentContent.setGravity(Gravity.CENTER_HORIZONTAL);
+            ((LinearLayout) view).addView(commentContent);
             ArrayList<String> dishes =  mBanquent.getMenus().get(i).getDishes();
             if(dishes != null){
                 StringBuilder strBuilder = new StringBuilder();
@@ -621,7 +632,10 @@ public class BanquetDetailActivity extends BaseActivity implements BanquetDetail
                     }
                 }
                 String dishList = strBuilder.toString();
-                holder.dishes.setText(dishList);
+                commentContent.setText(dishList);
+//                holder.dishes.setText(dishList);
+//                holder.dishes.measure(0 , 0);
+//                holder.dishes.setHeight(holder.dishes.getMeasuredHeight());
             }
             return view;
         }

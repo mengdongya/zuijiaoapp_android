@@ -17,17 +17,30 @@ public class MyViewPager extends ViewPager {
         super(context, attrs);
     }
 
-//    @Override
-//    public boolean onInterceptTouchEvent(MotionEvent ev) {
-//        try {
-//            return super.onInterceptTouchEvent(ev);
-//        } catch (IllegalArgumentException e) {
-//            return false;
-//        } catch (ArrayIndexOutOfBoundsException e) {
-//            return false;
+
+
+
+    @Override
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+//        switch (ev.getAction()){
+//            case MotionEvent.ACTION_CANCEL :
+//                break ;
+//            case MotionEvent.ACTION_DOWN:
+//                return true  ;
+//            case MotionEvent.ACTION_MOVE :
+//                return true  ;
+//            case MotionEvent.ACTION_UP :
+//                break ;
 //        }
-////        return true;
-//    }
+        try {
+            return super.onInterceptTouchEvent(ev);
+        } catch (IllegalArgumentException e) {
+            return false;
+        } catch (ArrayIndexOutOfBoundsException e) {
+            return false;
+        }
+//        return true;
+    }
 
 //    @Override
 //    public boolean onInterceptTouchEvent(MotionEvent ev) {

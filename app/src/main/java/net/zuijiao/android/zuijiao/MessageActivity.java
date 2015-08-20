@@ -3,7 +3,6 @@ package net.zuijiao.android.zuijiao;
 import android.content.Intent;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,8 +13,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
-import com.hp.hpl.sparta.xpath.PositionEqualsExpr;
 import com.lidroid.xutils.view.annotation.ContentView;
 import com.lidroid.xutils.view.annotation.ViewInject;
 import com.zuijiao.android.util.Optional;
@@ -25,15 +22,10 @@ import com.zuijiao.android.zuijiao.model.Banquent.Notifications;
 import com.zuijiao.android.zuijiao.model.Banquent.Order;
 import com.zuijiao.android.zuijiao.model.Banquent.Orders;
 import com.zuijiao.android.zuijiao.model.Banquent.SellerStatus;
-import com.zuijiao.android.zuijiao.model.Gourmet;
-import com.zuijiao.android.zuijiao.model.message.Message;
 import com.zuijiao.android.zuijiao.model.user.TinyUser;
 import com.zuijiao.android.zuijiao.network.Router;
 import com.zuijiao.controller.PreferenceManager;
 import com.zuijiao.entity.AuthorInfo;
-import com.zuijiao.utils.AdapterViewHeightCalculator;
-import com.zuijiao.utils.CacheUtils;
-import com.zuijiao.utils.StrUtil;
 import com.zuijiao.view.RefreshAndInitListView;
 
 import java.util.ArrayList;
@@ -114,9 +106,11 @@ public class MessageActivity extends BaseActivity  {
             switch (notification.getType()){
                 case comment :
                 case order:
+                    createDialog();
                     Router.getBanquentModule().order(orderID, new OneParameterExpression<Orders>() {
                         @Override
                         public void action(Orders orders) {
+                            finalizeDialog();
                             Order order = orders.getOrder() ;
                             Intent intent = new Intent(mContext, BanquetOrderDisplayActivity.class);
                             intent.putExtra("order", order);
@@ -125,22 +119,34 @@ public class MessageActivity extends BaseActivity  {
                     }, new OneParameterExpression<String>() {
                         @Override
                         public void action(String s) {
-                            Toast.makeText(mContext,  R.string.notify_net2 , Toast.LENGTH_SHORT) .show();
+                            if(s.contains("404")){
+                                Toast.makeText(mContext ,R.string.no_banquet_found , Toast.LENGTH_SHORT).show();
+                            }else{
+                                Toast.makeText(mContext,  R.string.notify_net2 , Toast.LENGTH_SHORT) .show();
+                            }
+                            finalizeDialog();
                         }
                     });
                     break ;
                 case sellerOrder:
-                    Router.getBanquentModule().sellerOrderByID(orderID, new OneParameterExpression<Order>() {
+                    createDialog();
+                    Router.getBanquentModule().sellerOrderByID(orderID, new OneParameterExpression<Orders>() {
                         @Override
-                        public void action(Order order) {
-                            Intent intent = new Intent(mContext, BanquetOrderDisplayActivity.class);
-                            intent.putExtra("order", order);
-                            startActivityForResult(intent, MainActivity.ORDER_REQUEST);
+                        public void action(Orders orders) {
+                            Intent intent = new Intent(mContext, BanquetOrderDetailActivity.class);
+                            intent.putExtra("order", orders.getOrder());
+                            startActivity(intent);
+                            finalizeDialog();
                         }
                     }, new OneParameterExpression<String>() {
                         @Override
                         public void action(String s) {
-                            Toast.makeText(mContext,  R.string.notify_net2 , Toast.LENGTH_SHORT) .show();
+                            if(s.contains("404")){
+                                Toast.makeText(mContext ,R.string.no_banquet_found , Toast.LENGTH_SHORT).show();
+                            }else{
+                                Toast.makeText(mContext,  R.string.notify_net2 , Toast.LENGTH_SHORT) .show();
+                            }
+                            finalizeDialog();
                         }
                     });
                    break ;
@@ -176,20 +182,59 @@ public class MessageActivity extends BaseActivity  {
             @Override
             public void action(SellerStatus sellerStatus) {
                 Router.getInstance().setSellerStatus(Optional.of(sellerStatus));
-                Intent intent  = new Intent(mContext , ApplyForHostStep1Activity.class) ;
-                intent.putExtra("seller_status" ,sellerStatus) ;
+                Intent intent = new Intent(mContext, ApplyForHostStep1Activity.class);
+                intent.putExtra("seller_status", sellerStatus);
                 startActivity(intent);
             }
         }, new OneParameterExpression<String>() {
             @Override
             public void action(String s) {
-                Toast.makeText(mContext , R.string.notify_net2 , Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, R.string.notify_net2, Toast.LENGTH_SHORT).show();
             }
         });
     }
 
 
     public void networkStep(boolean bRefresh){
+        if (!Router.getInstance().getCurrentUser().isPresent()) {
+            tryLoginFirst(new LambdaExpression() {
+                @Override
+                public void action() {
+                    if (!Router.getInstance().getCurrentUser().isPresent()) {
+                        if (mNotifications != null)
+                            mNotifications.clear();
+                        mAdapter.notifyDataSetChanged();
+                        mRefreshLayout.setRefreshing(false);
+                        notifyLogin(new LambdaExpression() {
+                            @Override
+                            public void action() {
+                                if (Router.getInstance().getCurrentUser().isPresent()) {
+                                    networkStep(bRefresh);
+                                }
+                            }
+                        });
+                    } else {
+                        networkStep(bRefresh);
+                    }
+                }
+            }, new OneParameterExpression<Integer>() {
+                @Override
+                public void action(Integer integer) {
+                    Toast.makeText(mContext, R.string.notify_net2, Toast.LENGTH_LONG).show();
+                    if(bRefresh)
+                        mRefreshLayout.setRefreshing(false);
+                    else
+                        mListView.stopLoadMore();
+                    if (mAdapter.getCount() == 0) {
+                        mEmptyContentView.setVisibility(View.VISIBLE);
+                    } else {
+                        mEmptyContentView.setVisibility(View.GONE);
+                    }
+                }
+            });
+            return;
+        }
+
         if(bRefresh)
             nextCursor = null ;
         Router.getMessageModule().banquetNotifications(null, nextCursor, 20, new OneParameterExpression<Notifications>() {
@@ -208,7 +253,7 @@ public class MessageActivity extends BaseActivity  {
                         mNotifications.addAll(notifications.getItems());
                     }
                 }
-                if (notifications.getItemCount() < 20 && !bRefresh)
+                if (notifications.getItemCount() < 20)
                     mListView.setPullLoadEnable(false);
                 else
                     mListView.setPullLoadEnable(true);
@@ -224,6 +269,15 @@ public class MessageActivity extends BaseActivity  {
             @Override
             public void action(String s) {
                 Toast.makeText(mContext, R.string.notify_net2, Toast.LENGTH_SHORT).show();
+                if (bRefresh)
+                    mRefreshLayout.setRefreshing(false);
+                else
+                    mListView.stopLoadMore();
+                if (mAdapter.getCount() == 0) {
+                    mEmptyContentView.setVisibility(View.VISIBLE);
+                } else {
+                    mEmptyContentView.setVisibility(View.GONE);
+                }
             }
         });
     }

@@ -2,6 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
     android:orientation="vertical">
 
     <FrameLayout
@@ -11,7 +13,7 @@
         <com.zuijiao.view.MyViewPager
             android:id="@+id/banquet_banner_viewpager"
             android:layout_width="match_parent"
-            android:layout_height="140dip"
+            android:layout_height="160dip"
             android:layout_marginBottom="8dip"
             android:layout_marginLeft="8dip"
             android:layout_marginRight="8dip" />

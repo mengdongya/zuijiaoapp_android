@@ -65,13 +65,17 @@ public class BanquetOrderDetailActivity extends BaseActivity{
             return;
         }
         weekDays = mContext.getResources().getStringArray(R.array.week_days);
-        netWorkStep();
-        getSupportActionBar().setTitle(getString(R.string.msg_page));
-        mUserInfo.setTag(mOrder.getUser());
-        mUserInfo.setOnClickListener(new AttendeeAvatarListener(mContext));
+        try {
+            registerViewsByOrder();
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
+            finish();
+            return ;
+        }
+
     }
 
-    private void netWorkStep(){
+    private void registerViewsByOrder() throws  Throwable{
         if (mOrder.getUser().getAvatarURLSmall().isPresent()) {
             Picasso.with(mContext)
                     .load(mOrder.getUser().getAvatarURLSmall().get())
@@ -88,12 +92,11 @@ public class BanquetOrderDetailActivity extends BaseActivity{
         banquetStartTime.setText(formatDate(mOrder.getEvent().getTime()));
         orderPersonNum.setText(mOrder.getQuantity() + getString(R.string.people));
         orderTelephone.setText(mOrder.getPhoneNumber());
-        if (mOrder.getRemark()==null){
+        if (mOrder.getRemark()==null || mOrder.getRemark().trim().equals("")){
             banquetRemark.setText(getString(R.string.none));
         }else {
             banquetRemark.setText(mOrder.getRemark());
         }
-
         String statusStr = "";
         switch (mOrder.getStatus()) {
             case Canceled:
@@ -111,6 +114,8 @@ public class BanquetOrderDetailActivity extends BaseActivity{
                 break;
         }
         orderStatus.setText(statusStr);
+        mUserInfo.setTag(mOrder.getUser());
+        mUserInfo.setOnClickListener(new AttendeeAvatarListener(mContext));
     }
 
     private String formatDate(Date date) {

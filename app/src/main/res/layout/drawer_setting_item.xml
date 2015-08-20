@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:padding="10dip"
+    android:orientation="horizontal"
     android:background="@drawable/drawer_item_bg"
     android:layout_height="wrap_content">
 
     <ImageView
         android:id="@+id/drawer_setting_item_image"
-        android:layout_width="24dip"
-        android:layout_height="24dip"
+        android:layout_width="20dip"
+        android:layout_height="20dip"
+        android:layout_gravity="center_vertical"
         android:layout_centerVertical="true"
         android:src="@drawable/ic_launcher" />
 
@@ -17,9 +19,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="15dip"
-        android:layout_centerVertical="true"
+        android:layout_gravity="center_vertical"
         android:layout_toRightOf="@+id/drawer_setting_item_image"
         android:text="setting"
+        android:layout_weight="1"
         android:textColor="@color/black"
         android:textSize="18sp" />
 
@@ -34,4 +37,4 @@
         android:textColor="@color/tv_light_gray"
         android:textSize="14sp" />
 
-</RelativeLayout>
+</LinearLayout>

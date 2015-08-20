@@ -214,7 +214,11 @@ public class VerifyPhoneNumActivity extends BaseActivity {
             public void action(String errorMsg) {
                 if (dialog != null)
                     dialog.dismiss();
-                Toast.makeText(mContext, errorMsg, Toast.LENGTH_SHORT).show();
+                if (errorMsg.contains("412")) {
+                    Toast.makeText(mContext, getString(R.string.error_verify_code), Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(mContext, getString(R.string.notify_net2), Toast.LENGTH_SHORT).show();
+                }
                 finalizeDialog();
             }
         });

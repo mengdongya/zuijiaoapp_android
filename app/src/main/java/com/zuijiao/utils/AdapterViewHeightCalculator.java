@@ -26,6 +26,7 @@ public class AdapterViewHeightCalculator {
             View listItem = listAdapter.getView(i, null, listView);
             if (listItem == null)
                 continue;
+//            int desiredHeight = View.MeasureSpec.makeMeasureSpec(listView.getWidth(), View.MeasureSpec.AT_MOST);
             listItem.measure(0, 0);
             totalHeight += listItem.getMeasuredHeight();
         }

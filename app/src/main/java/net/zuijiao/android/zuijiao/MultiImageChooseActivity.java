@@ -90,48 +90,49 @@ public class MultiImageChooseActivity extends BaseActivity {
 
     private ArrayList<String> mImageUrls = new ArrayList<>();
     private boolean mFromWeb = false ;
+    private boolean bUploading = false ;
 //    private ArrayList<SimpleImage> mImages = new ArrayList<>();
     @Override
     protected void registerViews() {
 
 
-//        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(getApplicationContext())
-//                .defaultDisplayImageOptions(((ActivityTask) getApplication()).getDefaultDisplayImageOptions()).memoryCacheExtraOptions(100, 100)
-//                .threadPoolSize(5).build();
-//        ImageLoader.getInstance().init(config);
-
-        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(
-                this)
-                .memoryCacheExtraOptions(100, 100)
-                        // default = device screen dimensions
-                .diskCacheExtraOptions(100, 100, null)
-                .threadPoolSize(5)
-                        // default Thread.NORM_PRIORITY - 1
-                .threadPriority(Thread.NORM_PRIORITY)
-                        // default FIFO
-                .tasksProcessingOrder(QueueProcessingType.LIFO)
-                        // default
-                .denyCacheImageMultipleSizesInMemory()
-                .memoryCache(new LruMemoryCache(2 * 1024 * 1024))
-                .memoryCacheSize(2 * 1024 * 1024)
-                .memoryCacheSizePercentage(13)
-                        // default
-                .diskCache(
-                        new UnlimitedDiscCache(StorageUtils.getCacheDirectory(
-                                this, true)))
-                        // default
-                .diskCacheSize(50 * 1024 * 1024).diskCacheFileCount(100)
-                .diskCacheFileNameGenerator(new HashCodeFileNameGenerator())
-                        // default
-                .imageDownloader(new BaseImageDownloader(this))
-                        // default
-                .imageDecoder(new BaseImageDecoder(false))
-                        // default
-                .defaultDisplayImageOptions(DisplayImageOptions.createSimple())
-                        // default
-                .defaultDisplayImageOptions(((ActivityTask) getApplication()).getDefaultDisplayImageOptions()).build();
-
+        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(getApplicationContext())
+                .defaultDisplayImageOptions(((ActivityTask) getApplication()).getDefaultDisplayImageOptions()).memoryCacheExtraOptions(100, 100)
+                .threadPoolSize(5).build();
         ImageLoader.getInstance().init(config);
+//
+//        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(
+//                this)
+//                .memoryCacheExtraOptions(100, 100)
+//                        // default = device screen dimensions
+//                .diskCacheExtraOptions(100, 100, null)
+//                .threadPoolSize(5)
+//                        // default Thread.NORM_PRIORITY - 1
+//                .threadPriority(Thread.NORM_PRIORITY)
+//                        // default FIFO
+//                .tasksProcessingOrder(QueueProcessingType.LIFO)
+//                        // default
+//                .denyCacheImageMultipleSizesInMemory()
+//                .memoryCache(new LruMemoryCache(2 * 1024 * 1024))
+//                .memoryCacheSize(2 * 1024 * 1024)
+//                .memoryCacheSizePercentage(13)
+//                        // default
+//                .diskCache(
+//                        new UnlimitedDiscCache(StorageUtils.getCacheDirectory(
+//                                this, true)))
+//                        // default
+//                .diskCacheSize(50 * 1024 * 1024).diskCacheFileCount(100)
+//                .diskCacheFileNameGenerator(new HashCodeFileNameGenerator())
+//                        // default
+//                .imageDownloader(new BaseImageDownloader(this))
+//                        // default
+//                .imageDecoder(new BaseImageDecoder(false))
+//                        // default
+//                .defaultDisplayImageOptions(DisplayImageOptions.createSimple())
+//                        // default
+//                .defaultDisplayImageOptions(((ActivityTask) getApplication()).getDefaultDisplayImageOptions()).build();
+//
+//        ImageLoader.getInstance().init(config);
 
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -154,7 +155,7 @@ public class MultiImageChooseActivity extends BaseActivity {
             }
         }).start();
 
-        mSureBtn.setEnabled(true);
+        mSureBtn.setEnabled(false);
         mSureBtn.setText(String.format(getString(R.string.sure_with_num), mSelectedImage.size(), mMaxCount));
         mSureBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -165,8 +166,14 @@ public class MultiImageChooseActivity extends BaseActivity {
 //                finish();
 //                mImageUrls.addAll(UpyunUploadTask.gourmetImagePaths(
 //                        mPreferMng.getStoredUserId(), mEditName, mImages.size(), "jpg"));
+                if(mSelectedImage == null || mSelectedImage.size() ==0){
+                    return ;
+                }
+                bUploading = true ;
+                mImageUrls.clear();
                 mImageUrls.addAll(UpyunUploadTask.banquetImageUrls(mSelectedImage.size())) ;
                 uploadOnCompressed();
+                mSureBtn.setEnabled(false);
             }
         });
         mGridView.setOnItemClickListener(mGridListener);
@@ -299,8 +306,10 @@ public class MultiImageChooseActivity extends BaseActivity {
                             }
                         } else {
                             mImageUrls.clear();
+                            mSureBtn.setEnabled(true);
                             finalizeDialog();
                         }
+                        bUploading = false ;
                     }
                 }
         ).execute();
@@ -346,10 +355,12 @@ public class MultiImageChooseActivity extends BaseActivity {
     private AdapterView.OnItemClickListener mGridListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            if(bUploading){
+                return ;
+            }
             SimpleImage image = images.get(position);
             if (selectedImageContainsCurrentImage(image)) {
                 removeItem(image);
-//                ((ToggleButton) view).setChecked(false);
             } else {
                 if (mSelectedImage.size() >= mMaxCount) {
                     Toast.makeText(mContext, String.format(getString(R.string.image_count_upper_limit), mMaxCount), Toast.LENGTH_SHORT).show();
@@ -358,13 +369,14 @@ public class MultiImageChooseActivity extends BaseActivity {
                     mSelectedImage.add(image);
                 }
             }
-            // mGridViewAdapter.getView(position, view, parent);
-
-            // imageItem.setIndicatorImageVisibility(selectedImageContainsCurrentImage(image) ? View.VISIBLE : View.INVISIBLE);
-            // imageItem.setImageFilter(selectedImageContainsCurrentImage(image));
             ((ImageItem) view).setIndicatorImageVisibility(selectedImageContainsCurrentImage(image) ? View.VISIBLE : View.INVISIBLE);
             ((ImageItem) view).setImageFilter(selectedImageContainsCurrentImage(image));
             mSureBtn.setText(String.format(getString(R.string.sure_with_num), mSelectedImage.size(), mMaxCount));
+            if(mSelectedImage.size() > 0){
+                mSureBtn.setEnabled(true);
+            }else{
+                mSureBtn.setEnabled(false);
+            }
         }
     };
 

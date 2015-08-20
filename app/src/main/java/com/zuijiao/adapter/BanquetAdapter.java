@@ -18,6 +18,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 import com.zuijiao.android.util.functional.OneParameterExpression;
@@ -41,6 +42,7 @@ import net.zuijiao.android.zuijiao.R;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -70,8 +72,13 @@ public class BanquetAdapter extends BaseAdapter implements AdapterView.OnItemCli
     private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-            if (bannerViewPager != null) {
-                bannerViewPager.setCurrentItem(currentItem);
+            if (bannerViewPager != null ) {
+                try{
+                    bannerViewPager.setCurrentItem(currentItem);
+                }catch (Throwable t){
+                    currentItem = 0 ;
+                    bannerViewPager.setCurrentItem(0);
+                }
             }
         }
     };
@@ -137,22 +144,23 @@ public class BanquetAdapter extends BaseAdapter implements AdapterView.OnItemCli
                 mBannerContainer = mInflater.inflate(R.layout.banquet_banner, null);
                 //ImageView bannerView = (ImageView) mBannerContainer.findViewById(R.id.banquet_banner);
                 bannerViewPager = (MyViewPager) mBannerContainer.findViewById(R.id.banquet_banner_viewpager);
-                dotContainer = (LinearLayout) mBannerContainer.findViewById(R.id.banquet_dot_container);
-                dotContainer.removeAllViews();
-                int dimen = (int) mContext.getResources().getDimension(R.dimen.food_detail_image_index_height);
-                LinearLayout.LayoutParams Lp = new LinearLayout.LayoutParams(dimen, dimen);
-                Lp.rightMargin = 20;
-                Lp.leftMargin = 20;
+            }
+            dotContainer = (LinearLayout) mBannerContainer.findViewById(R.id.banquet_dot_container);
+            mBannerAdapter = new BannerPagerAdapter() ;
+            bannerViewPager.setAdapter(mBannerAdapter);
+            dotContainer.removeAllViews();
+            int dimen = (int) mContext.getResources().getDimension(R.dimen.food_detail_image_index_height);
+            LinearLayout.LayoutParams Lp = new LinearLayout.LayoutParams(dimen, dimen);
+            Lp.rightMargin = 20;
+            Lp.leftMargin = 20;
+            if(mBanners.size() > 1){
                 for (int j = 0; j < mBanners.size(); j++) {
                     View dot = new View(mContext);
-                    dot.setPadding(5, 5, 5, 5);
+//                    dot.setPadding(5, 5, 5, 5);
                     dot.setBackgroundResource(R.drawable.dot_normal);
                     dotContainer.addView(dot, Lp);
                 }
                 dotContainer.getChildAt(0).setBackgroundResource(R.drawable.dot_focused);
-                if(mBannerAdapter == null )
-                    mBannerAdapter = new BannerPagerAdapter() ;
-                bannerViewPager.setAdapter(mBannerAdapter);
                 bannerViewPager.setOnPageChangeListener(new BannerPagerChangeListener());
                 startBanner();
             }
@@ -251,7 +259,16 @@ public class BanquetAdapter extends BaseAdapter implements AdapterView.OnItemCli
         this.mBanquents = banquents;
         this.mBanquentList = mBanquents.getBanquentList();
         mBanners = banquents.getBanners() ;
+//        int randomCount = new Random().nextInt(5) ;
+//        Toast.makeText(mContext , mBanners.size() + "" , Toast.LENGTH_LONG).show();
+//        mBanners = new ArrayList<>() ;
+//        for(int i= 0 ; i <= randomCount ; i++ ){
+//            mBanners.add(new Banquents.Banner("www.baidu.com" , "http://image.baidu.com/search/detail?ct=503316480&z=undefined&tn=baiduimagedetail&ipn=d&word=JELLY_BEAN&step_word=&ie=utf-8&in=&cl=2&lm=-1&st=undefined&cs=3480012295,1633097787&os=1223343871,129863328&pn=2&rn=1&di=55491551940&ln=1288&fr=&fmq=1439980024859_R&ic=undefined&s=undefined&se=&sme=&tab=0&width=&height=&face=undefined&is=0,0&istype=0&ist=&jit=&bdtype=0&gsm=0&objurl=http%3A%2F%2Farticles.csdn.net%2Fuploads%2Fallimg%2F120306%2F118_120306100059_1_lit.jpg")) ;
+//        }
+//        mBanners = banquents.getBanners() ;
         notifyDataSetChanged();
+        if(mBannerAdapter != null)
+             mBannerAdapter.notifyDataSetChanged();
     }
 
     /**
@@ -264,6 +281,8 @@ public class BanquetAdapter extends BaseAdapter implements AdapterView.OnItemCli
             mBanquentList = new ArrayList<>();
         this.mBanquentList.addAll(banquents.getBanquentList());
         mBanners = banquents.getBanners() ;
+        if(mBannerAdapter != null)
+            mBannerAdapter.notifyDataSetChanged();
         notifyDataSetChanged();
     }
 
@@ -305,6 +324,8 @@ public class BanquetAdapter extends BaseAdapter implements AdapterView.OnItemCli
             ImageView imageView = new ImageView(mContext);
             Picasso.with(mContext).load(mBanners.get(position).getImageUrl()).placeholder(R.drawable.empty_view_greeting).fit().centerCrop().into(imageView);
             imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            imageView.setFocusable(true);
+            imageView.setFocusableInTouchMode(true);
             container.addView(imageView);
             imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -343,10 +364,15 @@ public class BanquetAdapter extends BaseAdapter implements AdapterView.OnItemCli
 
         @Override
         public void onPageSelected(int position) {
-            currentItem = position;
-            dotContainer.getChildAt(oldPosition).setBackgroundResource(R.drawable.dot_normal);
-            dotContainer.getChildAt(currentItem).setBackgroundResource(R.drawable.dot_focused);
-            oldPosition = position;
+            try{
+                currentItem = position;
+                dotContainer.getChildAt(oldPosition).setBackgroundResource(R.drawable.dot_normal);
+                dotContainer.getChildAt(currentItem).setBackgroundResource(R.drawable.dot_focused);
+                oldPosition = position;
+            }catch (Throwable t){
+                currentItem = 0 ;
+                oldPosition = 0 ;
+            }
         }
 
         @Override
@@ -356,16 +382,27 @@ public class BanquetAdapter extends BaseAdapter implements AdapterView.OnItemCli
     }
 
     private void startBanner() {
-        scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
-        scheduledExecutorService.scheduleWithFixedDelay(new BannerRunnable(), 1, 5, TimeUnit.SECONDS);
+        if(scheduledExecutorService == null ){
+            scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
+            scheduledExecutorService.scheduleWithFixedDelay(mRun, 1, 5, TimeUnit.SECONDS);
+        }
     }
 
+
+    private Runnable mRun = new Runnable(){
+
+        @Override
+        public void run() {
+            currentItem = (currentItem + 1) % mBanners.size();
+            handler.obtainMessage().sendToTarget();
+        }
+    } ;
     private class BannerRunnable implements Runnable {
 
         @Override
         public void run() {
             synchronized (bannerViewPager) {
-                currentItem = (currentItem + 1) % 3;
+                currentItem = (currentItem + 1) % mBanners.size();
                 handler.obtainMessage().sendToTarget();
             }
         }

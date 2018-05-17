@@ -1,9 +1,9 @@
 apply plugin: 'com.android.application'
-apply plugin: 'me.tatarka.retrolambda'
+//apply plugin: 'me.tatarka.retrolambda'
 
 android {
     compileSdkVersion 21
-    buildToolsVersion '21.1.2'
+    buildToolsVersion '26.0.2'
 
     lintOptions {
         abortOnError false
@@ -27,17 +27,36 @@ android {
         manifestPlaceholders = [UMENG_CHANNEL_SOURCE: "zuijiao_net"]
     }
 
+    flavorDimensions 'zuijiao'
+    productFlavors {
+
+        free {
+//            dimensions 'zuijiao'
+//            missingDimensionStrategy 'minApi', 'minApi18', 'minApi23'
+        }
+
+        paid {}
+    }
+
     buildTypes {
         debug {
 //            buildConfigField "String", "Base_Url", "\"http://api.zuijiao.net\""
 //            buildConfigField "String", "Base_Url", "\"http://xielingyu3.zuijiaodev.com\""
-            buildConfigField "String", "Base_Url", "\"http://api.zuijiaodev.com\""
-            buildConfigField "String", "Avatar_Base_Url", "\"/debug/Avatar\""
-            buildConfigField "String", "Gourmet_Base_Url", "\"/debug/Gourmet\""
-            buildConfigField "String", "Web_View_Url", "\"http://huangyi2.zuijiaodev.com\""
+            buildConfigField "String", "Base_Url", "\"http://api.zuijiao.net\""
+            buildConfigField "String", "Web_View_Url", "\"http://mobile.views.zuijiao.net\""
+            buildConfigField "String", "Avatar_Base_Url", "\"/Avatar\""
+            buildConfigField "String", "Gourmet_Base_Url", "\"/Gourmet\""
             buildConfigField "String", "Request_Key", "\"zuijiaoapp\""
-            buildConfigField "Boolean", "OpenUmeng" ,"false"
-            buildConfigField "String", "Banquet_Web_Url" ,"\"http://mobile.zuijiaodev.com\""
+            buildConfigField "Boolean", "OpenUmeng", "true"
+            buildConfigField "String", "Banquet_Web_Url", "\"http://mobile.zuijiao.net\""
+
+//            buildConfigField "String", "Base_Url", "\"http://api.zuijiaodev.com\""
+//            buildConfigField "String", "Avatar_Base_Url", "\"/debug/Avatar\""
+//            buildConfigField "String", "Gourmet_Base_Url", "\"/debug/Gourmet\""
+//            buildConfigField "String", "Web_View_Url", "\"http://huangyi2.zuijiaodev.com\""
+//            buildConfigField "String", "Request_Key", "\"zuijiaoapp\""
+//            buildConfigField "Boolean", "OpenUmeng", "false"
+//            buildConfigField "String", "Banquet_Web_Url", "\"http://mobile.zuijiaodev.com\""
             signingConfig signingConfigs.release
         }
 
@@ -49,19 +68,19 @@ android {
             buildConfigField "String", "Avatar_Base_Url", "\"/Avatar\""
             buildConfigField "String", "Gourmet_Base_Url", "\"/Gourmet\""
             buildConfigField "String", "Request_Key", "\"zuijiaoapp\""
-            buildConfigField "Boolean", "OpenUmeng" ,"true"
-            buildConfigField "String", "Banquet_Web_Url" ,"\"http://mobile.zuijiao.net\""
+            buildConfigField "Boolean", "OpenUmeng", "true"
+            buildConfigField "String", "Banquet_Web_Url", "\"http://mobile.zuijiao.net\""
             signingConfig signingConfigs.release
 
-            applicationVariants.all { variant ->
-                variant.outputs.each { output ->
-                    def outputFile = output.outputFile
-                    if (outputFile != null && outputFile.name.endsWith('.apk') && !outputFile.name.endsWith('debug.apk')) {
-                        def fileName = "Zuijiao_v${defaultConfig.versionName}_${buildTime()}_${variant.productFlavors[0].name}.apk"
-                        output.outputFile = new File(outputFile.parent, fileName)
-                    }
-                }
-            }
+//            applicationVariants.all { variant ->
+//                variant.outputs.each { output ->
+//                    def outputFile = output.outputFile
+//                    if (outputFile != null && outputFile.name.endsWith('.apk') && !outputFile.name.endsWith('debug.apk')) {
+//                        def fileName = "Zuijiao_v${defaultConfig.versionName}_${buildTime()}_${variant.productFlavors[0].name}.apk"
+//                        output.outputFile = new File(outputFile.parent, fileName)
+//                    }
+//                }
+//            }
         }
     }
 
